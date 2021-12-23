@@ -207,7 +207,7 @@ func main() {
 	}
 
 	// container version details endpoint
-	v3.GET("/versions", func(c *gin.Context) {
+	router.GET("/versions", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"release": TibiadataBuildRelease,
 			"build":   TibiadataBuildBuilder,

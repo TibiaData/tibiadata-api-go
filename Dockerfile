@@ -1,6 +1,11 @@
 # get latest golang container
 FROM golang:1.17.5
 
+# get args
+ARG TibiadataBuildBuilder=dockerfile
+ARG TibiadataBuildRelease=unknown
+ARG TibiadataBuildCommit=-
+
 # create and set workingfolder
 WORKDIR /go/src/
 
@@ -14,7 +19,7 @@ RUN go mod download
 COPY src/ .
 
 # compile the program
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s -X 'main.TibiadataBuildBuilder=${TibiadataBuildBuilder}' -X 'main.TibiadataBuildRelease=${TibiadataBuildRelease}' -X 'main.TibiadataBuildCommit=${TibiadataBuildCommit}'" -o app .
 
 
 # get latest alpine container

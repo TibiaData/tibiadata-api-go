@@ -65,6 +65,9 @@ func main() {
 
 	router := gin.Default()
 
+	// disable proxy feature of gin
+	router.SetTrustedProxies(nil)
+
 	// Ping-endpoint
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{

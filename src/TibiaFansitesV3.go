@@ -1,18 +1,17 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"html"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaFansitesV3 func
-func TibiaFansitesV3() string {
+func TibiaFansitesV3(c *gin.Context) {
 
 	// Child of Fansite
 	type ContentType struct {
@@ -292,9 +291,6 @@ func TibiaFansitesV3() string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaFansitesV3", jsonData)
 }

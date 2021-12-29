@@ -1,17 +1,21 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaHighscoresV3 func
-func TibiaHighscoresV3(world string, category string, vocation string) string {
+func TibiaHighscoresV3(c *gin.Context) {
+
+	// getting params from URL
+	world := c.Param("world")
+	category := c.Param("category")
+	vocation := c.Param("vocation")
 
 	// do some validation of category and vocation
 	// maybe return error on faulty value?!
@@ -45,7 +49,7 @@ func TibiaHighscoresV3(world string, category string, vocation string) string {
 
 	// Adding fix for First letter to be upper and rest lower
 	if strings.EqualFold(world, "all") {
-		world = "ALL"
+		world = ""
 	} else {
 		world = TibiadataStringWorldFormatToTitleV3(world)
 	}
@@ -250,9 +254,6 @@ func TibiaHighscoresV3(world string, category string, vocation string) string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaHighscoresV3", jsonData)
 }

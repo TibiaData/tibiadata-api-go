@@ -1,19 +1,21 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"html"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 	//"time"
 )
 
 // TibiaCharactersCharacterV3 func
-func TibiaCharactersCharacterV3(character string) string {
+func TibiaCharactersCharacterV3(c *gin.Context) {
+
+	// getting params from URL
+	character := c.Param("character")
 
 	// Child of Character
 	type Houses struct {
@@ -519,11 +521,8 @@ func TibiaCharactersCharacterV3(character string) string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaCharactersCharacterV3", jsonData)
 }
 
 // TibiaDataParseKiller func - insert a html string and get the killers back

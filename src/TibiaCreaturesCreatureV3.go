@@ -1,17 +1,19 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaCreaturesCreatureV3 func
-func TibiaCreaturesCreatureV3(race string) string {
+func TibiaCreaturesCreatureV3(c *gin.Context) {
+
+	// getting params from URL
+	race := c.Param("race")
 
 	// Child of JSONData
 	type Creature struct {
@@ -165,9 +167,6 @@ func TibiaCreaturesCreatureV3(race string) string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaCreaturesCreatureV3", jsonData)
 }

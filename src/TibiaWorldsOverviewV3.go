@@ -1,17 +1,16 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaWorldsOverviewV3 func
-func TibiaWorldsOverviewV3() string {
+func TibiaWorldsOverviewV3(c *gin.Context) {
 
 	// Child of Worlds
 	type World struct {
@@ -198,9 +197,6 @@ func TibiaWorldsOverviewV3() string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaWorldsOverviewV3", jsonData)
 }

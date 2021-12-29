@@ -1,17 +1,16 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaCreaturesOverviewV3 func
-func TibiaCreaturesOverviewV3() string {
+func TibiaCreaturesOverviewV3(c *gin.Context) {
 
 	// Child of Creatures (used for list of creatures and boosted section)
 	type Creature struct {
@@ -122,9 +121,6 @@ func TibiaCreaturesOverviewV3() string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaCreaturesOverviewV3", jsonData)
 }

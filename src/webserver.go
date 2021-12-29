@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"html"
 	"log"
+	"net/http"
 	"net/url"
 	"os"
 	"regexp"
@@ -84,126 +86,36 @@ func main() {
 	// TibiaData API version 3
 	v3 := router.Group("/v3")
 	{
-		// TibiaCharactersCharacterV3
-		v3.GET("/characters/character/:character", func(c *gin.Context) {
-			character := c.Param("character")
-			result := TibiaCharactersCharacterV3(character)
+		// Tibia characters
+		v3.GET("/characters/character/:character", TibiaCharactersCharacterV3)
 
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
+		// Tibia creatures
+		v3.GET("/creatures", TibiaCreaturesOverviewV3)
+		v3.GET("/creatures/creature/:race", TibiaCreaturesCreatureV3)
 
-		// TibiaCreaturesOverviewV3
-		v3.GET("/creatures", func(c *gin.Context) {
-			result := TibiaCreaturesOverviewV3()
+		// Tibia fansites
+		v3.GET("/fansites", TibiaFansitesV3)
 
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaCreaturesCreatureV3
-		v3.GET("/creatures/creature/:creature", func(c *gin.Context) {
-			creature := c.Param("creature")
-			result := TibiaCreaturesCreatureV3(creature)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaFansitesV3
-		v3.GET("/fansites", func(c *gin.Context) {
-			result := TibiaFansitesV3()
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaHighscoresV3 (when not selecting category and vocation) (should maybe use redirect to full search?!)
+		// Tibia highscores
 		v3.GET("/highscores/world/:world", func(c *gin.Context) {
-			world := c.Param("world")
-			category := "experience"
-			vocation := TibiadataDefaultVoc
-			result := TibiaHighscoresV3(world, category, vocation)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
+			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/experience/"+TibiadataDefaultVoc)
 		})
-
-		// TibiaHighscoresV3 (when not selecting vocation) (should maybe use redirect to full search?!)
 		v3.GET("/highscores/world/:world/:category", func(c *gin.Context) {
-			world := c.Param("world")
-			category := c.Param("category")
-			vocation := TibiadataDefaultVoc
-			result := TibiaHighscoresV3(world, category, vocation)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
+			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/"+c.Param("category")+"/"+TibiadataDefaultVoc)
 		})
+		v3.GET("/highscores/world/:world/:category/:vocation", TibiaHighscoresV3)
 
-		// TibiaHighscoresV3 (when selecting including vocation)
-		v3.GET("/highscores/world/:world/:category/:vocation", func(c *gin.Context) {
-			world := c.Param("world")
-			category := c.Param("category")
-			vocation := c.Param("vocation")
-			result := TibiaHighscoresV3(world, category, vocation)
+		// Tibia killstatistics
+		v3.GET("/killstatistics/world/:world", TibiaKillstatisticsV3)
 
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
+		// Tibia spells
+		v3.GET("/spells", TibiaSpellsOverviewV3)
+		v3.GET("/spells/spell/:spell", TibiaSpellsSpellV3)
+		v3.GET("/spells/vocation/:vocation", TibiaSpellsOverviewV3)
 
-
-		// TibiaKillstatisticsV3
-		v3.GET("/killstatistics/world/:world", func(c *gin.Context) {
-			world := c.Param("world")
-			result := TibiaKillstatisticsV3(world)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaSpellsOverviewV3 (with filtered as all)
-		v3.GET("/spells", func(c *gin.Context) {
-			vocation := TibiadataDefaultVoc
-			result := TibiaSpellsOverviewV3(vocation)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaSpellsSpellV3
-		v3.GET("/spells/spell/:spell", func(c *gin.Context) {
-			spell := c.Param("spell")
-			result := TibiaSpellsSpellV3(spell)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaSpellsOverviewV3 (with vocation filter)
-		v3.GET("/spells/vocation/:vocation", func(c *gin.Context) {
-			vocation := c.Param("vocation")
-			result := TibiaSpellsOverviewV3(vocation)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaWorldsOverviewV3
-		v3.GET("/worlds", func(c *gin.Context) {
-			result := TibiaWorldsOverviewV3()
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaWorldsWorldV3
-		v3.GET("/worlds/world/:world", func(c *gin.Context) {
-			world := c.Param("world")
-			result := TibiaWorldsWorldV3(world)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
+		// Tibia worlds
+		v3.GET("/worlds", TibiaWorldsOverviewV3)
+		v3.GET("/worlds/world/:world", TibiaWorldsWorldV3)
 	}
 
 	// container version details endpoint
@@ -218,6 +130,36 @@ func main() {
 
 	// Start the router
 	router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+}
+
+/*
+// TibiaDataAPIHandleErrorResponse func - handling of responses..
+func TibiaDataAPIHandleErrorResponse(c *gin.Context, s1 string, s2 string, s3 string) {
+	// return error response
+	log.Println("[error] " + s1 + " - (" + c.Request.RequestURI + "). " + s2 + "; " + s3)
+	c.JSON(http.StatusOK, gin.H{"error": s2})
+}
+
+// TibiaDataAPIHandleOtherResponse func - handling of responses..
+func TibiaDataAPIHandleOtherResponse(c *gin.Context, httpCode int, s string, j interface{}) {
+	// return successful response (with specific status code)
+	log.Println("[info] " + s + " - (" + c.Request.RequestURI + ") executed successfully.")
+	c.JSON(httpCode, j)
+}
+*/
+
+// TibiaDataAPIHandleSuccessResponse func - handling of responses..
+func TibiaDataAPIHandleSuccessResponse(c *gin.Context, s string, j interface{}) {
+	// print to log about request
+	if gin.IsDebugging() {
+		log.Println("[debug] " + s + " - (" + c.Request.RequestURI + ") returned data:")
+		js, _ := json.Marshal(j)
+		log.Printf("[debug] %s\n", js)
+	}
+
+	// return successful response
+	log.Println("[info] " + s + " - (" + c.Request.RequestURI + ") executed successfully.")
+	c.JSON(http.StatusOK, j)
 }
 
 // TibiadataUserAgentGenerator func - creates User-Agent for requests

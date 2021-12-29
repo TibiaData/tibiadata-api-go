@@ -1,17 +1,22 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaSpellsOverviewV3 func
-func TibiaSpellsOverviewV3(vocation string) string {
+func TibiaSpellsOverviewV3(c *gin.Context) {
+
+	// getting params from URL
+	vocation := c.Param("vocation")
+	if vocation == "" {
+		vocation = TibiadataDefaultVoc
+	}
 
 	// Child of Spells
 	type Spell struct {
@@ -155,9 +160,6 @@ func TibiaSpellsOverviewV3(vocation string) string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaSpellsOverviewV3", jsonData)
 }

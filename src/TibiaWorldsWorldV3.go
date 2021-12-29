@@ -1,17 +1,19 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaWorldsWorldV3 func
-func TibiaWorldsWorldV3(world string) string {
+func TibiaWorldsWorldV3(c *gin.Context) {
+
+	// getting params from URL
+	world := c.Param("world")
 
 	// Child of World
 	type OnlinePlayers struct {
@@ -220,9 +222,6 @@ func TibiaWorldsWorldV3(world string) string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaWorldsWorldV3", jsonData)
 }

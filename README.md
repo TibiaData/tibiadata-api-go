@@ -1,5 +1,6 @@
 # TibiaData API in Golang
 
+[![GitHub CI](https://github.com/TibiaData/tibiadata-api-go/workflows/build/badge.svg?branch=main)](https://github.com/TibiaData/tibiadata-api-go/actions?query=workflow%3Abuild)
 [![GitHub go.mod version](https://img.shields.io/github/go-mod/go-version/tibiadata/tibiadata-api-go)](https://github.com/tibiadata/tibiadata-api-go/blob/main/go.mod)
 [![Docker version](https://img.shields.io/docker/v/tibiadata/tibiadata-api-go/latest)](https://hub.docker.com/r/tibiadata/tibiadata-api-go)
 [![Docker size](https://img.shields.io/docker/image-size/tibiadata/tibiadata-api-go/latest)](https://hub.docker.com/r/tibiadata/tibiadata-api-go)
@@ -12,6 +13,7 @@ Current status of v3 is in beta and information like documentation can be found 
 ### Table of Contents
 
 - [How to use](#how-to-use)
+  - [Docker](#docker)
   - [Docker-compose](#docker-compose)
   - [Local development](#local-development)
   - [Environment variables](#environment-variables)
@@ -25,6 +27,20 @@ Current status of v3 is in beta and information like documentation can be found 
 You can either use it in a Docker container or go download the code and deploy it yourself on any server.
 
 Keep in mind that there are restrictions on tibia.com that might impact the usage of the application being hosted yourself.
+
+### Docker
+
+Our images are available on both [GitHub Container Registry](https://github.com/TibiaData/tibiadata-api-go/pkgs/container/tibiadata-api-go) and [Docker Hub](https://hub.docker.com/r/tibiadata/tibiadata-api-go).
+
+This is how to pull and run the _latest_ release of TibiaData from [GHCR](https://github.com/TibiaData/tibiadata-api-go/pkgs/container/tibiadata-api-go):
+
+```console
+docker pull ghcr.io/tibiadata/tibiadata-api-go:latest
+docker run -p 127.0.0.1:80:8080/tcp --rm -it ghcr.io/tibiadata/tibiadata-api-go:latest
+```
+You can also use [Docker Hub](https://hub.docker.com/r/tibiadata/tibiadata-api-go) to pull your images from.
+
+If you want to run the latest code you can switch from _latest_ to _main_.
 
 ### Docker-compose
 

@@ -82,7 +82,7 @@ _Information will be added at a later stage._
 
 You should consider to add a layer in front of this application, so you can do caching of endpoints, access controll or what ever your needs are.
 
-We do so at least by using [Kong API Gateway](https://github.com/Kong/kong), which solves features like caching, rate-limiting, authentication and more.
+We do so at least by using [Kong](https://github.com/Kong/kong) API Gateway, which solves features like caching, rate-limiting, authentication and more.
 
 ## API documentation
 
@@ -117,5 +117,5 @@ Tibia is a registered trademark of [CipSoft GmbH](https://www.cipsoft.com/en/). 
 
 ## Credits
 
-- Authors: [Tobias Lindberg](https://github.com/tobiasehlert) – [List of contributors](https://github.com/tibiadata/tibiadata-api-go/graphs/contributors)
+- Authors: [Tobias Lindberg](https://github.com/tobiasehlert) – [List of contributors](https://github.com/TibiaData/tibiadata-api-go/graphs/contributors)
 - Distributed under [MIT License](LICENSE)

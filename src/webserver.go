@@ -204,6 +204,15 @@ func main() {
 			c.Header("Content-Type", "application/json; charset=UTF-8")
 			c.String(200, result)
 		})
+
+		// TibiaBazaarAuctionV3
+        v3.GET("/charbazaar/auction/:id", func(c *gin.Context) {
+            id := c.Param("id")
+            result := TibiaCharbazaarAuctionV3(id)
+
+            c.Header("Content-Type", "application/json; charset=UTF-8")
+            c.String(200, result)
+        })
 	}
 
 	// container version details endpoint

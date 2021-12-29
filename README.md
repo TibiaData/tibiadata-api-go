@@ -17,6 +17,7 @@ Current status of v3 is in beta and information like documentation can be found 
   - [Docker-compose](#docker-compose)
   - [Local development](#local-development)
   - [Environment variables](#environment-variables)
+  - [Deployment note](#deployment-note)
 - [API documentation](#api-documentation)
   - [Available endpoints](#available-endpoints)
 - [General information](#general-information)
@@ -44,7 +45,20 @@ If you want to run the latest code you can switch from _latest_ to _main_.
 
 ### Docker-compose
 
-_Information will be added at a later stage._
+This is a simple example on how you can get up and running with TibiaData in docker-compose, which will be running on port 8080 and be exposed locally.
+
+```yaml
+version: "3"
+
+services:
+  tibiadata:
+    image: ghcr.io/tibiadata/tibiadata-api-go:latest
+    restart: always
+    environment:
+      - TIBIADATA_UA_HOSTNAME=tibiadata.example.com
+    ports:
+      - 8080:8080
+```
 
 ### Local development
 
@@ -63,6 +77,12 @@ docker run -p 127.0.0.1:80:8080/tcp --rm -it tibiadata
 ### Environment variables
 
 _Information will be added at a later stage._
+
+### Deployment note
+
+You should consider to add a layer in front of this application, so you can do caching of endpoints, access controll or what ever your needs are.
+
+We do so at least by using [Kong](https://github.com/Kong/kong) API Gateway, which solves features like caching, rate-limiting, authentication and more.
 
 ## API documentation
 
@@ -93,9 +113,9 @@ Those are the current existing endpoints.
 
 ## General information
 
-Tibia is a registered trademark of CipSoft GmbH. Tibia and all products related to Tibia are copyright by CipSoft GmbH.
+Tibia is a registered trademark of [CipSoft GmbH](https://www.cipsoft.com/en/). Tibia and all products related to Tibia are copyright by [CipSoft GmbH](https://www.cipsoft.com/en/).
 
 ## Credits
 
-- Authors: Tobias Lindberg – [List of contributors](https://github.com/tibiadata/tibiadata-api-go/graphs/contributors)
-- Distributed under MIT License
+- Authors: [Tobias Lindberg](https://github.com/tobiasehlert) – [List of contributors](https://github.com/TibiaData/tibiadata-api-go/graphs/contributors)
+- Distributed under [MIT License](LICENSE)

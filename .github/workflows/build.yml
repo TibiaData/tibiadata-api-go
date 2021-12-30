@@ -53,6 +53,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Configure build information
+        id: build_information
+        run: |
+          if  [[ ${{ github.ref_type }} == "tag" ]]; then
+            echo "::set-output name=release_name::$( echo ${{ github.ref_name }} )"
+          else
+            echo "::set-output name=release_name::$( echo unknown )"
+          fi
+
       - name: Build and push
         uses: docker/build-push-action@v2.7.0
         with:
@@ -66,5 +75,5 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           build-args: |
             TibiadataBuildBuilder=github
-            TibiadataBuildRelease=${{ github.ref_name }}
+            TibiadataBuildRelease=${{ steps.build_information.outputs.release_name }}
             TibiadataBuildCommit=${{ github.sha }}

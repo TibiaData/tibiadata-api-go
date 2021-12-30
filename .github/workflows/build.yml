@@ -66,5 +66,5 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           build-args: |
             TibiadataBuildBuilder=github
-            TibiadataBuildRelease=${{ github.event.release.tag_name }}
+            TibiadataBuildRelease=${{ github.ref_name }}
             TibiadataBuildCommit=${{ github.sha }}

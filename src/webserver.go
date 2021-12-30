@@ -41,12 +41,8 @@ type Information struct {
 }
 
 func main() {
-	// logging things on start of TibiaData
+	// logging start of TibiaData
 	log.Printf("[info] TibiaData API starting..")
-	log.Printf("[info] TibiaData API release: %s", TibiadataBuildRelease)
-	log.Printf("[info] TibiaData API build: %s", TibiadataBuildBuilder)
-	log.Printf("[info] TibiaData API commit: %s", TibiadataBuildCommit)
-	log.Printf("[info] TibiaData API edition: %s", TibiadataBuildEdition)
 
 	// setting application to ReleaseMode if DEBUG_MODE is false
 	if !getEnvAsBool("DEBUG_MODE", false) {
@@ -127,6 +123,12 @@ func main() {
 			"edition": TibiadataBuildEdition,
 		})
 	})
+
+	// logging build information
+	log.Printf("[info] TibiaData API release: %s", TibiadataBuildRelease)
+	log.Printf("[info] TibiaData API build: %s", TibiadataBuildBuilder)
+	log.Printf("[info] TibiaData API commit: %s", TibiadataBuildCommit)
+	log.Printf("[info] TibiaData API edition: %s", TibiadataBuildEdition)
 
 	// Start the router
 	router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")

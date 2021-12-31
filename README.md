@@ -41,7 +41,7 @@ docker run -p 127.0.0.1:80:8080/tcp --rm -it ghcr.io/tibiadata/tibiadata-api-go:
 ```
 You can also use [Docker Hub](https://hub.docker.com/r/tibiadata/tibiadata-api-go) to pull your images from.
 
-If you want to run the latest code you can switch from _latest_ to _main_.
+If you want to run the latest code you can switch from _latest_ to _edge_.
 
 ### Docker-compose
 

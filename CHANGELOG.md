@@ -8,7 +8,7 @@
 - Update README.md ([#3](https://github.com/TibiaData/tibiadata-api-go/pull/3), [#5](https://github.com/TibiaData/tibiadata-api-go/pull/5) by [tobiasehlert](https://github.com/tobiasehlert))
 - Implementation of response handler ([#4](https://github.com/TibiaData/tibiadata-api-go/pull/4) by [tobiasehlert](https://github.com/tobiasehlert))
 - Changing building and releasing ([#6](https://github.com/TibiaData/tibiadata-api-go/pull/6), [#7](https://github.com/TibiaData/tibiadata-api-go/pull/7) by [tobiasehlert](https://github.com/tobiasehlert))
-- Shrink of TibiaFansitesV3 ([#8](https://github.com/TibiaData/tibiadata-api-go/pull/8) by [tobiasehlert](https://github.com/tobiasehlert)) in 
+- Shrink of TibiaFansitesV3 ([#8](https://github.com/TibiaData/tibiadata-api-go/pull/8) by [tobiasehlert](https://github.com/tobiasehlert))
 - Updating build workflow with enhancements ([#11](https://github.com/TibiaData/tibiadata-api-go/pull/11) by [tobiasehlert](https://github.com/tobiasehlert))
 
 

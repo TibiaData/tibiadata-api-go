@@ -28,6 +28,9 @@ var TibiadataDefaultVoc string = "all"
 var TibiadataAPIversion int = 3
 var TibiadataDebug bool
 
+// Tibiadata app user-agent
+var TibiadataUserAgent string
+
 // Tibiadata app details set to release/build on GitHub
 var TibiadataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
 var TibiadataBuildBuilder = "manual"      // will be set by GitHub Actions
@@ -53,21 +56,28 @@ func main() {
 	log.Printf("[info] TibiaData API commit: %s", TibiadataBuildCommit)
 	log.Printf("[info] TibiaData API edition: %s", TibiadataBuildEdition)
 
-	// setting application to ReleaseMode if DEBUG_MODE is false
-	if !getEnvAsBool("DEBUG_MODE", false) {
-		// setting GIN_MODE to ReleaseMode
-		gin.SetMode(gin.ReleaseMode)
-		log.Printf("[info] TibiaData API app-mode: release")
-	} else {
-		// setting GIN_MODE to DebugMode
+	// setting gin-application to certain mode if GIN_MODE is set to release, test or debug (default is release)
+	switch ginMode := getEnv("GIN_MODE", "release"); ginMode {
+	case "test":
+		gin.SetMode(gin.TestMode)
+	case "debug":
 		gin.SetMode(gin.DebugMode)
-		log.Printf("[info] TibiaData API app-mode: debug")
+	default:
+		gin.SetMode(gin.ReleaseMode)
+	}
+	// logging the gin.mode
+	log.Printf("[info] TibiaData API gin-mode: %s", gin.Mode())
 
+	// setting tibiadata-application to log much less if DEBUG_MODE is false (default is false)
+	if !getEnvAsBool("DEBUG_MODE", false) {
+		log.Printf("[info] TibiaData API debug-mode: disabled")
+	} else {
 		// setting debug to true for more logging
 		TibiadataDebug = true
+		log.Printf("[info] TibiaData API debug-mode: enabled")
 
 		// logging user-agent string
-		log.Printf("[debug] TIbiaData API User-Agent: %s", TibiadataUserAgentGenerator(TibiadataAPIversion))
+		log.Printf("[debug] TIbiaData API User-Agent: %s", TibiadataUserAgent)
 	}
 
 	router := gin.Default()
@@ -143,20 +153,29 @@ func TibiaDataInitializer() {
 	if isEnvExist("TIBIADATA_EDITION") {
 		TibiadataBuildEdition = getEnv("TIBIADATA_EDITION", "open-source")
 	}
+
+	// generating TibiadataUserAgent with TibiadataUserAgentGenerator function
+	TibiadataUserAgent = TibiadataUserAgentGenerator(TibiadataAPIversion)
 }
 
 /*
 // TibiaDataAPIHandleErrorResponse func - handling of responses..
 func TibiaDataAPIHandleErrorResponse(c *gin.Context, s1 string, s2 string, s3 string) {
+	if TibiadataDebug {
+		log.Println("[error] " + s1 + " - (" + c.Request.RequestURI + "). " + s2 + "; " + s3)
+	}
+
 	// return error response
-	log.Println("[error] " + s1 + " - (" + c.Request.RequestURI + "). " + s2 + "; " + s3)
 	c.JSON(http.StatusOK, gin.H{"error": s2})
 }
 
 // TibiaDataAPIHandleOtherResponse func - handling of responses..
 func TibiaDataAPIHandleOtherResponse(c *gin.Context, httpCode int, s string, j interface{}) {
+	if TibiadataDebug {
+		log.Println("[info] " + s + " - (" + c.Request.RequestURI + ") executed successfully.")
+	}
+
 	// return successful response (with specific status code)
-	log.Println("[info] " + s + " - (" + c.Request.RequestURI + ") executed successfully.")
 	c.JSON(httpCode, j)
 }
 */
@@ -170,8 +189,11 @@ func TibiaDataAPIHandleSuccessResponse(c *gin.Context, s string, j interface{}) 
 		log.Printf("[debug] %s\n", js)
 	}
 
+	if TibiadataDebug {
+		log.Println("[info] " + s + " - (" + c.Request.RequestURI + ") executed successfully.")
+	}
+
 	// return successful response
-	log.Println("[info] " + s + " - (" + c.Request.RequestURI + ") executed successfully.")
 	c.JSON(http.StatusOK, j)
 }
 
@@ -218,7 +240,7 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 	// Set headers for all requests
 	client.SetHeaders(map[string]string{
 		"Content-Type": "application/json",
-		"User-Agent":   TibiadataUserAgentGenerator(TibiadataAPIversion),
+		"User-Agent":   TibiadataUserAgent,
 	})
 
 	// Enabling Content length value for all request

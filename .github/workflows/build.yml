@@ -23,6 +23,10 @@ jobs:
           images: |
             tibiadata/tibiadata-api-go
             ghcr.io/tibiadata/tibiadata-api-go
+          tags: |
+            type=edge
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0

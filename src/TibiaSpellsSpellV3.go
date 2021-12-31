@@ -239,7 +239,6 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 			// City
 			if WorldsInformationLeftColumn == "City" {
 				WorldsInformationRightColumn = TibiaDataSanitizeString(WorldsInformationRightColumn)
-
 				SpellsInfoCity = strings.Split(WorldsInformationRightColumn, ", ")
 			}
 

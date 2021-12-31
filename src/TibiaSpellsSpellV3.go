@@ -141,6 +141,8 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 
 			// Formula
 			if WorldsInformationLeftColumn == "Formula" {
+				WorldsInformationRightColumn = strings.ReplaceAll(WorldsInformationRightColumn, "&#34;", "'")
+
 				SpellsInfoFormula = WorldsInformationRightColumn
 			}
 

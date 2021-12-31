@@ -141,9 +141,7 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 
 			// Formula
 			if WorldsInformationLeftColumn == "Formula" {
-				WorldsInformationRightColumn = strings.ReplaceAll(WorldsInformationRightColumn, "&#34;", "'")
-
-				SpellsInfoFormula = WorldsInformationRightColumn
+				SpellsInfoFormula = TibiaDataSanitizeString(WorldsInformationRightColumn)
 			}
 
 			// Vocation
@@ -240,6 +238,8 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 
 			// City
 			if WorldsInformationLeftColumn == "City" {
+				WorldsInformationRightColumn = TibiaDataSanitizeString(WorldsInformationRightColumn)
+
 				SpellsInfoCity = strings.Split(WorldsInformationRightColumn, ", ")
 			}
 

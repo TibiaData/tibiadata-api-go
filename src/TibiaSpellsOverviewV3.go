@@ -127,7 +127,7 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 			SpellsData = append(SpellsData, Spell{
 				Name:         subma1[0][2],
 				Spell:        subma1[0][1],
-				Formula:      subma1[0][3],
+				Formula:      TibiaDataSanitizeString(subma1[0][3]),
 				Level:        TibiadataStringToIntegerV3(subma1[0][6]),
 				Mana:         TibiadataStringToIntegerV3(subma1[0][7]),
 				Price:        TibiadataStringToIntegerV3(subma1[0][8]),

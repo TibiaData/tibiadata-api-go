@@ -457,6 +457,11 @@ func isEnvExist(key string) bool {
 	return false
 }
 
+func TibiaDataSanitizeString(data string) string {
+	data = html.UnescapeString(data)
+	return strings.ReplaceAll(data, "\"", "'")
+}
+
 // getEnv func - read an environment or return a default value
 func getEnv(key string, defaultVal string) string {
 	if value, exists := os.LookupEnv(key); exists {

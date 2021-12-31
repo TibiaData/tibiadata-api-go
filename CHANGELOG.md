@@ -4,5 +4,4 @@
 
 Initial commit
 
-[Unreleased]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/tibiadata/tibiadata-api-go/releases/tag/v0.1.0
+[0.1.0]: https://github.com/tibiadata/tibiadata-api-go/compare/30f328f...v0.1.0

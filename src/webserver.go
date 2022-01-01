@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"html"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -267,11 +269,14 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 		}
 	}
 
-	// Convert string to io.Reader
-	res_io := strings.NewReader(res.String())
+	// Convert body to io.Reader
+	res_io := bytes.NewReader(res.Body())
+
+	// wrap reader in a converting reader from ISO 8859-1 to UTF-8
+	res_io2 := TibiaDataConvertEncodingtoUTF8(res_io)
 
 	// Load the HTML document
-	doc, err := goquery.NewDocumentFromReader(res_io)
+	doc, err := goquery.NewDocumentFromReader(res_io2)
 	if err != nil {
 		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) error: %s", TibiaURL, err)
 	}
@@ -282,20 +287,13 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 		log.Fatal(err)
 	}
 
-	// convert string from eg "&nbsp;" to " "
-	data = html.UnescapeString(data)
-	data = strings.ReplaceAll(data, "&nbsp;", " ")
-
-	// convert string from ISO 8859-1 to UTF-8
-	data, _ = TibiaDataConvertEncodingtoUTF8(data)
-
 	// Return of extracted html to functions..
-	return string(data)
+	return data
 }
 
 // TibiadataHTMLRemoveLinebreaksV3 func
 func TibiadataHTMLRemoveLinebreaksV3(data string) string {
-	return string(strings.ReplaceAll(data, "\n", ""))
+	return strings.ReplaceAll(data, "\n", "")
 }
 
 // TibiadataRemoveURLsV3 func
@@ -315,24 +313,24 @@ func TibiadataRemoveURLsV3(data string) string {
 	} else {
 		returnData = ""
 	}
-	return string(returnData)
+	return returnData
 }
 
 // TibiadataStringWorldFormatToTitleV3 func
 func TibiadataStringWorldFormatToTitleV3(world string) string {
-	return string(strings.Title(strings.ToLower(world)))
+	return strings.Title(strings.ToLower(world))
 }
 
 // TibiadataUnescapeStringV3 func
 func TibiadataUnescapeStringV3(data string) string {
 	//	data, _ = TibiaDataConvertEncodingtoUTF8(data)
-	return string(html.UnescapeString(data))
+	return html.UnescapeString(data)
 }
 
 // TibiadataQueryEscapeStringV3 func
 func TibiadataQueryEscapeStringV3(data string) string {
 	data, _ = TibiaDataConvertEncodingtoISO88591(data)
-	return string(url.QueryEscape(data))
+	return url.QueryEscape(data)
 }
 
 // TibiadataDatetimeV3 func
@@ -416,7 +414,7 @@ func TibiadataStringToIntegerV3(data string) int {
 	returnData, _ := strconv.Atoi(processedString)
 
 	// Return of formatted date and time string to functions..
-	return int(returnData)
+	return returnData
 }
 
 // match html tag and replace it with ""
@@ -444,9 +442,8 @@ func TibiaDataConvertEncodingtoISO88591(data string) (string, error) {
 }
 
 // TibiaDataConvertEncodingtoUTF8 func - convert string from latin1 (ISO 8859-1) to UTF-8
-func TibiaDataConvertEncodingtoUTF8(data string) (string, error) {
-	data, err := charmap.ISO8859_1.NewDecoder().String(data)
-	return data, err
+func TibiaDataConvertEncodingtoUTF8(data io.Reader) io.Reader {
+	return charmap.ISO8859_1.NewDecoder().Reader(data)
 }
 
 // isEnvExist func - check if environment var is set

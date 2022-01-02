@@ -216,11 +216,8 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 				regex1 := regexp.MustCompile(`<td.*class=.[a-zA-Z0-9_.-]+..*>(.*):<\/.*td><td>(.*)<\/td>`)
 				subma1 := regex1.FindAllStringSubmatch(CharacterTrHTML, -1)
 
-				var AccountStatusString = string([]byte{65, 99, 99, 111, 117, 110, 116, 194, 160, 83, 116, 97, 116, 117, 115})
-				var GuildMembershipString = string([]byte{71, 117, 105, 108, 100, 194, 160, 77, 101, 109, 98, 101, 114, 115, 104, 105, 112})
-
 				if len(subma1) > 0 {
-					switch subma1[0][1] {
+					switch TibiaDataSanitizeNbspSpaceString(subma1[0][1]) {
 					case "Name":
 						Tmp := strings.Split(subma1[0][2], "<")
 						CharacterInformationData.Name = strings.TrimSpace(Tmp[0])
@@ -254,7 +251,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 						CharacterInformationData.FormerWorlds = strings.Split(subma1[0][2], ", ")
 					case "Residence":
 						CharacterInformationData.Residence = subma1[0][2]
-					case AccountStatusString:
+					case "Account Status":
 						CharacterInformationData.AccountStatus = subma1[0][2]
 					case "Married To":
 						CharacterInformationData.MarriedTo = TibiadataRemoveURLsV3(subma1[0][2])
@@ -267,7 +264,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 							Paid:    TibiadataDateV3(subma1h[0][4]),
 							HouseID: TibiadataStringToIntegerV3(subma1h[0][1]),
 						})
-					case GuildMembershipString:
+					case "Guild Membership":
 						Tmp := strings.Split(subma1[0][2], " of the <a href=")
 						CharacterInformationData.Guild.Rank = Tmp[0]
 						CharacterInformationData.Guild.GuildName = TibiadataRemoveURLsV3("<a href=" + Tmp[1])

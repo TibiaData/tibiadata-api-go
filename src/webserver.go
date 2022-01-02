@@ -450,6 +450,11 @@ func TibiaDataSanitizeDoubleQuoteString(data string) string {
 	return strings.ReplaceAll(data, "\"", "'")
 }
 
+// TibiaDataSanitizeNbspSpaceString func - replaces weird \u00A0 string to real space
+func TibiaDataSanitizeNbspSpaceString(data string) string {
+	return strings.ReplaceAll(data, "\u00A0", " ")
+}
+
 // getEnv func - read an environment or return a default value
 func getEnv(key string, defaultVal string) string {
 	if value, exists := os.LookupEnv(key); exists {

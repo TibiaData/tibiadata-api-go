@@ -114,10 +114,11 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 		if strings.Contains(subma1[0][4], "It takes ") && strings.Contains(subma1[0][4], " mana to ") {
 			regex24 := regexp.MustCompile(`.*It takes (.*) mana to (.*)`)
 			subma24 := regex24.FindAllStringSubmatch(subma1[0][4], -1)
-			if strings.Contains(subma24[0][2], "convince these creatures but they cannot be") {
+			subma2402 := subma24[0][2]
+			if strings.Contains(subma2402, "convince these creatures but they cannot be") {
 				CreatureBeConvinced = true
 				CreatureConvincedMana = TibiadataStringToIntegerV3(subma24[0][1])
-			} else if strings.Contains(subma24[0][2], "summon or convince these creatures") {
+			} else if strings.Contains(subma2402, "summon or convince these creatures") {
 				CreatureBeSummoned = true
 				CreatureSummonedMana = TibiadataStringToIntegerV3(subma24[0][1])
 				CreatureBeConvinced = true

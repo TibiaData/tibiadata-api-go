@@ -98,11 +98,12 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 
 			// Setting the players_online & overall players_online
 			WorldsAllOnlinePlayers += WorldsPlayersOnline
-			if WorldsPlayersOnline > 0 {
+			switch {
+			case WorldsPlayersOnline > 0:
 				WorldsStatus = "online"
-			} else if subma2[0][2] == "-" {
+			case subma2[0][2] == "-":
 				WorldsStatus = "unknown"
-			} else {
+			default:
 				WorldsStatus = "offline"
 			}
 
@@ -146,9 +147,10 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 			}
 
 			// Setting the tournament_world_type param
-			if WorldsWorldCategory == "regular" {
+			switch WorldsWorldCategory {
+			case "regular":
 				WorldsTournamentWorldType = ""
-			} else if WorldsWorldCategory == "tournament" {
+			case "tournament":
 				WorldsGameWorldType = "tournament"
 				WorldsTournamentWorldType = "regular"
 				if strings.Contains(WorldsAdditionalInfo, "restricted") {
@@ -172,12 +174,12 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 			}
 
 			// Adding OneWorld to correct category
-			if WorldsWorldCategory == "regular" {
+			switch WorldsWorldCategory {
+			case "regular":
 				RegularWorldsData = append(RegularWorldsData, OneWorld)
-			} else if WorldsWorldCategory == "tournament" {
+			case "tournament":
 				TournamentWorldsData = append(TournamentWorldsData, OneWorld)
 			}
-
 		}
 	})
 

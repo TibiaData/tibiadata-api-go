@@ -164,32 +164,32 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 
 	// Running query on every .TableContainer
 	ReaderHTML.Find(".TableContainer").Each(func(index int, s *goquery.Selection) {
-
 		// Storing HTML into CharacterDivHTML
 		CharacterDivHTML, err := s.Html()
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		if strings.Contains(CharacterDivHTML, "Text\">Character Information") {
+		switch {
+		case strings.Contains(CharacterDivHTML, "Text\">Character Information"):
 			// Character Information
 			CharacterSection = "characterinformation"
-		} else if strings.Contains(CharacterDivHTML, "Text\">Account Badges") {
+		case strings.Contains(CharacterDivHTML, "Text\">Account Badges"):
 			// Account Badges
 			CharacterSection = "accountbadges"
-		} else if strings.Contains(CharacterDivHTML, "Text\">Account Achievements") {
+		case strings.Contains(CharacterDivHTML, "Text\">Account Achievements"):
 			// Account Achievements
 			CharacterSection = "accountachievements"
-		} else if strings.Contains(CharacterDivHTML, "Text\">Character Deaths") {
+		case strings.Contains(CharacterDivHTML, "Text\">Character Deaths"):
 			// Character Deaths
 			CharacterSection = "characterdeaths"
-		} else if strings.Contains(CharacterDivHTML, "Text\">Account Information") {
+		case strings.Contains(CharacterDivHTML, "Text\">Account Information"):
 			// Account Information
 			CharacterSection = "accountinformation"
-		} else if strings.Contains(CharacterDivHTML, "Text\">Search Character") {
+		case strings.Contains(CharacterDivHTML, "Text\">Search Character"):
 			// Search Character
 			CharacterSection = "searchcharacter"
-		} else if strings.Contains(CharacterDivHTML, "Text\">Characters") {
+		case strings.Contains(CharacterDivHTML, "Text\">Characters"):
 			// Characters
 			CharacterSection = "characters"
 		}
@@ -197,11 +197,10 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 		// parsing CharacterDivHTML to goquery format
 		CharacterDivQuery, _ := goquery.NewDocumentFromReader(strings.NewReader(CharacterDivHTML))
 
-		if CharacterSection == "characterinformation" || CharacterSection == "accountinformation" {
-
+		switch CharacterSection {
+		case "characterinformation", "accountinformation":
 			// Running query over each tr in character content container
 			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
-
 				// Storing HTML into CharacterTrHTML
 				CharacterTrHTML, err := s.Html()
 				if err != nil {
@@ -218,8 +217,8 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 				subma1 := regex1.FindAllStringSubmatch(CharacterTrHTML, -1)
 
 				if len(subma1) > 0 {
-
-					if subma1[0][1] == "Name" {
+					switch TibiaDataSanitizeNbspSpaceString(subma1[0][1]) {
+					case "Name":
 						Tmp := strings.Split(subma1[0][2], "<")
 						CharacterInformationData.Name = strings.TrimSpace(Tmp[0])
 						if strings.Contains(Tmp[0], ", will be deleted at") {
@@ -231,33 +230,32 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 							CharacterInformationData.Traded = true
 							CharacterInformationData.Name = strings.Replace(CharacterInformationData.Name, localTradedString, "", -1)
 						}
-					} else if subma1[0][1] == "Former Names" {
+					case "Former Names":
 						CharacterInformationData.FormerNames = strings.Split(subma1[0][2], ", ")
-					} else if subma1[0][1] == "Sex" {
+					case "Sex":
 						CharacterInformationData.Sex = subma1[0][2]
-					} else if subma1[0][1] == "Title" {
+					case "Title":
 						regex1t := regexp.MustCompile(`(.*) \(([0-9]+).*`)
 						subma1t := regex1t.FindAllStringSubmatch(subma1[0][2], -1)
 						CharacterInformationData.Title = subma1t[0][1]
 						CharacterInformationData.UnlockedTitles = TibiadataStringToIntegerV3(subma1t[0][2])
-					} else if subma1[0][1] == "Vocation" {
+					case "Vocation":
 						CharacterInformationData.Vocation = subma1[0][2]
-					} else if subma1[0][1] == "Level" {
+					case "Level":
 						CharacterInformationData.Level = TibiadataStringToIntegerV3(subma1[0][2])
-					} else if subma1[0][1] == "Achievement Points" {
+					case "Achievement Points":
 						CharacterInformationData.AchievementPoints = TibiadataStringToIntegerV3(subma1[0][2])
-					} else if subma1[0][1] == "World" {
+					case "World":
 						CharacterInformationData.World = subma1[0][2]
-					} else if subma1[0][1] == "Former World" {
+					case "Former World":
 						CharacterInformationData.FormerWorlds = strings.Split(subma1[0][2], ", ")
-					} else if subma1[0][1] == "Residence" {
+					case "Residence":
 						CharacterInformationData.Residence = subma1[0][2]
-					} else if strings.Contains(subma1[0][1], "Account") && strings.Contains(subma1[0][1], "Status") {
-						// } else if subma1[0][1] == "Account Status" {
+					case "Account Status":
 						CharacterInformationData.AccountStatus = subma1[0][2]
-					} else if subma1[0][1] == "Married To" {
+					case "Married To":
 						CharacterInformationData.MarriedTo = TibiadataRemoveURLsV3(subma1[0][2])
-					} else if subma1[0][1] == "House" {
+					case "House":
 						regex1h := regexp.MustCompile(`.*houseid=([0-9]+).*character=.*>(.*)</a> \((.*)\) is paid until (.*)`)
 						subma1h := regex1h.FindAllStringSubmatch(subma1[0][2], -1)
 						CharacterInformationData.Houses = append(CharacterInformationData.Houses, Houses{
@@ -266,36 +264,31 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 							Paid:    TibiadataDateV3(subma1h[0][4]),
 							HouseID: TibiadataStringToIntegerV3(subma1h[0][1]),
 						})
-					} else if strings.Contains(subma1[0][1], "Guild") && strings.Contains(subma1[0][1], "Membership") {
-						// } else if subma1[0][1] == "Guild Membership" {
+					case "Guild Membership":
 						Tmp := strings.Split(subma1[0][2], " of the <a href=")
 						CharacterInformationData.Guild.Rank = Tmp[0]
 						CharacterInformationData.Guild.GuildName = TibiadataRemoveURLsV3("<a href=" + Tmp[1])
-					} else if subma1[0][1] == "Last Login" {
+					case "Last Login":
 						if subma1[0][2] != "never logged in" {
 							CharacterInformationData.LastLogin = TibiadataDatetimeV3(subma1[0][2])
 						}
-					} else if subma1[0][1] == "Comment" {
+					case "Comment":
 						CharacterInformationData.Comment = strings.ReplaceAll(subma1[0][2], "<br/>", "\n")
-					} else if subma1[0][1] == "Loyalty Title" {
+					case "Loyalty Title":
 						AccountInformationData.LoyaltyTitle = subma1[0][2]
-					} else if subma1[0][1] == "Created" {
+					case "Created":
 						AccountInformationData.Created = TibiadataDatetimeV3(subma1[0][2])
-					} else if subma1[0][1] == "Position" {
+					case "Position":
 						TmpPosition := strings.Split(subma1[0][2], "<")
 						AccountInformationData.Position = strings.TrimSpace(TmpPosition[0])
-					} else {
+					default:
 						log.Println("LEFT OVER: `" + subma1[0][1] + "` = `" + subma1[0][2] + "`")
 					}
-
 				}
-
 			})
-
-		} else if CharacterSection == "accountbadges" {
+		case "accountbadges":
 			// Running query over each tr in list
 			CharacterDivQuery.Find(".TableContentContainer tr td").Each(func(index int, s *goquery.Selection) {
-
 				// Storing HTML into CharacterListHTML
 				CharacterListHTML, err := s.Html()
 				if err != nil {
@@ -315,11 +308,9 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 					Description: subma1[0][2],
 				})
 			})
-
-		} else if CharacterSection == "accountachievements" {
+		case "accountachievements":
 			// Running query over each tr in list
 			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
-
 				// Storing HTML into CharacterListHTML
 				CharacterListHTML, err := s.Html()
 				if err != nil {
@@ -349,11 +340,9 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 				}
 
 			})
-
-		} else if CharacterSection == "characterdeaths" {
+		case "characterdeaths":
 			// Running query over each tr in list
 			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
-
 				// Storing HTML into CharacterListHTML
 				CharacterListHTML, err := s.Html()
 				if err != nil {
@@ -439,15 +428,11 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 						Assists: DeathAssists,
 						Reason:  ReasonString,
 					})
-
 				}
-
 			})
-
-		} else if CharacterSection == "characters" {
+		case "characters":
 			// Running query over each tr in character list
 			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
-
 				// Storing HTML into CharacterListHTML
 				CharacterListHTML, err := s.Html()
 				if err != nil {
@@ -462,7 +447,6 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 				subma1 := regex1.FindAllStringSubmatch(CharacterListHTML, -1)
 
 				if len(subma1) > 0 {
-
 					TmpCharacterName := subma1[0][1]
 
 					var TmpTraded bool
@@ -501,10 +485,8 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 						Traded:  TmpTraded,
 					})
 				}
-
 			})
 		}
-
 	})
 
 	//

@@ -86,26 +86,28 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 
 		// check if regex return length is over 0 and the match of name is over 1
 		if len(subma1) > 0 {
-
 			// SpellGroup
 			GroupAttack = false
 			GroupHealing = false
 			GroupSupport = false
 
-			if subma1[0][4] == "Attack" {
+			switch subma1[0][4] {
+			case "Attack":
 				GroupAttack = true
-			} else if subma1[0][4] == "Healing" {
+			case "Healing":
 				GroupHealing = true
-			} else if subma1[0][4] == "Support" {
+			case "Support":
 				GroupSupport = true
 			}
 
 			// Type
 			TypeInstant = false
 			TypeRune = false
-			if subma1[0][5] == "Instant" {
+
+			switch subma1[0][5] {
+			case "Instant":
 				TypeInstant = true
-			} else if subma1[0][5] == "Rune" {
+			case "Rune":
 				TypeRune = true
 			}
 

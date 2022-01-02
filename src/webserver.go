@@ -85,7 +85,7 @@ func main() {
 	router := gin.Default()
 
 	// disable proxy feature of gin
-	router.SetTrustedProxies(nil)
+	_ = router.SetTrustedProxies(nil)
 
 	// Ping-endpoint
 	router.GET("/ping", func(c *gin.Context) {
@@ -146,7 +146,7 @@ func main() {
 	})
 
 	// Start the router
-	router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	_ = router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
 // TibiaDataInitializer func - init things at beginning

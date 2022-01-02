@@ -121,8 +121,7 @@ func TibiaHighscoresV3(c *gin.Context) {
 	// Creating empty HighscoreData var
 	var HighscoreData []Highscore
 	var HighscoreDataVocation, HighscoreDataWorld, HighscoreDataTitle string
-	var HighscoreDataRank, HighscoreDataLevel, HighscoreDataValue int
-	var HighscoreAge int = 0
+	var HighscoreDataRank, HighscoreDataLevel, HighscoreDataValue, HighscoreAge int
 
 	// getting age of data
 	regex1 := regexp.MustCompile(`.*<div class="Text">Highscores.*Last Update: ([0-9]+) minutes ago.*`)

@@ -320,9 +320,15 @@ func TibiadataUnescapeStringV3(data string) string {
 	return html.UnescapeString(data)
 }
 
-// TibiadataQueryEscapeStringV3 func
+// TibiadataQueryEscapeStringV3 func - encode string to be correct formatted
 func TibiadataQueryEscapeStringV3(data string) string {
+	// switching "+" to " "
+	data = strings.ReplaceAll(data, "+", " ")
+
+	// encoding string to latin-1
 	data, _ = TibiaDataConvertEncodingtoISO88591(data)
+
+	// returning with QueryEscape function
 	return url.QueryEscape(data)
 }
 

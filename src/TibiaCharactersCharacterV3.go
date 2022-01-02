@@ -150,9 +150,6 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 
 	var CharacterSection string
 
-	// Sanatizing some on the character..
-	character = strings.ReplaceAll(character, "+", " ")
-
 	// Getting data with TibiadataHTMLDataCollectorV3
 	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/community/?subtopic=characters&name=" + TibiadataQueryEscapeStringV3(character))
 

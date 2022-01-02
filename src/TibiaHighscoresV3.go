@@ -106,31 +106,8 @@ func TibiaHighscoresV3(c *gin.Context) {
 		category = "experience"
 	}
 
-	// Sanitize of vocation value and assigning correct vocationid for request
-	var vocationid string
-	vocationid = "0"
-	if len(vocation) > 0 {
-		if strings.EqualFold(vocation, "none") {
-			vocationid = "1"
-			vocation = "none"
-		} else if strings.EqualFold(vocation, "knight") || strings.EqualFold(vocation, "knights") {
-			vocationid = "2"
-			vocation = "knights"
-		} else if strings.EqualFold(vocation, "paladin") || strings.EqualFold(vocation, "paladins") {
-			vocationid = "3"
-			vocation = "paladins"
-		} else if strings.EqualFold(vocation, "sorcerer") || strings.EqualFold(vocation, "sorcerers") {
-			vocationid = "4"
-			vocation = "sorcerers"
-		} else if strings.EqualFold(vocation, "druid") || strings.EqualFold(vocation, "druids") {
-			vocationid = "5"
-			vocation = "druids"
-		} else {
-			vocation = "all"
-		}
-	} else {
-		vocation = "all"
-	}
+	// Sanitize of vocation input
+	vocationName, vocationid := TibiaDataVocationValidator(vocation)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/community/?subtopic=highscores&world=" + TibiadataQueryEscapeStringV3(world) + "&category=" + TibiadataQueryEscapeStringV3(categoryid) + "&profession=" + TibiadataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000")
@@ -244,7 +221,7 @@ func TibiaHighscoresV3(c *gin.Context) {
 		Highscores{
 			World:         strings.Title(strings.ToLower(world)),
 			Category:      category,
-			Vocation:      vocation,
+			Vocation:      vocationName,
 			HighscoreAge:  HighscoreAge,
 			HighscoreList: HighscoreData,
 		},

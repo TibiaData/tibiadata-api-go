@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.0] - 2022-01-02
+
+### Changed
+* Sanitize certain data ([#14](https://github.com/TibiaData/tibiadata-api-go/pull/14) by [darrentaytay](https://github.com/darrentaytay))
+* Removing some code smell from SonarCloud ([#10](https://github.com/TibiaData/tibiadata-api-go/pull/10) by [tobiasehlert](https://github.com/tobiasehlert))
+* Moving vocation logic to separate function ([#17](https://github.com/TibiaData/tibiadata-api-go/pull/17) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Fixed
+* Fix decoding issues and save some allocations ([#15](https://github.com/TibiaData/tibiadata-api-go/pull/15), [#16](https://github.com/TibiaData/tibiadata-api-go/pull/16) by [kamilon](https://github.com/kamilon), [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [0.1.1] - 2021-12-31
 
 ### Changed
@@ -16,5 +26,6 @@
 
 Initial commit
 
+[0.2.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/tibiadata/tibiadata-api-go/compare/30f328f...v0.1.0

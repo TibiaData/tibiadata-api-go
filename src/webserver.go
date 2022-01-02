@@ -266,7 +266,6 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 		}
 	}
 
-<<<<<<< HEAD
 	// Convert body to io.Reader
 	resIo := bytes.NewReader(res.Body())
 
@@ -275,13 +274,6 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 
 	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(resIo2)
-=======
-	// Convert string to io.Reader
-	resIo := strings.NewReader(res.String())
-
-	// Load the HTML document
-	doc, err := goquery.NewDocumentFromReader(resIo)
->>>>>>> adjusting variable to match naming convention
 	if err != nil {
 		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) error: %s", TibiaURL, err)
 	}

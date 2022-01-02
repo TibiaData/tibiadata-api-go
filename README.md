@@ -100,6 +100,8 @@ Those are the current existing endpoints.
 - GET `/v3/creatures`
 - GET `/v3/creatures/creature/:creature`
 - GET `/v3/fansites`
+- GET `/v3/guilds/guild/:guild`
+- GET `/v3/guilds/world/:world`
 - GET `/v3/highscores/world/:world`
 - GET `/v3/highscores/world/:world/:category`
 - GET `/v3/highscores/world/:world/:category/:vocation`

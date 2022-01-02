@@ -113,6 +113,12 @@ func main() {
 		// Tibia fansites
 		v3.GET("/fansites", TibiaFansitesV3)
 
+		// Tibia guilds
+		v3.GET("/guilds/guild/:guild", TibiaGuildsGuildV3)
+		//v3.GET("/guilds/guild/:guild/events",TibiaGuildsGuildEventsV3)
+		//v3.GET("/guilds/guild/:guild/wars",TibiaGuildsGuildWarsV3)
+		v3.GET("/guilds/world/:world", TibiaGuildsOverviewV3)
+
 		// Tibia highscores
 		v3.GET("/highscores/world/:world", func(c *gin.Context) {
 			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/experience/"+TibiadataDefaultVoc)
@@ -320,9 +326,15 @@ func TibiadataUnescapeStringV3(data string) string {
 	return html.UnescapeString(data)
 }
 
-// TibiadataQueryEscapeStringV3 func
+// TibiadataQueryEscapeStringV3 func - encode string to be correct formatted
 func TibiadataQueryEscapeStringV3(data string) string {
+	// switching "+" to " "
+	data = strings.ReplaceAll(data, "+", " ")
+
+	// encoding string to latin-1
 	data, _ = TibiaDataConvertEncodingtoISO88591(data)
+
+	// returning with QueryEscape function
 	return url.QueryEscape(data)
 }
 

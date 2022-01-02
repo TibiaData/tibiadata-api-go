@@ -76,5 +76,5 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           build-args: |
             TibiadataBuildBuilder=github
-            TibiadataBuildRelease=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
-            TibiadataBuildCommit=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+            TibiadataBuildRelease=${{ fromJSON(steps.docker_meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            TibiadataBuildCommit=${{ fromJSON(steps.docker_meta.outputs.json).labels['org.opencontainers.image.revision'] }}

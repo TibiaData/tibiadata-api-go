@@ -113,6 +113,12 @@ func main() {
 		// Tibia fansites
 		v3.GET("/fansites", TibiaFansitesV3)
 
+		// Tibia guilds
+		v3.GET("/guilds/guild/:guild", TibiaGuildsGuildV3)
+		//v3.GET("/guilds/guild/:guild/events",TibiaGuildsGuildEventsV3)
+		//v3.GET("/guilds/guild/:guild/wars",TibiaGuildsGuildWarsV3)
+		v3.GET("/guilds/world/:world", TibiaGuildsOverviewV3)
+
 		// Tibia highscores
 		v3.GET("/highscores/world/:world", func(c *gin.Context) {
 			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/experience/"+TibiadataDefaultVoc)

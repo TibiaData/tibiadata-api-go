@@ -80,9 +80,6 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 		// check if regex return length is over 0 and the match of name is over 1
 		if len(subma1) > 0 && len(subma1[0][3]) > 1 {
 
-			// printing the name of the creature
-			//log.Println(subma1[0][1])
-
 			// Adding bool to indicate features in creature_list
 			FeaturedRace := false
 			if subma1[0][1] == BoostedCreatureRace {
@@ -91,7 +88,7 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 
 			// Creating data block to return
 			CreaturesData = append(CreaturesData, Creature{
-				Name:     subma1[0][3],
+				Name:     TibiaDataSanitizeEscapedString(subma1[0][3]),
 				Race:     subma1[0][1],
 				ImageURL: subma1[0][2],
 				Featured: FeaturedRace,
@@ -99,9 +96,6 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 
 		}
 	})
-
-	// Printing the CreaturesData data to log
-	// log.Println(CreaturesData)
 
 	//
 	// Build the data-blob

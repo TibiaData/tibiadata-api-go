@@ -73,8 +73,9 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 	// Preparing data for JSONData
 	if len(subma1) > 0 {
 
-		// Description
+		// Description (and unescape hmtl string)
 		CreatureDescription = strings.ReplaceAll(subma1[0][3], "<br/>", "\n")
+		CreatureDescription = TibiaDataSanitizeEscapedString(CreatureDescription)
 
 		// Behaviour
 		// Regex to get data..
@@ -142,7 +143,7 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 	// Build the data-blob
 	jsonData := JSONData{
 		Creature{
-			Name:             subma1[0][1],
+			Name:             TibiaDataSanitizeEscapedString(subma1[0][1]),
 			Race:             race,
 			ImageURL:         subma1[0][2],
 			Description:      CreatureDescription,

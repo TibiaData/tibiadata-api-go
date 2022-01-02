@@ -88,7 +88,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 	// Child of Characters
 	type Deaths struct {
 		DeathEntries    []DeathEntries `json:"death_entries"`
-		TruncatedDeaths bool           `json:"truncated"` // TODO: when are those relevant..
+		TruncatedDeaths bool           `json:"truncated"` // deathlist can be truncated.. but we don't have logic for that atm
 	}
 
 	// Child of Characters
@@ -206,13 +206,14 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 
 				// Removing line breaks
 				CharacterTrHTML = TibiadataHTMLRemoveLinebreaksV3(CharacterTrHTML)
+				// Unescape hmtl string
+				CharacterTrHTML = TibiaDataSanitizeEscapedString(CharacterTrHTML)
 
 				// Regex to get data for fansites
-				regex1 := regexp.MustCompile(`<td.*class="[a-zA-Z0-9_.-]+".*>(.*):<\/.*td><td>(.*)<\/td>`)
+				regex1 := regexp.MustCompile(`<td.*class=.[a-zA-Z0-9_.-]+..*>(.*):<\/.*td><td>(.*)<\/td>`)
 				subma1 := regex1.FindAllStringSubmatch(CharacterTrHTML, -1)
 
 				if len(subma1) > 0 {
-					subma1[0][2] = html.UnescapeString(subma1[0][2])
 
 					if subma1[0][1] == "Name" {
 						Tmp := strings.Split(subma1[0][2], "<")
@@ -249,7 +250,6 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 						CharacterInformationData.Residence = subma1[0][2]
 					} else if strings.Contains(subma1[0][1], "Account") && strings.Contains(subma1[0][1], "Status") {
 						// } else if subma1[0][1] == "Account Status" {
-						// TODO this does not work.. somehow.. -.-
 						CharacterInformationData.AccountStatus = subma1[0][2]
 					} else if subma1[0][1] == "Married To" {
 						CharacterInformationData.MarriedTo = TibiadataRemoveURLsV3(subma1[0][2])
@@ -264,7 +264,6 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 						})
 					} else if strings.Contains(subma1[0][1], "Guild") && strings.Contains(subma1[0][1], "Membership") {
 						// } else if subma1[0][1] == "Guild Membership" {
-						// TODO this does not work.. somehow.. -.-
 						Tmp := strings.Split(subma1[0][2], " of the <a href=")
 						CharacterInformationData.Guild.Rank = Tmp[0]
 						CharacterInformationData.Guild.GuildName = TibiadataRemoveURLsV3("<a href=" + Tmp[1])

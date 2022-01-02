@@ -88,9 +88,9 @@ func TibiaWorldsWorldV3(c *gin.Context) {
 
 		if len(subma1) > 0 {
 
-			// Creating easy to use vars
+			// Creating easy to use vars (and unescape hmtl right string)
 			WorldsInformationLeftColumn := subma1[0][1]
-			WorldsInformationRightColumn := subma1[0][2]
+			WorldsInformationRightColumn := TibiaDataSanitizeEscapedString(subma1[0][2])
 
 			if WorldsInformationLeftColumn == "Status" {
 				if strings.Contains(WorldsInformationRightColumn, "</div>Online") {

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"html"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -267,11 +269,14 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 		}
 	}
 
-	// Convert string to io.Reader
-	res_io := strings.NewReader(res.String())
+	// Convert body to io.Reader
+	resIo := bytes.NewReader(res.Body())
+
+	// wrap reader in a converting reader from ISO 8859-1 to UTF-8
+	resIo2 := TibiaDataConvertEncodingtoUTF8(resIo)
 
 	// Load the HTML document
-	doc, err := goquery.NewDocumentFromReader(res_io)
+	doc, err := goquery.NewDocumentFromReader(resIo2)
 	if err != nil {
 		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) error: %s", TibiaURL, err)
 	}
@@ -282,29 +287,19 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 		log.Fatal(err)
 	}
 
-	// convert string from eg "&nbsp;" to " "
-	data = html.UnescapeString(data)
-	data = strings.ReplaceAll(data, "&nbsp;", " ")
-
-	// convert string from ISO 8859-1 to UTF-8
-	data, _ = TibiaDataConvertEncodingtoUTF8(data)
-
 	// Return of extracted html to functions..
-	return string(data)
+	return data
 }
 
 // TibiadataHTMLRemoveLinebreaksV3 func
 func TibiadataHTMLRemoveLinebreaksV3(data string) string {
-	return string(strings.ReplaceAll(data, "\n", ""))
+	return strings.ReplaceAll(data, "\n", "")
 }
 
 // TibiadataRemoveURLsV3 func
 func TibiadataRemoveURLsV3(data string) string {
 	// prepare return value
 	var returnData string
-
-	// convert string from UTF8 to ISO88591
-	data, _ = TibiaDataConvertEncodingtoISO88591(data)
 
 	// Regex to remove URLs
 	regex := regexp.MustCompile(`<a.*>(.*)<\/a>`)
@@ -315,33 +310,28 @@ func TibiadataRemoveURLsV3(data string) string {
 	} else {
 		returnData = ""
 	}
-	return string(returnData)
+	return returnData
 }
 
 // TibiadataStringWorldFormatToTitleV3 func
 func TibiadataStringWorldFormatToTitleV3(world string) string {
-	return string(strings.Title(strings.ToLower(world)))
+	return strings.Title(strings.ToLower(world))
 }
 
 // TibiadataUnescapeStringV3 func
 func TibiadataUnescapeStringV3(data string) string {
-	//	data, _ = TibiaDataConvertEncodingtoUTF8(data)
-	return string(html.UnescapeString(data))
+	return html.UnescapeString(data)
 }
 
 // TibiadataQueryEscapeStringV3 func
 func TibiadataQueryEscapeStringV3(data string) string {
 	data, _ = TibiaDataConvertEncodingtoISO88591(data)
-	return string(url.QueryEscape(data))
+	return url.QueryEscape(data)
 }
 
 // TibiadataDatetimeV3 func
 func TibiadataDatetimeV3(date string) string {
-
 	var returnDate string
-
-	// we need to use TibiaDataConvertEncodingtoISO88591 so that the parser doens't complain
-	date, _ = TibiaDataConvertEncodingtoISO88591(date)
 
 	// If statement to determine if date string is filled or empty
 	if date == "" {
@@ -389,9 +379,6 @@ func TibiadataDatetimeV3(date string) string {
 
 // TibiadataDateV3 func
 func TibiadataDateV3(date string) string {
-	// we need to use TibiaDataConvertEncodingtoISO88591 so that the parser doens't complain
-	date, _ = TibiaDataConvertEncodingtoISO88591(date)
-
 	// use regex to skip weird formatting on "spaces"
 	regex1 := regexp.MustCompile(`([a-zA-Z]{3}).*([0-9]{2}).*([0-9]{4})`)
 	subma1 := regex1.FindAllStringSubmatch(date, -1)
@@ -416,7 +403,7 @@ func TibiadataStringToIntegerV3(data string) int {
 	returnData, _ := strconv.Atoi(processedString)
 
 	// Return of formatted date and time string to functions..
-	return int(returnData)
+	return returnData
 }
 
 // match html tag and replace it with ""
@@ -444,9 +431,8 @@ func TibiaDataConvertEncodingtoISO88591(data string) (string, error) {
 }
 
 // TibiaDataConvertEncodingtoUTF8 func - convert string from latin1 (ISO 8859-1) to UTF-8
-func TibiaDataConvertEncodingtoUTF8(data string) (string, error) {
-	data, err := charmap.ISO8859_1.NewDecoder().String(data)
-	return data, err
+func TibiaDataConvertEncodingtoUTF8(data io.Reader) io.Reader {
+	return charmap.ISO8859_1.NewDecoder().Reader(data)
 }
 
 // isEnvExist func - check if environment var is set
@@ -457,8 +443,13 @@ func isEnvExist(key string) bool {
 	return false
 }
 
-func TibiaDataSanitizeString(data string) string {
-	data = html.UnescapeString(data)
+// TibiaDataSanitizeEscapedString func - run unescape string on string
+func TibiaDataSanitizeEscapedString(data string) string {
+	return html.UnescapeString(data)
+}
+
+// TibiaDataSanitizeDoubleQuoteString func - replaces double quotes to single quotes in strings
+func TibiaDataSanitizeDoubleQuoteString(data string) string {
 	return strings.ReplaceAll(data, "\"", "'")
 }
 

@@ -222,7 +222,7 @@ func TibiaHighscoresV3(c *gin.Context) {
 
 			HighscoreData = append(HighscoreData, Highscore{
 				Rank:     HighscoreDataRank,
-				Name:     subma1[0][1],
+				Name:     TibiaDataSanitizeEscapedString(subma1[0][1]),
 				Vocation: HighscoreDataVocation,
 				World:    HighscoreDataWorld,
 				Level:    HighscoreDataLevel,

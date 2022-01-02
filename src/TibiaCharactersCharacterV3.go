@@ -14,6 +14,10 @@ import (
 // TibiaCharactersCharacterV3 func
 func TibiaCharactersCharacterV3(c *gin.Context) {
 
+	// local strings used in this function
+	var localDivQueryString = ".TableContentContainer tr"
+	var localTradedString = " (traded)"
+
 	// getting params from URL
 	character := c.Param("character")
 
@@ -196,7 +200,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 		if CharacterSection == "characterinformation" || CharacterSection == "accountinformation" {
 
 			// Running query over each tr in character content container
-			CharacterDivQuery.Find(".TableContentContainer tr").Each(func(index int, s *goquery.Selection) {
+			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
 
 				// Storing HTML into CharacterTrHTML
 				CharacterTrHTML, err := s.Html()
@@ -223,9 +227,9 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 							CharacterInformationData.Name = Tmp2[0]
 							CharacterInformationData.DeletionDate = TibiadataDatetimeV3(strings.TrimSpace(Tmp2[1]))
 						}
-						if strings.Contains(subma1[0][2], "(traded)") {
+						if strings.Contains(subma1[0][2], localTradedString) {
 							CharacterInformationData.Traded = true
-							CharacterInformationData.Name = strings.Replace(CharacterInformationData.Name, " (traded)", "", -1)
+							CharacterInformationData.Name = strings.Replace(CharacterInformationData.Name, localTradedString, "", -1)
 						}
 					} else if subma1[0][1] == "Former Names" {
 						CharacterInformationData.FormerNames = strings.Split(subma1[0][2], ", ")
@@ -314,7 +318,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 
 		} else if CharacterSection == "accountachievements" {
 			// Running query over each tr in list
-			CharacterDivQuery.Find(".TableContentContainer tr").Each(func(index int, s *goquery.Selection) {
+			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
 
 				// Storing HTML into CharacterListHTML
 				CharacterListHTML, err := s.Html()
@@ -348,7 +352,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 
 		} else if CharacterSection == "characterdeaths" {
 			// Running query over each tr in list
-			CharacterDivQuery.Find(".TableContentContainer tr").Each(func(index int, s *goquery.Selection) {
+			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
 
 				// Storing HTML into CharacterListHTML
 				CharacterListHTML, err := s.Html()
@@ -442,7 +446,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 
 		} else if CharacterSection == "characters" {
 			// Running query over each tr in character list
-			CharacterDivQuery.Find(".TableContentContainer tr").Each(func(index int, s *goquery.Selection) {
+			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
 
 				// Storing HTML into CharacterListHTML
 				CharacterListHTML, err := s.Html()
@@ -462,9 +466,9 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 					TmpCharacterName := subma1[0][1]
 
 					var TmpTraded bool
-					if strings.Contains(TmpCharacterName, " (traded)") {
+					if strings.Contains(TmpCharacterName, localTradedString) {
 						TmpTraded = true
-						TmpCharacterName = strings.ReplaceAll(TmpCharacterName, " (traded)", "")
+						TmpCharacterName = strings.ReplaceAll(TmpCharacterName, localTradedString, "")
 					}
 
 					// If this character is the main character of the account
@@ -526,14 +530,18 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 
 // TibiaDataParseKiller func - insert a html string and get the killers back
 func TibiaDataParseKiller(data string) (string, bool, bool, string) {
+
+	// local strings used in this function
+	var localTradedString = " (traded)"
+
 	var isPlayer, isTraded bool
 	var theSummon string
 
 	// check if killer is a traded player
-	if strings.Contains(data, " (traded)") {
+	if strings.Contains(data, localTradedString) {
 		isPlayer = true
 		isTraded = true
-		data = strings.ReplaceAll(data, " (traded)", "")
+		data = strings.ReplaceAll(data, localTradedString, "")
 	}
 
 	// check if killer is a player

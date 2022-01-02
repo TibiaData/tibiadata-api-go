@@ -12,6 +12,9 @@ import (
 // TibiaCreaturesCreatureV3 func
 func TibiaCreaturesCreatureV3(c *gin.Context) {
 
+	// local strings used in this function
+	var localDamageString = " damage"
+
 	// getting params from URL
 	race := c.Param("race")
 
@@ -93,19 +96,19 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 		if strings.Contains(subma1[0][4], " are immune to ") {
 			regex21 := regexp.MustCompile(`.*are immune to (.*)`)
 			subma21 := regex21.FindAllStringSubmatch(subma1[0][4], -1)
-			CreatureImmuneToTmp := strings.Split(subma21[0][1], " damage")
+			CreatureImmuneToTmp := strings.Split(subma21[0][1], localDamageString)
 			CreatureImmuneTo = strings.Split(strings.Replace(CreatureImmuneToTmp[0], " and ", ", ", 1), ", ")
 		}
 		if strings.Contains(subma1[0][4], " are strong against ") {
 			regex22 := regexp.MustCompile(`.*are strong against (.*)`)
 			subma22 := regex22.FindAllStringSubmatch(subma1[0][4], -1)
-			CreatureStrongAgainstTmp := strings.Split(subma22[0][1], " damage")
+			CreatureStrongAgainstTmp := strings.Split(subma22[0][1], localDamageString)
 			CreatureStrongAgainst = strings.Split(strings.Replace(CreatureStrongAgainstTmp[0], " and ", ", ", 1), ", ")
 		}
 		if strings.Contains(subma1[0][4], " are weak against ") {
 			regex23 := regexp.MustCompile(`.*are weak against (.*)`)
 			subma23 := regex23.FindAllStringSubmatch(subma1[0][4], -1)
-			CreatureWeaknessAgainstTmp := strings.Split(subma23[0][1], " damage")
+			CreatureWeaknessAgainstTmp := strings.Split(subma23[0][1], localDamageString)
 			CreatureWeaknessAgainst = strings.Split(strings.Replace(CreatureWeaknessAgainstTmp[0], " and ", ", ", 1), ", ")
 		}
 		if strings.Contains(subma1[0][4], "It takes ") && strings.Contains(subma1[0][4], " mana to ") {

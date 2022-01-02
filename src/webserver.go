@@ -262,10 +262,7 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 
 		// Check if page is in maintenance mode
 		if res.StatusCode() == 302 {
-			log.Printf("[info] TibiadataHTMLDataCollectorV3 (URL: %s): Page tibia.com returns 302, probably maintenance mode enabled. ", TibiaURL)
-
-			// TODO
-			// do response with maintenance mode..
+			log.Printf("[info] TibiadataHTMLDataCollectorV3 (URL: %s): Page tibia.com returns 302, probably maintenance mode enabled?", TibiaURL)
 		}
 	}
 

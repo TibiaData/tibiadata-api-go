@@ -47,26 +47,19 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 		Information Information `json:"information"`
 	}
 
-	// Sanatize of vocation value
-	vocation = strings.ToLower(vocation)
-	if len(vocation) > 0 {
-		if strings.EqualFold(vocation, "knight") || strings.EqualFold(vocation, "knights") {
-			vocation = strings.Title("knight")
-		} else if strings.EqualFold(vocation, "paladin") || strings.EqualFold(vocation, "paladins") {
-			vocation = strings.Title("paladin")
-		} else if strings.EqualFold(vocation, "sorcerer") || strings.EqualFold(vocation, "sorcerers") {
-			vocation = strings.Title("sorcerer")
-		} else if strings.EqualFold(vocation, "druid") || strings.EqualFold(vocation, "druids") {
-			vocation = strings.Title("druid")
-		} else {
-			vocation = ""
-		}
+	// Sanitize of vocation input
+	vocationName, _ := TibiaDataVocationValidator(vocation)
+	if vocationName == "all" || vocationName == "none" {
+		vocationName = ""
 	} else {
-		vocation = ""
+		// removes the last letter (s) from the string (required for spells page)
+		vocationName = strings.TrimSuffix(vocationName, "s")
+		// setting string to first upper case
+		vocationName = strings.Title(vocationName)
 	}
 
 	// Getting data with TibiadataHTMLDataCollectorV3
-	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/library/?subtopic=spells&vocation=" + TibiadataQueryEscapeStringV3(vocation))
+	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/library/?subtopic=spells&vocation=" + TibiadataQueryEscapeStringV3(vocationName))
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -143,15 +136,15 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 	})
 
 	// adding readable SpellsVocationFilter field
-	if vocation == "" {
-		vocation = "none"
+	if vocationName == "" {
+		vocationName = "all"
 	}
 
 	//
 	// Build the data-blob
 	jsonData := JSONData{
 		Spells{
-			SpellsVocationFilter: vocation,
+			SpellsVocationFilter: vocationName,
 			Spells:               SpellsData,
 		},
 		Information{

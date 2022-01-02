@@ -486,3 +486,33 @@ func getEnvAsInt(name string, defaultVal int) int {
 	return defaultVal
 }
 */
+
+// TibiaDataVocationValidator func - return valid vocation string and vocation id
+func TibiaDataVocationValidator(vocation string) (string, string) {
+	// defining return vars
+	var vocationid string
+
+	switch strings.ToLower(vocation) {
+	case "none":
+		vocationid = "1"
+		vocation = "none"
+	case "knight", "knights":
+		vocationid = "2"
+		vocation = "knights"
+	case "paladin", "paladins":
+		vocationid = "3"
+		vocation = "paladins"
+	case "sorcerer", "sorcerers":
+		vocationid = "4"
+		vocation = "sorcerers"
+	case "druid", "druids":
+		vocationid = "5"
+		vocation = "druids"
+	default:
+		vocationid = "0"
+		vocation = "all"
+	}
+
+	// returning vars
+	return vocation, vocationid
+}

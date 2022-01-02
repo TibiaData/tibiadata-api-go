@@ -88,7 +88,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 	// Child of Characters
 	type Deaths struct {
 		DeathEntries    []DeathEntries `json:"death_entries"`
-		TruncatedDeaths bool           `json:"truncated"` // TODO: when are those relevant..
+		TruncatedDeaths bool           `json:"truncated"` // deathlist can be truncated.. but we don't have logic for that atm
 	}
 
 	// Child of Characters

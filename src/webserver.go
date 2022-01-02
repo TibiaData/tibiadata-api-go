@@ -301,9 +301,6 @@ func TibiadataRemoveURLsV3(data string) string {
 	// prepare return value
 	var returnData string
 
-	// convert string from UTF8 to ISO88591
-	data, _ = TibiaDataConvertEncodingtoISO88591(data)
-
 	// Regex to remove URLs
 	regex := regexp.MustCompile(`<a.*>(.*)<\/a>`)
 	result := regex.FindAllStringSubmatch(data, -1)
@@ -323,7 +320,6 @@ func TibiadataStringWorldFormatToTitleV3(world string) string {
 
 // TibiadataUnescapeStringV3 func
 func TibiadataUnescapeStringV3(data string) string {
-	//	data, _ = TibiaDataConvertEncodingtoUTF8(data)
 	return html.UnescapeString(data)
 }
 
@@ -335,11 +331,7 @@ func TibiadataQueryEscapeStringV3(data string) string {
 
 // TibiadataDatetimeV3 func
 func TibiadataDatetimeV3(date string) string {
-
 	var returnDate string
-
-	// we need to use TibiaDataConvertEncodingtoISO88591 so that the parser doens't complain
-	date, _ = TibiaDataConvertEncodingtoISO88591(date)
 
 	// If statement to determine if date string is filled or empty
 	if date == "" {
@@ -387,9 +379,6 @@ func TibiadataDatetimeV3(date string) string {
 
 // TibiadataDateV3 func
 func TibiadataDateV3(date string) string {
-	// we need to use TibiaDataConvertEncodingtoISO88591 so that the parser doens't complain
-	date, _ = TibiaDataConvertEncodingtoISO88591(date)
-
 	// use regex to skip weird formatting on "spaces"
 	regex1 := regexp.MustCompile(`([a-zA-Z]{3}).*([0-9]{2}).*([0-9]{4})`)
 	subma1 := regex1.FindAllStringSubmatch(date, -1)
@@ -454,8 +443,13 @@ func isEnvExist(key string) bool {
 	return false
 }
 
-func TibiaDataSanitizeString(data string) string {
-	data = html.UnescapeString(data)
+// TibiaDataSanitizeEscapedString func - run unescape string on string
+func TibiaDataSanitizeEscapedString(data string) string {
+	return html.UnescapeString(data)
+}
+
+// TibiaDataSanitizeDoubleQuoteString func - replaces double quotes to single quotes in strings
+func TibiaDataSanitizeDoubleQuoteString(data string) string {
 	return strings.ReplaceAll(data, "\"", "'")
 }
 

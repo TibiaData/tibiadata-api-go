@@ -81,9 +81,6 @@ func TibiaKillstatisticsV3(c *gin.Context) {
 				// we don't want to include the Total row
 			} else {
 
-				// Storing race name
-				KillStatisticsRace := strings.TrimSpace(subma1[0][1])
-
 				// Store the values..
 				KillStatisticsLastDayKilledPlayers := TibiadataStringToIntegerV3(subma1[0][2])
 				TotalLastDayKilledPlayers += KillStatisticsLastDayKilledPlayers
@@ -96,7 +93,7 @@ func TibiaKillstatisticsV3(c *gin.Context) {
 
 				// Append new Entry item to KillStatisticsData
 				KillStatisticsData = append(KillStatisticsData, Entry{
-					Race:                    KillStatisticsRace,
+					Race:                    TibiaDataSanitizeEscapedString(subma1[0][1]),
 					LastDayKilledPlayers:    KillStatisticsLastDayKilledPlayers,
 					LastDayKilledByPlayers:  KillStatisticsLastDayKilledByPlayers,
 					LastWeekKilledPlayers:   KillStatisticsLastWeekKilledPlayers,

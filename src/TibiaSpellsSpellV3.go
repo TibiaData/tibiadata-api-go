@@ -17,7 +17,6 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 
 	// Child of SpellInformation
 	type SpellInformation struct {
-		// Name          string   `json:"name"`
 		Formula       string   `json:"formula"`
 		Vocation      []string `json:"vocation"`
 		GroupAttack   bool     `json:"group_attack"`
@@ -39,7 +38,6 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 
 	// Child of RuneInformation
 	type RuneInformation struct {
-		// Name         string   `json:"name"`
 		Vocation     []string `json:"vocation"`
 		GroupAttack  bool     `json:"group_attack"`
 		GroupHealing bool     `json:"group_healing"`
@@ -125,23 +123,13 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 		// check if regex return length is over 0 and the match of name is over 1
 		if len(subma1) > 0 {
 
-			// Creating easy to use vars
+			// Creating easy to use vars (and unescape hmtl right string)
 			WorldsInformationLeftColumn := subma1[0][1]
-			WorldsInformationRightColumn := subma1[0][2]
-
-			/*
-				if WorldsInformationLeftColumn == "Name" {
-					if SpellInformationSection == "spell" {
-						SpellsInfoName = WorldsInformationRightColumn
-					} else if SpellInformationSection == "rune" {
-						RuneInfoName = WorldsInformationRightColumn
-					}
-				}
-			*/
+			WorldsInformationRightColumn := TibiaDataSanitizeEscapedString(subma1[0][2])
 
 			// Formula
 			if WorldsInformationLeftColumn == "Formula" {
-				SpellsInfoFormula = TibiaDataSanitizeString(WorldsInformationRightColumn)
+				SpellsInfoFormula = TibiaDataSanitizeDoubleQuoteString(WorldsInformationRightColumn)
 			}
 
 			// Vocation
@@ -238,7 +226,6 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 
 			// City
 			if WorldsInformationLeftColumn == "City" {
-				WorldsInformationRightColumn = TibiaDataSanitizeString(WorldsInformationRightColumn)
 				SpellsInfoCity = strings.Split(WorldsInformationRightColumn, ", ")
 			}
 
@@ -278,7 +265,6 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 				Description:         SpellDescription,
 				HasSpellInformation: SpellsHasSpellSection,
 				SpellInformation: SpellInformation{
-					// Name:          SpellsInfoName,
 					Formula:       SpellsInfoFormula,
 					Vocation:      SpellsInfoVocation,
 					GroupAttack:   SpellsInfoGroupAttack,
@@ -299,7 +285,6 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 				},
 				HasRuneInformation: SpellsHasRuneSection,
 				RuneInformation: RuneInformation{
-					// Name:         RuneInfoName,
 					Vocation:     RuneInfoVocation,
 					GroupAttack:  RuneInfoGroupAttack,
 					GroupHealing: RuneInfoGroupHealing,

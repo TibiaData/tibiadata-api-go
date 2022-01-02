@@ -101,13 +101,15 @@ func TibiaFansitesV3(c *gin.Context) {
 				imgs1 := imgRE1.FindAllStringSubmatch(subma1[0][5], -1)
 				out := make([]string, len(imgs1))
 				for i := range out {
-					if strings.Contains(imgs1[i][1], "Statistics") {
+					s := imgs1[i][1]
+					switch {
+					case strings.Contains(s, "Statistics"):
 						ContentTypeData.Statistics = true
-					} else if strings.Contains(imgs1[i][1], "ArticlesNews") {
+					case strings.Contains(s, "ArticlesNews"):
 						ContentTypeData.Texts = true
-					} else if strings.Contains(imgs1[i][1], "Tools") {
+					case strings.Contains(s, "Tools"):
 						ContentTypeData.Tools = true
-					} else if strings.Contains(imgs1[i][1], "Wiki") {
+					case strings.Contains(s, "Wiki"):
 						ContentTypeData.Wiki = true
 					}
 				}
@@ -118,19 +120,21 @@ func TibiaFansitesV3(c *gin.Context) {
 				imgs2 := imgRE2.FindAllStringSubmatch(subma1[0][6], -1)
 				out2 := make([]string, len(imgs2))
 				for i := range out2 {
-					if strings.Contains(imgs2[i][1], "Discord") {
+					s := imgs2[i][1]
+					switch {
+					case strings.Contains(s, "Discord"):
 						SocialMediaData.Discord = true
-					} else if strings.Contains(imgs2[i][1], "Facebook") {
+					case strings.Contains(s, "Facebook"):
 						SocialMediaData.Facebook = true
-					} else if strings.Contains(imgs2[i][1], "Instagram") {
+					case strings.Contains(s, "Instagram"):
 						SocialMediaData.Instagram = true
-					} else if strings.Contains(imgs2[i][1], "Reddit") {
+					case strings.Contains(s, "Reddit"):
 						SocialMediaData.Reddit = true
-					} else if strings.Contains(imgs2[i][1], "Twitch") {
+					case strings.Contains(s, "Twitch"):
 						SocialMediaData.Twitch = true
-					} else if strings.Contains(imgs2[i][1], "Twitter") {
+					case strings.Contains(s, "Twitter"):
 						SocialMediaData.Twitter = true
-					} else if strings.Contains(imgs2[i][1], "Youtube") {
+					case strings.Contains(s, "Youtube"):
 						SocialMediaData.Youtube = true
 					}
 				}
@@ -160,7 +164,8 @@ func TibiaFansitesV3(c *gin.Context) {
 					FansiteItemURLData = ""
 				}
 
-				if FansiteType == "promoted" {
+				switch FansiteType {
+				case "promoted":
 					PromotedFansitesData = append(PromotedFansitesData, Fansite{
 						Name:           subma1[0][3],
 						LogoURL:        subma1[0][2],
@@ -173,7 +178,7 @@ func TibiaFansitesV3(c *gin.Context) {
 						FansiteItem:    FansiteItemData,
 						FansiteItemURL: FansiteItemURLData,
 					})
-				} else if FansiteType == "supported" {
+				case "supported":
 					SupportedFansitesData = append(SupportedFansitesData, Fansite{
 						Name:           subma1[0][3],
 						LogoURL:        subma1[0][2],

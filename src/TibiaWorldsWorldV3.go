@@ -93,11 +93,12 @@ func TibiaWorldsWorldV3(c *gin.Context) {
 			WorldsInformationRightColumn := TibiaDataSanitizeEscapedString(subma1[0][2])
 
 			if WorldsInformationLeftColumn == "Status" {
-				if strings.Contains(WorldsInformationRightColumn, "</div>Online") {
+				switch {
+				case strings.Contains(WorldsInformationRightColumn, "</div>Online"):
 					WorldsStatus = "online"
-				} else if strings.Contains(WorldsInformationRightColumn, "</div>Offline") {
+				case strings.Contains(WorldsInformationRightColumn, "</div>Offline"):
 					WorldsStatus = "offline"
-				} else {
+				default:
 					WorldsStatus = "unknown"
 				}
 			}

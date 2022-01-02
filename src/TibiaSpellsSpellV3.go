@@ -134,29 +134,33 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 
 			// Vocation
 			if WorldsInformationLeftColumn == "Vocation" {
-				if SpellInformationSection == "spell" {
+				switch SpellInformationSection {
+				case "spell":
 					SpellsInfoVocation = strings.Split(WorldsInformationRightColumn, ", ")
-				} else if SpellInformationSection == "rune" {
+				case "rune":
 					RuneInfoVocation = strings.Split(WorldsInformationRightColumn, ", ")
 				}
 			}
 
 			// Group information
 			if WorldsInformationLeftColumn == "Group" {
-				if SpellInformationSection == "spell" {
-					if WorldsInformationRightColumn == "Attack" {
+				switch SpellInformationSection {
+				case "spell":
+					switch WorldsInformationRightColumn {
+					case "Attack":
 						SpellsInfoGroupAttack = true
-					} else if WorldsInformationRightColumn == "Healing" {
+					case "Healing":
 						SpellsInfoGroupHealing = true
-					} else if WorldsInformationRightColumn == "Support" {
+					case "Support":
 						SpellsInfoGroupSupport = true
 					}
-				} else if SpellInformationSection == "rune" {
-					if WorldsInformationRightColumn == "Attack" {
+				case "rune":
+					switch WorldsInformationRightColumn {
+					case "Attack":
 						RuneInfoGroupAttack = true
-					} else if WorldsInformationRightColumn == "Healing" {
+					case "Healing":
 						RuneInfoGroupHealing = true
-					} else if WorldsInformationRightColumn == "Support" {
+					case "Support":
 						RuneInfoGroupSupport = true
 					}
 				}
@@ -164,18 +168,20 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 
 			// Spell type
 			if WorldsInformationLeftColumn == "Type" {
-				if WorldsInformationRightColumn == "Instant" {
+				switch WorldsInformationRightColumn {
+				case "Instant":
 					SpellsInfoTypeInstant = true
-				} else if WorldsInformationRightColumn == "Rune" {
+				case "Rune":
 					SpellsInfoTypeRune = true
 				}
 			}
 
 			// Damage
 			if WorldsInformationLeftColumn == "Damage Type" {
-				if SpellInformationSection == "spell" {
+				switch SpellInformationSection {
+				case "spell":
 					SpellsInfoDamageType = strings.ToLower(WorldsInformationRightColumn)
-				} else if SpellInformationSection == "rune" {
+				case "rune":
 					RuneInfoDamageType = strings.ToLower(WorldsInformationRightColumn)
 				}
 			}
@@ -203,9 +209,10 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 
 			// Experience Level
 			if WorldsInformationLeftColumn == "Exp Lvl" {
-				if SpellInformationSection == "spell" {
+				switch SpellInformationSection {
+				case "spell":
 					SpellsInfoLevel = TibiadataStringToIntegerV3(WorldsInformationRightColumn)
-				} else if SpellInformationSection == "rune" {
+				case "rune":
 					RuneInfoLevel = TibiadataStringToIntegerV3(WorldsInformationRightColumn)
 				}
 			}

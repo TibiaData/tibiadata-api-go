@@ -270,13 +270,13 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 	}
 
 	// Convert body to io.Reader
-	res_io := bytes.NewReader(res.Body())
+	resIo := bytes.NewReader(res.Body())
 
 	// wrap reader in a converting reader from ISO 8859-1 to UTF-8
-	res_io2 := TibiaDataConvertEncodingtoUTF8(res_io)
+	resIo2 := TibiaDataConvertEncodingtoUTF8(resIo)
 
 	// Load the HTML document
-	doc, err := goquery.NewDocumentFromReader(res_io2)
+	doc, err := goquery.NewDocumentFromReader(resIo2)
 	if err != nil {
 		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) error: %s", TibiaURL, err)
 	}

@@ -8,6 +8,11 @@ on:
       - "bug-*"
     tags:
       - "v*"
+    paths:
+      - "src/**"
+      - "Dockerfile"
+      - "go.mod"
+      - "go.sum"
 
 jobs:
   build:
@@ -23,6 +28,11 @@ jobs:
           images: |
             tibiadata/tibiadata-api-go
             ghcr.io/tibiadata/tibiadata-api-go
+          tags: |
+            type=edge
+            type=ref,event=branch,enable=${{ (github.ref != 'refs/heads/main') }}
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
@@ -66,5 +76,5 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           build-args: |
             TibiadataBuildBuilder=github
-            TibiadataBuildRelease=${{ github.event.release.tag_name }}
-            TibiadataBuildCommit=${{ github.sha }}
+            TibiadataBuildRelease=${{ fromJSON(steps.docker_meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            TibiadataBuildCommit=${{ fromJSON(steps.docker_meta.outputs.json).labels['org.opencontainers.image.revision'] }}

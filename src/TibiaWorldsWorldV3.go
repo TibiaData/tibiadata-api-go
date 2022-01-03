@@ -1,17 +1,19 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaWorldsWorldV3 func
-func TibiaWorldsWorldV3(world string) string {
+func TibiaWorldsWorldV3(c *gin.Context) {
+
+	// getting params from URL
+	world := c.Param("world")
 
 	// Child of World
 	type OnlinePlayers struct {
@@ -86,16 +88,17 @@ func TibiaWorldsWorldV3(world string) string {
 
 		if len(subma1) > 0 {
 
-			// Creating easy to use vars
+			// Creating easy to use vars (and unescape hmtl right string)
 			WorldsInformationLeftColumn := subma1[0][1]
-			WorldsInformationRightColumn := subma1[0][2]
+			WorldsInformationRightColumn := TibiaDataSanitizeEscapedString(subma1[0][2])
 
 			if WorldsInformationLeftColumn == "Status" {
-				if strings.Contains(WorldsInformationRightColumn, "</div>Online") {
+				switch {
+				case strings.Contains(WorldsInformationRightColumn, "</div>Online"):
 					WorldsStatus = "online"
-				} else if strings.Contains(WorldsInformationRightColumn, "</div>Offline") {
+				case strings.Contains(WorldsInformationRightColumn, "</div>Offline"):
 					WorldsStatus = "offline"
-				} else {
+				default:
 					WorldsStatus = "unknown"
 				}
 			}
@@ -220,9 +223,6 @@ func TibiaWorldsWorldV3(world string) string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaWorldsWorldV3", jsonData)
 }

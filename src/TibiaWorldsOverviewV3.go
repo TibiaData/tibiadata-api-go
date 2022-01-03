@@ -1,17 +1,16 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaWorldsOverviewV3 func
-func TibiaWorldsOverviewV3() string {
+func TibiaWorldsOverviewV3(c *gin.Context) {
 
 	// Child of Worlds
 	type World struct {
@@ -99,11 +98,12 @@ func TibiaWorldsOverviewV3() string {
 
 			// Setting the players_online & overall players_online
 			WorldsAllOnlinePlayers += WorldsPlayersOnline
-			if WorldsPlayersOnline > 0 {
+			switch {
+			case WorldsPlayersOnline > 0:
 				WorldsStatus = "online"
-			} else if subma2[0][2] == "-" {
+			case subma2[0][2] == "-":
 				WorldsStatus = "unknown"
-			} else {
+			default:
 				WorldsStatus = "offline"
 			}
 
@@ -147,9 +147,10 @@ func TibiaWorldsOverviewV3() string {
 			}
 
 			// Setting the tournament_world_type param
-			if WorldsWorldCategory == "regular" {
+			switch WorldsWorldCategory {
+			case "regular":
 				WorldsTournamentWorldType = ""
-			} else if WorldsWorldCategory == "tournament" {
+			case "tournament":
 				WorldsGameWorldType = "tournament"
 				WorldsTournamentWorldType = "regular"
 				if strings.Contains(WorldsAdditionalInfo, "restricted") {
@@ -173,12 +174,12 @@ func TibiaWorldsOverviewV3() string {
 			}
 
 			// Adding OneWorld to correct category
-			if WorldsWorldCategory == "regular" {
+			switch WorldsWorldCategory {
+			case "regular":
 				RegularWorldsData = append(RegularWorldsData, OneWorld)
-			} else if WorldsWorldCategory == "tournament" {
+			case "tournament":
 				TournamentWorldsData = append(TournamentWorldsData, OneWorld)
 			}
-
 		}
 	})
 
@@ -198,9 +199,6 @@ func TibiaWorldsOverviewV3() string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaWorldsOverviewV3", jsonData)
 }

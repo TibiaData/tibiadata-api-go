@@ -3,7 +3,7 @@ FROM golang:1.17.5
 
 # get args
 ARG TibiadataBuildBuilder=dockerfile
-ARG TibiadataBuildRelease=unknown
+ARG TibiadataBuildRelease=-
 ARG TibiadataBuildCommit=-
 
 # create and set workingfolder

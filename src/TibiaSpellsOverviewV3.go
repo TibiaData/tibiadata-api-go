@@ -1,17 +1,22 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaSpellsOverviewV3 func
-func TibiaSpellsOverviewV3(vocation string) string {
+func TibiaSpellsOverviewV3(c *gin.Context) {
+
+	// getting params from URL
+	vocation := c.Param("vocation")
+	if vocation == "" {
+		vocation = TibiadataDefaultVoc
+	}
 
 	// Child of Spells
 	type Spell struct {
@@ -42,26 +47,19 @@ func TibiaSpellsOverviewV3(vocation string) string {
 		Information Information `json:"information"`
 	}
 
-	// Sanatize of vocation value
-	vocation = strings.ToLower(vocation)
-	if len(vocation) > 0 {
-		if strings.EqualFold(vocation, "knight") || strings.EqualFold(vocation, "knights") {
-			vocation = strings.Title("knight")
-		} else if strings.EqualFold(vocation, "paladin") || strings.EqualFold(vocation, "paladins") {
-			vocation = strings.Title("paladin")
-		} else if strings.EqualFold(vocation, "sorcerer") || strings.EqualFold(vocation, "sorcerers") {
-			vocation = strings.Title("sorcerer")
-		} else if strings.EqualFold(vocation, "druid") || strings.EqualFold(vocation, "druids") {
-			vocation = strings.Title("druid")
-		} else {
-			vocation = ""
-		}
+	// Sanitize of vocation input
+	vocationName, _ := TibiaDataVocationValidator(vocation)
+	if vocationName == "all" || vocationName == "none" {
+		vocationName = ""
 	} else {
-		vocation = ""
+		// removes the last letter (s) from the string (required for spells page)
+		vocationName = strings.TrimSuffix(vocationName, "s")
+		// setting string to first upper case
+		vocationName = strings.Title(vocationName)
 	}
 
 	// Getting data with TibiadataHTMLDataCollectorV3
-	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/library/?subtopic=spells&vocation=" + TibiadataQueryEscapeStringV3(vocation))
+	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/library/?subtopic=spells&vocation=" + TibiadataQueryEscapeStringV3(vocationName))
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -88,26 +86,28 @@ func TibiaSpellsOverviewV3(vocation string) string {
 
 		// check if regex return length is over 0 and the match of name is over 1
 		if len(subma1) > 0 {
-
 			// SpellGroup
 			GroupAttack = false
 			GroupHealing = false
 			GroupSupport = false
 
-			if subma1[0][4] == "Attack" {
+			switch subma1[0][4] {
+			case "Attack":
 				GroupAttack = true
-			} else if subma1[0][4] == "Healing" {
+			case "Healing":
 				GroupHealing = true
-			} else if subma1[0][4] == "Support" {
+			case "Support":
 				GroupSupport = true
 			}
 
 			// Type
 			TypeInstant = false
 			TypeRune = false
-			if subma1[0][5] == "Instant" {
+
+			switch subma1[0][5] {
+			case "Instant":
 				TypeInstant = true
-			} else if subma1[0][5] == "Rune" {
+			case "Rune":
 				TypeRune = true
 			}
 
@@ -122,7 +122,7 @@ func TibiaSpellsOverviewV3(vocation string) string {
 			SpellsData = append(SpellsData, Spell{
 				Name:         subma1[0][2],
 				Spell:        subma1[0][1],
-				Formula:      subma1[0][3],
+				Formula:      TibiaDataSanitizeDoubleQuoteString(TibiadataUnescapeStringV3(subma1[0][3])),
 				Level:        TibiadataStringToIntegerV3(subma1[0][6]),
 				Mana:         TibiadataStringToIntegerV3(subma1[0][7]),
 				Price:        TibiadataStringToIntegerV3(subma1[0][8]),
@@ -138,15 +138,15 @@ func TibiaSpellsOverviewV3(vocation string) string {
 	})
 
 	// adding readable SpellsVocationFilter field
-	if vocation == "" {
-		vocation = "none"
+	if vocationName == "" {
+		vocationName = "all"
 	}
 
 	//
 	// Build the data-blob
 	jsonData := JSONData{
 		Spells{
-			SpellsVocationFilter: vocation,
+			SpellsVocationFilter: vocationName,
 			Spells:               SpellsData,
 		},
 		Information{
@@ -155,9 +155,6 @@ func TibiaSpellsOverviewV3(vocation string) string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaSpellsOverviewV3", jsonData)
 }

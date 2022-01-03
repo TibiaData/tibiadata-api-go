@@ -1,17 +1,19 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaKillstatisticsV3 func
-func TibiaKillstatisticsV3(world string) string {
+func TibiaKillstatisticsV3(c *gin.Context) {
+
+	// getting params from URL
+	world := c.Param("world")
 
 	// Child of KillStatistics
 	type Entry struct {
@@ -79,9 +81,6 @@ func TibiaKillstatisticsV3(world string) string {
 				// we don't want to include the Total row
 			} else {
 
-				// Storing race name
-				KillStatisticsRace := strings.TrimSpace(subma1[0][1])
-
 				// Store the values..
 				KillStatisticsLastDayKilledPlayers := TibiadataStringToIntegerV3(subma1[0][2])
 				TotalLastDayKilledPlayers += KillStatisticsLastDayKilledPlayers
@@ -94,7 +93,7 @@ func TibiaKillstatisticsV3(world string) string {
 
 				// Append new Entry item to KillStatisticsData
 				KillStatisticsData = append(KillStatisticsData, Entry{
-					Race:                    KillStatisticsRace,
+					Race:                    TibiaDataSanitizeEscapedString(subma1[0][1]),
 					LastDayKilledPlayers:    KillStatisticsLastDayKilledPlayers,
 					LastDayKilledByPlayers:  KillStatisticsLastDayKilledByPlayers,
 					LastWeekKilledPlayers:   KillStatisticsLastWeekKilledPlayers,
@@ -123,9 +122,7 @@ func TibiaKillstatisticsV3(world string) string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaKillstatisticsV3", jsonData)
+
 }

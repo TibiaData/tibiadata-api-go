@@ -1,21 +1,22 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaSpellsSpellV3 func
-func TibiaSpellsSpellV3(spell string) string {
+func TibiaSpellsSpellV3(c *gin.Context) {
+
+	// getting params from URL
+	spell := c.Param("spell")
 
 	// Child of SpellInformation
 	type SpellInformation struct {
-		// Name          string   `json:"name"`
 		Formula       string   `json:"formula"`
 		Vocation      []string `json:"vocation"`
 		GroupAttack   bool     `json:"group_attack"`
@@ -37,7 +38,6 @@ func TibiaSpellsSpellV3(spell string) string {
 
 	// Child of RuneInformation
 	type RuneInformation struct {
-		// Name         string   `json:"name"`
 		Vocation     []string `json:"vocation"`
 		GroupAttack  bool     `json:"group_attack"`
 		GroupHealing bool     `json:"group_healing"`
@@ -123,50 +123,44 @@ func TibiaSpellsSpellV3(spell string) string {
 		// check if regex return length is over 0 and the match of name is over 1
 		if len(subma1) > 0 {
 
-			// Creating easy to use vars
+			// Creating easy to use vars (and unescape hmtl right string)
 			WorldsInformationLeftColumn := subma1[0][1]
-			WorldsInformationRightColumn := subma1[0][2]
-
-			/*
-				if WorldsInformationLeftColumn == "Name" {
-					if SpellInformationSection == "spell" {
-						SpellsInfoName = WorldsInformationRightColumn
-					} else if SpellInformationSection == "rune" {
-						RuneInfoName = WorldsInformationRightColumn
-					}
-				}
-			*/
+			WorldsInformationRightColumn := TibiaDataSanitizeEscapedString(subma1[0][2])
 
 			// Formula
 			if WorldsInformationLeftColumn == "Formula" {
-				SpellsInfoFormula = WorldsInformationRightColumn
+				SpellsInfoFormula = TibiaDataSanitizeDoubleQuoteString(WorldsInformationRightColumn)
 			}
 
 			// Vocation
 			if WorldsInformationLeftColumn == "Vocation" {
-				if SpellInformationSection == "spell" {
+				switch SpellInformationSection {
+				case "spell":
 					SpellsInfoVocation = strings.Split(WorldsInformationRightColumn, ", ")
-				} else if SpellInformationSection == "rune" {
+				case "rune":
 					RuneInfoVocation = strings.Split(WorldsInformationRightColumn, ", ")
 				}
 			}
 
 			// Group information
 			if WorldsInformationLeftColumn == "Group" {
-				if SpellInformationSection == "spell" {
-					if WorldsInformationRightColumn == "Attack" {
+				switch SpellInformationSection {
+				case "spell":
+					switch WorldsInformationRightColumn {
+					case "Attack":
 						SpellsInfoGroupAttack = true
-					} else if WorldsInformationRightColumn == "Healing" {
+					case "Healing":
 						SpellsInfoGroupHealing = true
-					} else if WorldsInformationRightColumn == "Support" {
+					case "Support":
 						SpellsInfoGroupSupport = true
 					}
-				} else if SpellInformationSection == "rune" {
-					if WorldsInformationRightColumn == "Attack" {
+				case "rune":
+					switch WorldsInformationRightColumn {
+					case "Attack":
 						RuneInfoGroupAttack = true
-					} else if WorldsInformationRightColumn == "Healing" {
+					case "Healing":
 						RuneInfoGroupHealing = true
-					} else if WorldsInformationRightColumn == "Support" {
+					case "Support":
 						RuneInfoGroupSupport = true
 					}
 				}
@@ -174,18 +168,20 @@ func TibiaSpellsSpellV3(spell string) string {
 
 			// Spell type
 			if WorldsInformationLeftColumn == "Type" {
-				if WorldsInformationRightColumn == "Instant" {
+				switch WorldsInformationRightColumn {
+				case "Instant":
 					SpellsInfoTypeInstant = true
-				} else if WorldsInformationRightColumn == "Rune" {
+				case "Rune":
 					SpellsInfoTypeRune = true
 				}
 			}
 
 			// Damage
 			if WorldsInformationLeftColumn == "Damage Type" {
-				if SpellInformationSection == "spell" {
+				switch SpellInformationSection {
+				case "spell":
 					SpellsInfoDamageType = strings.ToLower(WorldsInformationRightColumn)
-				} else if SpellInformationSection == "rune" {
+				case "rune":
 					RuneInfoDamageType = strings.ToLower(WorldsInformationRightColumn)
 				}
 			}
@@ -213,9 +209,10 @@ func TibiaSpellsSpellV3(spell string) string {
 
 			// Experience Level
 			if WorldsInformationLeftColumn == "Exp Lvl" {
-				if SpellInformationSection == "spell" {
+				switch SpellInformationSection {
+				case "spell":
 					SpellsInfoLevel = TibiadataStringToIntegerV3(WorldsInformationRightColumn)
-				} else if SpellInformationSection == "rune" {
+				case "rune":
 					RuneInfoLevel = TibiadataStringToIntegerV3(WorldsInformationRightColumn)
 				}
 			}
@@ -275,7 +272,6 @@ func TibiaSpellsSpellV3(spell string) string {
 				Description:         SpellDescription,
 				HasSpellInformation: SpellsHasSpellSection,
 				SpellInformation: SpellInformation{
-					// Name:          SpellsInfoName,
 					Formula:       SpellsInfoFormula,
 					Vocation:      SpellsInfoVocation,
 					GroupAttack:   SpellsInfoGroupAttack,
@@ -296,7 +292,6 @@ func TibiaSpellsSpellV3(spell string) string {
 				},
 				HasRuneInformation: SpellsHasRuneSection,
 				RuneInformation: RuneInformation{
-					// Name:         RuneInfoName,
 					Vocation:     RuneInfoVocation,
 					GroupAttack:  RuneInfoGroupAttack,
 					GroupHealing: RuneInfoGroupHealing,
@@ -313,9 +308,6 @@ func TibiaSpellsSpellV3(spell string) string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaSpellsSpellV3", jsonData)
 }

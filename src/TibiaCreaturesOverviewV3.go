@@ -1,17 +1,16 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaCreaturesOverviewV3 func
-func TibiaCreaturesOverviewV3() string {
+func TibiaCreaturesOverviewV3(c *gin.Context) {
 
 	// Child of Creatures (used for list of creatures and boosted section)
 	type Creature struct {
@@ -81,9 +80,6 @@ func TibiaCreaturesOverviewV3() string {
 		// check if regex return length is over 0 and the match of name is over 1
 		if len(subma1) > 0 && len(subma1[0][3]) > 1 {
 
-			// printing the name of the creature
-			//log.Println(subma1[0][1])
-
 			// Adding bool to indicate features in creature_list
 			FeaturedRace := false
 			if subma1[0][1] == BoostedCreatureRace {
@@ -92,7 +88,7 @@ func TibiaCreaturesOverviewV3() string {
 
 			// Creating data block to return
 			CreaturesData = append(CreaturesData, Creature{
-				Name:     subma1[0][3],
+				Name:     TibiaDataSanitizeEscapedString(subma1[0][3]),
 				Race:     subma1[0][1],
 				ImageURL: subma1[0][2],
 				Featured: FeaturedRace,
@@ -100,9 +96,6 @@ func TibiaCreaturesOverviewV3() string {
 
 		}
 	})
-
-	// Printing the CreaturesData data to log
-	// log.Println(CreaturesData)
 
 	//
 	// Build the data-blob
@@ -122,9 +115,6 @@ func TibiaCreaturesOverviewV3() string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaCreaturesOverviewV3", jsonData)
 }

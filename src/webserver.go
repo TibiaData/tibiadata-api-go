@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"html"
+	"io"
 	"log"
+	"net/http"
 	"net/url"
 	"os"
 	"regexp"
@@ -26,6 +30,9 @@ var TibiadataDefaultVoc string = "all"
 var TibiadataAPIversion int = 3
 var TibiadataDebug bool
 
+// Tibiadata app user-agent
+var TibiadataUserAgent string
+
 // Tibiadata app details set to release/build on GitHub
 var TibiadataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
 var TibiadataBuildBuilder = "manual"      // will be set by GitHub Actions
@@ -39,34 +46,46 @@ type Information struct {
 }
 
 func main() {
-	// logging things on start of TibiaData
+	// logging start of TibiaData
 	log.Printf("[info] TibiaData API starting..")
+
+	// running the TibiaDataInitializer function
+	TibiaDataInitializer()
+
+	// logging build information
 	log.Printf("[info] TibiaData API release: %s", TibiadataBuildRelease)
 	log.Printf("[info] TibiaData API build: %s", TibiadataBuildBuilder)
 	log.Printf("[info] TibiaData API commit: %s", TibiadataBuildCommit)
 	log.Printf("[info] TibiaData API edition: %s", TibiadataBuildEdition)
 
-	// setting application to ReleaseMode if DEBUG_MODE is false
-	if !getEnvAsBool("DEBUG_MODE", false) {
-		// setting GIN_MODE to ReleaseMode
-		gin.SetMode(gin.ReleaseMode)
-		log.Printf("[info] TibiaData API app-mode: release")
-	} else {
-		// setting GIN_MODE to DebugMode
+	// setting gin-application to certain mode if GIN_MODE is set to release, test or debug (default is release)
+	switch ginMode := getEnv("GIN_MODE", "release"); ginMode {
+	case "test":
+		gin.SetMode(gin.TestMode)
+	case "debug":
 		gin.SetMode(gin.DebugMode)
-		log.Printf("[info] TibiaData API app-mode: debug")
+	default:
+		gin.SetMode(gin.ReleaseMode)
+	}
+	// logging the gin.mode
+	log.Printf("[info] TibiaData API gin-mode: %s", gin.Mode())
 
+	// setting tibiadata-application to log much less if DEBUG_MODE is false (default is false)
+	if !getEnvAsBool("DEBUG_MODE", false) {
+		log.Printf("[info] TibiaData API debug-mode: disabled")
+	} else {
 		// setting debug to true for more logging
 		TibiadataDebug = true
+		log.Printf("[info] TibiaData API debug-mode: enabled")
 
 		// logging user-agent string
-		log.Printf("[debug] TIbiaData API User-Agent: %s", TibiadataUserAgentGenerator(TibiadataAPIversion))
+		log.Printf("[debug] TIbiaData API User-Agent: %s", TibiadataUserAgent)
 	}
 
 	router := gin.Default()
 
 	// disable proxy feature of gin
-	router.SetTrustedProxies(nil)
+	_ = router.SetTrustedProxies(nil)
 
 	// Ping-endpoint
 	router.GET("/ping", func(c *gin.Context) {
@@ -84,135 +103,42 @@ func main() {
 	// TibiaData API version 3
 	v3 := router.Group("/v3")
 	{
-		// TibiaCharactersCharacterV3
-		v3.GET("/characters/character/:character", func(c *gin.Context) {
-			character := c.Param("character")
-			result := TibiaCharactersCharacterV3(character)
+		// Tibia characters
+		v3.GET("/characters/character/:character", TibiaCharactersCharacterV3)
 
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
+		// Tibia creatures
+		v3.GET("/creatures", TibiaCreaturesOverviewV3)
+		v3.GET("/creatures/creature/:race", TibiaCreaturesCreatureV3)
 
-		// TibiaCreaturesOverviewV3
-		v3.GET("/creatures", func(c *gin.Context) {
-			result := TibiaCreaturesOverviewV3()
+		// Tibia fansites
+		v3.GET("/fansites", TibiaFansitesV3)
 
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
+		// Tibia guilds
+		v3.GET("/guilds/guild/:guild", TibiaGuildsGuildV3)
+		//v3.GET("/guilds/guild/:guild/events",TibiaGuildsGuildEventsV3)
+		//v3.GET("/guilds/guild/:guild/wars",TibiaGuildsGuildWarsV3)
+		v3.GET("/guilds/world/:world", TibiaGuildsOverviewV3)
 
-		// TibiaCreaturesCreatureV3
-		v3.GET("/creatures/creature/:creature", func(c *gin.Context) {
-			creature := c.Param("creature")
-			result := TibiaCreaturesCreatureV3(creature)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaFansitesV3
-		v3.GET("/fansites", func(c *gin.Context) {
-			result := TibiaFansitesV3()
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaHighscoresV3 (when not selecting category and vocation) (should maybe use redirect to full search?!)
+		// Tibia highscores
 		v3.GET("/highscores/world/:world", func(c *gin.Context) {
-			world := c.Param("world")
-			category := "experience"
-			vocation := TibiadataDefaultVoc
-			result := TibiaHighscoresV3(world, category, vocation)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
+			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/world/"+c.Param("world")+"/experience/"+TibiadataDefaultVoc)
 		})
-
-		// TibiaHighscoresV3 (when not selecting vocation) (should maybe use redirect to full search?!)
 		v3.GET("/highscores/world/:world/:category", func(c *gin.Context) {
-			world := c.Param("world")
-			category := c.Param("category")
-			vocation := TibiadataDefaultVoc
-			result := TibiaHighscoresV3(world, category, vocation)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
+			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/world/"+c.Param("world")+"/"+c.Param("category")+"/"+TibiadataDefaultVoc)
 		})
+		v3.GET("/highscores/world/:world/:category/:vocation", TibiaHighscoresV3)
 
-		// TibiaHighscoresV3 (when selecting including vocation)
-		v3.GET("/highscores/world/:world/:category/:vocation", func(c *gin.Context) {
-			world := c.Param("world")
-			category := c.Param("category")
-			vocation := c.Param("vocation")
-			result := TibiaHighscoresV3(world, category, vocation)
+		// Tibia killstatistics
+		v3.GET("/killstatistics/world/:world", TibiaKillstatisticsV3)
 
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
+		// Tibia spells
+		v3.GET("/spells", TibiaSpellsOverviewV3)
+		v3.GET("/spells/spell/:spell", TibiaSpellsSpellV3)
+		v3.GET("/spells/vocation/:vocation", TibiaSpellsOverviewV3)
 
-
-		// TibiaKillstatisticsV3
-		v3.GET("/killstatistics/world/:world", func(c *gin.Context) {
-			world := c.Param("world")
-			result := TibiaKillstatisticsV3(world)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaSpellsOverviewV3 (with filtered as all)
-		v3.GET("/spells", func(c *gin.Context) {
-			vocation := TibiadataDefaultVoc
-			result := TibiaSpellsOverviewV3(vocation)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaSpellsSpellV3
-		v3.GET("/spells/spell/:spell", func(c *gin.Context) {
-			spell := c.Param("spell")
-			result := TibiaSpellsSpellV3(spell)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaSpellsOverviewV3 (with vocation filter)
-		v3.GET("/spells/vocation/:vocation", func(c *gin.Context) {
-			vocation := c.Param("vocation")
-			result := TibiaSpellsOverviewV3(vocation)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaWorldsOverviewV3
-		v3.GET("/worlds", func(c *gin.Context) {
-			result := TibiaWorldsOverviewV3()
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaWorldsWorldV3
-		v3.GET("/worlds/world/:world", func(c *gin.Context) {
-			world := c.Param("world")
-			result := TibiaWorldsWorldV3(world)
-
-			c.Header("Content-Type", "application/json; charset=UTF-8")
-			c.String(200, result)
-		})
-
-		// TibiaBazaarAuctionV3
-        v3.GET("/charbazaar/auction/:id", func(c *gin.Context) {
-            id := c.Param("id")
-            result := TibiaCharbazaarAuctionV3(id)
-
-            c.Header("Content-Type", "application/json; charset=UTF-8")
-            c.String(200, result)
-        })
+		// Tibia worlds
+		v3.GET("/worlds", TibiaWorldsOverviewV3)
+		v3.GET("/worlds/world/:world", TibiaWorldsWorldV3)
 	}
 
 	// container version details endpoint
@@ -226,7 +152,57 @@ func main() {
 	})
 
 	// Start the router
-	router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	_ = router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+}
+
+// TibiaDataInitializer func - init things at beginning
+func TibiaDataInitializer() {
+	// setting TibiadataBuildEdition
+	if isEnvExist("TIBIADATA_EDITION") {
+		TibiadataBuildEdition = getEnv("TIBIADATA_EDITION", "open-source")
+	}
+
+	// generating TibiadataUserAgent with TibiadataUserAgentGenerator function
+	TibiadataUserAgent = TibiadataUserAgentGenerator(TibiadataAPIversion)
+}
+
+/*
+// TibiaDataAPIHandleErrorResponse func - handling of responses..
+func TibiaDataAPIHandleErrorResponse(c *gin.Context, s1 string, s2 string, s3 string) {
+	if TibiadataDebug {
+		log.Println("[error] " + s1 + " - (" + c.Request.RequestURI + "). " + s2 + "; " + s3)
+	}
+
+	// return error response
+	c.JSON(http.StatusOK, gin.H{"error": s2})
+}
+
+// TibiaDataAPIHandleOtherResponse func - handling of responses..
+func TibiaDataAPIHandleOtherResponse(c *gin.Context, httpCode int, s string, j interface{}) {
+	if TibiadataDebug {
+		log.Println("[info] " + s + " - (" + c.Request.RequestURI + ") executed successfully.")
+	}
+
+	// return successful response (with specific status code)
+	c.JSON(httpCode, j)
+}
+*/
+
+// TibiaDataAPIHandleSuccessResponse func - handling of responses..
+func TibiaDataAPIHandleSuccessResponse(c *gin.Context, s string, j interface{}) {
+	// print to log about request
+	if gin.IsDebugging() {
+		log.Println("[debug] " + s + " - (" + c.Request.RequestURI + ") returned data:")
+		js, _ := json.Marshal(j)
+		log.Printf("[debug] %s\n", js)
+	}
+
+	if TibiadataDebug {
+		log.Println("[info] " + s + " - (" + c.Request.RequestURI + ") executed successfully.")
+	}
+
+	// return successful response
+	c.JSON(http.StatusOK, j)
 }
 
 // TibiadataUserAgentGenerator func - creates User-Agent for requests
@@ -239,11 +215,6 @@ func TibiadataUserAgentGenerator(version int) string {
 	TibiadataHost := getEnv("TIBIADATA_UA_HOSTNAME", "")
 	if TibiadataHost != "" {
 		TibiadataHost = "+https://" + TibiadataHost
-	}
-
-	// setting TibiadataBuildEdition
-	if isEnvExist("TIBIADATA_EDITION") {
-		TibiadataBuildEdition = getEnv("TIBIADATA_EDITION", "open-source")
 	}
 
 	// adding details in parenthesis
@@ -277,7 +248,7 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 	// Set headers for all requests
 	client.SetHeaders(map[string]string{
 		"Content-Type": "application/json",
-		"User-Agent":   TibiadataUserAgentGenerator(TibiadataAPIversion),
+		"User-Agent":   TibiadataUserAgent,
 	})
 
 	// Enabling Content length value for all request
@@ -297,18 +268,18 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 
 		// Check if page is in maintenance mode
 		if res.StatusCode() == 302 {
-			log.Printf("[info] TibiadataHTMLDataCollectorV3 (URL: %s): Page tibia.com returns 302, probably maintenance mode enabled. ", TibiaURL)
-
-			// TODO
-			// do response with maintenance mode..
+			log.Printf("[info] TibiadataHTMLDataCollectorV3 (URL: %s): Page tibia.com returns 302, probably maintenance mode enabled?", TibiaURL)
 		}
 	}
 
-	// Convert string to io.Reader
-	res_io := strings.NewReader(res.String())
+	// Convert body to io.Reader
+	resIo := bytes.NewReader(res.Body())
+
+	// wrap reader in a converting reader from ISO 8859-1 to UTF-8
+	resIo2 := TibiaDataConvertEncodingtoUTF8(resIo)
 
 	// Load the HTML document
-	doc, err := goquery.NewDocumentFromReader(res_io)
+	doc, err := goquery.NewDocumentFromReader(resIo2)
 	if err != nil {
 		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) error: %s", TibiaURL, err)
 	}
@@ -319,29 +290,19 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 		log.Fatal(err)
 	}
 
-	// convert string from eg "&nbsp;" to " "
-	data = html.UnescapeString(data)
-	data = strings.ReplaceAll(data, "&nbsp;", " ")
-
-	// convert string from ISO 8859-1 to UTF-8
-	data, _ = TibiaDataConvertEncodingtoUTF8(data)
-
 	// Return of extracted html to functions..
-	return string(data)
+	return data
 }
 
 // TibiadataHTMLRemoveLinebreaksV3 func
 func TibiadataHTMLRemoveLinebreaksV3(data string) string {
-	return string(strings.ReplaceAll(data, "\n", ""))
+	return strings.ReplaceAll(data, "\n", "")
 }
 
 // TibiadataRemoveURLsV3 func
 func TibiadataRemoveURLsV3(data string) string {
 	// prepare return value
 	var returnData string
-
-	// convert string from UTF8 to ISO88591
-	data, _ = TibiaDataConvertEncodingtoISO88591(data)
 
 	// Regex to remove URLs
 	regex := regexp.MustCompile(`<a.*>(.*)<\/a>`)
@@ -352,33 +313,34 @@ func TibiadataRemoveURLsV3(data string) string {
 	} else {
 		returnData = ""
 	}
-	return string(returnData)
+	return returnData
 }
 
 // TibiadataStringWorldFormatToTitleV3 func
 func TibiadataStringWorldFormatToTitleV3(world string) string {
-	return string(strings.Title(strings.ToLower(world)))
+	return strings.Title(strings.ToLower(world))
 }
 
 // TibiadataUnescapeStringV3 func
 func TibiadataUnescapeStringV3(data string) string {
-	//	data, _ = TibiaDataConvertEncodingtoUTF8(data)
-	return string(html.UnescapeString(data))
+	return html.UnescapeString(data)
 }
 
-// TibiadataQueryEscapeStringV3 func
+// TibiadataQueryEscapeStringV3 func - encode string to be correct formatted
 func TibiadataQueryEscapeStringV3(data string) string {
+	// switching "+" to " "
+	data = strings.ReplaceAll(data, "+", " ")
+
+	// encoding string to latin-1
 	data, _ = TibiaDataConvertEncodingtoISO88591(data)
-	return string(url.QueryEscape(data))
+
+	// returning with QueryEscape function
+	return url.QueryEscape(data)
 }
 
 // TibiadataDatetimeV3 func
 func TibiadataDatetimeV3(date string) string {
-
 	var returnDate string
-
-	// we need to use TibiaDataConvertEncodingtoISO88591 so that the parser doens't complain
-	date, _ = TibiaDataConvertEncodingtoISO88591(date)
 
 	// If statement to determine if date string is filled or empty
 	if date == "" {
@@ -426,9 +388,6 @@ func TibiadataDatetimeV3(date string) string {
 
 // TibiadataDateV3 func
 func TibiadataDateV3(date string) string {
-	// we need to use TibiaDataConvertEncodingtoISO88591 so that the parser doens't complain
-	date, _ = TibiaDataConvertEncodingtoISO88591(date)
-
 	// use regex to skip weird formatting on "spaces"
 	regex1 := regexp.MustCompile(`([a-zA-Z]{3}).*([0-9]{2}).*([0-9]{4})`)
 	subma1 := regex1.FindAllStringSubmatch(date, -1)
@@ -453,7 +412,7 @@ func TibiadataStringToIntegerV3(data string) int {
 	returnData, _ := strconv.Atoi(processedString)
 
 	// Return of formatted date and time string to functions..
-	return int(returnData)
+	return returnData
 }
 
 // match html tag and replace it with ""
@@ -481,9 +440,8 @@ func TibiaDataConvertEncodingtoISO88591(data string) (string, error) {
 }
 
 // TibiaDataConvertEncodingtoUTF8 func - convert string from latin1 (ISO 8859-1) to UTF-8
-func TibiaDataConvertEncodingtoUTF8(data string) (string, error) {
-	data, err := charmap.ISO8859_1.NewDecoder().String(data)
-	return data, err
+func TibiaDataConvertEncodingtoUTF8(data io.Reader) io.Reader {
+	return charmap.ISO8859_1.NewDecoder().Reader(data)
 }
 
 // isEnvExist func - check if environment var is set
@@ -492,6 +450,21 @@ func isEnvExist(key string) bool {
 		return true
 	}
 	return false
+}
+
+// TibiaDataSanitizeEscapedString func - run unescape string on string
+func TibiaDataSanitizeEscapedString(data string) string {
+	return html.UnescapeString(data)
+}
+
+// TibiaDataSanitizeDoubleQuoteString func - replaces double quotes to single quotes in strings
+func TibiaDataSanitizeDoubleQuoteString(data string) string {
+	return strings.ReplaceAll(data, "\"", "'")
+}
+
+// TibiaDataSanitizeNbspSpaceString func - replaces weird \u00A0 string to real space
+func TibiaDataSanitizeNbspSpaceString(data string) string {
+	return strings.ReplaceAll(data, "\u00A0", " ")
 }
 
 // getEnv func - read an environment or return a default value
@@ -530,3 +503,33 @@ func getEnvAsInt(name string, defaultVal int) int {
 	return defaultVal
 }
 */
+
+// TibiaDataVocationValidator func - return valid vocation string and vocation id
+func TibiaDataVocationValidator(vocation string) (string, string) {
+	// defining return vars
+	var vocationid string
+
+	switch strings.ToLower(vocation) {
+	case "none":
+		vocationid = "1"
+		vocation = "none"
+	case "knight", "knights":
+		vocationid = "2"
+		vocation = "knights"
+	case "paladin", "paladins":
+		vocationid = "3"
+		vocation = "paladins"
+	case "sorcerer", "sorcerers":
+		vocationid = "4"
+		vocation = "sorcerers"
+	case "druid", "druids":
+		vocationid = "5"
+		vocation = "druids"
+	default:
+		vocationid = "0"
+		vocation = "all"
+	}
+
+	// returning vars
+	return vocation, vocationid
+}

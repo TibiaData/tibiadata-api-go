@@ -1,17 +1,21 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-gonic/gin"
 )
 
 // TibiaHighscoresV3 func
-func TibiaHighscoresV3(world string, category string, vocation string) string {
+func TibiaHighscoresV3(c *gin.Context) {
+
+	// getting params from URL
+	world := c.Param("world")
+	category := c.Param("category")
+	vocation := c.Param("vocation")
 
 	// do some validation of category and vocation
 	// maybe return error on faulty value?!
@@ -45,7 +49,7 @@ func TibiaHighscoresV3(world string, category string, vocation string) string {
 
 	// Adding fix for First letter to be upper and rest lower
 	if strings.EqualFold(world, "all") {
-		world = "ALL"
+		world = ""
 	} else {
 		world = TibiadataStringWorldFormatToTitleV3(world)
 	}
@@ -102,31 +106,8 @@ func TibiaHighscoresV3(world string, category string, vocation string) string {
 		category = "experience"
 	}
 
-	// Sanitize of vocation value and assigning correct vocationid for request
-	var vocationid string
-	vocationid = "0"
-	if len(vocation) > 0 {
-		if strings.EqualFold(vocation, "none") {
-			vocationid = "1"
-			vocation = "none"
-		} else if strings.EqualFold(vocation, "knight") || strings.EqualFold(vocation, "knights") {
-			vocationid = "2"
-			vocation = "knights"
-		} else if strings.EqualFold(vocation, "paladin") || strings.EqualFold(vocation, "paladins") {
-			vocationid = "3"
-			vocation = "paladins"
-		} else if strings.EqualFold(vocation, "sorcerer") || strings.EqualFold(vocation, "sorcerers") {
-			vocationid = "4"
-			vocation = "sorcerers"
-		} else if strings.EqualFold(vocation, "druid") || strings.EqualFold(vocation, "druids") {
-			vocationid = "5"
-			vocation = "druids"
-		} else {
-			vocation = "all"
-		}
-	} else {
-		vocation = "all"
-	}
+	// Sanitize of vocation input
+	vocationName, vocationid := TibiaDataVocationValidator(vocation)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/community/?subtopic=highscores&world=" + TibiadataQueryEscapeStringV3(world) + "&category=" + TibiadataQueryEscapeStringV3(categoryid) + "&profession=" + TibiadataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000")
@@ -140,8 +121,7 @@ func TibiaHighscoresV3(world string, category string, vocation string) string {
 	// Creating empty HighscoreData var
 	var HighscoreData []Highscore
 	var HighscoreDataVocation, HighscoreDataWorld, HighscoreDataTitle string
-	var HighscoreDataRank, HighscoreDataLevel, HighscoreDataValue int
-	var HighscoreAge int = 0
+	var HighscoreDataRank, HighscoreDataLevel, HighscoreDataValue, HighscoreAge int
 
 	// getting age of data
 	regex1 := regexp.MustCompile(`.*<div class="Text">Highscores.*Last Update: ([0-9]+) minutes ago.*`)
@@ -218,7 +198,7 @@ func TibiaHighscoresV3(world string, category string, vocation string) string {
 
 			HighscoreData = append(HighscoreData, Highscore{
 				Rank:     HighscoreDataRank,
-				Name:     subma1[0][1],
+				Name:     TibiaDataSanitizeEscapedString(subma1[0][1]),
 				Vocation: HighscoreDataVocation,
 				World:    HighscoreDataWorld,
 				Level:    HighscoreDataLevel,
@@ -240,7 +220,7 @@ func TibiaHighscoresV3(world string, category string, vocation string) string {
 		Highscores{
 			World:         strings.Title(strings.ToLower(world)),
 			Category:      category,
-			Vocation:      vocation,
+			Vocation:      vocationName,
 			HighscoreAge:  HighscoreAge,
 			HighscoreList: HighscoreData,
 		},
@@ -250,9 +230,6 @@ func TibiaHighscoresV3(world string, category string, vocation string) string {
 		},
 	}
 
-	js, _ := json.Marshal(jsonData)
-	if TibiadataDebug {
-		fmt.Printf("%s\n", js)
-	}
-	return string(js)
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaHighscoresV3", jsonData)
 }

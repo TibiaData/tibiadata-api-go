@@ -121,10 +121,10 @@ func main() {
 
 		// Tibia highscores
 		v3.GET("/highscores/world/:world", func(c *gin.Context) {
-			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/experience/"+TibiadataDefaultVoc)
+			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/world/"+c.Param("world")+"/experience/"+TibiadataDefaultVoc)
 		})
 		v3.GET("/highscores/world/:world/:category", func(c *gin.Context) {
-			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/"+c.Param("category")+"/"+TibiadataDefaultVoc)
+			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/world/"+c.Param("world")+"/"+c.Param("category")+"/"+TibiadataDefaultVoc)
 		})
 		v3.GET("/highscores/world/:world/:category/:vocation", TibiaHighscoresV3)
 

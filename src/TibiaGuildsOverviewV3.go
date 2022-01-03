@@ -62,7 +62,7 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 		}
 
 		// Removing linebreaks from HTML
-		//GuildsDivHTML = TibiadataHTMLRemoveLinebreaksV3(GuildsDivHTML)
+		GuildsDivHTML = TibiadataHTMLRemoveLinebreaksV3(GuildsDivHTML)
 
 		if GuildCategory == "" && strings.Contains(GuildsDivHTML, "<td width=\"64\"><b>Logo</b></td>") {
 			GuildCategory = "active"

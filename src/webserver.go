@@ -30,8 +30,9 @@ var TibiadataDefaultVoc string = "all"
 var TibiadataAPIversion int = 3
 var TibiadataDebug bool
 
-// Tibiadata app user-agent
+// Tibiadata app resty vars
 var TibiadataUserAgent string
+var TibiadataProxyDomain string
 
 // Tibiadata app details set to release/build on GitHub
 var TibiadataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
@@ -164,6 +165,12 @@ func TibiaDataInitializer() {
 
 	// generating TibiadataUserAgent with TibiadataUserAgentGenerator function
 	TibiadataUserAgent = TibiadataUserAgentGenerator(TibiadataAPIversion)
+
+	// setting TibiadataProxyDomain
+	if isEnvExist("TIBIADATA_PROXY") {
+		TibiadataProxyDomain = "https://" + getEnv("TIBIADATA_PROXY", "www.tibia.com") + "/"
+	}
+
 }
 
 /*
@@ -256,6 +263,11 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 
 	// Disable redirection of client (so we skip parsing maintenance page)
 	client.SetRedirectPolicy(resty.NoRedirectPolicy())
+
+	// Replace domain with proxy if env TIBIADATA_PROXY set
+	if TibiadataProxyDomain != "" {
+		TibiaURL = strings.ReplaceAll(TibiaURL, "https://www.tibia.com/", TibiadataProxyDomain)
+	}
 
 	res, err := client.R().Get(TibiaURL)
 	if err != nil {

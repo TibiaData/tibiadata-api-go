@@ -118,6 +118,9 @@ func runWebServer() {
 		// Tibia worlds
 		v3.GET("/worlds", tibiaWorldsOverviewV3)
 		v3.GET("/worlds/world/:world", tibiaWorldsWorldV3)
+
+		// TibiaBazaarAuctionV3
+		v3.GET("/charbazaar/auction/:id", TibiaCharbazaarAuctionV3)
 	}
 
 	// container version details endpoint

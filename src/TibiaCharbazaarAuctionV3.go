@@ -12,18 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// AjaxResponseObject - child of AjaxJSONData
-type AjaxResponseObject struct {
-	Data     string `json:"Data"`
-	DataType string `json:"DataType"`
-	Target   string `json:"Target"`
-}
-
-// AjaxJSONData - base response for auction items page links
-type AjaxJSONData struct {
-	AjaxObjects []AjaxResponseObject `json:"AjaxObjects"`
-}
-
 // TibiaCharbazaarAuctionV3 func
 func TibiaCharbazaarAuctionV3(c *gin.Context) {
 
@@ -162,19 +150,19 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 	}
 
 	// Extract details section
-	var _Details Details
+	var details Details
 	ReaderHTML.Find(".Auction").Each(func(index int, s *goquery.Selection) {
 		detailsHeader := strings.Split(s.Find(".AuctionHeader").Text(), "Level: ")
-		_Details.CharacterName = detailsHeader[0]
+		details.CharacterName = detailsHeader[0]
 
 		detailsHeader = strings.Split(detailsHeader[1], "|")
 
 		level := TibiadataStringToIntegerV3(detailsHeader[0])
 
-		_Details.Level = level
-		_Details.Vocation = strings.TrimSpace(strings.Split(detailsHeader[1], "Vocation: ")[1])
-		_Details.Gender = strings.TrimSpace(detailsHeader[2])
-		_Details.World = strings.TrimSpace(strings.Split(detailsHeader[3], "World: ")[1])
+		details.Level = level
+		details.Vocation = strings.TrimSpace(strings.Split(detailsHeader[1], "Vocation: ")[1])
+		details.Gender = strings.TrimSpace(detailsHeader[2])
+		details.World = strings.TrimSpace(strings.Split(detailsHeader[3], "World: ")[1])
 
 		s.Find(".ShortAuctionData").Each(func(index int, s *goquery.Selection) {
 			nodes := s.Children().Nodes
@@ -193,13 +181,13 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 			auctionEndDate := TibiaDataSanitizeNbspSpaceString(nodes[3+lookupIndex].FirstChild.Data)
 			auctionEndDate = strings.Split(auctionEndDate, " CET")[0] + ":00 CET"
 
-			_Details.AuctionStart = TibiadataDatetimeV3(auctionStartDate)
-			_Details.AuctionEnd = TibiadataDatetimeV3(auctionEndDate)
+			details.AuctionStart = TibiadataDatetimeV3(auctionStartDate)
+			details.AuctionEnd = TibiadataDatetimeV3(auctionEndDate)
 
 			bidType := strings.Split(nodes[4+lookupIndex].FirstChild.FirstChild.Data, " Bid:")[0]
 			bidAmount := TibiadataStringToIntegerV3(nodes[4+lookupIndex].LastChild.FirstChild.FirstChild.Data)
 
-			_Details.Bid = Bid{
+			details.Bid = Bid{
 				Type:   bidType,
 				Amount: bidAmount,
 			}
@@ -207,7 +195,7 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 	})
 
 	// Extract general section
-	var _General General
+	var general General
 	ReaderHTML.Find("#General").Each(func(index int, s *goquery.Selection) {
 
 		// General
@@ -223,160 +211,150 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 				TibiadataStringToIntegerV3(s.Nodes[0].NextSibling.FirstChild.Data)
 		})
 
-		_General.HitPoints = TibiadataStringToIntegerV3(generalMap["Hit Points"])
-		_General.Mana = TibiadataStringToIntegerV3(generalMap["Mana"])
-		_General.Capacity = TibiadataStringToIntegerV3(generalMap["Capacity"])
-		_General.Speed = TibiadataStringToIntegerV3(generalMap["Speed"])
-		_General.Blessings = TibiadataStringToIntegerV3(strings.Split(generalMap["Blessings"], "/")[0])
-		_General.Mounts = TibiadataStringToIntegerV3(generalMap["Mounts"])
-		_General.Outfits = TibiadataStringToIntegerV3(generalMap["Outfits"])
-		_General.Titles = TibiadataStringToIntegerV3(generalMap["Titles"])
-		_General.AxeFighting = skillsMap["Axe Fighting"]
-		_General.ClubFighting = skillsMap["Club Fighting"]
-		_General.DistanceFighting = skillsMap["Distance Fighting"]
-		_General.Fishing = skillsMap["Fishing"]
-		_General.FistFighting = skillsMap["Fist Fighting"]
-		_General.MagicLevel = skillsMap["Magic Level"]
-		_General.Shielding = skillsMap["Shielding"]
-		_General.SwordFighting = skillsMap["Sword Fighting"]
-		_General.CreationDate = TibiadataDatetimeV3(generalMap["Creation Date"])
-		_General.Experience = TibiadataStringToIntegerV3(generalMap["Experience"])
-		_General.Gold = TibiadataStringToIntegerV3(generalMap["Gold"])
-		_General.AchievementPoints = TibiadataStringToIntegerV3(generalMap["Achievement Points"])
-		_General.RegularWorldTransfer = generalMap["Regular World Transfer"]
-		_General.CharmExpansion = strings.EqualFold(generalMap["Charm Expansion"], "yes")
-		_General.AvailableCharmPoints = TibiadataStringToIntegerV3(generalMap["Available Charm Points"])
-		_General.SpentCharmPoints = TibiadataStringToIntegerV3(generalMap["Spent Charm Points"])
-		_General.DailyRewardStreak = TibiadataStringToIntegerV3(generalMap["Daily Reward Streak"])
-		_General.HuntingTaskPoints = TibiadataStringToIntegerV3(generalMap["Hunting Task Points"])
-		_General.PermanentHuntingTaskSlots = TibiadataStringToIntegerV3(generalMap["Permanent Hunting Task Slots"])
-		_General.PermanentPreySlots = TibiadataStringToIntegerV3(generalMap["Permanent Prey Slots"])
-		_General.PreyWildCards = TibiadataStringToIntegerV3(generalMap["Prey Wildcards"])
-		_General.Hirelings = TibiadataStringToIntegerV3(generalMap["Hirelings"])
-		_General.HirelingJobs = TibiadataStringToIntegerV3(generalMap["Hireling Jobs"])
-		_General.HirelingOutfits = TibiadataStringToIntegerV3(generalMap["Hireling Outfits"])
-		_General.ExaltedDust = TibiadataStringToIntegerV3(strings.Split(generalMap["Exalted Dust"], "/")[0])
+		general.HitPoints = TibiadataStringToIntegerV3(generalMap["Hit Points"])
+		general.Mana = TibiadataStringToIntegerV3(generalMap["Mana"])
+		general.Capacity = TibiadataStringToIntegerV3(generalMap["Capacity"])
+		general.Speed = TibiadataStringToIntegerV3(generalMap["Speed"])
+		general.Blessings = TibiadataStringToIntegerV3(strings.Split(generalMap["Blessings"], "/")[0])
+		general.Mounts = TibiadataStringToIntegerV3(generalMap["Mounts"])
+		general.Outfits = TibiadataStringToIntegerV3(generalMap["Outfits"])
+		general.Titles = TibiadataStringToIntegerV3(generalMap["Titles"])
+		general.AxeFighting = skillsMap["Axe Fighting"]
+		general.ClubFighting = skillsMap["Club Fighting"]
+		general.DistanceFighting = skillsMap["Distance Fighting"]
+		general.Fishing = skillsMap["Fishing"]
+		general.FistFighting = skillsMap["Fist Fighting"]
+		general.MagicLevel = skillsMap["Magic Level"]
+		general.Shielding = skillsMap["Shielding"]
+		general.SwordFighting = skillsMap["Sword Fighting"]
+		general.CreationDate = TibiadataDatetimeV3(generalMap["Creation Date"])
+		general.Experience = TibiadataStringToIntegerV3(generalMap["Experience"])
+		general.Gold = TibiadataStringToIntegerV3(generalMap["Gold"])
+		general.AchievementPoints = TibiadataStringToIntegerV3(generalMap["Achievement Points"])
+		general.RegularWorldTransfer = generalMap["Regular World Transfer"]
+		general.CharmExpansion = strings.EqualFold(generalMap["Charm Expansion"], "yes")
+		general.AvailableCharmPoints = TibiadataStringToIntegerV3(generalMap["Available Charm Points"])
+		general.SpentCharmPoints = TibiadataStringToIntegerV3(generalMap["Spent Charm Points"])
+		general.DailyRewardStreak = TibiadataStringToIntegerV3(generalMap["Daily Reward Streak"])
+		general.HuntingTaskPoints = TibiadataStringToIntegerV3(generalMap["Hunting Task Points"])
+		general.PermanentHuntingTaskSlots = TibiadataStringToIntegerV3(generalMap["Permanent Hunting Task Slots"])
+		general.PermanentPreySlots = TibiadataStringToIntegerV3(generalMap["Permanent Prey Slots"])
+		general.PreyWildCards = TibiadataStringToIntegerV3(generalMap["Prey Wildcards"])
+		general.Hirelings = TibiadataStringToIntegerV3(generalMap["Hirelings"])
+		general.HirelingJobs = TibiadataStringToIntegerV3(generalMap["Hireling Jobs"])
+		general.HirelingOutfits = TibiadataStringToIntegerV3(generalMap["Hireling Outfits"])
+		general.ExaltedDust = TibiadataStringToIntegerV3(strings.Split(generalMap["Exalted Dust"], "/")[0])
 	})
 
 	// Extract items summary
-	var _ItemSummary []Item
+	var itemSummary []Item
 	ReaderHTML.Find("#ItemSummary").Each(func(index int, s *goquery.Selection) {
 
 		for k, v := range ParseItems(s) {
-			_ItemSummary = append(_ItemSummary, Item{Name: k, Amount: v})
+			itemSummary = append(itemSummary, Item{Name: k, Amount: v})
 		}
 
-		totalPages := s.Find(".PageLink").Size()
+		totalPages := s.Find(PageLinkSelector).Size()
 		if totalPages > 1 {
 			// Fetch missing pages using links
-			for i := 2; i <= totalPages; i++ {
-				itemPage := AjaxJSONDataCollectorV3(
-					"https://www.tibia.com/websiteservices/handle_charactertrades.php?auctionid=" + strconv.Itoa(id) +
-						"&type=0&currentpage=" + strconv.Itoa(i))
+			for pageIndex := 2; pageIndex <= totalPages; pageIndex++ {
+				itemPage := AjaxJSONDataCollectorV3(id, ItemSummarySection, pageIndex)
 				ItemPageReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(itemPage))
 				if err != nil {
 					log.Fatal(err)
 				}
 				for k, v := range ParseItems(ItemPageReaderHTML.Contents()) {
-					_ItemSummary = append(_ItemSummary, Item{Name: k, Amount: v})
+					itemSummary = append(itemSummary, Item{Name: k, Amount: v})
 				}
 			}
 		}
 	})
 
 	// Extract store items summary
-	var _StoreItemSummary []Item
+	var storeItemSummary []Item
 	ReaderHTML.Find("#StoreItemSummary").Each(func(index int, s *goquery.Selection) {
 
 		for k, v := range ParseItems(s) {
-			_StoreItemSummary = append(_StoreItemSummary, Item{Name: k, Amount: v})
+			storeItemSummary = append(storeItemSummary, Item{Name: k, Amount: v})
 		}
 
-		totalPages := s.Find(".PageLink").Size()
+		totalPages := s.Find(PageLinkSelector).Size()
 		if totalPages > 1 {
 			// Fetch missing pages using links
-			for i := 2; i <= totalPages; i++ {
-				itemPage := AjaxJSONDataCollectorV3(
-					"https://www.tibia.com/websiteservices/handle_charactertrades.php?auctionid=" + strconv.Itoa(id) +
-						"&type=1&currentpage=" + strconv.Itoa(i))
+			for pageIndex := 2; pageIndex <= totalPages; pageIndex++ {
+				itemPage := AjaxJSONDataCollectorV3(id, StoreItemSummarySection, pageIndex)
 				ItemPageReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(itemPage))
 				if err != nil {
 					log.Fatal(err)
 				}
 				for k, v := range ParseItems(ItemPageReaderHTML.Contents()) {
-					_StoreItemSummary = append(_StoreItemSummary, Item{Name: k, Amount: v})
+					storeItemSummary = append(storeItemSummary, Item{Name: k, Amount: v})
 				}
 			}
 		}
 	})
 
 	// Extract mounts
-	var _Mounts []string
+	var mounts []string
 	ReaderHTML.Find("#Mounts").Each(func(index int, s *goquery.Selection) {
 
-		_Mounts = append(_Mounts, ParseMounts(s)...)
+		mounts = append(mounts, ParseMounts(s)...)
 
-		totalPages := s.Find(".PageLink").Size()
+		totalPages := s.Find(PageLinkSelector).Size()
 		if totalPages > 1 {
 			// Fetch missing pages using links
-			for i := 2; i <= totalPages; i++ {
-				mountsPage := AjaxJSONDataCollectorV3(
-					"https://www.tibia.com/websiteservices/handle_charactertrades.php?auctionid=" + strconv.Itoa(id) +
-						"&type=2&currentpage=" + strconv.Itoa(i))
+			for pageIndex := 2; pageIndex <= totalPages; pageIndex++ {
+				mountsPage := AjaxJSONDataCollectorV3(id, MountsSection, pageIndex)
 				MountsPageReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(mountsPage))
 				if err != nil {
 					log.Fatal(err)
 				}
-				_Mounts = append(_Mounts, ParseMounts(MountsPageReaderHTML.Contents())...)
+				mounts = append(mounts, ParseMounts(MountsPageReaderHTML.Contents())...)
 			}
 		}
 	})
 
 	// Extract store mounts
-	var _StoreMounts []string
+	var storeMounts []string
 	ReaderHTML.Find("#StoreMounts").Each(func(index int, s *goquery.Selection) {
 
-		_StoreMounts = append(_StoreMounts, ParseMounts(s)...)
+		storeMounts = append(storeMounts, ParseMounts(s)...)
 
-		totalPages := s.Find(".PageLink").Size()
+		totalPages := s.Find(PageLinkSelector).Size()
 		if totalPages > 1 {
 			// Fetch missing pages using links
-			for i := 2; i <= totalPages; i++ {
-				mountsPage := AjaxJSONDataCollectorV3(
-					"https://www.tibia.com/websiteservices/handle_charactertrades.php?auctionid=" + strconv.Itoa(id) +
-						"&type=3&currentpage=" + strconv.Itoa(i))
+			for pageIndex := 2; pageIndex <= totalPages; pageIndex++ {
+				mountsPage := AjaxJSONDataCollectorV3(id, StoreMountsSection, pageIndex)
 				MountsPageReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(mountsPage))
 				if err != nil {
 					log.Fatal(err)
 				}
-				_StoreMounts = append(_StoreMounts, ParseMounts(MountsPageReaderHTML.Contents())...)
+				storeMounts = append(storeMounts, ParseMounts(MountsPageReaderHTML.Contents())...)
 			}
 		}
 	})
 
 	// Extract outfits
-	var _Outfits []Outfit
+	var outfits []Outfit
 	ReaderHTML.Find("#Outfits").Each(func(index int, s *goquery.Selection) {
 		for k, v := range ParseOutfits(s) {
-			_Outfits = append(_Outfits, Outfit{
+			outfits = append(outfits, Outfit{
 				Name:   k,
 				Addon1: v[0],
 				Addon2: v[1],
 			})
 		}
-		totalPages := s.Find(".PageLink").Size()
+		totalPages := s.Find(PageLinkSelector).Size()
 		if totalPages > 1 {
 			// Fetch missing pages using links
-			for i := 2; i <= totalPages; i++ {
-				outfitsPage := AjaxJSONDataCollectorV3(
-					"https://www.tibia.com/websiteservices/handle_charactertrades.php?auctionid=" + strconv.Itoa(id) +
-						"&type=4&currentpage=" + strconv.Itoa(i))
+			for pageIndex := 2; pageIndex <= totalPages; pageIndex++ {
+				outfitsPage := AjaxJSONDataCollectorV3(id, OutfitsSection, pageIndex)
 				OutfitsPageReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(outfitsPage))
 				if err != nil {
 					log.Fatal(err)
 				}
 				for k, v := range ParseOutfits(OutfitsPageReaderHTML.Contents()) {
-					_Outfits = append(_Outfits, Outfit{
+					outfits = append(outfits, Outfit{
 						Name:   k,
 						Addon1: v[0],
 						Addon2: v[1],
@@ -387,28 +365,26 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 	})
 
 	// Extract store outfits
-	var _StoreOutfits []Outfit
+	var storeOutfits []Outfit
 	ReaderHTML.Find("#StoreOutfits").Each(func(index int, s *goquery.Selection) {
 		for k, v := range ParseOutfits(s) {
-			_Outfits = append(_Outfits, Outfit{
+			outfits = append(outfits, Outfit{
 				Name:   k,
 				Addon1: v[0],
 				Addon2: v[1],
 			})
 		}
-		totalPages := s.Find(".PageLink").Size()
+		totalPages := s.Find(PageLinkSelector).Size()
 		if totalPages > 1 {
 			// Fetch missing pages using links
-			for i := 2; i <= totalPages; i++ {
-				outfitsPage := AjaxJSONDataCollectorV3(
-					"https://www.tibia.com/websiteservices/handle_charactertrades.php?auctionid=" + strconv.Itoa(id) +
-						"&type=5&currentpage=" + strconv.Itoa(i))
+			for pageIndex := 2; pageIndex <= totalPages; pageIndex++ {
+				outfitsPage := AjaxJSONDataCollectorV3(id, StoreOutfitsSection, pageIndex)
 				OutfitsPageReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(outfitsPage))
 				if err != nil {
 					log.Fatal(err)
 				}
 				for k, v := range ParseOutfits(OutfitsPageReaderHTML.Contents()) {
-					_Outfits = append(_Outfits, Outfit{
+					outfits = append(outfits, Outfit{
 						Name:   k,
 						Addon1: v[0],
 						Addon2: v[1],
@@ -419,69 +395,69 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 	})
 
 	// Extract familiars
-	var _Familiars []string
+	var familiars []string
 	ReaderHTML.Find("#Familiars").Each(func(index int, s *goquery.Selection) {
-		s.Find(".CVIcon").Each(func(index int, s *goquery.Selection) {
+		s.Find(CVIconSelector).Each(func(index int, s *goquery.Selection) {
 			familiarName, exists := s.Attr("title")
 			if exists {
-				_Familiars = append(_Familiars, familiarName)
+				familiars = append(familiars, familiarName)
 			}
 		})
 	})
 
 	// Extract blessings
-	var _Blessings Blessings
+	var blessings Blessings
 	ReaderHTML.Find("#Blessings").Each(func(index int, s *goquery.Selection) {
-		s.Find(".Odd,.Even").Each(func(index int, s *goquery.Selection) {
+		s.Find(OddEvenSelector).Each(func(index int, s *goquery.Selection) {
 			node := s.Nodes[0].FirstChild
 			blessingsAmount := TibiadataStringToIntegerV3(strings.Split(node.FirstChild.Data, " x")[0])
 			switch blessingName := node.NextSibling.FirstChild.Data; blessingName {
 			case "Adventurer's Blessing":
-				_Blessings.AdventurersBlessing = blessingsAmount
+				blessings.AdventurersBlessing = blessingsAmount
 			case "Blood of the Mountain":
-				_Blessings.BloodOfTheMountain = blessingsAmount
+				blessings.BloodOfTheMountain = blessingsAmount
 			case "Embrace of Tibia":
-				_Blessings.EmbraceOfTibia = blessingsAmount
+				blessings.EmbraceOfTibia = blessingsAmount
 			case "Fire of the Suns":
-				_Blessings.FireOfTheSuns = blessingsAmount
+				blessings.FireOfTheSuns = blessingsAmount
 			case "Heart of the Mountain":
-				_Blessings.HeartOfTheMountain = blessingsAmount
+				blessings.HeartOfTheMountain = blessingsAmount
 			case "Spark of the Phoenix":
-				_Blessings.SparkOfThePhoenix = blessingsAmount
+				blessings.SparkOfThePhoenix = blessingsAmount
 			case "Spiritual Shielding":
-				_Blessings.SpiritualShielding = blessingsAmount
+				blessings.SpiritualShielding = blessingsAmount
 			case "Twist of Fate":
-				_Blessings.TwistOfFate = blessingsAmount
+				blessings.TwistOfFate = blessingsAmount
 			case "Wisdom of Solitude":
-				_Blessings.WisdomOfSolitude = blessingsAmount
+				blessings.WisdomOfSolitude = blessingsAmount
 			}
 		})
 	})
 
 	// Extract Imbuements
-	var _Imbuements []string
+	var imbuements []string
 	ReaderHTML.Find("#Imbuements").Each(func(index int, s *goquery.Selection) {
-		s.Find(".Odd,.Even").Each(func(index int, s *goquery.Selection) {
+		s.Find(OddEvenSelector).Each(func(index int, s *goquery.Selection) {
 			node := s.Nodes[0].FirstChild
 			if strings.Contains(node.FirstChild.Data, "No imbuements.") {
 				return
 			}
 			if !strings.Contains(node.Parent.Attr[0].Val, "IndicateMoreEntries") {
-				_Imbuements = append(_Imbuements, strings.TrimSpace(node.FirstChild.Data))
+				imbuements = append(imbuements, strings.TrimSpace(node.FirstChild.Data))
 			}
 		})
 	})
 
 	// Extract Charms
-	var _Charms []Charm
+	var charms []Charm
 	ReaderHTML.Find("#Charms").Each(func(index int, s *goquery.Selection) {
-		s.Find(".Odd,.Even").Each(func(index int, s *goquery.Selection) {
+		s.Find(OddEvenSelector).Each(func(index int, s *goquery.Selection) {
 			node := s.Nodes[0].FirstChild
 			if strings.Contains(node.FirstChild.Data, "No charms.") {
 				return
 			}
 			if !strings.Contains(node.Parent.Attr[0].Val, "IndicateMoreEntries") {
-				_Charms = append(_Charms, Charm{
+				charms = append(charms, Charm{
 					Cost: TibiadataStringToIntegerV3(node.FirstChild.Data),
 					Name: node.NextSibling.FirstChild.Data,
 				})
@@ -490,59 +466,59 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 	})
 
 	// Extract Completed Cyclopedia Map Areas
-	var _CompletedCyclopediaMapAreas []string
+	var completedCyclopediaMapAreas []string
 	ReaderHTML.Find("#CompletedCyclopediaMapAreas").Each(func(index int, s *goquery.Selection) {
-		s.Find(".Odd,.Even").Each(func(index int, s *goquery.Selection) {
+		s.Find(OddEvenSelector).Each(func(index int, s *goquery.Selection) {
 			node := s.Nodes[0].FirstChild
 			if strings.Contains(node.FirstChild.Data, "No areas explored.") {
 				return
 			}
 			if !strings.Contains(node.Parent.Attr[0].Val, "IndicateMoreEntries") {
-				_CompletedCyclopediaMapAreas = append(_CompletedCyclopediaMapAreas, strings.TrimSpace(node.FirstChild.Data))
+				completedCyclopediaMapAreas = append(completedCyclopediaMapAreas, strings.TrimSpace(node.FirstChild.Data))
 			}
 		})
 	})
 
 	// Extract Completed Quest Lines
-	var _CompletedQuestLines []string
+	var completedQuestLines []string
 	ReaderHTML.Find("#CompletedQuestLines").Each(func(index int, s *goquery.Selection) {
-		s.Find(".Odd,.Even").Each(func(index int, s *goquery.Selection) {
+		s.Find(OddEvenSelector).Each(func(index int, s *goquery.Selection) {
 			node := s.Nodes[0].FirstChild
 			if !strings.Contains(node.Parent.Attr[0].Val, "IndicateMoreEntries") {
-				_CompletedQuestLines = append(_CompletedQuestLines, strings.TrimSpace(node.FirstChild.Data))
+				completedQuestLines = append(completedQuestLines, strings.TrimSpace(node.FirstChild.Data))
 			}
 		})
 	})
 
 	// Extract Titles
-	var _Titles []string
+	var titles []string
 	ReaderHTML.Find("#Titles").Each(func(index int, s *goquery.Selection) {
-		s.Find(".Odd,.Even").Each(func(index int, s *goquery.Selection) {
+		s.Find(OddEvenSelector).Each(func(index int, s *goquery.Selection) {
 			node := s.Nodes[0].FirstChild
 			if !strings.Contains(node.Parent.Attr[0].Val, "IndicateMoreEntries") {
-				_Titles = append(_Titles, strings.TrimSpace(node.FirstChild.Data))
+				titles = append(titles, strings.TrimSpace(node.FirstChild.Data))
 			}
 		})
 	})
 
 	// Extract Achievements
-	var _Achievements []string
+	var achievements []string
 	ReaderHTML.Find("#Achievements").Each(func(index int, s *goquery.Selection) {
-		s.Find(".Odd,.Even").Each(func(index int, s *goquery.Selection) {
+		s.Find(OddEvenSelector).Each(func(index int, s *goquery.Selection) {
 			node := s.Nodes[0].FirstChild
 			if !strings.Contains(node.Parent.Attr[0].Val, "IndicateMoreEntries") {
-				_Achievements = append(_Achievements, strings.TrimSpace(node.FirstChild.Data))
+				achievements = append(achievements, strings.TrimSpace(node.FirstChild.Data))
 			}
 		})
 	})
 
 	// Extract Bestiary Progress
-	var _BestiaryProgress []BestiaryEntry
+	var bestiaryProgress []BestiaryEntry
 	ReaderHTML.Find("#BestiaryProgress").Each(func(index int, s *goquery.Selection) {
-		s.Find(".Odd,.Even").Each(func(index int, s *goquery.Selection) {
+		s.Find(OddEvenSelector).Each(func(index int, s *goquery.Selection) {
 			node := s.Nodes[0].FirstChild
 			if !strings.Contains(node.Parent.Attr[0].Val, "IndicateMoreEntries") {
-				_BestiaryProgress = append(_BestiaryProgress, BestiaryEntry{
+				bestiaryProgress = append(bestiaryProgress, BestiaryEntry{
 					Step:  TibiadataStringToIntegerV3(node.FirstChild.Data),
 					Kills: TibiadataStringToIntegerV3(strings.Split(node.NextSibling.FirstChild.Data, " x")[0]),
 					Name:  node.NextSibling.NextSibling.FirstChild.Data,
@@ -554,23 +530,23 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 	jsonData := JSONData{
 		Auction: Auction{
 			Id:                          id,
-			Details:                     _Details,
-			General:                     _General,
-			ItemSummary:                 _ItemSummary,
-			StoreItemSummary:            _StoreItemSummary,
-			Mounts:                      _Mounts,
-			StoreMounts:                 _StoreMounts,
-			Outfits:                     _Outfits,
-			StoreOutfits:                _StoreOutfits,
-			Familiars:                   _Familiars,
-			Blessings:                   _Blessings,
-			Imbuements:                  _Imbuements,
-			Charms:                      _Charms,
-			CompletedCyclopediaMapAreas: _CompletedCyclopediaMapAreas,
-			CompletedQuestLines:         _CompletedQuestLines,
-			Titles:                      _Titles,
-			Achievements:                _Achievements,
-			BestiaryProgress:            _BestiaryProgress,
+			Details:                     details,
+			General:                     general,
+			ItemSummary:                 itemSummary,
+			StoreItemSummary:            storeItemSummary,
+			Mounts:                      mounts,
+			StoreMounts:                 storeMounts,
+			Outfits:                     outfits,
+			StoreOutfits:                storeOutfits,
+			Familiars:                   familiars,
+			Blessings:                   blessings,
+			Imbuements:                  imbuements,
+			Charms:                      charms,
+			CompletedCyclopediaMapAreas: completedCyclopediaMapAreas,
+			CompletedQuestLines:         completedQuestLines,
+			Titles:                      titles,
+			Achievements:                achievements,
+			BestiaryProgress:            bestiaryProgress,
 		},
 		Information: Information{
 			APIVersion: TibiadataAPIversion,
@@ -609,7 +585,7 @@ func ParseItems(s *goquery.Selection) map[string]int {
 
 func ParseOutfits(s *goquery.Selection) map[string][]bool {
 	m := make(map[string][]bool)
-	s.Find(".CVIcon").Each(func(index int, s *goquery.Selection) {
+	s.Find(CVIconSelector).Each(func(index int, s *goquery.Selection) {
 		outfitTitle, exists := s.Attr("title")
 		if exists {
 			outfitName := strings.Split(outfitTitle, " (")[0]
@@ -623,7 +599,7 @@ func ParseOutfits(s *goquery.Selection) map[string][]bool {
 
 func ParseMounts(s *goquery.Selection) []string {
 	var mountsList []string
-	s.Find(".CVIcon").Each(func(index int, s *goquery.Selection) {
+	s.Find(CVIconSelector).Each(func(index int, s *goquery.Selection) {
 		mountTitle, exists := s.Attr("title")
 		if exists {
 			mountsList = append(mountsList, mountTitle)
@@ -632,7 +608,11 @@ func ParseMounts(s *goquery.Selection) []string {
 	return mountsList
 }
 
-func AjaxJSONDataCollectorV3(TibiaURL string) string {
+func AjaxJSONDataCollectorV3(AuctionId int, SectionType int, PageIndex int) string {
+	TibiaURL := "https://www.tibia.com/websiteservices/handle_charactertrades.php?" +
+		"auctionid=" + strconv.Itoa(AuctionId) +
+		"&type=" + strconv.Itoa(SectionType) +
+		"&currentpage=" + strconv.Itoa(PageIndex)
 
 	// Setting up resty client
 	client := resty.New()
@@ -683,3 +663,25 @@ func AjaxJSONDataCollectorV3(TibiaURL string) string {
 	// Return of extracted html to functions
 	return result.AjaxObjects[0].Data
 }
+
+// AjaxResponseObject - child of AjaxJSONData
+type AjaxResponseObject struct {
+	Data     string `json:"Data"`
+	DataType string `json:"DataType"`
+	Target   string `json:"Target"`
+}
+
+// AjaxJSONData - base response for auction items page links
+type AjaxJSONData struct {
+	AjaxObjects []AjaxResponseObject `json:"AjaxObjects"`
+}
+
+const OddEvenSelector = ".Odd,.Even"
+const PageLinkSelector = ".PageLink"
+const CVIconSelector = ".CVIcon"
+const ItemSummarySection = 0
+const StoreItemSummarySection = 1
+const MountsSection = 2
+const StoreMountsSection = 3
+const OutfitsSection = 4
+const StoreOutfitsSection = 5

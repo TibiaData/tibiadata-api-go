@@ -1,7 +1,6 @@
 package main
 
 import (
-	"html"
 	"log"
 	"regexp"
 	"strings"
@@ -148,7 +147,7 @@ func TibiaFansitesV3(c *gin.Context) {
 				}
 
 				// Specials
-				subma1[0][8] = html.UnescapeString(subma1[0][8])
+				subma1[0][8] = TibiaDataSanitizeEscapedString(subma1[0][8])
 				FansiteSpecialsData := strings.Split(subma1[0][8], "</li><li>")
 
 				// FansiteItem & FansiteItemURL

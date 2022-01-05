@@ -120,7 +120,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 
 			// Abort loop and continue wiht next section
 			if strings.Contains(line, "<br/><br/>") {
-				GuildDescription = TibiadataUnescapeStringV3(GuildDescription)
+				GuildDescription = TibiaDataSanitizeEscapedString(GuildDescription)
 				GuildDescriptionFinished = true
 			}
 
@@ -160,7 +160,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 				subma1b := regex1b.FindAllStringSubmatch(line, -1)
 
 				GuildGuildhallData = append(GuildGuildhallData, Guildhall{
-					Name:      TibiadataUnescapeStringV3(subma1b[0][1]),
+					Name:      TibiaDataSanitizeEscapedString(subma1b[0][1]),
 					World:     GuildWorld,
 					PaidUntil: TibiadataDateV3(subma1b[0][2]),
 				})
@@ -213,7 +213,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 			}
 
 			MembersData = append(MembersData, Members{
-				Name:     TibiadataUnescapeStringV3(subma1[0][2]),
+				Name:     TibiaDataSanitizeEscapedString(subma1[0][2]),
 				Title:    MembersTitle,
 				Rank:     MembersRank,
 				Vocation: subma1[0][4],

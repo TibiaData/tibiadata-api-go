@@ -76,9 +76,9 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 
 		if len(subma1) > 0 {
 			OneGuild := Guild{
-				Name:        TibiadataUnescapeStringV3(subma1[0][2]),
+				Name:        TibiaDataSanitizeEscapedString(subma1[0][2]),
 				LogoURL:     subma1[0][1],
-				Description: TibiadataUnescapeStringV3(strings.TrimSpace(subma1[0][4])),
+				Description: TibiaDataSanitizeEscapedString(strings.TrimSpace(subma1[0][4])),
 			}
 
 			// Adding OneWorld to correct category

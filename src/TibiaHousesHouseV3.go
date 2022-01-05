@@ -90,19 +90,21 @@ func TibiaHousesHouseV3(c *gin.Context) {
 	}
 
 	// Regex to get data for house
-	regex1 := regexp.MustCompile(`<td.*src="(.*)" width.*<b>(.*)<\/b>.*This ([A-Za-z]+) can.*to ([0-9]+) beds..*<b>([0-9]+) square.*<b>([0-9]+)([k]+).gold<\/b>.*on <b>([A-Za-z]+)<\/b>.(.*)<\/td>`)
+	regex1 := regexp.MustCompile(`<td.*src="(.*)" width.*<b>(.*)<\/b>.*This (house|guildhall) can.*to ([0-9]+) beds..*<b>([0-9]+) square.*<b>([0-9]+)([k]+).gold<\/b>.*on <b>([A-Za-z]+)<\/b>.(.*)<\/td>`)
 	subma1 := regex1.FindAllStringSubmatch(HouseHTML, -1)
 
 	if len(subma1) > 0 {
 		HouseData.Houseid = TibiadataStringToIntegerV3(houseid)
 		HouseData.World = subma1[0][8]
 
+		log.Println(HouseHTML)
+
 		HouseData.Name = TibiaDataSanitizeEscapedString(subma1[0][2])
 		HouseData.Img = subma1[0][1]
 		HouseData.Type = subma1[0][3]
 		HouseData.Beds = TibiadataStringToIntegerV3(subma1[0][4])
 		HouseData.Size = TibiadataStringToIntegerV3(subma1[0][5])
-		HouseData.Rent = TibiadataStringToIntegerV3(subma1[0][6] + strings.Repeat("000", strings.Count(subma1[0][7], "k")))
+		HouseData.Rent = TibiaDataConvertValuesWithK(subma1[0][6] + subma1[0][7])
 
 		HouseData.Status.Original = TibiaDataSanitizeEscapedString(RemoveHtmlTag(subma1[0][9]))
 

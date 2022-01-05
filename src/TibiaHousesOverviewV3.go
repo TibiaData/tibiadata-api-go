@@ -115,7 +115,7 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 				// Size
 				Size := TibiadataStringToIntegerV3(subma1[0][2])
 				// Rent
-				Rent := TibiadataStringToIntegerV3(subma1[0][3] + strings.Repeat("000", strings.Count(subma1[0][4], "k")))
+				Rent := TibiaDataConvertValuesWithK(subma1[0][3] + subma1[0][4])
 
 				switch HouseType {
 				case "houses":

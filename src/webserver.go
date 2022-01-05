@@ -579,6 +579,11 @@ func getEnvAsInt(name string, defaultVal int) int {
 }
 */
 
+// TibiaDataConvertValuesWithK func - convert price strings that contain k, kk or more to 3x0
+func TibiaDataConvertValuesWithK(data string) int {
+	return TibiadataStringToIntegerV3(data + strings.Repeat("000", strings.Count(data, "k")))
+}
+
 // TibiaDataVocationValidator func - return valid vocation string and vocation id
 func TibiaDataVocationValidator(vocation string) (string, string) {
 	// defining return vars

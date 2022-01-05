@@ -122,7 +122,7 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 			SpellsData = append(SpellsData, Spell{
 				Name:         subma1[0][2],
 				Spell:        subma1[0][1],
-				Formula:      TibiaDataSanitizeDoubleQuoteString(TibiadataUnescapeStringV3(subma1[0][3])),
+				Formula:      TibiaDataSanitizeDoubleQuoteString(TibiaDataSanitizeEscapedString(subma1[0][3])),
 				Level:        TibiadataStringToIntegerV3(subma1[0][6]),
 				Mana:         TibiadataStringToIntegerV3(subma1[0][7]),
 				Price:        TibiadataStringToIntegerV3(subma1[0][8]),

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"html"
 	"log"
 	"regexp"
 	"strings"
@@ -323,7 +322,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 				if len(subma1a) > 0 {
 
 					// fixing encoding for achievement name
-					subma1a[0][2] = html.UnescapeString(subma1a[0][2])
+					subma1a[0][2] = TibiaDataSanitizeEscapedString(subma1a[0][2])
 
 					// get the name of the achievement (and ignore the secret image on the right)
 					Name := strings.Split(subma1a[0][2], "<img")

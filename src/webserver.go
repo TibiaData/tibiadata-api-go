@@ -333,11 +333,6 @@ func TibiadataStringWorldFormatToTitleV3(world string) string {
 	return strings.Title(strings.ToLower(world))
 }
 
-// TibiadataUnescapeStringV3 func
-func TibiadataUnescapeStringV3(data string) string {
-	return html.UnescapeString(data)
-}
-
 // TibiadataQueryEscapeStringV3 func - encode string to be correct formatted
 func TibiadataQueryEscapeStringV3(data string) string {
 	// switching "+" to " "

@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0] - 2022-01-05
+
+### Added
+* Addition of two guild endpoints ([#20](https://github.com/TibiaData/tibiadata-api-go/pull/20) by [tobiasehlert](https://github.com/tobiasehlert))
+* Adding proxy support to replace default URL ([#25](https://github.com/TibiaData/tibiadata-api-go/pull/25) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Changed
+* Clear lint errors ([#18](https://github.com/TibiaData/tibiadata-api-go/pull/18) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Idiomatic go ([#19](https://github.com/TibiaData/tibiadata-api-go/pull/19) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Removing duplicate function ([#27](https://github.com/TibiaData/tibiadata-api-go/pull/27) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Fixed
+* Highscores endpoints redirect ([#22](https://github.com/TibiaData/tibiadata-api-go/pull/22) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+
 ## [0.2.0] - 2022-01-02
 
 ### Changed
@@ -26,6 +40,7 @@
 
 Initial commit
 
+[0.3.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/tibiadata/tibiadata-api-go/compare/30f328f...v0.1.0

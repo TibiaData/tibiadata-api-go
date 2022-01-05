@@ -16,10 +16,6 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 	world := c.Param("world")
 	town := c.Param("town")
 
-	// Default value:
-	// town - Ab'Dendriel
-	// housetype - houses
-
 	// Child of House
 	type Auction struct {
 		AuctionBid  int    `json:"current_bid"`
@@ -99,13 +95,13 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 				AuctionBid := 0
 				AuctionLeft := ""
 
-				if subma1[0][5] == "rented" {
+				switch {
+				case strings.Contains(subma1[0][5], "rented"):
 					IsRented = true
-				} else if strings.Contains(subma1[0][5], "no bid yet") {
+				case strings.Contains(subma1[0][5], "no bid yet"):
 					// nothing to set?
-				} else if strings.Contains(subma1[0][5], "auctioned") {
+				case strings.Contains(subma1[0][5], "auctioned"):
 					IsAuctioned = true
-
 					regex1b := regexp.MustCompile(`auctioned..([0-9]+).gold..(.*).`)
 					subma1b := regex1b.FindAllStringSubmatch(subma1[0][5], -1)
 					AuctionBid = TibiadataStringToIntegerV3(subma1b[0][1])

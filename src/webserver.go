@@ -141,6 +141,10 @@ func main() {
 		})
 		v3.GET("/highscores/world/:world/:category/:vocation", TibiaHighscoresV3)
 
+		// Tibia houses
+		v3.GET("/houses/world/:world/house/:houseid", TibiaHousesHouseV3)
+		v3.GET("/houses/world/:world/town/:town", TibiaHousesOverviewV3)
+
 		// Tibia killstatistics
 		v3.GET("/killstatistics/world/:world", TibiaKillstatisticsV3)
 

@@ -106,6 +106,8 @@ Those are the current existing endpoints.
 - GET `/v3/highscores/world/:world`
 - GET `/v3/highscores/world/:world/:category`
 - GET `/v3/highscores/world/:world/:category/:vocation`
+- GET `/v3/houses/world/:world/house/:houseid`
+- GET `/v3/houses/world/:world/town/:town`
 - GET `/v3/killstatistics/world/:world`
 - GET `/v3/news/archive`
 - GET `/v3/news/archive/:days`

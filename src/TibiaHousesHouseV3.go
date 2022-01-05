@@ -37,12 +37,12 @@ func TibiaHousesHouseV3(c *gin.Context) {
 
 	// Child of House
 	type Status struct {
-		IsRented      bool    `json:"is_rented"`
 		IsAuctioned   bool    `json:"is_auctioned"`
-		IsTransfering bool    `json:"is_transfering"`
+		IsRented      bool    `json:"is_rented"`
 		IsMoving      bool    `json:"is_moving"`
-		TheRental     Rental  `json:"rental"`
-		TheAuction    Auction `json:"auction"`
+		IsTransfering bool    `json:"is_transfering"`
+		Auction       Auction `json:"auction"`
+		Rental        Rental  `json:"rental"`
 		Original      string  `json:"original"`
 	}
 
@@ -118,10 +118,10 @@ func TibiaHousesHouseV3(c *gin.Context) {
 				subma2 := regex2.FindAllStringSubmatch(HouseData.Status.Original, -1)
 				// storing values from regex
 				if subma2[0][1] == "will" {
-					HouseData.Status.TheRental.TransferAccept = true
+					HouseData.Status.Rental.TransferAccept = true
 				}
-				HouseData.Status.TheRental.TransferReceiver = subma2[0][3]
-				HouseData.Status.TheRental.TransferPrice = TibiadataStringToIntegerV3(subma2[0][4])
+				HouseData.Status.Rental.TransferReceiver = subma2[0][3]
+				HouseData.Status.Rental.TransferPrice = TibiadataStringToIntegerV3(subma2[0][4])
 				fallthrough
 
 			case strings.Contains(HouseData.Status.Original, " will move out on "):
@@ -130,7 +130,7 @@ func TibiaHousesHouseV3(c *gin.Context) {
 				regex2 := regexp.MustCompile(`(He|She) will move out on (.*?) \(`)
 				subma2 := regex2.FindAllStringSubmatch(HouseData.Status.Original, -1)
 				// storing values from regex
-				HouseData.Status.TheRental.MovingDate = TibiadataDatetimeV3(subma2[0][2])
+				HouseData.Status.Rental.MovingDate = TibiadataDatetimeV3(subma2[0][2])
 				fallthrough
 
 			default:
@@ -139,13 +139,13 @@ func TibiaHousesHouseV3(c *gin.Context) {
 				regex2 := regexp.MustCompile(`The (house|guildhall) has been rented by (.*). (He|She) has paid.*until (.*?)\.`)
 				subma2 := regex2.FindAllStringSubmatch(HouseData.Status.Original, -1)
 				// storing values from regex
-				HouseData.Status.TheRental.Owner = subma2[0][2]
-				HouseData.Status.TheRental.PaidUntil = TibiadataDatetimeV3(subma2[0][4])
+				HouseData.Status.Rental.Owner = subma2[0][2]
+				HouseData.Status.Rental.PaidUntil = TibiadataDatetimeV3(subma2[0][4])
 				switch subma2[0][3] {
 				case "She":
-					HouseData.Status.TheRental.OwnerSex = "female"
+					HouseData.Status.Rental.OwnerSex = "female"
 				case "He":
-					HouseData.Status.TheRental.OwnerSex = "male"
+					HouseData.Status.Rental.OwnerSex = "male"
 				}
 			}
 
@@ -158,11 +158,11 @@ func TibiaHousesHouseV3(c *gin.Context) {
 				regex2 := regexp.MustCompile(`The (house|guildhall) is currently.*The auction (will end|has ended) at (.*)\. The.*is ([0-9]+) gold.*submitted by (.*)\.`)
 				subma2 := regex2.FindAllStringSubmatch(HouseData.Status.Original, -1)
 				// storing values from regex
-				HouseData.Status.TheAuction.AuctionEnd = TibiadataDatetimeV3(subma2[0][3])
-				HouseData.Status.TheAuction.CurrentBid = TibiadataStringToIntegerV3(subma2[0][4])
-				HouseData.Status.TheAuction.CurrentBidder = subma2[0][5]
+				HouseData.Status.Auction.AuctionEnd = TibiadataDatetimeV3(subma2[0][3])
+				HouseData.Status.Auction.CurrentBid = TibiadataStringToIntegerV3(subma2[0][4])
+				HouseData.Status.Auction.CurrentBidder = subma2[0][5]
 				if subma2[0][2] == "will end" {
-					HouseData.Status.TheAuction.AuctionOngoing = true
+					HouseData.Status.Auction.AuctionOngoing = true
 				}
 			}
 		}

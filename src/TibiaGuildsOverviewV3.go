@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -53,40 +52,47 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 	}
 
 	// Running query over each div
-	ReaderHTML.Find(".Table3 .TableContent tbody tr").Each(func(index int, s *goquery.Selection) {
+	ReaderHTML.Find(".TableContainer").Each(func(index int, s *goquery.Selection) {
 
-		// Storing HTML into GuildsDivHTML
-		GuildsDivHTML, err := s.Html()
-		if err != nil {
-			log.Fatal(err)
-		}
+		// Figure out the guild category
+		s.Find(".Text").Each(func(index int, s *goquery.Selection) {
+			tableName := s.Nodes[0].FirstChild.Data
+			if strings.Contains(tableName, "Active Guilds") {
+				GuildCategory = "active"
 
-		// Removing linebreaks from HTML
-		GuildsDivHTML = TibiadataHTMLRemoveLinebreaksV3(GuildsDivHTML)
-
-		if GuildCategory == "" && strings.Contains(GuildsDivHTML, "<td width=\"64\"><b>Logo</b></td>") {
-			GuildCategory = "active"
-		} else if GuildCategory == "active" && strings.Contains(GuildsDivHTML, "<td width=\"64\"><b>Logo</b></td>") {
-			GuildCategory = "formation"
-		}
-
-		// Regex to get data for record values
-		regex1 := regexp.MustCompile(`<td><img src="(.*)" width=.*\/><\/td><td><b>(.*)<\/b>(<br\/>)?(.*)<\/td><td>.*`)
-		subma1 := regex1.FindAllStringSubmatch(GuildsDivHTML, -1)
-
-		if len(subma1) > 0 {
-			OneGuild := Guild{
-				Name:        TibiaDataSanitizeEscapedString(subma1[0][2]),
-				LogoURL:     subma1[0][1],
-				Description: TibiaDataSanitizeEscapedString(strings.TrimSpace(subma1[0][4])),
+			} else if strings.Contains(tableName, "Guilds in Course of Formation") {
+				GuildCategory = "formation"
 			}
+		})
 
-			// Adding OneWorld to correct category
-			if GuildCategory == "active" {
-				ActiveGuilds = append(ActiveGuilds, OneGuild)
-			} else if GuildCategory == "formation" {
-				FormationGuilds = append(FormationGuilds, OneGuild)
-			}
+		if GuildCategory != "" {
+			// Extract guilds
+			s.Find(".TableContent tbody").Children().NextAll().Each(func(index int, s *goquery.Selection) {
+				tableRow := s.Nodes[0]
+				nameAndDescriptionNode := tableRow.FirstChild.NextSibling.NextSibling
+
+				name := nameAndDescriptionNode.FirstChild.FirstChild.Data
+				logoURL := tableRow.FirstChild.FirstChild.Attr[0].Val
+				description := ""
+
+				// Check if there's a description to fetch.
+				if nameAndDescriptionNode.FirstChild.NextSibling != nil && nameAndDescriptionNode.FirstChild.NextSibling.NextSibling != nil {
+					description = nameAndDescriptionNode.FirstChild.NextSibling.NextSibling.Data
+				}
+
+				OneGuild := Guild{
+					Name:        name,
+					LogoURL:     logoURL,
+					Description: description,
+				}
+
+				// Adding OneGuild to correct category
+				if GuildCategory == "active" {
+					ActiveGuilds = append(ActiveGuilds, OneGuild)
+				} else if GuildCategory == "formation" {
+					FormationGuilds = append(FormationGuilds, OneGuild)
+				}
+			})
 		}
 	})
 

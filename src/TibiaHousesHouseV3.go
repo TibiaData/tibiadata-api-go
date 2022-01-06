@@ -74,7 +74,8 @@ func TibiaHousesHouseV3(c *gin.Context) {
 	world = TibiadataStringWorldFormatToTitleV3(world)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
-	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/community/?subtopic=houses&page=view&world=" + TibiadataQueryEscapeStringV3(world) + "&houseid=" + TibiadataQueryEscapeStringV3(houseid))
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=houses&page=view&world=" + TibiadataQueryEscapeStringV3(world) + "&houseid=" + TibiadataQueryEscapeStringV3(houseid)
+	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -96,8 +97,6 @@ func TibiaHousesHouseV3(c *gin.Context) {
 	if len(subma1) > 0 {
 		HouseData.Houseid = TibiadataStringToIntegerV3(houseid)
 		HouseData.World = subma1[0][8]
-
-		log.Println(HouseHTML)
 
 		HouseData.Name = TibiaDataSanitizeEscapedString(subma1[0][2])
 		HouseData.Img = subma1[0][1]

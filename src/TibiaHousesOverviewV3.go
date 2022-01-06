@@ -101,7 +101,8 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 
 func houseFetcher(baseURL, houseType string, done chan struct{}, outputChan chan House) {
 	// Getting data with TibiadataHTMLDataCollectorV3
-	BoxContentHTML := TibiadataHTMLDataCollectorV3(baseURL + TibiadataQueryEscapeStringV3(houseType))
+	TibiadataRequest.URL = baseURL + TibiadataQueryEscapeStringV3(houseType)
+	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))

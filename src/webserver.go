@@ -48,9 +48,9 @@ type Information struct {
 
 // TibiadataRequest - struct of request information
 type TibiadataRequestStruct struct {
-	Method   string            `json:"method"`
-	URL      string            `json:"url"`
-	FormData map[string]string `json:"form_data"`
+	Method   string            `json:"method"`    // defaults to GET
+	URL      string            `json:"url"`       // URL to collect data from
+	FormData map[string]string `json:"form_data"` // used when doing POST
 }
 
 func main() {

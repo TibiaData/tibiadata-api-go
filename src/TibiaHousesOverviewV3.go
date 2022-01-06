@@ -135,8 +135,8 @@ func houseFetcher(baseURL, houseType string, done chan struct{}, outputChan chan
 			switch {
 			case strings.Contains(s, "rented"):
 				IsRented = true
-			case strings.Contains(s, "no bid yet"):
-				// nothing to set?
+			// case strings.Contains(s, "no bid yet"):
+			// nothing to set?
 			case strings.Contains(s, "auctioned"):
 				IsAuctioned = true
 				regex1b := regexp.MustCompile(`auctioned..([0-9]+).gold..(.*).`)

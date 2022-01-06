@@ -246,6 +246,7 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest map[string]map[string]string)
 	// Set Debug if enabled by TibiadataDebug var
 	if TibiadataDebug {
 		client.SetDebug(true)
+		client.EnableTrace()
 	}
 
 	// Set client timeout  and retry
@@ -284,6 +285,11 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest map[string]map[string]string)
 
 	}
 
+	if TibiadataDebug {
+		// logging trace information for resty
+		TibiadataRequestTraceLogger(res, err)
+	}
+
 	if err != nil {
 		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) in resp1: %s", TibiadataRequest["request"]["url"], err)
 	}
@@ -318,6 +324,25 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest map[string]map[string]string)
 
 	// Return of extracted html to functions..
 	return data
+}
+
+// TibiadataRequestTraceLogger func - prints out trace information to log
+func TibiadataRequestTraceLogger(res *resty.Response, err error) {
+	log.Println("TRACE RESTY",
+		"\n~~~ TRACE INFO ~~~",
+		"\nDNSLookup      :", res.Request.TraceInfo().DNSLookup,
+		"\nConnTime       :", res.Request.TraceInfo().ConnTime,
+		"\nTCPConnTime    :", res.Request.TraceInfo().TCPConnTime,
+		"\nTLSHandshake   :", res.Request.TraceInfo().TLSHandshake,
+		"\nServerTime     :", res.Request.TraceInfo().ServerTime,
+		"\nResponseTime   :", res.Request.TraceInfo().ResponseTime,
+		"\nTotalTime      :", res.Request.TraceInfo().TotalTime,
+		"\nIsConnReused   :", res.Request.TraceInfo().IsConnReused,
+		"\nIsConnWasIdle  :", res.Request.TraceInfo().IsConnWasIdle,
+		"\nConnIdleTime   :", res.Request.TraceInfo().ConnIdleTime,
+		"\nRequestAttempt :", res.Request.TraceInfo().RequestAttempt,
+		"\nRemoteAddr     :", res.Request.TraceInfo().RemoteAddr.String(),
+		"\n==============================================================================")
 }
 
 // TibiadataHTMLRemoveLinebreaksV3 func

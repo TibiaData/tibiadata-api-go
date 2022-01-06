@@ -58,7 +58,8 @@ func TibiaWorldsWorldV3(c *gin.Context) {
 	world = TibiadataStringWorldFormatToTitleV3(world)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
-	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/community/?subtopic=worlds&world=" + TibiadataQueryEscapeStringV3(world))
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=worlds&world=" + TibiadataQueryEscapeStringV3(world)
+	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))

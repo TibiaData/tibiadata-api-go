@@ -75,7 +75,8 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 	spell = strings.ToLower(spell)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
-	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/library/?subtopic=spells&spell=" + TibiadataQueryEscapeStringV3(spell))
+	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=spells&spell=" + TibiadataQueryEscapeStringV3(spell)
+	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))

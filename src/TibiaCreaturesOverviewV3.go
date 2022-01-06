@@ -34,7 +34,8 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 	}
 
 	// Getting data with TibiadataHTMLDataCollectorV3
-	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/library/?subtopic=creatures")
+	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=creatures"
+	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))

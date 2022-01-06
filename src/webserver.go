@@ -31,8 +31,12 @@ var TibiadataAPIversion int = 3
 var TibiadataDebug bool
 
 // Tibiadata app resty vars
-var TibiadataUserAgent string
-var TibiadataProxyDomain string
+var TibiadataUserAgent, TibiadataProxyDomain string
+var TibiadataRequest = TibiadataRequestStruct{
+	Method:   resty.MethodGet,
+	URL:      "",
+	FormData: make(map[string]string),
+}
 
 // Tibiadata app details set to release/build on GitHub
 var TibiadataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
@@ -44,6 +48,13 @@ var TibiadataBuildEdition = "open-source" //
 type Information struct {
 	APIVersion int    `json:"api_version"`
 	Timestamp  string `json:"timestamp"`
+}
+
+// TibiadataRequest - struct of request information
+type TibiadataRequestStruct struct {
+	Method   string            `json:"method"`    // Request method (default: GET)
+	URL      string            `json:"url"`       // Request URL
+	FormData map[string]string `json:"form_data"` // Request form content (used when POST)
 }
 
 func main() {
@@ -238,7 +249,7 @@ func TibiadataUserAgentGenerator(version int) string {
 }
 
 // TibiadataHTMLDataCollectorV3 func
-func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
+func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) string {
 
 	// Setting up resty client
 	client := resty.New()
@@ -246,6 +257,7 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 	// Set Debug if enabled by TibiadataDebug var
 	if TibiadataDebug {
 		client.SetDebug(true)
+		client.EnableTrace()
 	}
 
 	// Set client timeout  and retry
@@ -266,21 +278,39 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 
 	// Replace domain with proxy if env TIBIADATA_PROXY set
 	if TibiadataProxyDomain != "" {
-		TibiaURL = strings.ReplaceAll(TibiaURL, "https://www.tibia.com/", TibiadataProxyDomain)
+		TibiadataRequest.URL = strings.ReplaceAll(TibiadataRequest.URL, "https://www.tibia.com/", TibiadataProxyDomain)
 	}
 
-	res, err := client.R().Get(TibiaURL)
+	// defining values for request
+	var res *resty.Response
+	var err error
+
+	switch TibiadataRequest.Method {
+	case resty.MethodPost:
+		res, err = client.R().
+			SetFormData(TibiadataRequest.FormData).
+			Post(TibiadataRequest.URL)
+	default:
+		res, err = client.R().Get(TibiadataRequest.URL)
+
+	}
+
+	if TibiadataDebug {
+		// logging trace information for resty
+		TibiadataRequestTraceLogger(res, err)
+	}
+
 	if err != nil {
-		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) in resp1: %s", TibiaURL, err)
+		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) in resp1: %s", TibiadataRequest.URL, err)
 	}
 
 	// Checking if status is something else than 200
 	if res.StatusCode() != 200 {
-		log.Printf("[warni] TibiadataHTMLDataCollectorV3 (URL: %s) status code: %s", TibiaURL, res.Status())
+		log.Printf("[warni] TibiadataHTMLDataCollectorV3 (URL: %s) status code: %s", TibiadataRequest.URL, res.Status())
 
 		// Check if page is in maintenance mode
 		if res.StatusCode() == 302 {
-			log.Printf("[info] TibiadataHTMLDataCollectorV3 (URL: %s): Page tibia.com returns 302, probably maintenance mode enabled?", TibiaURL)
+			log.Printf("[info] TibiadataHTMLDataCollectorV3 (URL: %s): Page tibia.com returns 302, probably maintenance mode enabled?", TibiadataRequest.URL)
 		}
 	}
 
@@ -293,7 +323,7 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(resIo2)
 	if err != nil {
-		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) error: %s", TibiaURL, err)
+		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) error: %s", TibiadataRequest.URL, err)
 	}
 
 	// Find of this to get div with class BoxContent
@@ -304,6 +334,25 @@ func TibiadataHTMLDataCollectorV3(TibiaURL string) string {
 
 	// Return of extracted html to functions..
 	return data
+}
+
+// TibiadataRequestTraceLogger func - prints out trace information to log
+func TibiadataRequestTraceLogger(res *resty.Response, err error) {
+	log.Println("TRACE RESTY",
+		"\n~~~ TRACE INFO ~~~",
+		"\nDNSLookup      :", res.Request.TraceInfo().DNSLookup,
+		"\nConnTime       :", res.Request.TraceInfo().ConnTime,
+		"\nTCPConnTime    :", res.Request.TraceInfo().TCPConnTime,
+		"\nTLSHandshake   :", res.Request.TraceInfo().TLSHandshake,
+		"\nServerTime     :", res.Request.TraceInfo().ServerTime,
+		"\nResponseTime   :", res.Request.TraceInfo().ResponseTime,
+		"\nTotalTime      :", res.Request.TraceInfo().TotalTime,
+		"\nIsConnReused   :", res.Request.TraceInfo().IsConnReused,
+		"\nIsConnWasIdle  :", res.Request.TraceInfo().IsConnWasIdle,
+		"\nConnIdleTime   :", res.Request.TraceInfo().ConnIdleTime,
+		"\nRequestAttempt :", res.Request.TraceInfo().RequestAttempt,
+		"\nRemoteAddr     :", res.Request.TraceInfo().RemoteAddr.String(),
+		"\n==============================================================================")
 }
 
 // TibiadataHTMLRemoveLinebreaksV3 func

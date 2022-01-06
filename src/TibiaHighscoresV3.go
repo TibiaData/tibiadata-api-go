@@ -110,7 +110,8 @@ func TibiaHighscoresV3(c *gin.Context) {
 	vocationName, vocationid := TibiaDataVocationValidator(vocation)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
-	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/community/?subtopic=highscores&world=" + TibiadataQueryEscapeStringV3(world) + "&category=" + TibiadataQueryEscapeStringV3(categoryid) + "&profession=" + TibiadataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000")
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=highscores&world=" + TibiadataQueryEscapeStringV3(world) + "&category=" + TibiadataQueryEscapeStringV3(categoryid) + "&profession=" + TibiadataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000"
+	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))

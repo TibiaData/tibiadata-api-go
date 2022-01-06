@@ -32,7 +32,11 @@ var TibiadataDebug bool
 
 // Tibiadata app resty vars
 var TibiadataUserAgent, TibiadataProxyDomain string
-var TibiadataRequest TibiadataRequestStruct
+var TibiadataRequest = TibiadataRequestStruct{
+	Method:   resty.MethodGet,
+	URL:      "",
+	FormData: make(map[string]string),
+}
 
 // Tibiadata app details set to release/build on GitHub
 var TibiadataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
@@ -48,9 +52,9 @@ type Information struct {
 
 // TibiadataRequest - struct of request information
 type TibiadataRequestStruct struct {
-	Method   string            `json:"method"`    // defaults to GET
-	URL      string            `json:"url"`       // URL to collect data from
-	FormData map[string]string `json:"form_data"` // used when doing POST
+	Method   string            `json:"method"`    // Request method (default: GET)
+	URL      string            `json:"url"`       // Request URL
+	FormData map[string]string `json:"form_data"` // Request form content (used when POST)
 }
 
 func main() {

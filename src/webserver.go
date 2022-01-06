@@ -104,6 +104,11 @@ func runWebServer() {
 		// Tibia killstatistics
 		v3.GET("/killstatistics/world/:world", TibiaKillstatisticsV3)
 
+		// Tibia news
+		v3.GET("/news/id/:news_id", TibiaNewsV3)
+		v3.GET("/news/latest", TibiaNewslistV3)
+		v3.GET("/news/ticker", TibiaNewslistV3)
+
 		// Tibia spells
 		v3.GET("/spells", TibiaSpellsOverviewV3)
 		v3.GET("/spells/spell/:spell", TibiaSpellsSpellV3)

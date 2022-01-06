@@ -59,11 +59,7 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 	}
 
 	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest = map[string]map[string]string{
-		"request": {
-			"method": "GET",
-			"url":    "https://www.tibia.com/library/?subtopic=spells&vocation=" + TibiadataQueryEscapeStringV3(vocationName),
-		}}
+	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=spells&vocation=" + TibiadataQueryEscapeStringV3(vocationName)
 	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader

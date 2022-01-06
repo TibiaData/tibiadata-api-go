@@ -32,7 +32,7 @@ var TibiadataDebug bool
 
 // Tibiadata app resty vars
 var TibiadataUserAgent, TibiadataProxyDomain string
-var TibiadataRequest map[string]map[string]string
+var TibiadataRequest TibiadataRequestStruct
 
 // Tibiadata app details set to release/build on GitHub
 var TibiadataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
@@ -44,6 +44,13 @@ var TibiadataBuildEdition = "open-source" //
 type Information struct {
 	APIVersion int    `json:"api_version"`
 	Timestamp  string `json:"timestamp"`
+}
+
+// TibiadataRequest - struct of request information
+type TibiadataRequestStruct struct {
+	Method   string            `json:"method"`
+	URL      string            `json:"url"`
+	FormData map[string]string `json:"form_data"`
 }
 
 func main() {
@@ -238,7 +245,7 @@ func TibiadataUserAgentGenerator(version int) string {
 }
 
 // TibiadataHTMLDataCollectorV3 func
-func TibiadataHTMLDataCollectorV3(TibiadataRequest map[string]map[string]string) string {
+func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) string {
 
 	// Setting up resty client
 	client := resty.New()
@@ -267,21 +274,20 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest map[string]map[string]string)
 
 	// Replace domain with proxy if env TIBIADATA_PROXY set
 	if TibiadataProxyDomain != "" {
-		TibiadataRequest["request"]["url"] = strings.ReplaceAll(TibiadataRequest["request"]["url"], "https://www.tibia.com/", TibiadataProxyDomain)
+		TibiadataRequest.URL = strings.ReplaceAll(TibiadataRequest.URL, "https://www.tibia.com/", TibiadataProxyDomain)
 	}
 
 	// defining values for request
 	var res *resty.Response
 	var err error
 
-	switch TibiadataRequest["request"]["method"] {
-	case "POST":
+	switch TibiadataRequest.Method {
+	case resty.MethodPost:
 		res, err = client.R().
-			SetFormData(TibiadataRequest["form_data"]).
-			Post(TibiadataRequest["request"]["url"])
-
-	default: // GET
-		res, err = client.R().Get(TibiadataRequest["request"]["url"])
+			SetFormData(TibiadataRequest.FormData).
+			Post(TibiadataRequest.URL)
+	default:
+		res, err = client.R().Get(TibiadataRequest.URL)
 
 	}
 
@@ -291,16 +297,16 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest map[string]map[string]string)
 	}
 
 	if err != nil {
-		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) in resp1: %s", TibiadataRequest["request"]["url"], err)
+		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) in resp1: %s", TibiadataRequest.URL, err)
 	}
 
 	// Checking if status is something else than 200
 	if res.StatusCode() != 200 {
-		log.Printf("[warni] TibiadataHTMLDataCollectorV3 (URL: %s) status code: %s", TibiadataRequest["request"]["url"], res.Status())
+		log.Printf("[warni] TibiadataHTMLDataCollectorV3 (URL: %s) status code: %s", TibiadataRequest.URL, res.Status())
 
 		// Check if page is in maintenance mode
 		if res.StatusCode() == 302 {
-			log.Printf("[info] TibiadataHTMLDataCollectorV3 (URL: %s): Page tibia.com returns 302, probably maintenance mode enabled?", TibiadataRequest["request"]["url"])
+			log.Printf("[info] TibiadataHTMLDataCollectorV3 (URL: %s): Page tibia.com returns 302, probably maintenance mode enabled?", TibiadataRequest.URL)
 		}
 	}
 
@@ -313,7 +319,7 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest map[string]map[string]string)
 	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(resIo2)
 	if err != nil {
-		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) error: %s", TibiadataRequest["request"]["url"], err)
+		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) error: %s", TibiadataRequest.URL, err)
 	}
 
 	// Find of this to get div with class BoxContent

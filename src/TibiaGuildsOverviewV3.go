@@ -43,11 +43,7 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 	world = TibiadataStringWorldFormatToTitleV3(world)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest = map[string]map[string]string{
-		"request": {
-			"method": "GET",
-			"url":    "https://www.tibia.com/community/?subtopic=guilds&world=" + TibiadataQueryEscapeStringV3(world),
-		}}
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=guilds&world=" + TibiadataQueryEscapeStringV3(world)
 	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader

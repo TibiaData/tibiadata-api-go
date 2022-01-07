@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"regexp"
 	"strings"
 
@@ -45,7 +46,13 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=worlds"
-	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+
+	// return error (e.g.1 for maintenance mode)
+	if err != nil {
+		TibiaDataAPIHandleOtherResponse(c, http.StatusServiceUnavailable, "TibiaWorldsOverviewV3", gin.H{"error": err.Error()})
+		return
+	}
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))

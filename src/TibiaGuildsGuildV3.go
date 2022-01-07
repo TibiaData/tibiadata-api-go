@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"regexp"
 	"strings"
 
@@ -88,7 +89,13 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiadataQueryEscapeStringV3(guild)
-	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+
+	// return error (e.g.1 for maintenance mode)
+	if err != nil {
+		TibiaDataAPIHandleOtherResponse(c, http.StatusServiceUnavailable, "TibiaGuildsGuildV3", gin.H{"error": err.Error()})
+		return
+	}
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -114,13 +121,17 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 	var GuildDescriptionFinished bool
 	for _, line := range strings.Split(strings.TrimSuffix(InnerTableContainerTMPB, "\n"), "\n") {
 
+		log.Println(line)
+
 		// Guild information
 		if !GuildDescriptionFinished {
 			// First line is the description..
 			GuildDescription += strings.ReplaceAll(line+"\n", "<br/><br/>\n", "")
+			log.Println(GuildDescription)
 
 			// Abort loop and continue wiht next section
 			if strings.Contains(line, "<br/><br/>") {
+				guild = GuildDescription
 				GuildDescription = TibiaDataSanitizeEscapedString(GuildDescription)
 				GuildDescriptionFinished = true
 			}

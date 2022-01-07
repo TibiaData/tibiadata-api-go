@@ -128,7 +128,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 
 			// Abort loop and continue wiht next section
 			if strings.Contains(line, "<br/><br/>") {
-				GuildDescription = TibiaDataSanitizeEscapedString(GuildDescription)
+				GuildDescription = strings.TrimSpace(TibiaDataSanitizeEscapedString(GuildDescription))
 				GuildDescriptionFinished = true
 			}
 

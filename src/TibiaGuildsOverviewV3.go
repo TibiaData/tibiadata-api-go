@@ -85,7 +85,7 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 
 				// Check if there's a description to fetch.
 				if nameAndDescriptionNode.FirstChild.NextSibling != nil && nameAndDescriptionNode.FirstChild.NextSibling.NextSibling != nil {
-					description = nameAndDescriptionNode.FirstChild.NextSibling.NextSibling.Data
+					description = strings.TrimSpace(nameAndDescriptionNode.FirstChild.NextSibling.NextSibling.Data)
 				}
 
 				OneGuild := Guild{

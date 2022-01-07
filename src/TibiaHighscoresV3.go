@@ -4,6 +4,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"tibiadata-api-go/src/structs"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
@@ -11,7 +12,6 @@ import (
 
 // TibiaHighscoresV3 func
 func TibiaHighscoresV3(c *gin.Context) {
-
 	// getting params from URL
 	world := c.Param("world")
 	category := c.Param("category")
@@ -20,31 +20,10 @@ func TibiaHighscoresV3(c *gin.Context) {
 	// do some validation of category and vocation
 	// maybe return error on faulty value?!
 
-	// Child of Highscores
-	type Highscore struct {
-		Rank     int    `json:"rank"`            // Rank column
-		Name     string `json:"name"`            // Name column
-		Vocation string `json:"vocation"`        // Vocation column
-		World    string `json:"world"`           // World column
-		Level    int    `json:"level"`           // Level column
-		Value    int    `json:"value"`           // Points/SkillLevel column
-		Title    string `json:"title,omitempty"` // Title column (when category: loyalty)
-	}
-
-	// Child of JSONData
-	type Highscores struct {
-		World         string      `json:"world"`
-		Category      string      `json:"category"`
-		Vocation      string      `json:"vocation"`
-		HighscoreAge  int         `json:"highscore_age"`
-		HighscoreList []Highscore `json:"highscore_list"`
-	}
-
-	//
 	// The base includes two levels: Highscores and Information
 	type JSONData struct {
-		Highscores  Highscores  `json:"highscores"`
-		Information Information `json:"information"`
+		Highscores  structs.Highscores  `json:"highscores"`
+		Information structs.Information `json:"information"`
 	}
 
 	// Adding fix for First letter to be upper and rest lower
@@ -120,9 +99,11 @@ func TibiaHighscoresV3(c *gin.Context) {
 	}
 
 	// Creating empty HighscoreData var
-	var HighscoreData []Highscore
-	var HighscoreDataVocation, HighscoreDataWorld, HighscoreDataTitle string
-	var HighscoreDataRank, HighscoreDataLevel, HighscoreDataValue, HighscoreAge int
+	var (
+		HighscoreData                                                           []structs.Highscore
+		HighscoreDataVocation, HighscoreDataWorld, HighscoreDataTitle           string
+		HighscoreDataRank, HighscoreDataLevel, HighscoreDataValue, HighscoreAge int
+	)
 
 	// getting age of data
 	regex1 := regexp.MustCompile(`.*<div class="Text">Highscores.*Last Update: ([0-9]+) minutes ago.*`)
@@ -131,7 +112,6 @@ func TibiaHighscoresV3(c *gin.Context) {
 
 	// Running query over each div
 	ReaderHTML.Find(".TableContent tr").First().NextAll().Each(func(index int, s *goquery.Selection) {
-
 		// Storing HTML into CreatureDivHTML
 		HighscoreDivHTML, err := s.Html()
 		if err != nil {
@@ -170,7 +150,6 @@ func TibiaHighscoresV3(c *gin.Context) {
 		}
 
 		if len(subma1) > 0 {
-
 			// Debugging of what is in which column
 			if TibiadataDebug {
 				log.Println("1 -> " + subma1[0][1])
@@ -197,7 +176,7 @@ func TibiaHighscoresV3(c *gin.Context) {
 				HighscoreDataValue = TibiadataStringToIntegerV3(subma1[0][5])
 			}
 
-			HighscoreData = append(HighscoreData, Highscore{
+			HighscoreData = append(HighscoreData, structs.Highscore{
 				Rank:     HighscoreDataRank,
 				Name:     TibiaDataSanitizeEscapedString(subma1[0][1]),
 				Vocation: HighscoreDataVocation,
@@ -206,7 +185,6 @@ func TibiaHighscoresV3(c *gin.Context) {
 				Value:    HighscoreDataValue,
 				Title:    HighscoreDataTitle,
 			})
-
 		}
 	})
 
@@ -218,14 +196,14 @@ func TibiaHighscoresV3(c *gin.Context) {
 	//
 	// Build the data-blob
 	jsonData := JSONData{
-		Highscores{
+		structs.Highscores{
 			World:         strings.Title(strings.ToLower(world)),
 			Category:      category,
 			Vocation:      vocationName,
 			HighscoreAge:  HighscoreAge,
 			HighscoreList: HighscoreData,
 		},
-		Information{
+		structs.Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},

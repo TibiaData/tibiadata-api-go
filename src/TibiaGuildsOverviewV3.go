@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"strings"
+	"tibiadata-api-go/src/structs"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
@@ -10,34 +11,20 @@ import (
 
 // TibiaGuildsOverviewV3 func
 func TibiaGuildsOverviewV3(c *gin.Context) {
-
 	// getting params from URL
 	world := c.Param("world")
 
-	// Child of Guilds
-	type Guild struct {
-		Name        string `json:"name"`
-		LogoURL     string `json:"logo_url"`
-		Description string `json:"description"`
-	}
-
-	// Child of JSONData
-	type Guilds struct {
-		World     string  `json:"world"`
-		Active    []Guild `json:"active"`
-		Formation []Guild `json:"formation"`
-	}
-
-	//
 	// The base includes two levels: Guilds and Information
 	type JSONData struct {
-		Guilds      Guilds      `json:"guilds"`
-		Information Information `json:"information"`
+		Guilds      structs.Guilds      `json:"guilds"`
+		Information structs.Information `json:"information"`
 	}
 
 	// Creating empty vars
-	var ActiveGuilds, FormationGuilds []Guild
-	var GuildCategory string
+	var (
+		ActiveGuilds, FormationGuilds []structs.Guild
+		GuildCategory                 string
+	)
 
 	// Adding fix for First letter to be upper and rest lower
 	world = TibiadataStringWorldFormatToTitleV3(world)
@@ -54,7 +41,6 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 
 	// Running query over each div
 	ReaderHTML.Find(".TableContainer").Each(func(index int, s *goquery.Selection) {
-
 		// Figure out the guild category
 		s.Find(".Text").Each(func(index int, s *goquery.Selection) {
 			tableName := s.Nodes[0].FirstChild.Data
@@ -81,7 +67,7 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 					description = nameAndDescriptionNode.FirstChild.NextSibling.NextSibling.Data
 				}
 
-				OneGuild := Guild{
+				OneGuild := structs.Guild{
 					Name:        name,
 					LogoURL:     logoURL,
 					Description: description,
@@ -100,12 +86,12 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 	//
 	// Build the data-blob
 	jsonData := JSONData{
-		Guilds{
+		structs.Guilds{
 			World:     world,
 			Active:    ActiveGuilds,
 			Formation: FormationGuilds,
 		},
-		Information{
+		structs.Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},

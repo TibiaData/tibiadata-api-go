@@ -4,6 +4,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"tibiadata-api-go/src/structs"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
@@ -11,36 +12,10 @@ import (
 
 // TibiaWorldsOverviewV3 func
 func TibiaWorldsOverviewV3(c *gin.Context) {
-
-	// Child of Worlds
-	type World struct {
-		Name                string `json:"name"`
-		Status              string `json:"status"`                // Online:
-		PlayersOnline       int    `json:"players_online"`        // Online:
-		Location            string `json:"location"`              // Location:
-		PvpType             string `json:"pvp_type"`              // PvP Type:
-		PremiumOnly         bool   `json:"premium_only"`          // Additional Information: premium = true / else: false
-		TransferType        string `json:"transfer_type"`         // Additional Information: regular (if not present) / locked / blocked
-		BattleyeProtected   bool   `json:"battleye_protected"`    // BattlEye Status: true if protected / false if "Not protected by BattlEye."
-		BattleyeDate        string `json:"battleye_date"`         // BattlEye Status: null if since release / else show date?
-		GameWorldType       string `json:"game_world_type"`       // BattlEye Status: regular / experimental / tournament (if Tournament World Type exists)
-		TournamentWorldType string `json:"tournament_world_type"` // BattlEye Status: null (default?) / regular / restricted
-	}
-
-	// Child of JSONData
-	type Worlds struct {
-		PlayersOnline    int     `json:"players_online"` // Calculated value
-		RecordPlayers    int     `json:"record_players"` // Overall Maximum:
-		RecordDate       string  `json:"record_date"`    // Overall Maximum:
-		RegularWorlds    []World `json:"regular_worlds"`
-		TournamentWorlds []World `json:"tournament_worlds"`
-	}
-
-	//
 	// The base includes two levels: Worlds and Information
 	type JSONData struct {
-		Worlds      Worlds      `json:"worlds"`
-		Information Information `json:"information"`
+		Worlds      structs.Worlds      `json:"worlds"`
+		Information structs.Information `json:"information"`
 	}
 
 	// Getting data with TibiadataHTMLDataCollectorV3
@@ -54,15 +29,15 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 	}
 
 	// Creating empty vars
-	var RegularWorldsData, TournamentWorldsData []World
-
-	var WorldsRecordDate, WorldsWorldCategory, WorldsBattleyeDate, WorldsTransferType, WorldsTournamentWorldType, WorldsGameWorldType, WorldsStatus string
-	var WorldsRecordPlayers, WorldsAllOnlinePlayers int
-	var WorldsPremiumOnly, WorldsBattleyeProtected bool
+	var (
+		RegularWorldsData, TournamentWorldsData                                                                                                     []structs.World
+		WorldsRecordDate, WorldsWorldCategory, WorldsBattleyeDate, WorldsTransferType, WorldsTournamentWorldType, WorldsGameWorldType, WorldsStatus string
+		WorldsRecordPlayers, WorldsAllOnlinePlayers                                                                                                 int
+		WorldsPremiumOnly, WorldsBattleyeProtected                                                                                                  bool
+	)
 
 	// Running query over each div
 	ReaderHTML.Find(".TableContentContainer .TableContent tbody tr").Each(func(index int, s *goquery.Selection) {
-
 		// Storing HTML into CreatureDivHTML
 		WorldsDivHTML, err := s.Html()
 		if err != nil {
@@ -91,7 +66,6 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 
 		// check if regex return length is over 0
 		if len(subma2) > 0 {
-
 			// Creating better to use vars
 			WorldsPlayersOnline := TibiadataStringToIntegerV3(subma2[0][2])
 			WorldsBattlEye := subma2[0][5]
@@ -160,7 +134,7 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 			}
 
 			// Creating data block to return
-			OneWorld := World{
+			OneWorld := structs.World{
 				Name:                subma2[0][1],
 				Status:              WorldsStatus,
 				PlayersOnline:       WorldsPlayersOnline,
@@ -187,14 +161,14 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 	//
 	// Build the data-blob
 	jsonData := JSONData{
-		Worlds{
+		structs.Worlds{
 			PlayersOnline:    WorldsAllOnlinePlayers,
 			RecordPlayers:    WorldsRecordPlayers,
 			RecordDate:       WorldsRecordDate,
 			RegularWorlds:    RegularWorldsData,
 			TournamentWorlds: TournamentWorldsData,
 		},
-		Information{
+		structs.Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},

@@ -4,6 +4,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"tibiadata-api-go/src/structs"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
@@ -11,26 +12,10 @@ import (
 
 // TibiaCreaturesOverviewV3 func
 func TibiaCreaturesOverviewV3(c *gin.Context) {
-
-	// Child of Creatures (used for list of creatures and boosted section)
-	type Creature struct {
-		Name     string `json:"name"`
-		Race     string `json:"race"`
-		ImageURL string `json:"image_url"`
-		Featured bool   `json:"featured"`
-	}
-
-	// Child of JSONData
-	type Creatures struct {
-		Boosted   Creature   `json:"boosted"`
-		Creatures []Creature `json:"creature_list"`
-	}
-
-	//
 	// The base includes two levels: Creatures and Information
 	type JSONData struct {
-		Creatures   Creatures   `json:"creatures"`
-		Information Information `json:"information"`
+		Creatures   structs.Creatures   `json:"creatures"`
+		Information structs.Information `json:"information"`
 	}
 
 	// Getting data with TibiadataHTMLDataCollectorV3
@@ -63,11 +48,10 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 	BoostedCreatureImage := subma2b[0][1]
 
 	// Creating empty CreaturesData var
-	var CreaturesData []Creature
+	var CreaturesData []structs.Creature
 
 	// Running query over each div
 	ReaderHTML.Find(".BoxContent div div").Each(func(index int, s *goquery.Selection) {
-
 		// Storing HTML into CreatureDivHTML
 		CreatureDivHTML, err := s.Html()
 		if err != nil {
@@ -88,21 +72,20 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 			}
 
 			// Creating data block to return
-			CreaturesData = append(CreaturesData, Creature{
+			CreaturesData = append(CreaturesData, structs.Creature{
 				Name:     TibiaDataSanitizeEscapedString(subma1[0][3]),
 				Race:     subma1[0][1],
 				ImageURL: subma1[0][2],
 				Featured: FeaturedRace,
 			})
-
 		}
 	})
 
 	//
 	// Build the data-blob
 	jsonData := JSONData{
-		Creatures{
-			Boosted: Creature{
+		structs.Creatures{
+			Boosted: structs.Creature{
 				Name:     BoostedCreatureName,
 				Race:     BoostedCreatureRace,
 				ImageURL: BoostedCreatureImage,
@@ -110,7 +93,7 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 			},
 			Creatures: CreaturesData,
 		},
-		Information{
+		structs.Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},

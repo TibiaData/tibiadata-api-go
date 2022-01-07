@@ -4,6 +4,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"tibiadata-api-go/src/structs"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
@@ -11,50 +12,10 @@ import (
 
 // TibiaFansitesV3 func
 func TibiaFansitesV3(c *gin.Context) {
-
-	// Child of Fansite
-	type ContentType struct {
-		Statistics bool `json:"statistics"`
-		Texts      bool `json:"texts"`
-		Tools      bool `json:"tools"`
-		Wiki       bool `json:"wiki"`
-	}
-	// Child of Fansite
-	type SocialMedia struct {
-		Discord   bool `json:"discord"`
-		Facebook  bool `json:"facebook"`
-		Instagram bool `json:"instagram"`
-		Reddit    bool `json:"reddit"`
-		Twitch    bool `json:"twitch"`
-		Twitter   bool `json:"twitter"`
-		Youtube   bool `json:"youtube"`
-	}
-
-	// Child of Fansites
-	type Fansite struct {
-		Name           string      `json:"name"`
-		LogoURL        string      `json:"logo_url"`
-		Homepage       string      `json:"homepage"`
-		Contact        string      `json:"contact"`
-		ContentType    ContentType `json:"content_type"`
-		SocialMedia    SocialMedia `json:"social_media"`
-		Languages      []string    `json:"languages"`
-		Specials       []string    `json:"specials"`
-		FansiteItem    bool        `json:"fansite_item"`
-		FansiteItemURL string      `json:"fansite_item_url"`
-	}
-
-	// Child of JSONData
-	type Fansites struct {
-		PromotedFansites  []Fansite `json:"promoted"`
-		SupportedFansites []Fansite `json:"supported"`
-	}
-
-	//
 	// The base includes two levels: Fansites and Information
 	type JSONData struct {
-		Fansites    Fansites    `json:"fansites"`
-		Information Information `json:"information"`
+		Fansites    structs.Fansites    `json:"fansites"`
+		Information structs.Information `json:"information"`
 	}
 
 	// Getting data with TibiadataHTMLDataCollectorV3
@@ -68,13 +29,12 @@ func TibiaFansitesV3(c *gin.Context) {
 	}
 
 	// Creating empty PromotedFansitesData and SupportedFansitesData var
-	var PromotedFansitesData, SupportedFansitesData []Fansite
+	var PromotedFansitesData, SupportedFansitesData []structs.Fansite
 
 	// list of different fansite types
 	FansiteTypes := []string{"promoted", "supported"}
 	// running over the FansiteTypes array
 	for _, FansiteType := range FansiteTypes {
-
 		// Running query over each tr in <FansiteType>fansitesinnertable
 		ReaderHTML.Find("#" + FansiteType + "fansitesinnertable tr").First().NextAll().Each(func(index int, s *goquery.Selection) {
 			// #promotedfansitesinnertable
@@ -94,9 +54,8 @@ func TibiaFansitesV3(c *gin.Context) {
 			subma1 := regex1.FindAllStringSubmatch(FansiteTrHTML, -1)
 
 			if len(subma1) > 0 {
-
 				// ContentType
-				ContentTypeData := ContentType{}
+				ContentTypeData := structs.ContentType{}
 				var imgRE1 = regexp.MustCompile(`<img[^>]+\bsrc="([^"]+)"`)
 				imgs1 := imgRE1.FindAllStringSubmatch(subma1[0][5], -1)
 				out := make([]string, len(imgs1))
@@ -115,7 +74,7 @@ func TibiaFansitesV3(c *gin.Context) {
 				}
 
 				// SocialMedia
-				SocialMediaData := SocialMedia{}
+				SocialMediaData := structs.SocialMedia{}
 				var imgRE2 = regexp.MustCompile(`<img[^>]+\bsrc="([^"]+)"`)
 				imgs2 := imgRE2.FindAllStringSubmatch(subma1[0][6], -1)
 				out2 := make([]string, len(imgs2))
@@ -166,7 +125,7 @@ func TibiaFansitesV3(c *gin.Context) {
 
 				switch FansiteType {
 				case "promoted":
-					PromotedFansitesData = append(PromotedFansitesData, Fansite{
+					PromotedFansitesData = append(PromotedFansitesData, structs.Fansite{
 						Name:           subma1[0][3],
 						LogoURL:        subma1[0][2],
 						Homepage:       subma1[0][1],
@@ -179,7 +138,7 @@ func TibiaFansitesV3(c *gin.Context) {
 						FansiteItemURL: FansiteItemURLData,
 					})
 				case "supported":
-					SupportedFansitesData = append(SupportedFansitesData, Fansite{
+					SupportedFansitesData = append(SupportedFansitesData, structs.Fansite{
 						Name:           subma1[0][3],
 						LogoURL:        subma1[0][2],
 						Homepage:       subma1[0][1],
@@ -193,19 +152,17 @@ func TibiaFansitesV3(c *gin.Context) {
 					})
 				}
 			}
-
 		})
-
 	}
 
 	//
 	// Build the data-blob
 	jsonData := JSONData{
-		Fansites{
+		structs.Fansites{
 			PromotedFansites:  PromotedFansitesData,
 			SupportedFansites: SupportedFansitesData,
 		},
-		Information{
+		structs.Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},

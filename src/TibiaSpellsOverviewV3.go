@@ -4,6 +4,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"tibiadata-api-go/src/structs"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
@@ -11,40 +12,16 @@ import (
 
 // TibiaSpellsOverviewV3 func
 func TibiaSpellsOverviewV3(c *gin.Context) {
-
 	// getting params from URL
 	vocation := c.Param("vocation")
 	if vocation == "" {
 		vocation = TibiadataDefaultVoc
 	}
 
-	// Child of Spells
-	type Spell struct {
-		Name         string `json:"name"`
-		Spell        string `json:"spell_id"`
-		Formula      string `json:"formula"`
-		Level        int    `json:"level"`
-		Mana         int    `json:"mana"`
-		Price        int    `json:"price"`
-		GroupAttack  bool   `json:"group_attack"`
-		GroupHealing bool   `json:"group_healing"`
-		GroupSupport bool   `json:"group_support"`
-		TypeInstant  bool   `json:"type_instant"`
-		TypeRune     bool   `json:"type_rune"`
-		PremiumOnly  bool   `json:"premium_only"`
-	}
-
-	// Child of JSONData
-	type Spells struct {
-		SpellsVocationFilter string  `json:"spells_filter"`
-		Spells               []Spell `json:"spell_list"`
-	}
-
-	//
 	// The base includes two levels: Spells and Information
 	type JSONData struct {
-		Spells      Spells      `json:"spells"`
-		Information Information `json:"information"`
+		Spells      structs.SpellsOverview `json:"spells"`
+		Information structs.Information    `json:"information"`
 	}
 
 	// Sanitize of vocation input
@@ -69,12 +46,13 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 	}
 
 	// Creating empty SpellsData var
-	var SpellsData []Spell
-	var GroupAttack, GroupHealing, GroupSupport, TypeInstant, TypeRune, PremiumOnly bool
+	var (
+		SpellsData                                                                  []structs.SpellOverview
+		GroupAttack, GroupHealing, GroupSupport, TypeInstant, TypeRune, PremiumOnly bool
+	)
 
 	// Running query over each div
 	ReaderHTML.Find(".TableContentContainer table tr").Each(func(index int, s *goquery.Selection) {
-
 		// Storing HTML into SpellDivHTML
 		SpellDivHTML, err := s.Html()
 		if err != nil {
@@ -120,7 +98,7 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 			}
 
 			// Creating data block to return
-			SpellsData = append(SpellsData, Spell{
+			SpellsData = append(SpellsData, structs.SpellOverview{
 				Name:         subma1[0][2],
 				Spell:        subma1[0][1],
 				Formula:      TibiaDataSanitizeDoubleQuoteString(TibiaDataSanitizeEscapedString(subma1[0][3])),
@@ -135,7 +113,6 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 				PremiumOnly:  PremiumOnly,
 			})
 		}
-
 	})
 
 	// adding readable SpellsVocationFilter field
@@ -146,11 +123,11 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 	//
 	// Build the data-blob
 	jsonData := JSONData{
-		Spells{
+		structs.SpellsOverview{
 			SpellsVocationFilter: vocationName,
 			Spells:               SpellsData,
 		},
-		Information{
+		structs.Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},

@@ -4,6 +4,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"tibiadata-api-go/src/structs"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
@@ -11,80 +12,24 @@ import (
 
 // TibiaGuildsGuildV3 func
 func TibiaGuildsGuildV3(c *gin.Context) {
-
 	// getting params from URL
 	guild := c.Param("guild")
 
-	// Child of Guild
-	type Guildhall struct {
-		Name  string `json:"name"`
-		World string `json:"world"` // Maybe duplicate info? Guild can only be on one world..
-		/*
-			Town      string `json:"town"`       // We can collect that from cached info?
-			Status    string `json:"status"`     // rented (but maybe also auctioned)
-			Owner     string `json:"owner"`      // We can collect that from cached info?
-			HouseID   int    `json:"houseid"`    // We can collect that from cached info?
-		*/
-		PaidUntil string `json:"paid_until"` // Paid until date
-	}
-
-	// Child of Guild
-	type Members struct {
-		Name     string `json:"name"`
-		Title    string `json:"title"`
-		Rank     string `json:"rank"`
-		Vocation string `json:"vocation"`
-		Level    int    `json:"level"`
-		Joined   string `json:"joined"`
-		Status   string `json:"status"`
-	}
-	// Child of Guild
-	type Invited struct {
-		Name string `json:"name"`
-		Date string `json:"date"`
-	}
-
-	// Child of Guilds
-	type Guild struct {
-		Name               string      `json:"name"`
-		World              string      `json:"world"`
-		LogoURL            string      `json:"logo_url"`
-		Description        string      `json:"description"`
-		Guildhalls         []Guildhall `json:"guildhalls"`
-		Active             bool        `json:"active"`
-		Founded            string      `json:"founded"`
-		Applications       bool        `json:"open_applications"`
-		Homepage           string      `json:"homepage"`
-		InWar              bool        `json:"in_war"`
-		DisbandedDate      string      `json:"disband_date"`
-		DisbandedCondition string      `json:"disband_condition"`
-		PlayersOnline      int         `json:"players_online"`
-		PlayersOffline     int         `json:"players_offline"`
-		MembersTotal       int         `json:"members_total"`
-		MembersInvited     int         `json:"members_invited"`
-		Members            []Members   `json:"members"`
-		Invited            []Invited   `json:"invites"`
-	}
-
-	// Child of JSONData
-	type Guilds struct {
-		Guild Guild `json:"guild"`
-	}
-
-	//
 	// The base includes two levels: Guild and Information
 	type JSONData struct {
-		Guilds      Guilds      `json:"guilds"`
-		Information Information `json:"information"`
+		Guild       structs.Guild       `json:"guild"`
+		Information structs.Information `json:"information"`
 	}
 
 	// Creating empty vars
-	var MembersData []Members
-	var InvitedData []Invited
-	var GuildGuildhallData []Guildhall
-	var MembersRank, MembersTitle, MembersStatus, GuildDescription, GuildDisbandedDate, GuildDisbandedCondition, GuildHomepage, GuildWorld, GuildLogoURL, GuildFounded string
-	var GuildActive, GuildApplications, GuildInWar bool
-	var MembersCountOnline, MembersCountOffline, MembersCountInvited int
+	var (
+		MembersData                                                                                                                                                    []structs.GuildMembers
+		InvitedData                                                                                                                                                    []structs.GuildInvited
+		GuildGuildhallData                                                                                                                                             []structs.Guildhall
+		MembersRank, MembersTitle, MembersStatus, GuildDescription, GuildDisbandedDate, GuildDisbandedCondition, GuildHomepage, GuildWorld, GuildLogoURL, GuildFounded string
+		GuildActive, GuildApplications, GuildInWar                                                                                                                     bool
+		MembersCountOnline, MembersCountOffline, MembersCountInvited                                                                                                   int
+	)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiadataQueryEscapeStringV3(guild)
@@ -113,7 +58,6 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 
 	var GuildDescriptionFinished bool
 	for _, line := range strings.Split(strings.TrimSuffix(InnerTableContainerTMPB, "\n"), "\n") {
-
 		// Guild information
 		if !GuildDescriptionFinished {
 			// First line is the description..
@@ -124,7 +68,6 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 				GuildDescription = TibiaDataSanitizeEscapedString(GuildDescription)
 				GuildDescriptionFinished = true
 			}
-
 		} else if GuildDescriptionFinished {
 			// The rest of the Guild information
 
@@ -160,7 +103,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 				regex1b := regexp.MustCompile(`Their home on ` + GuildWorld + ` is (.*). The rent is paid until (.*).<br/>`)
 				subma1b := regex1b.FindAllStringSubmatch(line, -1)
 
-				GuildGuildhallData = append(GuildGuildhallData, Guildhall{
+				GuildGuildhallData = append(GuildGuildhallData, structs.Guildhall{
 					Name:      TibiaDataSanitizeEscapedString(subma1b[0][1]),
 					World:     GuildWorld,
 					PaidUntil: TibiadataDateV3(subma1b[0][2]),
@@ -181,7 +124,6 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 
 	// Running query over each div
 	ReaderHTML.Find(".TableContentContainer .TableContent tbody tr").Each(func(index int, s *goquery.Selection) {
-
 		// Storing HTML into GuildsDivHTML
 		GuildsDivHTML, err := s.Html()
 		if err != nil {
@@ -213,7 +155,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 				MembersCountOffline++
 			}
 
-			MembersData = append(MembersData, Members{
+			MembersData = append(MembersData, structs.GuildMembers{
 				Name:     TibiaDataSanitizeEscapedString(subma1[0][2]),
 				Title:    MembersTitle,
 				Rank:     MembersRank,
@@ -222,16 +164,14 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 				Joined:   TibiadataDateV3(subma1[0][6]),
 				Status:   MembersStatus,
 			})
-
 		} else {
-
 			// Regex to get data for record values
 			regex2 := regexp.MustCompile(`<td><a.*">(.*)<\/a><\/td><td>(.*)<\/td>`)
 			subma2 := regex2.FindAllStringSubmatch(GuildsDivHTML, -1)
 
 			if len(subma2) > 0 {
 				MembersCountInvited++
-				InvitedData = append(InvitedData, Invited{
+				InvitedData = append(InvitedData, structs.GuildInvited{
 					Name: subma2[0][1],
 					Date: subma2[0][2],
 				})
@@ -242,30 +182,28 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 	//
 	// Build the data-blob
 	jsonData := JSONData{
-		Guilds{
-			Guild{
-				Name:               guild,
-				World:              GuildWorld,
-				LogoURL:            GuildLogoURL,
-				Description:        GuildDescription,
-				Guildhalls:         GuildGuildhallData,
-				Active:             GuildActive,
-				Founded:            GuildFounded,
-				Applications:       GuildApplications,
-				Homepage:           GuildHomepage,
-				InWar:              GuildInWar,
-				DisbandedDate:      GuildDisbandedDate,
-				DisbandedCondition: GuildDisbandedCondition,
+		structs.Guild{
+			Name:               strings.Title(strings.ToLower(guild)),
+			World:              GuildWorld,
+			LogoURL:            GuildLogoURL,
+			Description:        GuildDescription,
+			Guildhalls:         GuildGuildhallData,
+			Active:             GuildActive,
+			Founded:            GuildFounded,
+			Applications:       GuildApplications,
+			Homepage:           GuildHomepage,
+			InWar:              GuildInWar,
+			DisbandedDate:      GuildDisbandedDate,
+			DisbandedCondition: GuildDisbandedCondition,
 
-				PlayersOnline:  MembersCountOnline,
-				PlayersOffline: MembersCountOffline,
-				MembersTotal:   (MembersCountOnline + MembersCountOffline),
-				MembersInvited: MembersCountInvited,
-				Members:        MembersData,
-				Invited:        InvitedData,
-			},
+			PlayersOnline:  MembersCountOnline,
+			PlayersOffline: MembersCountOffline,
+			MembersTotal:   (MembersCountOnline + MembersCountOffline),
+			MembersInvited: MembersCountInvited,
+			Members:        MembersData,
+			Invited:        InvitedData,
 		},
-		Information{
+		structs.Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},

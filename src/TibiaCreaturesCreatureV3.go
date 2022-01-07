@@ -4,6 +4,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"tibiadata-api-go/src/structs"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
@@ -11,41 +12,16 @@ import (
 
 // TibiaCreaturesCreatureV3 func
 func TibiaCreaturesCreatureV3(c *gin.Context) {
-
 	// local strings used in this function
 	var localDamageString = " damage"
 
 	// getting params from URL
 	race := c.Param("race")
 
-	// Child of JSONData
-	type Creature struct {
-		Name             string   `json:"name"`
-		Race             string   `json:"race"`
-		ImageURL         string   `json:"image_url"`
-		Description      string   `json:"description"`
-		Behaviour        string   `json:"behaviour"`
-		Hitpoints        int      `json:"hitpoints"`
-		ImmuneTo         []string `json:"immune"`
-		StrongAgainst    []string `json:"strong"`
-		WeaknessAgainst  []string `json:"weakness"`
-		BeParalysed      bool     `json:"be_paralysed"`
-		BeSummoned       bool     `json:"be_summoned"`
-		SummonMana       int      `json:"summoned_mana"`
-		BeConvinced      bool     `json:"be_convinced"`
-		ConvincedMana    int      `json:"convinced_mana"`
-		SeeInvisible     bool     `json:"see_invisible"`
-		ExperiencePoints int      `json:"experience_points"`
-		IsLootable       bool     `json:"is_lootable"`
-		LootList         []string `json:"loot_list"`
-		Featured         bool     `json:"featured"`
-	}
-
-	//
 	// The base includes two levels: Creature and Information
 	type JSONData struct {
-		Creature    Creature    `json:"creature"`
-		Information Information `json:"information"`
+		Creature    structs.Creature    `json:"creature"`
+		Information structs.Information `json:"information"`
 	}
 
 	// Getting data with TibiadataHTMLDataCollectorV3
@@ -69,14 +45,15 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 	subma1 := regex1.FindAllStringSubmatch(InnerTableContainerTMP1, -1)
 
 	// Preparing vars
-	var CreatureDescription, CreatureBehaviour string
-	var CreatureLootList, CreatureImmuneTo, CreatureStrongAgainst, CreatureWeaknessAgainst []string
-	var CreatureHitpoints, CreatureSummonedMana, CreatureConvincedMana, CreatureExperiencePoints int
-	var CreatureBeParalysed, CreatureBeSummoned, CreatureBeConvinced, CreatureSeeInvisible, CreatureIsLootable bool
+	var (
+		CreatureDescription, CreatureBehaviour                                                                 string
+		CreatureLootList, CreatureImmuneTo, CreatureStrongAgainst, CreatureWeaknessAgainst                     []string
+		CreatureHitpoints, CreatureSummonedMana, CreatureConvincedMana, CreatureExperiencePoints               int
+		CreatureBeParalysed, CreatureBeSummoned, CreatureBeConvinced, CreatureSeeInvisible, CreatureIsLootable bool
+	)
 
 	// Preparing data for JSONData
 	if len(subma1) > 0 {
-
 		// Description (and unescape hmtl string)
 		CreatureDescription = strings.ReplaceAll(subma1[0][3], "<br/>", "\n")
 		CreatureDescription = TibiaDataSanitizeEscapedString(CreatureDescription)
@@ -147,7 +124,7 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 	//
 	// Build the data-blob
 	jsonData := JSONData{
-		Creature{
+		structs.Creature{
 			Name:             TibiaDataSanitizeEscapedString(subma1[0][1]),
 			Race:             race,
 			ImageURL:         subma1[0][2],
@@ -167,7 +144,7 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 			IsLootable:       CreatureIsLootable,
 			LootList:         CreatureLootList,
 		},
-		Information{
+		structs.Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},

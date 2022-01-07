@@ -4,6 +4,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"tibiadata-api-go/src/structs"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
@@ -11,39 +12,13 @@ import (
 
 // TibiaKillstatisticsV3 func
 func TibiaKillstatisticsV3(c *gin.Context) {
-
 	// getting params from URL
 	world := c.Param("world")
 
-	// Child of KillStatistics
-	type Entry struct {
-		Race                    string `json:"race"`
-		LastDayKilledPlayers    int    `json:"last_day_players_killed"`
-		LastDayKilledByPlayers  int    `json:"last_day_killed"`
-		LastWeekKilledPlayers   int    `json:"last_week_players_killed"`
-		LastWeekKilledByPlayers int    `json:"last_week_killed"`
-	}
-
-	// Child of KillStatistics
-	type Total struct {
-		LastDayKilledPlayers    int `json:"last_day_players_killed"`
-		LastDayKilledByPlayers  int `json:"last_day_killed"`
-		LastWeekKilledPlayers   int `json:"last_week_players_killed"`
-		LastWeekKilledByPlayers int `json:"last_week_killed"`
-	}
-
-	// Child of JSONData
-	type KillStatistics struct {
-		World   string  `json:"world"`
-		Entries []Entry `json:"entries"`
-		Total   Total   `json:"total"`
-	}
-
-	//
 	// The base includes two levels: KillStatistics and Information
 	type JSONData struct {
-		KillStatistics KillStatistics `json:"killstatistics"`
-		Information    Information    `json:"information"`
+		KillStatistics structs.KillStatistics `json:"killstatistics"`
+		Information    structs.Information    `json:"information"`
 	}
 
 	// Adding fix for First letter to be upper and rest lower
@@ -60,12 +35,11 @@ func TibiaKillstatisticsV3(c *gin.Context) {
 	}
 
 	// Creating empty KillStatisticsData var
-	var KillStatisticsData []Entry
+	var KillStatisticsData []structs.Entry
 	var TotalLastDayKilledPlayers, TotalLastDayKilledByPlayers, TotalLastWeekKilledPlayers, TotalLastWeekKilledByPlayers int
 
 	// Running query over each div
 	ReaderHTML.Find("#KillStatisticsTable .TableContent tr").Each(func(index int, s *goquery.Selection) {
-
 		// Storing HTML into CreatureDivHTML
 		KillStatisticsDivHTML, err := s.Html()
 		if err != nil {
@@ -77,11 +51,9 @@ func TibiaKillstatisticsV3(c *gin.Context) {
 		subma1 := regex1.FindAllStringSubmatch(KillStatisticsDivHTML, -1)
 
 		if len(subma1) > 0 {
-
 			if strings.TrimSpace(subma1[0][1]) == "Total" {
 				// we don't want to include the Total row
 			} else {
-
 				// Store the values..
 				KillStatisticsLastDayKilledPlayers := TibiadataStringToIntegerV3(subma1[0][2])
 				TotalLastDayKilledPlayers += KillStatisticsLastDayKilledPlayers
@@ -93,7 +65,7 @@ func TibiaKillstatisticsV3(c *gin.Context) {
 				TotalLastWeekKilledByPlayers += KillStatisticsLastWeekKilledByPlayers
 
 				// Append new Entry item to KillStatisticsData
-				KillStatisticsData = append(KillStatisticsData, Entry{
+				KillStatisticsData = append(KillStatisticsData, structs.Entry{
 					Race:                    TibiaDataSanitizeEscapedString(subma1[0][1]),
 					LastDayKilledPlayers:    KillStatisticsLastDayKilledPlayers,
 					LastDayKilledByPlayers:  KillStatisticsLastDayKilledByPlayers,
@@ -107,17 +79,17 @@ func TibiaKillstatisticsV3(c *gin.Context) {
 	//
 	// Build the data-blob
 	jsonData := JSONData{
-		KillStatistics{
+		structs.KillStatistics{
 			World:   world,
 			Entries: KillStatisticsData,
-			Total: Total{
+			Total: structs.Total{
 				LastDayKilledPlayers:    TotalLastDayKilledPlayers,
 				LastDayKilledByPlayers:  TotalLastDayKilledByPlayers,
 				LastWeekKilledPlayers:   TotalLastWeekKilledPlayers,
 				LastWeekKilledByPlayers: TotalLastWeekKilledByPlayers,
 			},
 		},
-		Information{
+		structs.Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},

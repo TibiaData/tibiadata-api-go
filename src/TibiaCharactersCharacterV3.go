@@ -4,6 +4,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"tibiadata-api-go/src/structs"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
@@ -12,142 +13,30 @@ import (
 
 // TibiaCharactersCharacterV3 func
 func TibiaCharactersCharacterV3(c *gin.Context) {
+	var (
+		// local strings used in this function
+		localDivQueryString = ".TableContentContainer tr"
+		localTradedString   = " (traded)"
 
-	// local strings used in this function
-	var localDivQueryString = ".TableContentContainer tr"
-	var localTradedString = " (traded)"
+		// Declaring vars for later use..
+		CharacterInformationData structs.Character
+		AccountBadgesData        []structs.AccountBadges
+		AchievementsData         []structs.Achievements
+		DeathsData               structs.Deaths
+		AccountInformationData   structs.AccountInformation
+		OtherCharactersData      []structs.OtherCharacters
+
+		CharacterSection string
+	)
 
 	// getting params from URL
 	character := c.Param("character")
 
-	// Child of Character
-	type Houses struct {
-		Name    string `json:"name"`
-		Town    string `json:"town"`
-		Paid    string `json:"paid"`
-		HouseID int    `json:"houseid"`
-	}
-
-	// Child of Character
-	type Guild struct {
-		GuildName string `json:"name"`
-		Rank      string `json:"rank"`
-	}
-
-	// Child of Characters
-	type Character struct {
-		Name              string   `json:"name"`
-		FormerNames       []string `json:"former_names"`
-		Traded            bool     `json:"traded"`
-		DeletionDate      string   `json:"deletion_date"`
-		Sex               string   `json:"sex"`
-		Title             string   `json:"title"`
-		UnlockedTitles    int      `json:"unlocked_titles"`
-		Vocation          string   `json:"vocation"`
-		Level             int      `json:"level"`
-		AchievementPoints int      `json:"achievement_points"`
-		World             string   `json:"world"`
-		FormerWorlds      []string `json:"former_worlds"`
-		Residence         string   `json:"residence"`
-		MarriedTo         string   `json:"married_to"`
-		Houses            []Houses `json:"houses"`
-		Guild             Guild    `json:"guild"`
-		LastLogin         string   `json:"last_login"`
-		AccountStatus     string   `json:"account_status"`
-		Comment           string   `json:"comment"`
-	}
-
-	// Child of Characters
-	type AccountBadges struct {
-		Name        string `json:"name"`
-		IconURL     string `json:"icon_url"`
-		Description string `json:"description"`
-	}
-
-	// Child of Characters
-	type Achievements struct {
-		Name   string `json:"name"`
-		Grade  int    `json:"grade"`
-		Secret bool   `json:"secret"`
-	}
-
-	// Child of DeathEntries
-	type Killers struct {
-		Name   string `json:"name"`
-		Player bool   `json:"player"`
-		Traded bool   `json:"traded"`
-		Summon string `json:"summon"`
-	}
-
-	// Child of Deaths
-	type DeathEntries struct {
-		Time    string    `json:"time"`
-		Level   int       `json:"level"`
-		Killers []Killers `json:"killers"`
-		Assists []Killers `json:"assists"`
-		Reason  string    `json:"reason"`
-	}
-
-	// Child of Characters
-	type Deaths struct {
-		DeathEntries    []DeathEntries `json:"death_entries"`
-		TruncatedDeaths bool           `json:"truncated"` // deathlist can be truncated.. but we don't have logic for that atm
-	}
-
-	// Child of Characters
-	type AccountInformation struct {
-		Position     string `json:"position"`
-		Created      string `json:"created"`
-		LoyaltyTitle string `json:"loyalty_title"`
-	}
-
-	// Child of Characters
-	type OtherCharacters struct {
-		Name    string `json:"name"`
-		World   string `json:"world"`
-		Status  string `json:"status"`  // online/offline
-		Deleted bool   `json:"deleted"` // don't know how to do that yet..
-		Main    bool   `json:"main"`
-		Traded  bool   `json:"traded"`
-	}
-
-	// Child of JSONData
-	type Characters struct {
-		Character          Character          `json:"character"`
-		AccountBadges      []AccountBadges    `json:"account_badges"`
-		Achievements       []Achievements     `json:"achievements"`
-		Deaths             Deaths             `json:"deaths"`
-		AccountInformation AccountInformation `json:"account_information"`
-		OtherCharacters    []OtherCharacters  `json:"other_characters"`
-	}
-
-	//
 	// The base includes two levels, Characters and Information
 	type JSONData struct {
-		Characters  Characters  `json:"characters"`
-		Information Information `json:"information"`
+		Characters  structs.Characters  `json:"characters"`
+		Information structs.Information `json:"information"`
 	}
-
-	// Declaring vars for later use..
-	var CharacterInformationData Character
-	CharacterInformationData.Houses = []Houses{}
-	CharacterInformationData.FormerNames = []string{}
-	CharacterInformationData.FormerWorlds = []string{}
-
-	var AccountBadgesData []AccountBadges
-	AccountBadgesData = []AccountBadges{}
-
-	var AchievementsData []Achievements
-	AchievementsData = []Achievements{}
-
-	var DeathsData Deaths
-	DeathsData.DeathEntries = []DeathEntries{}
-
-	var AccountInformationData AccountInformation
-	var OtherCharactersData []OtherCharacters
-	OtherCharactersData = []OtherCharacters{}
-
-	var CharacterSection string
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=characters&name=" + TibiadataQueryEscapeStringV3(character)
@@ -255,7 +144,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 					case "House":
 						regex1h := regexp.MustCompile(`.*houseid=([0-9]+).*character=.*>(.*)</a> \((.*)\) is paid until (.*)`)
 						subma1h := regex1h.FindAllStringSubmatch(subma1[0][2], -1)
-						CharacterInformationData.Houses = append(CharacterInformationData.Houses, Houses{
+						CharacterInformationData.Houses = append(CharacterInformationData.Houses, structs.CharacterHouses{
 							Name:    subma1h[0][2],
 							Town:    subma1h[0][3],
 							Paid:    TibiadataDateV3(subma1h[0][4]),
@@ -299,7 +188,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 				regex1 := regexp.MustCompile(`\(this\), &#39;(.*)&#39;, &#39;(.*)&#39;,.*\).*src="(.*)" alt=.*`)
 				subma1 := regex1.FindAllStringSubmatch(CharacterListHTML, -1)
 
-				AccountBadgesData = append(AccountBadgesData, AccountBadges{
+				AccountBadgesData = append(AccountBadgesData, structs.AccountBadges{
 					Name:        subma1[0][1],
 					IconURL:     subma1[0][3],
 					Description: subma1[0][2],
@@ -328,14 +217,12 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 					// get the name of the achievement (and ignore the secret image on the right)
 					Name := strings.Split(subma1a[0][2], "<img")
 
-					AchievementsData = append(AchievementsData, Achievements{
+					AchievementsData = append(AchievementsData, structs.Achievements{
 						Name:   Name[0],
 						Grade:  strings.Count(subma1a[0][1], "achievement-grade-symbol"),
 						Secret: strings.Contains(subma1a[0][2], "achievement-secret-symbol"),
 					})
-
 				}
-
 			})
 		case "characterdeaths":
 			// Running query over each tr in list
@@ -356,10 +243,9 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 				subma1 := regex1.FindAllStringSubmatch(CharacterListHTML, -1)
 
 				if len(subma1) > 0 {
-
 					// defining responses
-					DeathKillers := []Killers{}
-					DeathAssists := []Killers{}
+					DeathKillers := []structs.Killers{}
+					DeathAssists := []structs.Killers{}
 
 					// store for reply later on..
 					ReasonString := RemoveHtmlTag(subma1[0][2] + " at Level " + subma1[0][3] + " by " + subma1[0][4] + ".")
@@ -385,7 +271,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 						// loop through all killers and append to result
 						for i := range ListOfAssists {
 							name, isPlayer, isTraded, theSummon := TibiaDataParseKiller(ListOfAssists[i])
-							DeathAssists = append(DeathAssists, Killers{
+							DeathAssists = append(DeathAssists, structs.Killers{
 								Name:   name,
 								Player: isPlayer,
 								Traded: isTraded,
@@ -409,7 +295,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 					// loop through all killers and append to result
 					for i := range ListOfKillers {
 						name, isPlayer, isTraded, theSummon := TibiaDataParseKiller(ListOfKillers[i])
-						DeathKillers = append(DeathKillers, Killers{
+						DeathKillers = append(DeathKillers, structs.Killers{
 							Name:   name,
 							Player: isPlayer,
 							Traded: isTraded,
@@ -418,7 +304,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 					}
 
 					// append deadentry to death list
-					DeathsData.DeathEntries = append(DeathsData.DeathEntries, DeathEntries{
+					DeathsData.DeathEntries = append(DeathsData.DeathEntries, structs.DeathEntries{
 						Time:    TibiadataDatetimeV3(subma1[0][1]),
 						Level:   TibiadataStringToIntegerV3(subma1[0][3]),
 						Killers: DeathKillers,
@@ -473,7 +359,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 					}
 
 					// Create the character and append it to the other characters list
-					OtherCharactersData = append(OtherCharactersData, OtherCharacters{
+					OtherCharactersData = append(OtherCharactersData, structs.OtherCharacters{
 						Name:    TmpCharacterName,
 						World:   subma1[0][2],
 						Status:  TmpStatus,
@@ -489,15 +375,15 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 	//
 	// Build the data-blob
 	jsonData := JSONData{
-		Characters{
-			CharacterInformationData,
-			AccountBadgesData,
-			AchievementsData,
-			DeathsData,
-			AccountInformationData,
-			OtherCharactersData,
+		structs.Characters{
+			Character:          CharacterInformationData,
+			AccountBadges:      AccountBadgesData,
+			Achievements:       AchievementsData,
+			Deaths:             DeathsData,
+			AccountInformation: AccountInformationData,
+			OtherCharacters:    OtherCharactersData,
 		},
-		Information{
+		structs.Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
@@ -509,12 +395,12 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 
 // TibiaDataParseKiller func - insert a html string and get the killers back
 func TibiaDataParseKiller(data string) (string, bool, bool, string) {
-
 	// local strings used in this function
-	var localTradedString = " (traded)"
-
-	var isPlayer, isTraded bool
-	var theSummon string
+	var (
+		localTradedString  = " (traded)"
+		isPlayer, isTraded bool
+		theSummon          string
+	)
 
 	// check if killer is a traded player
 	if strings.Contains(data, localTradedString) {

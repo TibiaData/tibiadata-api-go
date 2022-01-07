@@ -63,8 +63,8 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 		baseURL = "https://www.tibia.com/community/?subtopic=houses&world=" + TibiadataQueryEscapeStringV3(world) + "&town=" + TibiadataQueryEscapeStringV3(town) + "&type="
 	)
 
-	go houseFetcher(baseURL, "houses", done, housesChan)
-	go houseFetcher(baseURL, "guildhalls", done, guildhallsChan)
+	go houseFetcher(c, baseURL, "houses", done, housesChan)
+	go houseFetcher(c, baseURL, "guildhalls", done, guildhallsChan)
 
 	for n := 2; n > 0; {
 		select {
@@ -100,7 +100,7 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 	TibiaDataAPIHandleSuccessResponse(c, "TibiaHousesOverviewV3", jsonData)
 }
 
-func houseFetcher(baseURL, houseType string, done chan struct{}, outputChan chan House) {
+func houseFetcher(c *gin.Context, baseURL, houseType string, done chan struct{}, outputChan chan House) {
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = baseURL + TibiadataQueryEscapeStringV3(houseType)
 	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)

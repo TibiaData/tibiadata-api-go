@@ -304,11 +304,28 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (stri
 	if err != nil {
 		log.Printf("[error] TibiadataHTMLDataCollectorV3 (Status: %s, URL: %s) in resp1: %s", res.Status(), TibiadataRequest.URL, err)
 
-		// Check if page is in maintenance mode
-		location, _ := res.RawResponse.Location()
-		if location.Host == "maintenance.tibia.com" {
-			log.Println("[info] TibiadataHTMLDataCollectorV3: Maintenance mode detected!")
-			return "", errors.New("tibia.com is in maintenance mode")
+		var LogMessage string
+		switch res.StatusCode() {
+		case http.StatusForbidden:
+			// throttled request
+			LogMessage = "request throttled due to rate-limitation on tibia.com"
+			log.Printf("[warning] TibiadataHTMLDataCollectorV3: %s!", LogMessage)
+			return "", errors.New(LogMessage)
+
+		case http.StatusFound:
+			// Check if page is in maintenance mode
+			location, _ := res.RawResponse.Location()
+			if location.Host == "maintenance.tibia.com" {
+				LogMessage := "maintenance mode detected on tibia.com"
+				log.Printf("[info] TibiadataHTMLDataCollectorV3: %s!", LogMessage)
+				return "", errors.New(LogMessage)
+			}
+			fallthrough
+
+		default:
+			LogMessage = "unknown error occurred on tibia.com"
+			log.Printf("[error] TibiadataHTMLDataCollectorV3: %s!", LogMessage)
+			return "", errors.New(LogMessage)
 		}
 	}
 

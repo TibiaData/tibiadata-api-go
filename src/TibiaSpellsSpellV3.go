@@ -79,9 +79,9 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=spells&spell=" + TibiadataQueryEscapeStringV3(spell)
 	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
-	// return error (e.g.1 for maintenance mode)
+	// return error (e.g. for maintenance mode)
 	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusServiceUnavailable, "TibiaSpellsSpellV3", gin.H{"error": err.Error()})
+		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaSpellsSpellV3", gin.H{"error": err.Error()})
 		return
 	}
 

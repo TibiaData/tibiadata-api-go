@@ -114,9 +114,9 @@ func TibiaHighscoresV3(c *gin.Context) {
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=highscores&world=" + TibiadataQueryEscapeStringV3(world) + "&category=" + TibiadataQueryEscapeStringV3(categoryid) + "&profession=" + TibiadataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000"
 	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
-	// return error (e.g.1 for maintenance mode)
+	// return error (e.g. for maintenance mode)
 	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusServiceUnavailable, "TibiaHighscoresV3", gin.H{"error": err.Error()})
+		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaHighscoresV3", gin.H{"error": err.Error()})
 		return
 	}
 

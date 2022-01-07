@@ -154,9 +154,9 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=characters&name=" + TibiadataQueryEscapeStringV3(character)
 	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
-	// return error (e.g.1 for maintenance mode)
+	// return error (e.g. for maintenance mode)
 	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusServiceUnavailable, "TibiaCharactersCharacterV3", gin.H{"error": err.Error()})
+		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaCharactersCharacterV3", gin.H{"error": err.Error()})
 		return
 	}
 

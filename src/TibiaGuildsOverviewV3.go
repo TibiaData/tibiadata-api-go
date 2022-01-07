@@ -47,9 +47,9 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=guilds&world=" + TibiadataQueryEscapeStringV3(world)
 	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
-	// return error (e.g.1 for maintenance mode)
+	// return error (e.g. for maintenance mode)
 	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusServiceUnavailable, "TibiaGuildsOverviewV3", gin.H{"error": err.Error()})
+		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaGuildsOverviewV3", gin.H{"error": err.Error()})
 		return
 	}
 

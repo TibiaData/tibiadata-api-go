@@ -53,9 +53,9 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=creatures&race=" + TibiadataQueryEscapeStringV3(race)
 	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
-	// return error (e.g.1 for maintenance mode)
+	// return error (e.g. for maintenance mode)
 	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusServiceUnavailable, "TibiaCreaturesCreatureV3", gin.H{"error": err.Error()})
+		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaCreaturesCreatureV3", gin.H{"error": err.Error()})
 		return
 	}
 

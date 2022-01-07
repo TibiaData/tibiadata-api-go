@@ -118,8 +118,14 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	var GuildDescriptionFinished bool
+	var GuildNameDetected, GuildDescriptionFinished bool
 	for _, line := range strings.Split(strings.TrimSuffix(InnerTableContainerTMPB, "\n"), "\n") {
+
+		// setting guild name based on html
+		if !GuildNameDetected {
+			guild = strings.TrimSpace(RemoveHtmlTag(line))
+			GuildNameDetected = true
+		}
 
 		// Guild information
 		if !GuildDescriptionFinished {

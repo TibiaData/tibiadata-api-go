@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"regexp"
 	"strings"
 	"tibiadata-api-go/src/structs"
@@ -26,7 +27,13 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=spells&spell=" + TibiadataQueryEscapeStringV3(spell)
-	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+
+	// return error (e.g. for maintenance mode)
+	if err != nil {
+		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaSpellsSpellV3", gin.H{"error": err.Error()})
+		return
+	}
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))

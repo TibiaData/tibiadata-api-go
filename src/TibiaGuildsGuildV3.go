@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"regexp"
 	"strings"
 	"tibiadata-api-go/src/structs"
@@ -27,13 +28,19 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 		InvitedData                                                                                                                                                    []structs.GuildInvited
 		GuildGuildhallData                                                                                                                                             []structs.Guildhall
 		MembersRank, MembersTitle, MembersStatus, GuildDescription, GuildDisbandedDate, GuildDisbandedCondition, GuildHomepage, GuildWorld, GuildLogoURL, GuildFounded string
-		GuildActive, GuildApplications, GuildInWar                                                                                                                     bool
+		GuildActive, GuildApplications, GuildInWar, GuildNameDetected, GuildDescriptionFinished                                                                        bool
 		MembersCountOnline, MembersCountOffline, MembersCountInvited                                                                                                   int
 	)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiadataQueryEscapeStringV3(guild)
-	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+
+	// return error (e.g. for maintenance mode)
+	if err != nil {
+		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaGuildsGuildV3", gin.H{"error": err.Error()})
+		return
+	}
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -56,8 +63,13 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	var GuildDescriptionFinished bool
 	for _, line := range strings.Split(strings.TrimSuffix(InnerTableContainerTMPB, "\n"), "\n") {
+		// setting guild name based on html
+		if !GuildNameDetected {
+			guild = strings.TrimSpace(RemoveHtmlTag(line))
+			GuildNameDetected = true
+		}
+
 		// Guild information
 		if !GuildDescriptionFinished {
 			// First line is the description..
@@ -65,7 +77,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 
 			// Abort loop and continue wiht next section
 			if strings.Contains(line, "<br/><br/>") {
-				GuildDescription = TibiaDataSanitizeEscapedString(GuildDescription)
+				GuildDescription = strings.TrimSpace(TibiaDataSanitizeEscapedString(GuildDescription))
 				GuildDescriptionFinished = true
 			}
 		} else if GuildDescriptionFinished {
@@ -183,7 +195,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 	// Build the data-blob
 	jsonData := JSONData{
 		structs.Guild{
-			Name:               strings.Title(strings.ToLower(guild)),
+			Name:               guild,
 			World:              GuildWorld,
 			LogoURL:            GuildLogoURL,
 			Description:        GuildDescription,

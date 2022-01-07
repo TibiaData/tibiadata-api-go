@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"regexp"
 	"strings"
 
@@ -111,7 +112,13 @@ func TibiaHighscoresV3(c *gin.Context) {
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=highscores&world=" + TibiadataQueryEscapeStringV3(world) + "&category=" + TibiadataQueryEscapeStringV3(categoryid) + "&profession=" + TibiadataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000"
-	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+
+	// return error (e.g.1 for maintenance mode)
+	if err != nil {
+		TibiaDataAPIHandleOtherResponse(c, http.StatusServiceUnavailable, "TibiaHighscoresV3", gin.H{"error": err.Error()})
+		return
+	}
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))

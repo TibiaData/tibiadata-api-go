@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"html"
 	"io"
 	"log"
@@ -194,6 +195,7 @@ func TibiaDataAPIHandleErrorResponse(c *gin.Context, s1 string, s2 string, s3 st
 	// return error response
 	c.JSON(http.StatusOK, gin.H{"error": s2})
 }
+*/
 
 // TibiaDataAPIHandleOtherResponse func - handling of responses..
 func TibiaDataAPIHandleOtherResponse(c *gin.Context, httpCode int, s string, j interface{}) {
@@ -204,7 +206,6 @@ func TibiaDataAPIHandleOtherResponse(c *gin.Context, httpCode int, s string, j i
 	// return successful response (with specific status code)
 	c.JSON(httpCode, j)
 }
-*/
 
 // TibiaDataAPIHandleSuccessResponse func - handling of responses..
 func TibiaDataAPIHandleSuccessResponse(c *gin.Context, s string, j interface{}) {
@@ -249,7 +250,7 @@ func TibiadataUserAgentGenerator(version int) string {
 }
 
 // TibiadataHTMLDataCollectorV3 func
-func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) string {
+func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (string, error) {
 
 	// Setting up resty client
 	client := resty.New()
@@ -301,16 +302,13 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) strin
 	}
 
 	if err != nil {
-		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) in resp1: %s", TibiadataRequest.URL, err)
-	}
-
-	// Checking if status is something else than 200
-	if res.StatusCode() != 200 {
-		log.Printf("[warni] TibiadataHTMLDataCollectorV3 (URL: %s) status code: %s", TibiadataRequest.URL, res.Status())
+		log.Printf("[error] TibiadataHTMLDataCollectorV3 (Status: %s, URL: %s) in resp1: %s", res.Status(), TibiadataRequest.URL, err)
 
 		// Check if page is in maintenance mode
-		if res.StatusCode() == 302 {
-			log.Printf("[info] TibiadataHTMLDataCollectorV3 (URL: %s): Page tibia.com returns 302, probably maintenance mode enabled?", TibiadataRequest.URL)
+		location, _ := res.RawResponse.Location()
+		if location.Host == "maintenance.tibia.com" {
+			log.Println("[info] TibiadataHTMLDataCollectorV3: Maintenance mode detected!")
+			return "", errors.New("tibia.com is in maintenance mode")
 		}
 	}
 
@@ -333,7 +331,7 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) strin
 	}
 
 	// Return of extracted html to functions..
-	return data
+	return data, nil
 }
 
 // TibiadataRequestTraceLogger func - prints out trace information to log

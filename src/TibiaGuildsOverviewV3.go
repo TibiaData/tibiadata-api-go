@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -44,7 +45,13 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=guilds&world=" + TibiadataQueryEscapeStringV3(world)
-	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+
+	// return error (e.g.1 for maintenance mode)
+	if err != nil {
+		TibiaDataAPIHandleOtherResponse(c, http.StatusServiceUnavailable, "TibiaGuildsOverviewV3", gin.H{"error": err.Error()})
+		return
+	}
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))

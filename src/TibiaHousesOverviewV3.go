@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"regexp"
 	"strings"
 
@@ -102,7 +103,13 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 func houseFetcher(baseURL, houseType string, done chan struct{}, outputChan chan House) {
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = baseURL + TibiadataQueryEscapeStringV3(houseType)
-	BoxContentHTML := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+
+	// return error (e.g. for maintenance mode)
+	if err != nil {
+		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaHousesOverviewV3", gin.H{"error": err.Error()})
+		return
+	}
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))

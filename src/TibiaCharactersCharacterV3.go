@@ -22,16 +22,16 @@ type Houses struct {
 
 // Child of Character
 type Guild struct {
-	GuildName string `json:"name"`
-	Rank      string `json:"rank"`
+	GuildName string `json:"name,omitempty"`
+	Rank      string `json:"rank,omitempty"`
 }
 
 // Child of Characters
 type Character struct {
 	Name              string   `json:"name"`
-	FormerNames       []string `json:"former_names"`
-	Traded            bool     `json:"traded"`
-	DeletionDate      string   `json:"deletion_date"`
+	FormerNames       []string `json:"former_names,omitempty"`
+	Traded            bool     `json:"traded,omitempty"`
+	DeletionDate      string   `json:"deletion_date,omitempty"`
 	Sex               string   `json:"sex"`
 	Title             string   `json:"title"`
 	UnlockedTitles    int      `json:"unlocked_titles"`
@@ -39,14 +39,14 @@ type Character struct {
 	Level             int      `json:"level"`
 	AchievementPoints int      `json:"achievement_points"`
 	World             string   `json:"world"`
-	FormerWorlds      []string `json:"former_worlds"`
+	FormerWorlds      []string `json:"former_worlds,omitempty"`
 	Residence         string   `json:"residence"`
-	MarriedTo         string   `json:"married_to"`
-	Houses            []Houses `json:"houses"`
+	MarriedTo         string   `json:"married_to,omitempty"`
+	Houses            []Houses `json:"houses,omitempty"`
 	Guild             Guild    `json:"guild"`
-	LastLogin         string   `json:"last_login"`
+	LastLogin         string   `json:"last_login,omitempty"`
 	AccountStatus     string   `json:"account_status"`
-	Comment           string   `json:"comment"`
+	Comment           string   `json:"comment,omitempty"`
 }
 
 // Child of Characters
@@ -82,15 +82,15 @@ type DeathEntries struct {
 
 // Child of Characters
 type Deaths struct {
-	DeathEntries    []DeathEntries `json:"death_entries"`
-	TruncatedDeaths bool           `json:"truncated"` // deathlist can be truncated.. but we don't have logic for that atm
+	DeathEntries    []DeathEntries `json:"death_entries,omitempty"`
+	TruncatedDeaths bool           `json:"truncated,omitempty"` // deathlist can be truncated.. but we don't have logic for that atm
 }
 
 // Child of Characters
 type AccountInformation struct {
-	Position     string `json:"position"`
-	Created      string `json:"created"`
-	LoyaltyTitle string `json:"loyalty_title"`
+	Position     string `json:"position,omitempty"`
+	Created      string `json:"created,omitempty"`
+	LoyaltyTitle string `json:"loyalty_title,omitempty"`
 }
 
 // Child of Characters
@@ -106,11 +106,11 @@ type OtherCharacters struct {
 // Child of JSONData
 type Characters struct {
 	Character          Character          `json:"character"`
-	AccountBadges      []AccountBadges    `json:"account_badges"`
-	Achievements       []Achievements     `json:"achievements"`
-	Deaths             Deaths             `json:"deaths"`
-	AccountInformation AccountInformation `json:"account_information"`
-	OtherCharacters    []OtherCharacters  `json:"other_characters"`
+	AccountBadges      []AccountBadges    `json:"account_badges,omitempty"`
+	Achievements       []Achievements     `json:"achievements,omitempty"`
+	Deaths             Deaths             `json:"deaths,omitempty"`
+	AccountInformation AccountInformation `json:"account_information,omitempty"`
+	OtherCharacters    []OtherCharacters  `json:"other_characters,omitempty"`
 }
 
 //
@@ -140,10 +140,12 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 	TibiaDataAPIHandleSuccessResponse(c, "TibiaCharactersCharacterV3", jsonData)
 }
 
-var deathRegex = regexp.MustCompile(`<td.*>(.*)<\/td><td>(.*) at Level ([0-9]+) by (.*).<\/td>`)
-var summonRegex = regexp.MustCompile(`(an? .+) of ([^<]+)`)
-var accountBadgesRegex = regexp.MustCompile(`\(this\), &#39;(.*)&#39;, &#39;(.*)&#39;,.*\).*src="(.*)" alt=.*`)
-var accountAchievementsRegex = regexp.MustCompile(`<td class="[a-zA-Z0-9_.-]+">(.*)<\/td><td>(.*)?<?.*<\/td>`)
+var (
+	deathRegex               = regexp.MustCompile(`<td.*>(.*)<\/td><td>(.*) at Level ([0-9]+) by (.*).<\/td>`)
+	summonRegex              = regexp.MustCompile(`(an? .+) of ([^<]+)`)
+	accountBadgesRegex       = regexp.MustCompile(`\(this\), &#39;(.*)&#39;, &#39;(.*)&#39;,.*\).*src="(.*)" alt=.*`)
+	accountAchievementsRegex = regexp.MustCompile(`<td class="[a-zA-Z0-9_.-]+">(.*)<\/td><td>(.*)?<?.*<\/td>`)
+)
 
 // TibiaCharactersCharacterV3 func
 func TibiaCharactersCharacterV3Impl(BoxContentHTML string) JSONData {
@@ -153,23 +155,14 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) JSONData {
 	var localTradedString = " (traded)"
 
 	// Declaring vars for later use..
-	var CharacterInformationData Character
-	CharacterInformationData.Houses = []Houses{}
-	CharacterInformationData.FormerNames = []string{}
-	CharacterInformationData.FormerWorlds = []string{}
-
-	var AccountBadgesData []AccountBadges
-	AccountBadgesData = []AccountBadges{}
-
-	var AchievementsData []Achievements
-	AchievementsData = []Achievements{}
-
-	var DeathsData Deaths
-	DeathsData.DeathEntries = []DeathEntries{}
-
-	var AccountInformationData AccountInformation
-	var OtherCharactersData []OtherCharacters
-	OtherCharactersData = []OtherCharacters{}
+	var (
+		CharacterInformationData Character
+		AccountBadgesData        []AccountBadges
+		AchievementsData         []Achievements
+		DeathsData               Deaths
+		AccountInformationData   AccountInformation
+		OtherCharactersData      []OtherCharacters
+	)
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))

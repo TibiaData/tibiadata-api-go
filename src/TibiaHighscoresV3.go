@@ -10,9 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var HighscoresAgeRegex = regexp.MustCompile(`.*<div class="Text">Highscores.*Last Update: ([0-9]+) minutes ago.*`)
-var SevenColumnRegex = regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*>(.*)<\/td><td.*>(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
-var SixColumnRegex = regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*">(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
+var (
+	HighscoresAgeRegex = regexp.MustCompile(`.*<div class="Text">Highscores.*Last Update: ([0-9]+) minutes ago.*`)
+	SevenColumnRegex   = regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*>(.*)<\/td><td.*>(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
+	SixColumnRegex     = regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*">(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
+)
 
 // TibiaHighscoresV3 func
 func TibiaHighscoresV3(c *gin.Context) {
@@ -61,8 +63,7 @@ func TibiaHighscoresV3(c *gin.Context) {
 
 	// Sanatize of category value
 	category = strings.ToLower(category)
-	var categoryid string
-	categoryid = "6"
+	var categoryid string = "6"
 	if len(category) > 0 {
 		switch category {
 		case "achievements", "achievement":
@@ -131,9 +132,11 @@ func TibiaHighscoresV3(c *gin.Context) {
 	}
 
 	// Creating empty HighscoreData var
-	var HighscoreData []Highscore
-	var HighscoreDataVocation, HighscoreDataWorld, HighscoreDataTitle string
-	var HighscoreDataRank, HighscoreDataLevel, HighscoreDataValue, HighscoreAge int
+	var (
+		HighscoreData                                                           []Highscore
+		HighscoreDataVocation, HighscoreDataWorld, HighscoreDataTitle           string
+		HighscoreDataRank, HighscoreDataLevel, HighscoreDataValue, HighscoreAge int
+	)
 
 	// getting age of data
 	subma1 := HighscoresAgeRegex.FindAllStringSubmatch(string(BoxContentHTML), 1)

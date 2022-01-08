@@ -10,10 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var FansiteInformationRegex = regexp.MustCompile(`<td><a href="(.*)" target.*img .*src="(.*)" alt="(.*)"\/><\/a>.*<a href=".*">(.*)<\/a><\/td><td.*top;">(.*)<\/td><td.*top;">(.*)<\/td><td.*top;">(.*)<\/td><td.*<ul><li>(.*)<\/li><\/ul><\/td><td.*top;">(.*)<\/td>`)
-var FansiteImgTagRegex = regexp.MustCompile(`<img[^>]+\bsrc="([^"]+)"`)
-var FansiteLanguagesRegex = regexp.MustCompile("iti__flag.iti__(..)")
-var FansiteAnchorRegex = regexp.MustCompile(`.*src="(.*)" alt=".*`)
+var (
+	FansiteInformationRegex = regexp.MustCompile(`<td><a href="(.*)" target.*img .*src="(.*)" alt="(.*)"\/><\/a>.*<a href=".*">(.*)<\/a><\/td><td.*top;">(.*)<\/td><td.*top;">(.*)<\/td><td.*top;">(.*)<\/td><td.*<ul><li>(.*)<\/li><\/ul><\/td><td.*top;">(.*)<\/td>`)
+	FansiteImgTagRegex      = regexp.MustCompile(`<img[^>]+\bsrc="([^"]+)"`)
+	FansiteLanguagesRegex   = regexp.MustCompile("iti__flag.iti__(..)")
+	FansiteAnchorRegex      = regexp.MustCompile(`.*src="(.*)" alt=".*`)
+)
 
 // TibiaFansitesV3 func
 func TibiaFansitesV3(c *gin.Context) {

@@ -10,10 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var WorldDataRowRegex = regexp.MustCompile(`<td class=.*>(.*):<\/td><td>(.*)<\/td>`)
-var WorldRecordInformationRegex = regexp.MustCompile(`(.*) players \(on (.*)\)`)
-var BattlEyeProtectedSinceRegex = regexp.MustCompile(`Protected by BattlEye since (.*)\.`)
-var OnlinePlayerRegex = regexp.MustCompile(`<td style=.*name=.*">(.*)<\/a>.*">(.*)<\/td>.*">(.*)<\/td>`)
+var (
+	WorldDataRowRegex           = regexp.MustCompile(`<td class=.*>(.*):<\/td><td>(.*)<\/td>`)
+	WorldRecordInformationRegex = regexp.MustCompile(`(.*) players \(on (.*)\)`)
+	BattlEyeProtectedSinceRegex = regexp.MustCompile(`Protected by BattlEye since (.*)\.`)
+	OnlinePlayerRegex           = regexp.MustCompile(`<td style=.*name=.*">(.*)<\/a>.*">(.*)<\/td>.*">(.*)<\/td>`)
+)
 
 // TibiaWorldsWorldV3 func
 func TibiaWorldsWorldV3(c *gin.Context) {
@@ -80,11 +82,13 @@ func TibiaWorldsWorldV3(c *gin.Context) {
 	}
 
 	// Creating empty vars
-	var WorldsStatus, WorldsRecordDate, WorldsCreationDate, WorldsLocation, WorldsPvpType, WorldsTransferType, WorldsBattleyeDate, WorldsGameWorldType, WorldsTournamentWorldType string
-	var WorldsQuestTitles []string
-	var WorldsPlayersOnline, WorldsRecordPlayers int
-	var WorldsPremiumOnly, WorldsBattleyeProtected bool
-	var WorldsOnlinePlayers []OnlinePlayers
+	var (
+		WorldsStatus, WorldsRecordDate, WorldsCreationDate, WorldsLocation, WorldsPvpType, WorldsTransferType, WorldsBattleyeDate, WorldsGameWorldType, WorldsTournamentWorldType string
+		WorldsQuestTitles                                                                                                                                                         []string
+		WorldsPlayersOnline, WorldsRecordPlayers                                                                                                                                  int
+		WorldsPremiumOnly, WorldsBattleyeProtected                                                                                                                                bool
+		WorldsOnlinePlayers                                                                                                                                                       []OnlinePlayers
+	)
 
 	// Running query over each div
 	ReaderHTML.Find(".Table1 .InnerTableContainer table tr").Each(func(index int, s *goquery.Selection) {

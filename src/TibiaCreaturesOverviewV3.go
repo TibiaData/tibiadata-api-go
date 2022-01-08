@@ -10,9 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var BoostedCreatureNameAndRaceRegex = regexp.MustCompile(`<a.*race=(.*)".*?>(.*)</a>`)
-var BoostedCreatureImageRegex = regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
-var CreatureInformationRegex = regexp.MustCompile(`.*race=(.*)"><img src="(.*)" border.*div>(.*)<\/div>`)
+var (
+	BoostedCreatureNameAndRaceRegex = regexp.MustCompile(`<a.*race=(.*)".*?>(.*)</a>`)
+	BoostedCreatureImageRegex       = regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
+	CreatureInformationRegex        = regexp.MustCompile(`.*race=(.*)"><img src="(.*)" border.*div>(.*)<\/div>`)
+)
 
 // TibiaCreaturesOverviewV3 func
 func TibiaCreaturesOverviewV3(c *gin.Context) {

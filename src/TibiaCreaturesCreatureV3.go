@@ -10,13 +10,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var CreatureDataRegex = regexp.MustCompile(`.*;">(.*)<\/h2> <img src="(.*)"\/>.*<p>(.*)<\/p> <p>(.*)<\/p> <p>(.*)<\/p>.*`)
-var CreatureHitpointsRegex = regexp.MustCompile(`.*have (.*) hitpoints. (.*)`)
-var CreatureImmuneRegex = regexp.MustCompile(`.*are immune to (.*)`)
-var CreatureStrongRegex = regexp.MustCompile(`.*are strong against (.*)`)
-var CreatureWeakRegex = regexp.MustCompile(`.*are weak against (.*)`)
-var CreatureManaRequiredRegex = regexp.MustCompile(`.*It takes (.*) mana to (.*)`)
-var CreatureLootRegex = regexp.MustCompile(`.*yield (.*) experience.*carry (.*)with them.`)
+var (
+	CreatureDataRegex         = regexp.MustCompile(`.*;">(.*)<\/h2> <img src="(.*)"\/>.*<p>(.*)<\/p> <p>(.*)<\/p> <p>(.*)<\/p>.*`)
+	CreatureHitpointsRegex    = regexp.MustCompile(`.*have (.*) hitpoints. (.*)`)
+	CreatureImmuneRegex       = regexp.MustCompile(`.*are immune to (.*)`)
+	CreatureStrongRegex       = regexp.MustCompile(`.*are strong against (.*)`)
+	CreatureWeakRegex         = regexp.MustCompile(`.*are weak against (.*)`)
+	CreatureManaRequiredRegex = regexp.MustCompile(`.*It takes (.*) mana to (.*)`)
+	CreatureLootRegex         = regexp.MustCompile(`.*yield (.*) experience.*carry (.*)with them.`)
+)
 
 // TibiaCreaturesCreatureV3 func
 func TibiaCreaturesCreatureV3(c *gin.Context) {
@@ -83,10 +85,12 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 	subma1 := CreatureDataRegex.FindAllStringSubmatch(InnerTableContainerTMP1, -1)
 
 	// Preparing vars
-	var CreatureDescription, CreatureBehaviour string
-	var CreatureLootList, CreatureImmuneTo, CreatureStrongAgainst, CreatureWeaknessAgainst []string
-	var CreatureHitpoints, CreatureSummonedMana, CreatureConvincedMana, CreatureExperiencePoints int
-	var CreatureBeParalysed, CreatureBeSummoned, CreatureBeConvinced, CreatureSeeInvisible, CreatureIsLootable bool
+	var (
+		CreatureDescription, CreatureBehaviour                                                                 string
+		CreatureLootList, CreatureImmuneTo, CreatureStrongAgainst, CreatureWeaknessAgainst                     []string
+		CreatureHitpoints, CreatureSummonedMana, CreatureConvincedMana, CreatureExperiencePoints               int
+		CreatureBeParalysed, CreatureBeSummoned, CreatureBeConvinced, CreatureSeeInvisible, CreatureIsLootable bool
+	)
 
 	// Preparing data for JSONData
 	if len(subma1) > 0 {

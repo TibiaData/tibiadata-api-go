@@ -10,9 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var worldPlayerRecordRegex = regexp.MustCompile(`.*<\/b>...(.*) players \(on (.*)\)`)
-var worldInformationRegex = regexp.MustCompile(`.*world=.*">(.*)<\/a><\/td>.*right;">(.*)<\/td><td>(.*)<\/td><td>(.*)<\/td><td align="center" valign="middle">(.*)<\/td><td>(.*)<\/td>`)
-var worldBattlEyeProtectedSinceRegex = regexp.MustCompile(`.*game world has been protected by BattlEye since (.*).&lt;\/p.*`)
+var (
+	worldPlayerRecordRegex           = regexp.MustCompile(`.*<\/b>...(.*) players \(on (.*)\)`)
+	worldInformationRegex            = regexp.MustCompile(`.*world=.*">(.*)<\/a><\/td>.*right;">(.*)<\/td><td>(.*)<\/td><td>(.*)<\/td><td align="center" valign="middle">(.*)<\/td><td>(.*)<\/td>`)
+	worldBattlEyeProtectedSinceRegex = regexp.MustCompile(`.*game world has been protected by BattlEye since (.*).&lt;\/p.*`)
+)
 
 // TibiaWorldsOverviewV3 func
 func TibiaWorldsOverviewV3(c *gin.Context) {
@@ -65,11 +67,12 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 	}
 
 	// Creating empty vars
-	var RegularWorldsData, TournamentWorldsData []World
-
-	var WorldsRecordDate, WorldsWorldCategory, WorldsBattleyeDate, WorldsTransferType, WorldsTournamentWorldType, WorldsGameWorldType, WorldsStatus string
-	var WorldsRecordPlayers, WorldsAllOnlinePlayers int
-	var WorldsPremiumOnly, WorldsBattleyeProtected bool
+	var (
+		RegularWorldsData, TournamentWorldsData                                                                                                     []World
+		WorldsRecordDate, WorldsWorldCategory, WorldsBattleyeDate, WorldsTransferType, WorldsTournamentWorldType, WorldsGameWorldType, WorldsStatus string
+		WorldsRecordPlayers, WorldsAllOnlinePlayers                                                                                                 int
+		WorldsPremiumOnly, WorldsBattleyeProtected                                                                                                  bool
+	)
 
 	// Running query over each div
 	ReaderHTML.Find(".TableContentContainer .TableContent tbody tr").Each(func(index int, s *goquery.Selection) {

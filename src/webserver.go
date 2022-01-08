@@ -25,29 +25,31 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-// TibiadataDefaultVoc - default vocation when not specified in request
-var TibiadataDefaultVoc string = "all"
+var (
+	// TibiadataDefaultVoc - default vocation when not specified in request
+	TibiadataDefaultVoc string = "all"
 
-// Tibiadata app flags for running
-var TibiadataAPIversion int = 3
-var TibiadataDebug bool
+	// Tibiadata app flags for running
+	TibiadataAPIversion int = 3
+	TibiadataDebug      bool
 
-// Tibiadata app settings
-var TibiadataHost string // set through env TIBIADATA_HOST
+	// Tibiadata app settings
+	TibiadataHost string // set through env TIBIADATA_HOST
 
-// Tibiadata app resty vars
-var TibiadataUserAgent, TibiadataProxyDomain string
-var TibiadataRequest = TibiadataRequestStruct{
-	Method:   resty.MethodGet,
-	URL:      "",
-	FormData: make(map[string]string),
-}
+	// Tibiadata app resty vars
+	TibiadataUserAgent, TibiadataProxyDomain string
+	TibiadataRequest                         = TibiadataRequestStruct{
+		Method:   resty.MethodGet,
+		URL:      "",
+		FormData: make(map[string]string),
+	}
 
-// Tibiadata app details set to release/build on GitHub
-var TibiadataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
-var TibiadataBuildBuilder = "manual"      // will be set by GitHub Actions
-var TibiadataBuildCommit = "-"            // will be set by GitHub Actions (to git commit)
-var TibiadataBuildEdition = "open-source" //
+	// Tibiadata app details set to release/build on GitHub
+	TibiadataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
+	TibiadataBuildBuilder = "manual"      // will be set by GitHub Actions
+	TibiadataBuildCommit  = "-"           // will be set by GitHub Actions (to git commit)
+	TibiadataBuildEdition = "open-source" //
+)
 
 // Information - child of JSONData
 type Information struct {
@@ -287,8 +289,11 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (stri
 	}
 
 	// defining values for request
-	var res *resty.Response
-	var err error
+	var (
+		res        *resty.Response
+		err        error
+		LogMessage string
+	)
 
 	switch TibiadataRequest.Method {
 	case resty.MethodPost:
@@ -308,7 +313,6 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (stri
 	if err != nil {
 		log.Printf("[error] TibiadataHTMLDataCollectorV3 (Status: %s, URL: %s) in resp1: %s", res.Status(), TibiadataRequest.URL, err)
 
-		var LogMessage string
 		switch res.StatusCode() {
 		case http.StatusForbidden:
 			// throttled request

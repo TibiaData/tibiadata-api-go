@@ -10,7 +10,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var SpellInformationRegex = regexp.MustCompile(`<td>.*spell=(.*)&amp;voc.*">(.*)<\/a> \((.*)\)<\/td><td>(.*)<\/td><td>(.*)<\/td><td>([0-9]+)<\/td><td>([0-9]+)<\/td><td>([0-9]+)<\/td><td>(.*)<\/td>`)
+var (
+	SpellInformationRegex = regexp.MustCompile(`<td>.*spell=(.*)&amp;voc.*">(.*)<\/a> \((.*)\)<\/td><td>(.*)<\/td><td>(.*)<\/td><td>([0-9]+)<\/td><td>([0-9]+)<\/td><td>([0-9]+)<\/td><td>(.*)<\/td>`)
+)
 
 // TibiaSpellsOverviewV3 func
 func TibiaSpellsOverviewV3(c *gin.Context) {
@@ -78,8 +80,10 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 	}
 
 	// Creating empty SpellsData var
-	var SpellsData []Spell
-	var GroupAttack, GroupHealing, GroupSupport, TypeInstant, TypeRune, PremiumOnly bool
+	var (
+		SpellsData                                                                  []Spell
+		GroupAttack, GroupHealing, GroupSupport, TypeInstant, TypeRune, PremiumOnly bool
+	)
 
 	// Running query over each div
 	ReaderHTML.Find(".TableContentContainer table tr").Each(func(index int, s *goquery.Selection) {

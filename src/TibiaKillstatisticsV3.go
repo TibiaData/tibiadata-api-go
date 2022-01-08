@@ -10,7 +10,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var KillStatisticInformationRegex = regexp.MustCompile(`<td>(.*)<\/td><td.*>([0-9]+).*<\/td><td.*>([0-9]+).*<\/td><td.*>([0-9]+).*<\/td><td.*>([0-9]+).*<\/td>`)
+var (
+	KillStatisticInformationRegex = regexp.MustCompile(`<td>(.*)<\/td><td.*>([0-9]+).*<\/td><td.*>([0-9]+).*<\/td><td.*>([0-9]+).*<\/td><td.*>([0-9]+).*<\/td>`)
+)
 
 // TibiaKillstatisticsV3 func
 func TibiaKillstatisticsV3(c *gin.Context) {
@@ -69,8 +71,10 @@ func TibiaKillstatisticsV3(c *gin.Context) {
 	}
 
 	// Creating empty KillStatisticsData var
-	var KillStatisticsData []Entry
-	var TotalLastDayKilledPlayers, TotalLastDayKilledByPlayers, TotalLastWeekKilledPlayers, TotalLastWeekKilledByPlayers int
+	var (
+		KillStatisticsData                                                                                               []Entry
+		TotalLastDayKilledPlayers, TotalLastDayKilledByPlayers, TotalLastWeekKilledPlayers, TotalLastWeekKilledByPlayers int
+	)
 
 	// Running query over each div
 	ReaderHTML.Find("#KillStatisticsTable .TableContent tr").Each(func(index int, s *goquery.Selection) {

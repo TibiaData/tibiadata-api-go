@@ -150,12 +150,12 @@ var (
 // TibiaCharactersCharacterV3 func
 func TibiaCharactersCharacterV3Impl(BoxContentHTML string) JSONData {
 
-	// local strings used in this function
-	var localDivQueryString = ".TableContentContainer tr"
-	var localTradedString = " (traded)"
-
-	// Declaring vars for later use..
 	var (
+		// local strings used in this function
+		localDivQueryString = ".TableContentContainer tr"
+		localTradedString   = " (traded)"
+
+		// Declaring vars for later use..
 		CharacterInformationData Character
 		AccountBadgesData        []AccountBadges
 		AchievementsData         []Achievements
@@ -495,11 +495,13 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) JSONData {
 // TibiaDataParseKiller func - insert a html string and get the killers back
 func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 
-	// local strings used in this function
-	var localTradedString = " (traded)"
+	var (
+		// local strings used in this function
+		localTradedString = " (traded)"
 
-	var isPlayer, isTraded bool
-	var theSummon string
+		isPlayer, isTraded bool
+		theSummon          string
+	)
 
 	// check if killer is a traded player
 	if strings.Contains(data, localTradedString) {

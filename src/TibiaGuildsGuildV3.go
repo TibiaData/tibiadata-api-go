@@ -10,13 +10,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var GuildLogoRegex = regexp.MustCompile(`.*img src="(.*)" width=.*`)
-var GuildWorldAndFoundationRegex = regexp.MustCompile(`The guild was founded on (.*) on (.*).<br/>`)
-var GuildHomepageRegex = regexp.MustCompile(`<a href="(.*)" target=.*>`)
-var GuildhallRegex = regexp.MustCompile(` is (.*). The rent is paid until (.*).<br/>`)
-var GuildDisbaneRegex = regexp.MustCompile(`<b>It will be disbanded on (.*.[0-9]+.[0-9]+) (.*)\.<\/b>.*`)
-var GuildMemberInformationRegex = regexp.MustCompile(`<td>(.*)<\/td><td><a.*">(.*)<\/a>(.*)<\/td><td>(.*)<\/td><td>([0-9]+)<\/td><td>(.*)<\/td><td class.*class.*">(.*)<\/span><\/td>`)
-var GuildMemberInvitesInformationRegex = regexp.MustCompile(`<td><a.*">(.*)<\/a><\/td><td>(.*)<\/td>`)
+var (
+	GuildLogoRegex                     = regexp.MustCompile(`.*img src="(.*)" width=.*`)
+	GuildWorldAndFoundationRegex       = regexp.MustCompile(`The guild was founded on (.*) on (.*).<br/>`)
+	GuildHomepageRegex                 = regexp.MustCompile(`<a href="(.*)" target=.*>`)
+	GuildhallRegex                     = regexp.MustCompile(` is (.*). The rent is paid until (.*).<br/>`)
+	GuildDisbaneRegex                  = regexp.MustCompile(`<b>It will be disbanded on (.*.[0-9]+.[0-9]+) (.*)\.<\/b>.*`)
+	GuildMemberInformationRegex        = regexp.MustCompile(`<td>(.*)<\/td><td><a.*">(.*)<\/a>(.*)<\/td><td>(.*)<\/td><td>([0-9]+)<\/td><td>(.*)<\/td><td class.*class.*">(.*)<\/span><\/td>`)
+	GuildMemberInvitesInformationRegex = regexp.MustCompile(`<td><a.*">(.*)<\/a><\/td><td>(.*)<\/td>`)
+)
 
 // TibiaGuildsGuildV3 func
 func TibiaGuildsGuildV3(c *gin.Context) {
@@ -88,12 +90,14 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 	}
 
 	// Creating empty vars
-	var MembersData []Members
-	var InvitedData []Invited
-	var GuildGuildhallData []Guildhall
-	var MembersRank, MembersTitle, MembersStatus, GuildDescription, GuildDisbandedDate, GuildDisbandedCondition, GuildHomepage, GuildWorld, GuildLogoURL, GuildFounded string
-	var GuildActive, GuildApplications, GuildInWar bool
-	var MembersCountOnline, MembersCountOffline, MembersCountInvited int
+	var (
+		MembersData                                                                                                                                                    []Members
+		InvitedData                                                                                                                                                    []Invited
+		GuildGuildhallData                                                                                                                                             []Guildhall
+		MembersRank, MembersTitle, MembersStatus, GuildDescription, GuildDisbandedDate, GuildDisbandedCondition, GuildHomepage, GuildWorld, GuildLogoURL, GuildFounded string
+		GuildActive, GuildApplications, GuildInWar, GuildNameDetected, GuildDescriptionFinished                                                                        bool
+		MembersCountOnline, MembersCountOffline, MembersCountInvited                                                                                                   int
+	)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiadataQueryEscapeStringV3(guild)
@@ -125,7 +129,6 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	var GuildNameDetected, GuildDescriptionFinished bool
 	for _, line := range strings.Split(strings.TrimSuffix(InnerTableContainerTMPB, "\n"), "\n") {
 
 		// setting guild name based on html

@@ -10,10 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var SpellDataRowRegex = regexp.MustCompile(`<td.*>(.*):<\/td><td.*>(.*)<\/td>`)
-var SpellNameAndImageRegex = regexp.MustCompile(`<td><img src="(.*)" width=.*<h2>(.*)<\/h2>.*`)
-var SpellCooldownRegex = regexp.MustCompile(`([0-9]+)s \(.*:.([0-9]+)s\)`)
-var SpellDescriptionRegex = regexp.MustCompile(`(.*)\.(Spell|Rune) InformationName:.*`)
+var (
+	SpellDataRowRegex      = regexp.MustCompile(`<td.*>(.*):<\/td><td.*>(.*)<\/td>`)
+	SpellNameAndImageRegex = regexp.MustCompile(`<td><img src="(.*)" width=.*<h2>(.*)<\/h2>.*`)
+	SpellCooldownRegex     = regexp.MustCompile(`([0-9]+)s \(.*:.([0-9]+)s\)`)
+	SpellDescriptionRegex  = regexp.MustCompile(`(.*)\.(Spell|Rune) InformationName:.*`)
+)
 
 // TibiaSpellsSpellV3 func
 func TibiaSpellsSpellV3(c *gin.Context) {
@@ -96,12 +98,14 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	// creating empty vars for later use
-	var SpellsInfoVocation, SpellsInfoCity, RuneInfoVocation []string
-	// var SpellsInfoName, RuneInfoName string
-	var SpellInformationSection, SpellName, SpellImageURL, SpellDescription, SpellsInfoFormula, SpellsInfoDamageType, RuneInfoDamageType string
-	var SpellsInfoCooldownAlone, SpellsInfoCooldownGroup, SpellsInfoSoulPoints, SpellsInfoAmount, SpellsInfoLevel, SpellsInfoMana, SpellsInfoPrice, RuneInfoLevel, RuneInfoMagicLevel int
-	var SpellsInfoGroupAttack, SpellsInfoGroupHealing, SpellsInfoGroupSupport, SpellsInfoTypeInstant, SpellsInfoTypeRune, RuneInfoGroupAttack, RuneInfoGroupHealing, RuneInfoGroupSupport, SpellsInfoPremium, SpellsHasSpellSection, SpellsHasRuneSection bool
+	var (
+		// creating empty vars for later use
+		SpellsInfoVocation, SpellsInfoCity, RuneInfoVocation []string
+		// var SpellsInfoName, RuneInfoName string
+		SpellInformationSection, SpellName, SpellImageURL, SpellDescription, SpellsInfoFormula, SpellsInfoDamageType, RuneInfoDamageType                                                                                                                  string
+		SpellsInfoCooldownAlone, SpellsInfoCooldownGroup, SpellsInfoSoulPoints, SpellsInfoAmount, SpellsInfoLevel, SpellsInfoMana, SpellsInfoPrice, RuneInfoLevel, RuneInfoMagicLevel                                                                     int
+		SpellsInfoGroupAttack, SpellsInfoGroupHealing, SpellsInfoGroupSupport, SpellsInfoTypeInstant, SpellsInfoTypeRune, RuneInfoGroupAttack, RuneInfoGroupHealing, RuneInfoGroupSupport, SpellsInfoPremium, SpellsHasSpellSection, SpellsHasRuneSection bool
+	)
 
 	// Running query over each div
 	ReaderHTML.Find(".BoxContent table tbody tr").Each(func(index int, s *goquery.Selection) {

@@ -54,17 +54,19 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 	var (
 		// Creating empty vars
 		HouseData, GuildhallData []House
+		Errors                   []error
 
 		// Channels
 		done           = make(chan struct{})
 		housesChan     = make(chan House)
 		guildhallsChan = make(chan House)
+		errorsChan     = make(chan error)
 
 		baseURL = "https://www.tibia.com/community/?subtopic=houses&world=" + TibiadataQueryEscapeStringV3(world) + "&town=" + TibiadataQueryEscapeStringV3(town) + "&type="
 	)
 
-	go houseFetcher(c, baseURL, "houses", done, housesChan)
-	go houseFetcher(c, baseURL, "guildhalls", done, guildhallsChan)
+	go houseFetcher(baseURL, "houses", done, housesChan, errorsChan)
+	go houseFetcher(baseURL, "guildhalls", done, guildhallsChan, errorsChan)
 
 	for n := 2; n > 0; {
 		select {
@@ -72,6 +74,8 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 			HouseData = append(HouseData, h)
 		case gh := <-guildhallsChan:
 			GuildhallData = append(GuildhallData, gh)
+		case err := <-errorsChan:
+			Errors = append(Errors, err)
 		case <-done:
 			n--
 		}
@@ -80,8 +84,13 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 	close(done)
 	close(guildhallsChan)
 	close(housesChan)
+	close(errorsChan)
 
-	//
+	if len(Errors) > 0 {
+		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaHousesOverviewV3", gin.H{"error": Errors[0].Error()})
+		return
+	}
+
 	// Build the data-blob
 	jsonData := JSONData{
 		Houses{
@@ -100,14 +109,17 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 	TibiaDataAPIHandleSuccessResponse(c, "TibiaHousesOverviewV3", jsonData)
 }
 
-func houseFetcher(c *gin.Context, baseURL, houseType string, done chan struct{}, outputChan chan House) {
+func houseFetcher(baseURL, houseType string, done chan struct{}, outputChan chan House, errorsChan chan error) {
+	defer func() {
+		done <- struct{}{}
+	}()
+
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = baseURL + TibiadataQueryEscapeStringV3(houseType)
 	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
 	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaHousesOverviewV3", gin.H{"error": err.Error()})
+		// return error (e.g. for maintenance mode)
+		errorsChan <- err
 		return
 	}
 
@@ -176,6 +188,4 @@ func houseFetcher(c *gin.Context, baseURL, houseType string, done chan struct{},
 			}
 		}
 	})
-
-	done <- struct{}{}
 }

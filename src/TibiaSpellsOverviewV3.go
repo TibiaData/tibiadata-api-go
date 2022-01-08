@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var SpellInformationRegex = regexp.MustCompile(`<td>.*spell=(.*)&amp;voc.*">(.*)<\/a> \((.*)\)<\/td><td>(.*)<\/td><td>(.*)<\/td><td>([0-9]+)<\/td><td>([0-9]+)<\/td><td>([0-9]+)<\/td><td>(.*)<\/td>`)
+
 // TibiaSpellsOverviewV3 func
 func TibiaSpellsOverviewV3(c *gin.Context) {
 
@@ -88,9 +90,7 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 			log.Fatal(err)
 		}
 
-		// Regex to get data for name, race and img src param for creature
-		regex1 := regexp.MustCompile(`<td>.*spell=(.*)&amp;voc.*">(.*)<\/a> \((.*)\)<\/td><td>(.*)<\/td><td>(.*)<\/td><td>([0-9]+)<\/td><td>([0-9]+)<\/td><td>([0-9]+)<\/td><td>(.*)<\/td>`)
-		subma1 := regex1.FindAllStringSubmatch(SpellDivHTML, 1)
+		subma1 := SpellInformationRegex.FindAllStringSubmatch(SpellDivHTML, 1)
 
 		// check if regex return length is over 0 and the match of name is over 1
 		if len(subma1) > 0 {

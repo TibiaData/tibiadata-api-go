@@ -10,6 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var SpellDataRowRegex = regexp.MustCompile(`<td.*>(.*):<\/td><td.*>(.*)<\/td>`)
+var SpellNameAndImageRegex = regexp.MustCompile(`<td><img src="(.*)" width=.*<h2>(.*)<\/h2>.*`)
+var SpellCooldownRegex = regexp.MustCompile(`([0-9]+)s \(.*:.([0-9]+)s\)`)
+var SpellDescriptionRegex = regexp.MustCompile(`(.*)\.(Spell|Rune) InformationName:.*`)
+
 // TibiaSpellsSpellV3 func
 func TibiaSpellsSpellV3(c *gin.Context) {
 
@@ -107,13 +112,10 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 			log.Fatal(err)
 		}
 
-		// Regex to get data for name, race and img src param for creature
-		regex1 := regexp.MustCompile(`<td.*>(.*):<\/td><td.*>(.*)<\/td>`)
-		subma1 := regex1.FindAllStringSubmatch(SpellDivHTML, -1)
+		subma1 := SpellDataRowRegex.FindAllStringSubmatch(SpellDivHTML, -1)
 
 		// Get the name and image
-		regex2 := regexp.MustCompile(`<td><img src="(.*)" width=.*<h2>(.*)<\/h2>.*`)
-		subma2 := regex2.FindAllStringSubmatch(SpellDivHTML, -1)
+		subma2 := SpellNameAndImageRegex.FindAllStringSubmatch(SpellDivHTML, -1)
 		if len(subma2) > 0 {
 			SpellName = subma2[0][2]
 			SpellImageURL = subma2[0][1]
@@ -132,29 +134,29 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 		if len(subma1) > 0 {
 
 			// Creating easy to use vars (and unescape hmtl right string)
-			WorldsInformationLeftColumn := subma1[0][1]
-			WorldsInformationRightColumn := TibiaDataSanitizeEscapedString(subma1[0][2])
+			LeftColumn := subma1[0][1]
+			RightColumn := TibiaDataSanitizeEscapedString(subma1[0][2])
 
 			// Formula
-			if WorldsInformationLeftColumn == "Formula" {
-				SpellsInfoFormula = TibiaDataSanitizeDoubleQuoteString(WorldsInformationRightColumn)
+			if LeftColumn == "Formula" {
+				SpellsInfoFormula = TibiaDataSanitizeDoubleQuoteString(RightColumn)
 			}
 
 			// Vocation
-			if WorldsInformationLeftColumn == "Vocation" {
+			if LeftColumn == "Vocation" {
 				switch SpellInformationSection {
 				case "spell":
-					SpellsInfoVocation = strings.Split(WorldsInformationRightColumn, ", ")
+					SpellsInfoVocation = strings.Split(RightColumn, ", ")
 				case "rune":
-					RuneInfoVocation = strings.Split(WorldsInformationRightColumn, ", ")
+					RuneInfoVocation = strings.Split(RightColumn, ", ")
 				}
 			}
 
 			// Group information
-			if WorldsInformationLeftColumn == "Group" {
+			if LeftColumn == "Group" {
 				switch SpellInformationSection {
 				case "spell":
-					switch WorldsInformationRightColumn {
+					switch RightColumn {
 					case "Attack":
 						SpellsInfoGroupAttack = true
 					case "Healing":
@@ -163,7 +165,7 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 						SpellsInfoGroupSupport = true
 					}
 				case "rune":
-					switch WorldsInformationRightColumn {
+					switch RightColumn {
 					case "Attack":
 						RuneInfoGroupAttack = true
 					case "Healing":
@@ -175,8 +177,8 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 			}
 
 			// Spell type
-			if WorldsInformationLeftColumn == "Type" {
-				switch WorldsInformationRightColumn {
+			if LeftColumn == "Type" {
+				switch RightColumn {
 				case "Instant":
 					SpellsInfoTypeInstant = true
 				case "Rune":
@@ -185,19 +187,18 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 			}
 
 			// Damage
-			if WorldsInformationLeftColumn == "Damage Type" {
+			if LeftColumn == "Damage Type" {
 				switch SpellInformationSection {
 				case "spell":
-					SpellsInfoDamageType = strings.ToLower(WorldsInformationRightColumn)
+					SpellsInfoDamageType = strings.ToLower(RightColumn)
 				case "rune":
-					RuneInfoDamageType = strings.ToLower(WorldsInformationRightColumn)
+					RuneInfoDamageType = strings.ToLower(RightColumn)
 				}
 			}
 
 			// Cooldown
-			if WorldsInformationLeftColumn == "Cooldown" {
-				regex3 := regexp.MustCompile(`([0-9]+)s \(.*:.([0-9]+)s\)`)
-				subma3 := regex3.FindAllStringSubmatch(SpellDivHTML, -1)
+			if LeftColumn == "Cooldown" {
+				subma3 := SpellCooldownRegex.FindAllStringSubmatch(SpellDivHTML, -1)
 				if len(subma3) > 0 {
 					SpellsInfoCooldownAlone = TibiadataStringToIntegerV3(subma3[0][1])
 					SpellsInfoCooldownGroup = TibiadataStringToIntegerV3(subma3[0][2])
@@ -206,47 +207,47 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 			}
 
 			// Soul Points
-			if WorldsInformationLeftColumn == "Soul Points" {
-				SpellsInfoSoulPoints = TibiadataStringToIntegerV3(WorldsInformationRightColumn)
+			if LeftColumn == "Soul Points" {
+				SpellsInfoSoulPoints = TibiadataStringToIntegerV3(RightColumn)
 			}
 
 			// Amount
-			if WorldsInformationLeftColumn == "Amount" {
-				SpellsInfoAmount = TibiadataStringToIntegerV3(WorldsInformationRightColumn)
+			if LeftColumn == "Amount" {
+				SpellsInfoAmount = TibiadataStringToIntegerV3(RightColumn)
 			}
 
 			// Experience Level
-			if WorldsInformationLeftColumn == "Exp Lvl" {
+			if LeftColumn == "Exp Lvl" {
 				switch SpellInformationSection {
 				case "spell":
-					SpellsInfoLevel = TibiadataStringToIntegerV3(WorldsInformationRightColumn)
+					SpellsInfoLevel = TibiadataStringToIntegerV3(RightColumn)
 				case "rune":
-					RuneInfoLevel = TibiadataStringToIntegerV3(WorldsInformationRightColumn)
+					RuneInfoLevel = TibiadataStringToIntegerV3(RightColumn)
 				}
 			}
 
 			// Mana
-			if WorldsInformationLeftColumn == "Mana" {
-				SpellsInfoMana = TibiadataStringToIntegerV3(WorldsInformationRightColumn)
+			if LeftColumn == "Mana" {
+				SpellsInfoMana = TibiadataStringToIntegerV3(RightColumn)
 			}
 
 			// Price
-			if WorldsInformationLeftColumn == "Price" {
-				if WorldsInformationRightColumn == "free" {
+			if LeftColumn == "Price" {
+				if RightColumn == "free" {
 					SpellsInfoPrice = 0
 				} else {
-					SpellsInfoPrice = TibiadataStringToIntegerV3(WorldsInformationRightColumn)
+					SpellsInfoPrice = TibiadataStringToIntegerV3(RightColumn)
 				}
 			}
 
 			// City
-			if WorldsInformationLeftColumn == "City" {
-				SpellsInfoCity = strings.Split(WorldsInformationRightColumn, ", ")
+			if LeftColumn == "City" {
+				SpellsInfoCity = strings.Split(RightColumn, ", ")
 			}
 
 			// Premium
-			if WorldsInformationLeftColumn == "Premium" {
-				if WorldsInformationRightColumn == "yes" {
+			if LeftColumn == "Premium" {
+				if RightColumn == "yes" {
 					SpellsInfoPremium = true
 				} else {
 					SpellsInfoPremium = false
@@ -254,8 +255,8 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 			}
 
 			// Magic level
-			if WorldsInformationLeftColumn == "Mag Lvl" {
-				RuneInfoMagicLevel = TibiadataStringToIntegerV3(WorldsInformationRightColumn)
+			if LeftColumn == "Mag Lvl" {
+				RuneInfoMagicLevel = TibiadataStringToIntegerV3(RightColumn)
 			}
 
 		}
@@ -263,8 +264,7 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 
 	// Getting the description
 	InnerTableContainerTMPB := ReaderHTML.Find(".BoxContent").Text()
-	regex4 := regexp.MustCompile(SpellName + `(.*)\.(Spell|Rune) InformationName:.*`)
-	subma4 := regex4.FindAllStringSubmatch(InnerTableContainerTMPB, -1)
+	subma4 := SpellDescriptionRegex.FindAllStringSubmatch(InnerTableContainerTMPB, -1)
 	if len(subma4) > 0 {
 		SpellDescription = subma4[0][1] + "."
 	}

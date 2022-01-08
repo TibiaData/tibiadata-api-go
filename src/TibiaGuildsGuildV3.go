@@ -10,6 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var GuildLogoRegex = regexp.MustCompile(`.*img src="(.*)" width=.*`)
+var GuildWorldAndFoundationRegex = regexp.MustCompile(`The guild was founded on (.*) on (.*).<br/>`)
+var GuildHomepageRegex = regexp.MustCompile(`<a href="(.*)" target=.*>`)
+var GuildhallRegex = regexp.MustCompile(` is (.*). The rent is paid until (.*).<br/>`)
+var GuildDisbaneRegex = regexp.MustCompile(`<b>It will be disbanded on (.*.[0-9]+.[0-9]+) (.*)\.<\/b>.*`)
+var GuildMemberInformationRegex = regexp.MustCompile(`<td>(.*)<\/td><td><a.*">(.*)<\/a>(.*)<\/td><td>(.*)<\/td><td>([0-9]+)<\/td><td>(.*)<\/td><td class.*class.*">(.*)<\/span><\/td>`)
+var GuildMemberInvitesInformationRegex = regexp.MustCompile(`<td><a.*">(.*)<\/a><\/td><td>(.*)<\/td>`)
+
 // TibiaGuildsGuildV3 func
 func TibiaGuildsGuildV3(c *gin.Context) {
 
@@ -108,8 +116,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	regex1b := regexp.MustCompile(`.*img src="(.*)" width=.*`)
-	subma1b := regex1b.FindAllStringSubmatch(InnerTableContainerTMPA, -1)
+	subma1b := GuildLogoRegex.FindAllStringSubmatch(InnerTableContainerTMPA, -1)
 	GuildLogoURL = subma1b[0][1]
 
 	// Getting data from div.InnerTableContainer and then first p
@@ -143,8 +150,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 
 			if strings.Contains(line, "The guild was founded on") {
 				// Regex to get GuildWorld and GuildFounded
-				regex1b := regexp.MustCompile(`The guild was founded on (.*) on (.*).<br/>`)
-				subma1b := regex1b.FindAllStringSubmatch(line, -1)
+				subma1b := GuildWorldAndFoundationRegex.FindAllStringSubmatch(line, -1)
 				GuildWorld = subma1b[0][1]
 				GuildFounded = TibiadataDateV3(subma1b[0][2])
 			}
@@ -162,16 +168,13 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 			}
 
 			if strings.Contains(line, "The official homepage is") {
-				regex1c := regexp.MustCompile(`<a href="(.*)" target=.*>`)
-				subma1c := regex1c.FindAllStringSubmatch(line, -1)
+				subma1c := GuildHomepageRegex.FindAllStringSubmatch(line, -1)
 				GuildHomepage = subma1c[0][1]
 			}
 
 			// If guildhall
 			if strings.Contains(line, "Their home on "+GuildWorld) {
-				// Regex to get GuildWorld and GuildFounded
-				regex1b := regexp.MustCompile(`Their home on ` + GuildWorld + ` is (.*). The rent is paid until (.*).<br/>`)
-				subma1b := regex1b.FindAllStringSubmatch(line, -1)
+				subma1b := GuildhallRegex.FindAllStringSubmatch(line, -1)
 
 				GuildGuildhallData = append(GuildGuildhallData, Guildhall{
 					Name:      TibiaDataSanitizeEscapedString(subma1b[0][1]),
@@ -182,8 +185,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 
 			// If disbanded
 			if strings.Contains(line, "<b>It will be disbanded on ") {
-				regex1c := regexp.MustCompile(`<b>It will be disbanded on (.*.[0-9]+.[0-9]+) (.*)\.<\/b>.*`)
-				subma1c := regex1c.FindAllStringSubmatch(line, -1)
+				subma1c := GuildDisbaneRegex.FindAllStringSubmatch(line, -1)
 				if len(subma1c) > 0 {
 					GuildDisbandedDate = subma1c[0][1]
 					GuildDisbandedCondition = subma1c[0][2]
@@ -205,8 +207,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 		GuildsDivHTML = TibiadataHTMLRemoveLinebreaksV3(GuildsDivHTML)
 
 		// Regex to get data for record values
-		regex1 := regexp.MustCompile(`<td>(.*)<\/td><td><a.*">(.*)<\/a>(.*)<\/td><td>(.*)<\/td><td>([0-9]+)<\/td><td>(.*)<\/td><td class.*class.*">(.*)<\/span><\/td>`)
-		subma1 := regex1.FindAllStringSubmatch(GuildsDivHTML, -1)
+		subma1 := GuildMemberInformationRegex.FindAllStringSubmatch(GuildsDivHTML, -1)
 
 		if len(subma1) > 0 {
 			// Rank name
@@ -239,8 +240,7 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 		} else {
 
 			// Regex to get data for record values
-			regex2 := regexp.MustCompile(`<td><a.*">(.*)<\/a><\/td><td>(.*)<\/td>`)
-			subma2 := regex2.FindAllStringSubmatch(GuildsDivHTML, -1)
+			subma2 := GuildMemberInvitesInformationRegex.FindAllStringSubmatch(GuildsDivHTML, -1)
 
 			if len(subma2) > 0 {
 				MembersCountInvited++

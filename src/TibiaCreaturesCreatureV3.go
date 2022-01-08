@@ -10,6 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var CreatureDataRegex = regexp.MustCompile(`.*;">(.*)<\/h2> <img src="(.*)"\/>.*<p>(.*)<\/p> <p>(.*)<\/p> <p>(.*)<\/p>.*`)
+var CreatureHitpointsRegex = regexp.MustCompile(`.*have (.*) hitpoints. (.*)`)
+var CreatureImmuneRegex = regexp.MustCompile(`.*are immune to (.*)`)
+var CreatureStrongRegex = regexp.MustCompile(`.*are strong against (.*)`)
+var CreatureWeakRegex = regexp.MustCompile(`.*are weak against (.*)`)
+var CreatureManaRequiredRegex = regexp.MustCompile(`.*It takes (.*) mana to (.*)`)
+var CreatureLootRegex = regexp.MustCompile(`.*yield (.*) experience.*carry (.*)with them.`)
+
 // TibiaCreaturesCreatureV3 func
 func TibiaCreaturesCreatureV3(c *gin.Context) {
 
@@ -72,8 +80,7 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 	}
 
 	// Regex to get data
-	regex1 := regexp.MustCompile(`.*;">(.*)<\/h2> <img src="(.*)"\/>.*<p>(.*)<\/p> <p>(.*)<\/p> <p>(.*)<\/p>.*`)
-	subma1 := regex1.FindAllStringSubmatch(InnerTableContainerTMP1, -1)
+	subma1 := CreatureDataRegex.FindAllStringSubmatch(InnerTableContainerTMP1, -1)
 
 	// Preparing vars
 	var CreatureDescription, CreatureBehaviour string
@@ -90,8 +97,7 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 
 		// Behaviour
 		// Regex to get data..
-		regex2 := regexp.MustCompile(`.*have (.*) hitpoints. (.*)`)
-		subma2 := regex2.FindAllStringSubmatch(subma1[0][4], -1)
+		subma2 := CreatureHitpointsRegex.FindAllStringSubmatch(subma1[0][4], -1)
 		// Add data to vars
 		CreatureHitpoints = TibiadataStringToIntegerV3(subma2[0][1])
 		CreatureBehaviour = subma2[0][2]
@@ -102,26 +108,22 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 			CreatureSeeInvisible = true
 		}
 		if strings.Contains(subma1[0][4], " are immune to ") {
-			regex21 := regexp.MustCompile(`.*are immune to (.*)`)
-			subma21 := regex21.FindAllStringSubmatch(subma1[0][4], -1)
+			subma21 := CreatureImmuneRegex.FindAllStringSubmatch(subma1[0][4], -1)
 			CreatureImmuneToTmp := strings.Split(subma21[0][1], localDamageString)
 			CreatureImmuneTo = strings.Split(strings.Replace(CreatureImmuneToTmp[0], " and ", ", ", 1), ", ")
 		}
 		if strings.Contains(subma1[0][4], " are strong against ") {
-			regex22 := regexp.MustCompile(`.*are strong against (.*)`)
-			subma22 := regex22.FindAllStringSubmatch(subma1[0][4], -1)
+			subma22 := CreatureStrongRegex.FindAllStringSubmatch(subma1[0][4], -1)
 			CreatureStrongAgainstTmp := strings.Split(subma22[0][1], localDamageString)
 			CreatureStrongAgainst = strings.Split(strings.Replace(CreatureStrongAgainstTmp[0], " and ", ", ", 1), ", ")
 		}
 		if strings.Contains(subma1[0][4], " are weak against ") {
-			regex23 := regexp.MustCompile(`.*are weak against (.*)`)
-			subma23 := regex23.FindAllStringSubmatch(subma1[0][4], -1)
+			subma23 := CreatureWeakRegex.FindAllStringSubmatch(subma1[0][4], -1)
 			CreatureWeaknessAgainstTmp := strings.Split(subma23[0][1], localDamageString)
 			CreatureWeaknessAgainst = strings.Split(strings.Replace(CreatureWeaknessAgainstTmp[0], " and ", ", ", 1), ", ")
 		}
 		if strings.Contains(subma1[0][4], "It takes ") && strings.Contains(subma1[0][4], " mana to ") {
-			regex24 := regexp.MustCompile(`.*It takes (.*) mana to (.*)`)
-			subma24 := regex24.FindAllStringSubmatch(subma1[0][4], -1)
+			subma24 := CreatureManaRequiredRegex.FindAllStringSubmatch(subma1[0][4], -1)
 			subma2402 := subma24[0][2]
 			if strings.Contains(subma2402, "convince these creatures but they cannot be") {
 				CreatureBeConvinced = true
@@ -136,8 +138,7 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 
 		// Loot
 		// Regex to get loot information
-		regex3 := regexp.MustCompile(`.*yield (.*) experience.*carry (.*)with them.`)
-		subma3 := regex3.FindAllStringSubmatch(subma1[0][5], -1)
+		subma3 := CreatureLootRegex.FindAllStringSubmatch(subma1[0][5], -1)
 		// Adding data to vars
 		CreatureExperiencePoints = TibiadataStringToIntegerV3(subma3[0][1])
 		if subma3[0][2] != "nothing" {

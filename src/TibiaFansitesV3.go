@@ -10,6 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var FansiteInformationRegex = regexp.MustCompile(`<td><a href="(.*)" target.*img .*src="(.*)" alt="(.*)"\/><\/a>.*<a href=".*">(.*)<\/a><\/td><td.*top;">(.*)<\/td><td.*top;">(.*)<\/td><td.*top;">(.*)<\/td><td.*<ul><li>(.*)<\/li><\/ul><\/td><td.*top;">(.*)<\/td>`)
+var FansiteImgTagRegex = regexp.MustCompile(`<img[^>]+\bsrc="([^"]+)"`)
+var FansiteLanguagesRegex = regexp.MustCompile("iti__flag.iti__(..)")
+var FansiteAnchorRegex = regexp.MustCompile(`.*src="(.*)" alt=".*`)
+
 // TibiaFansitesV3 func
 func TibiaFansitesV3(c *gin.Context) {
 
@@ -97,15 +102,13 @@ func TibiaFansitesV3(c *gin.Context) {
 			FansiteTrHTML = TibiadataHTMLRemoveLinebreaksV3(FansiteTrHTML)
 
 			// Regex to get data for fansites
-			regex1 := regexp.MustCompile(`<td><a href="(.*)" target.*img .*src="(.*)" alt="(.*)"\/><\/a>.*<a href=".*">(.*)<\/a><\/td><td.*top;">(.*)<\/td><td.*top;">(.*)<\/td><td.*top;">(.*)<\/td><td.*<ul><li>(.*)<\/li><\/ul><\/td><td.*top;">(.*)<\/td>`)
-			subma1 := regex1.FindAllStringSubmatch(FansiteTrHTML, -1)
+			subma1 := FansiteInformationRegex.FindAllStringSubmatch(FansiteTrHTML, -1)
 
 			if len(subma1) > 0 {
 
 				// ContentType
 				ContentTypeData := ContentType{}
-				var imgRE1 = regexp.MustCompile(`<img[^>]+\bsrc="([^"]+)"`)
-				imgs1 := imgRE1.FindAllStringSubmatch(subma1[0][5], -1)
+				imgs1 := FansiteImgTagRegex.FindAllStringSubmatch(subma1[0][5], -1)
 				out := make([]string, len(imgs1))
 				for i := range out {
 					s := imgs1[i][1]
@@ -123,8 +126,7 @@ func TibiaFansitesV3(c *gin.Context) {
 
 				// SocialMedia
 				SocialMediaData := SocialMedia{}
-				var imgRE2 = regexp.MustCompile(`<img[^>]+\bsrc="([^"]+)"`)
-				imgs2 := imgRE2.FindAllStringSubmatch(subma1[0][6], -1)
+				imgs2 := FansiteImgTagRegex.FindAllStringSubmatch(subma1[0][6], -1)
 				out2 := make([]string, len(imgs2))
 				for i := range out2 {
 					s := imgs2[i][1]
@@ -147,8 +149,7 @@ func TibiaFansitesV3(c *gin.Context) {
 				}
 
 				// Languages
-				re := regexp.MustCompile("iti__flag.iti__(..)")
-				found := re.FindAllString(subma1[0][7], -1)
+				found := FansiteLanguagesRegex.FindAllString(subma1[0][7], -1)
 				FansiteLanguagesData := make([]string, len(found))
 				for i := range FansiteLanguagesData {
 					FansiteLanguagesData[i] = strings.ReplaceAll(found[i], "iti__flag iti__", "")
@@ -161,8 +162,7 @@ func TibiaFansitesV3(c *gin.Context) {
 				// FansiteItem & FansiteItemURL
 				var FansiteItemData bool
 				var FansiteItemURLData string
-				regex2 := regexp.MustCompile(`.*src="(.*)" alt=".*`)
-				subma1item := regex2.FindAllStringSubmatch(subma1[0][9], -1)
+				subma1item := FansiteAnchorRegex.FindAllStringSubmatch(subma1[0][9], -1)
 				if len(subma1item) > 0 {
 					FansiteItemData = true
 					FansiteItemURLData = subma1item[0][1]

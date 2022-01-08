@@ -8,126 +8,149 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/net/html/atom"
 	//"time"
 )
 
-// TibiaCharactersCharacterV3 func
+// Child of Character
+type Houses struct {
+	Name    string `json:"name"`
+	Town    string `json:"town"`
+	Paid    string `json:"paid"`
+	HouseID int    `json:"houseid"`
+}
+
+// Child of Character
+type Guild struct {
+	GuildName string `json:"name"`
+	Rank      string `json:"rank"`
+}
+
+// Child of Characters
+type Character struct {
+	Name              string   `json:"name"`
+	FormerNames       []string `json:"former_names"`
+	Traded            bool     `json:"traded"`
+	DeletionDate      string   `json:"deletion_date"`
+	Sex               string   `json:"sex"`
+	Title             string   `json:"title"`
+	UnlockedTitles    int      `json:"unlocked_titles"`
+	Vocation          string   `json:"vocation"`
+	Level             int      `json:"level"`
+	AchievementPoints int      `json:"achievement_points"`
+	World             string   `json:"world"`
+	FormerWorlds      []string `json:"former_worlds"`
+	Residence         string   `json:"residence"`
+	MarriedTo         string   `json:"married_to"`
+	Houses            []Houses `json:"houses"`
+	Guild             Guild    `json:"guild"`
+	LastLogin         string   `json:"last_login"`
+	AccountStatus     string   `json:"account_status"`
+	Comment           string   `json:"comment"`
+}
+
+// Child of Characters
+type AccountBadges struct {
+	Name        string `json:"name"`
+	IconURL     string `json:"icon_url"`
+	Description string `json:"description"`
+}
+
+// Child of Characters
+type Achievements struct {
+	Name   string `json:"name"`
+	Grade  int    `json:"grade"`
+	Secret bool   `json:"secret"`
+}
+
+// Child of DeathEntries
+type Killers struct {
+	Name   string `json:"name"`
+	Player bool   `json:"player"`
+	Traded bool   `json:"traded"`
+	Summon string `json:"summon"`
+}
+
+// Child of Deaths
+type DeathEntries struct {
+	Time    string    `json:"time"`
+	Level   int       `json:"level"`
+	Killers []Killers `json:"killers"`
+	Assists []Killers `json:"assists"`
+	Reason  string    `json:"reason"`
+}
+
+// Child of Characters
+type Deaths struct {
+	DeathEntries    []DeathEntries `json:"death_entries"`
+	TruncatedDeaths bool           `json:"truncated"` // deathlist can be truncated.. but we don't have logic for that atm
+}
+
+// Child of Characters
+type AccountInformation struct {
+	Position     string `json:"position"`
+	Created      string `json:"created"`
+	LoyaltyTitle string `json:"loyalty_title"`
+}
+
+// Child of Characters
+type OtherCharacters struct {
+	Name    string `json:"name"`
+	World   string `json:"world"`
+	Status  string `json:"status"`  // online/offline
+	Deleted bool   `json:"deleted"` // don't know how to do that yet..
+	Main    bool   `json:"main"`
+	Traded  bool   `json:"traded"`
+}
+
+// Child of JSONData
+type Characters struct {
+	Character          Character          `json:"character"`
+	AccountBadges      []AccountBadges    `json:"account_badges"`
+	Achievements       []Achievements     `json:"achievements"`
+	Deaths             Deaths             `json:"deaths"`
+	AccountInformation AccountInformation `json:"account_information"`
+	OtherCharacters    []OtherCharacters  `json:"other_characters"`
+}
+
+//
+// The base includes two levels, Characters and Information
+type JSONData struct {
+	Characters  Characters  `json:"characters"`
+	Information Information `json:"information"`
+}
+
 func TibiaCharactersCharacterV3(c *gin.Context) {
+	// getting params from URL
+	character := c.Param("character")
+
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=characters&name=" + TibiadataQueryEscapeStringV3(character)
+	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+
+	// return error (e.g. for maintenance mode)
+	if err != nil {
+		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaCharactersCharacterV3", gin.H{"error": err.Error()})
+		return
+	}
+
+	jsonData := TibiaCharactersCharacterV3Impl(BoxContentHTML)
+
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaCharactersCharacterV3", jsonData)
+}
+
+var deathRegex = regexp.MustCompile(`<td.*>(.*)<\/td><td>(.*) at Level ([0-9]+) by (.*).<\/td>`)
+var summonRegex = regexp.MustCompile(`(an? .+) of ([^<]+)`)
+var accountBadgesRegex = regexp.MustCompile(`\(this\), &#39;(.*)&#39;, &#39;(.*)&#39;,.*\).*src="(.*)" alt=.*`)
+var accountAchievementsRegex = regexp.MustCompile(`<td class="[a-zA-Z0-9_.-]+">(.*)<\/td><td>(.*)?<?.*<\/td>`)
+
+// TibiaCharactersCharacterV3 func
+func TibiaCharactersCharacterV3Impl(BoxContentHTML string) JSONData {
 
 	// local strings used in this function
 	var localDivQueryString = ".TableContentContainer tr"
 	var localTradedString = " (traded)"
-
-	// getting params from URL
-	character := c.Param("character")
-
-	// Child of Character
-	type Houses struct {
-		Name    string `json:"name"`
-		Town    string `json:"town"`
-		Paid    string `json:"paid"`
-		HouseID int    `json:"houseid"`
-	}
-
-	// Child of Character
-	type Guild struct {
-		GuildName string `json:"name"`
-		Rank      string `json:"rank"`
-	}
-
-	// Child of Characters
-	type Character struct {
-		Name              string   `json:"name"`
-		FormerNames       []string `json:"former_names"`
-		Traded            bool     `json:"traded"`
-		DeletionDate      string   `json:"deletion_date"`
-		Sex               string   `json:"sex"`
-		Title             string   `json:"title"`
-		UnlockedTitles    int      `json:"unlocked_titles"`
-		Vocation          string   `json:"vocation"`
-		Level             int      `json:"level"`
-		AchievementPoints int      `json:"achievement_points"`
-		World             string   `json:"world"`
-		FormerWorlds      []string `json:"former_worlds"`
-		Residence         string   `json:"residence"`
-		MarriedTo         string   `json:"married_to"`
-		Houses            []Houses `json:"houses"`
-		Guild             Guild    `json:"guild"`
-		LastLogin         string   `json:"last_login"`
-		AccountStatus     string   `json:"account_status"`
-		Comment           string   `json:"comment"`
-	}
-
-	// Child of Characters
-	type AccountBadges struct {
-		Name        string `json:"name"`
-		IconURL     string `json:"icon_url"`
-		Description string `json:"description"`
-	}
-
-	// Child of Characters
-	type Achievements struct {
-		Name   string `json:"name"`
-		Grade  int    `json:"grade"`
-		Secret bool   `json:"secret"`
-	}
-
-	// Child of DeathEntries
-	type Killers struct {
-		Name   string `json:"name"`
-		Player bool   `json:"player"`
-		Traded bool   `json:"traded"`
-		Summon string `json:"summon"`
-	}
-
-	// Child of Deaths
-	type DeathEntries struct {
-		Time    string    `json:"time"`
-		Level   int       `json:"level"`
-		Killers []Killers `json:"killers"`
-		Assists []Killers `json:"assists"`
-		Reason  string    `json:"reason"`
-	}
-
-	// Child of Characters
-	type Deaths struct {
-		DeathEntries    []DeathEntries `json:"death_entries"`
-		TruncatedDeaths bool           `json:"truncated"` // deathlist can be truncated.. but we don't have logic for that atm
-	}
-
-	// Child of Characters
-	type AccountInformation struct {
-		Position     string `json:"position"`
-		Created      string `json:"created"`
-		LoyaltyTitle string `json:"loyalty_title"`
-	}
-
-	// Child of Characters
-	type OtherCharacters struct {
-		Name    string `json:"name"`
-		World   string `json:"world"`
-		Status  string `json:"status"`  // online/offline
-		Deleted bool   `json:"deleted"` // don't know how to do that yet..
-		Main    bool   `json:"main"`
-		Traded  bool   `json:"traded"`
-	}
-
-	// Child of JSONData
-	type Characters struct {
-		Character          Character          `json:"character"`
-		AccountBadges      []AccountBadges    `json:"account_badges"`
-		Achievements       []Achievements     `json:"achievements"`
-		Deaths             Deaths             `json:"deaths"`
-		AccountInformation AccountInformation `json:"account_information"`
-		OtherCharacters    []OtherCharacters  `json:"other_characters"`
-	}
-
-	//
-	// The base includes two levels, Characters and Information
-	type JSONData struct {
-		Characters  Characters  `json:"characters"`
-		Information Information `json:"information"`
-	}
 
 	// Declaring vars for later use..
 	var CharacterInformationData Character
@@ -148,18 +171,6 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 	var OtherCharactersData []OtherCharacters
 	OtherCharactersData = []OtherCharacters{}
 
-	var CharacterSection string
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=characters&name=" + TibiadataQueryEscapeStringV3(character)
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaCharactersCharacterV3", gin.H{"error": err.Error()})
-		return
-	}
-
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -168,129 +179,113 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 
 	// Running query on every .TableContainer
 	ReaderHTML.Find(".TableContainer").Each(func(index int, s *goquery.Selection) {
-		// Storing HTML into CharacterDivHTML
-		CharacterDivHTML, err := s.Html()
-		if err != nil {
-			log.Fatal(err)
-		}
+		SectionTextQuery := s.Find("div.Text")
 
-		switch {
-		case strings.Contains(CharacterDivHTML, "Text\">Character Information"):
-			// Character Information
-			CharacterSection = "characterinformation"
-		case strings.Contains(CharacterDivHTML, "Text\">Account Badges"):
-			// Account Badges
-			CharacterSection = "accountbadges"
-		case strings.Contains(CharacterDivHTML, "Text\">Account Achievements"):
-			// Account Achievements
-			CharacterSection = "accountachievements"
-		case strings.Contains(CharacterDivHTML, "Text\">Character Deaths"):
-			// Character Deaths
-			CharacterSection = "characterdeaths"
-		case strings.Contains(CharacterDivHTML, "Text\">Account Information"):
-			// Account Information
-			CharacterSection = "accountinformation"
-		case strings.Contains(CharacterDivHTML, "Text\">Search Character"):
-			// Search Character
-			CharacterSection = "searchcharacter"
-		case strings.Contains(CharacterDivHTML, "Text\">Characters"):
-			// Characters
-			CharacterSection = "characters"
-		}
+		SectionName := SectionTextQuery.Nodes[0].FirstChild.Data
 
-		// parsing CharacterDivHTML to goquery format
-		CharacterDivQuery, _ := goquery.NewDocumentFromReader(strings.NewReader(CharacterDivHTML))
+		// query current node with goquery
+		CharacterDivQuery := goquery.NewDocumentFromNode(s.Nodes[0])
 
-		switch CharacterSection {
-		case "characterinformation", "accountinformation":
+		switch SectionName {
+		case "Character Information", "Account Information":
 			// Running query over each tr in character content container
 			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
-				// Storing HTML into CharacterTrHTML
-				CharacterTrHTML, err := s.Html()
-				if err != nil {
-					log.Fatal(err)
-				}
+				RowNameQuery := s.Find("td[class^='Label']")
 
-				// Removing line breaks
-				CharacterTrHTML = TibiadataHTMLRemoveLinebreaksV3(CharacterTrHTML)
-				// Unescape hmtl string
-				CharacterTrHTML = TibiaDataSanitizeEscapedString(CharacterTrHTML)
+				RowName := RowNameQuery.Nodes[0].FirstChild.Data
+				RowData := RowNameQuery.Nodes[0].NextSibling.FirstChild.Data
 
-				// Regex to get data for fansites
-				regex1 := regexp.MustCompile(`<td.*class=.[a-zA-Z0-9_.-]+..*>(.*):<\/.*td><td>(.*)<\/td>`)
-				subma1 := regex1.FindAllStringSubmatch(CharacterTrHTML, -1)
-
-				if len(subma1) > 0 {
-					switch TibiaDataSanitizeNbspSpaceString(subma1[0][1]) {
-					case "Name":
-						Tmp := strings.Split(subma1[0][2], "<")
-						CharacterInformationData.Name = strings.TrimSpace(Tmp[0])
-						if strings.Contains(Tmp[0], ", will be deleted at") {
-							Tmp2 := strings.Split(Tmp[0], ", will be deleted at ")
-							CharacterInformationData.Name = Tmp2[0]
-							CharacterInformationData.DeletionDate = TibiadataDatetimeV3(strings.TrimSpace(Tmp2[1]))
-						}
-						if strings.Contains(subma1[0][2], localTradedString) {
-							CharacterInformationData.Traded = true
-							CharacterInformationData.Name = strings.Replace(CharacterInformationData.Name, localTradedString, "", -1)
-						}
-					case "Former Names":
-						CharacterInformationData.FormerNames = strings.Split(subma1[0][2], ", ")
-					case "Sex":
-						CharacterInformationData.Sex = subma1[0][2]
-					case "Title":
-						regex1t := regexp.MustCompile(`(.*) \(([0-9]+).*`)
-						subma1t := regex1t.FindAllStringSubmatch(subma1[0][2], -1)
-						CharacterInformationData.Title = subma1t[0][1]
-						CharacterInformationData.UnlockedTitles = TibiadataStringToIntegerV3(subma1t[0][2])
-					case "Vocation":
-						CharacterInformationData.Vocation = subma1[0][2]
-					case "Level":
-						CharacterInformationData.Level = TibiadataStringToIntegerV3(subma1[0][2])
-					case "Achievement Points":
-						CharacterInformationData.AchievementPoints = TibiadataStringToIntegerV3(subma1[0][2])
-					case "World":
-						CharacterInformationData.World = subma1[0][2]
-					case "Former World":
-						CharacterInformationData.FormerWorlds = strings.Split(subma1[0][2], ", ")
-					case "Residence":
-						CharacterInformationData.Residence = subma1[0][2]
-					case "Account Status":
-						CharacterInformationData.AccountStatus = subma1[0][2]
-					case "Married To":
-						CharacterInformationData.MarriedTo = TibiadataRemoveURLsV3(subma1[0][2])
-					case "House":
-						regex1h := regexp.MustCompile(`.*houseid=([0-9]+).*character=.*>(.*)</a> \((.*)\) is paid until (.*)`)
-						subma1h := regex1h.FindAllStringSubmatch(subma1[0][2], -1)
-						CharacterInformationData.Houses = append(CharacterInformationData.Houses, Houses{
-							Name:    subma1h[0][2],
-							Town:    subma1h[0][3],
-							Paid:    TibiadataDateV3(subma1h[0][4]),
-							HouseID: TibiadataStringToIntegerV3(subma1h[0][1]),
-						})
-					case "Guild Membership":
-						Tmp := strings.Split(subma1[0][2], " of the <a href=")
-						CharacterInformationData.Guild.Rank = Tmp[0]
-						CharacterInformationData.Guild.GuildName = TibiadataRemoveURLsV3("<a href=" + Tmp[1])
-					case "Last Login":
-						if subma1[0][2] != "never logged in" {
-							CharacterInformationData.LastLogin = TibiadataDatetimeV3(subma1[0][2])
-						}
-					case "Comment":
-						CharacterInformationData.Comment = strings.ReplaceAll(subma1[0][2], "<br/>", "\n")
-					case "Loyalty Title":
-						AccountInformationData.LoyaltyTitle = subma1[0][2]
-					case "Created":
-						AccountInformationData.Created = TibiadataDatetimeV3(subma1[0][2])
-					case "Position":
-						TmpPosition := strings.Split(subma1[0][2], "<")
-						AccountInformationData.Position = strings.TrimSpace(TmpPosition[0])
-					default:
-						log.Println("LEFT OVER: `" + subma1[0][1] + "` = `" + subma1[0][2] + "`")
+				switch TibiaDataSanitizeNbspSpaceString(RowName) {
+				case "Name:":
+					Tmp := strings.Split(RowData, "<")
+					CharacterInformationData.Name = strings.TrimSpace(Tmp[0])
+					if strings.Contains(Tmp[0], ", will be deleted at") {
+						Tmp2 := strings.Split(Tmp[0], ", will be deleted at ")
+						CharacterInformationData.Name = Tmp2[0]
+						CharacterInformationData.DeletionDate = TibiadataDatetimeV3(strings.TrimSpace(Tmp2[1]))
 					}
+					if strings.Contains(RowData, localTradedString) {
+						CharacterInformationData.Traded = true
+						CharacterInformationData.Name = strings.Replace(CharacterInformationData.Name, localTradedString, "", -1)
+					}
+				case "Former Names:":
+					CharacterInformationData.FormerNames = strings.Split(RowData, ", ")
+				case "Sex:":
+					CharacterInformationData.Sex = RowData
+				case "Title:":
+					regex1t := regexp.MustCompile(`(.*) \(([0-9]+).*`)
+					subma1t := regex1t.FindAllStringSubmatch(RowData, -1)
+					CharacterInformationData.Title = subma1t[0][1]
+					CharacterInformationData.UnlockedTitles = TibiadataStringToIntegerV3(subma1t[0][2])
+				case "Vocation:":
+					CharacterInformationData.Vocation = RowData
+				case "Level:":
+					CharacterInformationData.Level = TibiadataStringToIntegerV3(RowData)
+				case "nobr", "Achievement Points:":
+					CharacterInformationData.AchievementPoints = TibiadataStringToIntegerV3(RowData)
+				case "World:":
+					CharacterInformationData.World = RowData
+				case "Former World:":
+					CharacterInformationData.FormerWorlds = strings.Split(RowData, ", ")
+				case "Residence:":
+					CharacterInformationData.Residence = RowData
+				case "Account Status:":
+					CharacterInformationData.AccountStatus = RowData
+				case "Married To:":
+					CharacterInformationData.MarriedTo = TibiadataRemoveURLsV3(RowData)
+				case "House:":
+					AnchorQuery := s.Find("a")
+					HouseName := AnchorQuery.Nodes[0].FirstChild.Data
+					HouseHref := AnchorQuery.Nodes[0].Attr[0].Val
+					//substring from houseid= to &character in the href for the house
+					HouseId := HouseHref[strings.Index(HouseHref, "houseid")+8 : strings.Index(HouseHref, "&character")]
+					HouseRawData := RowNameQuery.Nodes[0].NextSibling.LastChild.Data
+					HouseTown := HouseRawData[strings.Index(HouseRawData, "(")+1 : strings.Index(HouseRawData, ")")]
+					HousePaidUntil := HouseRawData[strings.Index(HouseRawData, "is paid until ")+14:]
+
+					CharacterInformationData.Houses = append(CharacterInformationData.Houses, Houses{
+						Name:    HouseName,
+						Town:    HouseTown,
+						Paid:    TibiadataDateV3(HousePaidUntil),
+						HouseID: TibiadataStringToIntegerV3(HouseId),
+					})
+				case "Guild Membership:":
+					CharacterInformationData.Guild.Rank = RowData
+
+					//TODO: I don't understand why the unicode nbsp is there...
+					CharacterInformationData.Guild.GuildName = TibiaDataSanitizeNbspSpaceString(RowNameQuery.Nodes[0].NextSibling.LastChild.LastChild.Data)
+				case "Last Login:":
+					if RowData != "never logged in" {
+						CharacterInformationData.LastLogin = TibiadataDatetimeV3(RowData)
+					}
+				case "Comment:":
+					node := RowNameQuery.Nodes[0].NextSibling.FirstChild
+
+					stringBuilder := strings.Builder{}
+					for node != nil {
+						if node.DataAtom == atom.Br {
+							//It appears we can ignore br because either the encoding or goquery adds an \n for us
+							//stringBuilder.WriteString("\n")
+						} else {
+							stringBuilder.WriteString(node.Data)
+						}
+
+						node = node.NextSibling
+					}
+
+					CharacterInformationData.Comment = stringBuilder.String()
+				case "Loyalty Title:":
+					AccountInformationData.LoyaltyTitle = RowData
+				case "Created:":
+					AccountInformationData.Created = TibiadataDatetimeV3(RowData)
+				case "Position:":
+					TmpPosition := strings.Split(RowData, "<")
+					AccountInformationData.Position = strings.TrimSpace(TmpPosition[0])
+				default:
+					log.Println("LEFT OVER: `" + RowName + "` = `" + RowData + "`")
 				}
 			})
-		case "accountbadges":
+		case "Account Badges":
 			// Running query over each tr in list
 			CharacterDivQuery.Find(".TableContentContainer tr td").Each(func(index int, s *goquery.Selection) {
 				// Storing HTML into CharacterListHTML
@@ -302,9 +297,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 				// Removing line breaks
 				CharacterListHTML = TibiadataHTMLRemoveLinebreaksV3(CharacterListHTML)
 
-				// Regex to get account badges of account
-				regex1 := regexp.MustCompile(`\(this\), &#39;(.*)&#39;, &#39;(.*)&#39;,.*\).*src="(.*)" alt=.*`)
-				subma1 := regex1.FindAllStringSubmatch(CharacterListHTML, -1)
+				subma1 := accountBadgesRegex.FindAllStringSubmatch(CharacterListHTML, -1)
 
 				AccountBadgesData = append(AccountBadgesData, AccountBadges{
 					Name:        subma1[0][1],
@@ -312,7 +305,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 					Description: subma1[0][2],
 				})
 			})
-		case "accountachievements":
+		case "Account Achievements":
 			// Running query over each tr in list
 			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
 				// Storing HTML into CharacterListHTML
@@ -324,11 +317,8 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 				// Removing line breaks
 				CharacterListHTML = TibiadataHTMLRemoveLinebreaksV3(CharacterListHTML)
 
-				// Regex to get other characters of same account
-				regex1a := regexp.MustCompile(`<td class="[a-zA-Z0-9_.-]+">(.*)<\/td><td>(.*)?<?.*<\/td>`)
-				subma1a := regex1a.FindAllStringSubmatch(CharacterListHTML, -1)
+				subma1a := accountAchievementsRegex.FindAllStringSubmatch(CharacterListHTML, -1)
 				if len(subma1a) > 0 {
-
 					// fixing encoding for achievement name
 					subma1a[0][2] = TibiaDataSanitizeEscapedString(subma1a[0][2])
 
@@ -340,11 +330,9 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 						Grade:  strings.Count(subma1a[0][1], "achievement-grade-symbol"),
 						Secret: strings.Contains(subma1a[0][2], "achievement-secret-symbol"),
 					})
-
 				}
-
 			})
-		case "characterdeaths":
+		case "Character Deaths":
 			// Running query over each tr in list
 			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
 				// Storing HTML into CharacterListHTML
@@ -359,11 +347,9 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 				CharacterListHTML = strings.ReplaceAll(CharacterListHTML, ".<br/>Assisted by", ". Assisted by")
 
 				// Regex to get data for deaths
-				regex1 := regexp.MustCompile(`<td.*>(.*)<\/td><td>(.*) at Level ([0-9]+) by (.*).<\/td>`)
-				subma1 := regex1.FindAllStringSubmatch(CharacterListHTML, -1)
+				subma1 := deathRegex.FindAllStringSubmatch(CharacterListHTML, -1)
 
 				if len(subma1) > 0 {
-
 					// defining responses
 					DeathKillers := []Killers{}
 					DeathAssists := []Killers{}
@@ -434,7 +420,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 					})
 				}
 			})
-		case "characters":
+		case "Characters":
 			// Running query over each tr in character list
 			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
 				// Storing HTML into CharacterListHTML
@@ -510,8 +496,7 @@ func TibiaCharactersCharacterV3(c *gin.Context) {
 		},
 	}
 
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaCharactersCharacterV3", jsonData)
+	return jsonData
 }
 
 // TibiaDataParseKiller func - insert a html string and get the killers back
@@ -537,8 +522,7 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 	}
 
 	// get summon information
-	re := regexp.MustCompile(`(an? .+) of ([^<]+)`)
-	rs := re.FindAllStringSubmatch(data, -1)
+	rs := summonRegex.FindAllStringSubmatch(data, -1)
 	if len(rs) >= 1 {
 		theSummon = rs[0][1]
 		data = rs[0][2]

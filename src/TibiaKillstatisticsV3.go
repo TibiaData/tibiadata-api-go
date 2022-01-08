@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var KillStatisticInformationRegex = regexp.MustCompile(`<td>(.*)<\/td><td.*>([0-9]+).*<\/td><td.*>([0-9]+).*<\/td><td.*>([0-9]+).*<\/td><td.*>([0-9]+).*<\/td>`)
+
 // TibiaKillstatisticsV3 func
 func TibiaKillstatisticsV3(c *gin.Context) {
 
@@ -79,9 +81,7 @@ func TibiaKillstatisticsV3(c *gin.Context) {
 			log.Fatal(err)
 		}
 
-		// Regex when highscore has 5 columns
-		regex1 := regexp.MustCompile(`<td>(.*)<\/td><td.*>([0-9]+).*<\/td><td.*>([0-9]+).*<\/td><td.*>([0-9]+).*<\/td><td.*>([0-9]+).*<\/td>`)
-		subma1 := regex1.FindAllStringSubmatch(KillStatisticsDivHTML, -1)
+		subma1 := KillStatisticInformationRegex.FindAllStringSubmatch(KillStatisticsDivHTML, -1)
 
 		if len(subma1) > 0 {
 

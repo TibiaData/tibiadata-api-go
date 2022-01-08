@@ -422,7 +422,7 @@ func TibiadataDatetimeV3(date string) string {
 	// If statement to determine if date string is filled or empty
 	if date == "" {
 		// The string that should be returned is the current timestamp
-		returnDate = time.Now().Format(time.RFC3339)
+		returnDate = time.Now().UTC().Format(time.RFC3339)
 	} else {
 		// Converting: Jan 02 2007, 19:20:30 CET -> RFC1123 -> RFC3339
 
@@ -438,7 +438,7 @@ func TibiadataDatetimeV3(date string) string {
 			}
 
 			// Set data to return
-			returnDate = dateDate.Format(time.RFC3339)
+			returnDate = dateDate.UTC().Format(time.RFC3339)
 
 		} else {
 			// Format not defined yet..
@@ -452,7 +452,7 @@ func TibiadataDatetimeV3(date string) string {
 			}
 
 			// Set data to return
-			returnDate = dateDate.Format(time.RFC3339)
+			returnDate = dateDate.UTC().Format(time.RFC3339)
 
 		}
 	}
@@ -472,7 +472,7 @@ func TibiadataDateV3(date string) string {
 
 	// parsing and setting format of return
 	tmpDate, _ := time.Parse("Jan 02 2006", date)
-	date = tmpDate.Format("2006-01-02")
+	date = tmpDate.UTC().Format("2006-01-02")
 
 	return date
 }

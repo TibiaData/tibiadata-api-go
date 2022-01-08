@@ -54,6 +54,12 @@ func TibiaDataInitializer() {
 		TibiadataBuildEdition = getEnv("TIBIADATA_EDITION", "open-source")
 	}
 
+	// adding information of host
+	TibiadataHost = getEnv("TIBIADATA_HOST", "")
+	if TibiadataHost != "" {
+		TibiadataHost = "+https://" + TibiadataHost
+	}
+
 	// generating TibiadataUserAgent with TibiadataUserAgentGenerator function
 	TibiadataUserAgent = TibiadataUserAgentGenerator(TibiadataAPIversion)
 

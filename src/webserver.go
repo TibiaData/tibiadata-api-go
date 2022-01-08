@@ -25,6 +25,8 @@ var (
 		URL:      "",
 		FormData: make(map[string]string),
 	}
+
+	TibiadataHost string // set through env TIBIADATA_HOST
 )
 
 // TibiadataRequest - struct of request information
@@ -164,12 +166,6 @@ func TibiaDataAPIHandleSuccessResponse(c *gin.Context, s string, j interface{}) 
 func TibiadataUserAgentGenerator(version int) string {
 	// setting product name
 	useragent := "TibiaData-API/v" + strconv.Itoa(version)
-
-	// adding information of host
-	TibiadataHost := getEnv("TIBIADATA_UA_HOSTNAME", "")
-	if TibiadataHost != "" {
-		TibiadataHost = "+https://" + TibiadataHost
-	}
 
 	// adding details in parenthesis
 	useragentDetails := []string{

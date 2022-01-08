@@ -118,15 +118,11 @@ func TibiadataDateV3(date string) string {
 
 // TibiadataStringToIntegerV3 func
 func TibiadataStringToIntegerV3(data string) int {
-	// Make a Regex to say we only want letters and numbers
-	reg, err := regexp.Compile("[^0-9]+")
+	returnData, err := strconv.Atoi(data)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("[warning] TibiadataStringToIntegerV3: couldn't convert %s into an int. error: %s", data, err)
 	}
-	processedString := reg.ReplaceAllString(data, "")
-	returnData, _ := strconv.Atoi(processedString)
 
-	// Return of formatted date and time string to functions..
 	return returnData
 }
 
@@ -151,8 +147,7 @@ func RemoveHtmlTag(in string) string {
 
 // TibiaDataConvertEncodingtoISO88591 func - convert string from UTF-8 to latin1 (ISO 8859-1)
 func TibiaDataConvertEncodingtoISO88591(data string) (string, error) {
-	data, err := charmap.ISO8859_1.NewEncoder().String(data)
-	return data, err
+	return charmap.ISO8859_1.NewEncoder().String(data)
 }
 
 // TibiaDataConvertEncodingtoUTF8 func - convert string from latin1 (ISO 8859-1) to UTF-8

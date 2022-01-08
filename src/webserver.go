@@ -31,6 +31,9 @@ var TibiadataDefaultVoc string = "all"
 var TibiadataAPIversion int = 3
 var TibiadataDebug bool
 
+// Tibiadata app settings
+var TibiadataHost string // set through env TIBIADATA_HOST
+
 // Tibiadata app resty vars
 var TibiadataUserAgent, TibiadataProxyDomain string
 var TibiadataRequest = TibiadataRequestStruct{
@@ -175,6 +178,12 @@ func TibiaDataInitializer() {
 		TibiadataBuildEdition = getEnv("TIBIADATA_EDITION", "open-source")
 	}
 
+	// adding information of host
+	TibiadataHost = getEnv("TIBIADATA_HOST", "")
+	if TibiadataHost != "" {
+		TibiadataHost = "+https://" + TibiadataHost
+	}
+
 	// generating TibiadataUserAgent with TibiadataUserAgentGenerator function
 	TibiadataUserAgent = TibiadataUserAgentGenerator(TibiadataAPIversion)
 
@@ -229,12 +238,6 @@ func TibiadataUserAgentGenerator(version int) string {
 
 	// setting product name
 	useragent := "TibiaData-API/v" + strconv.Itoa(version)
-
-	// adding information of host
-	TibiadataHost := getEnv("TIBIADATA_UA_HOSTNAME", "")
-	if TibiadataHost != "" {
-		TibiadataHost = "+https://" + TibiadataHost
-	}
 
 	// adding details in parenthesis
 	useragentDetails := []string{

@@ -23,7 +23,7 @@ jobs:
         run: |
           mkdir -p bin
 
-      - name: Build binary from src/
+      - name: Build app binary from src/*.go
         run: |
           go build -o bin/service-sonar src/*.go
 

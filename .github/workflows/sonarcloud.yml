@@ -31,7 +31,7 @@ jobs:
         run: |
           go test -short -coverprofile=bin/cov.out `go list ./... | grep -v vendor/`
 
-      - name: Running go toll cover
+      - name: Running go tool cover
         run: |
           go tool cover -func=bin/cov.out
 

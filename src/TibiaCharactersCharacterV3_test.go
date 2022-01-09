@@ -34,7 +34,7 @@ func TestNumber1(t *testing.T) {
 	assert.Nil(characterJson.Characters.Character.Houses)
 	assert.Equal("Jokerz", characterJson.Characters.Character.Guild.GuildName)
 	assert.Equal("Trial of the ", characterJson.Characters.Character.Guild.Rank)
-	assert.Equal("2022-01-05T22:23:32Z", characterJson.Characters.Character.LastLogin)
+	assert.Equal("2022-01-05T21:23:32Z", characterJson.Characters.Character.LastLogin)
 	assert.Equal("Premium Account", characterJson.Characters.Character.AccountStatus)
 	assert.Empty(characterJson.Characters.Character.Comment)
 }
@@ -69,7 +69,7 @@ func TestNumber2(t *testing.T) {
 	assert.Equal("2022-01-16", characterJson.Characters.Character.Houses[0].Paid)
 	assert.Equal("Magnus Magister of the ", characterJson.Characters.Character.Guild.Rank)
 	assert.Equal("Lionheart Society", characterJson.Characters.Character.Guild.GuildName)
-	assert.Equal("2022-01-06T22:38:44Z", characterJson.Characters.Character.LastLogin)
+	assert.Equal("2022-01-06T21:38:44Z", characterJson.Characters.Character.LastLogin)
 	assert.Equal("Testa de Ferro do Lejonhjartat ;)", characterJson.Characters.Character.Comment)
 	assert.Equal("Premium Account", characterJson.Characters.Character.AccountStatus)
 
@@ -104,7 +104,7 @@ func TestNumber3(t *testing.T) {
 	assert := assert.New(t)
 
 	assert.Equal("Borttagna Gubben", characterJson.Characters.Character.Name)
-	assert.Equal("2022-03-08T01:09:13Z", characterJson.Characters.Character.DeletionDate)
+	assert.Equal("2022-03-08T00:09:13Z", characterJson.Characters.Character.DeletionDate)
 	assert.Equal("", characterJson.Characters.Character.LastLogin)
 	assert.Equal("Free Account", characterJson.Characters.Character.AccountStatus)
 }

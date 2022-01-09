@@ -18,6 +18,12 @@ func TestTibiaUTCDateFormat(t *testing.T) {
 	assert.Equal(t, "2021-12-24T09:52:16Z", TibiadataDatetimeV3("Dec 24 2021, 09:52:16 UTC"))
 }
 
+/*
+func TestTibiaESTDateFormat(t *testing.T) {
+	assert.Equal(t, "2021-12-24T14:52:16Z", TibiadataDatetimeV3("Dec 24 2021, 09:52:16 EST"))
+}
+
 func TestTibiaPSTDateFormat(t *testing.T) {
 	assert.Equal(t, "2021-12-24T17:52:16Z", TibiadataDatetimeV3("Dec 24 2021, 09:52:16 PST"))
 }
+*/

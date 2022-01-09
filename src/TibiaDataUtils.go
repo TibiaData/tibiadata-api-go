@@ -19,8 +19,8 @@ func TibiadataDatetimeV3(date string) string {
 
 	// If statement to determine if date string is filled or empty
 	if date == "" {
-		// The string that should be returned is the current timestamp
-		returnDate = time.Now()
+		// The string that should be returned is the current timestamp in UTC
+		returnDate = time.Now().UTC()
 	} else {
 		// Parse: Jan 02 2007, 19:20:30 CET
 		returnDate, err = time.Parse("Jan 02 2006, 15:04:05 MST", date)

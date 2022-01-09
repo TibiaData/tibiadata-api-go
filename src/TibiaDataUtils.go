@@ -21,7 +21,7 @@ func TibiadataDatetimeV3(date string) string {
 		returnDate = time.Now()
 	} else {
 		// Parse: Jan 02 2007, 19:20:30 CET
-		returnDate, err = time.Parse("Jan 2 2006, 15:04:05 MST", date)
+		returnDate, err = time.Parse("Jan 02 2006, 15:04:05 MST", date)
 
 		if err != nil {
 			log.Println(err)

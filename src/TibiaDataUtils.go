@@ -12,8 +12,10 @@ func TibiadataDatetimeV3(date string) string {
 	//TODO: Normalization needs to happen above this layer
 	date = norm.NFKC.String(date)
 
-	var returnDate time.Time
-	var err error
+	var (
+		returnDate time.Time
+		err        error
+	)
 
 	// If statement to determine if date string is filled or empty
 	if date == "" {

@@ -17,10 +17,10 @@ jobs:
         with:
           go-version: ^1.17
 
-      - name: Configuring timezone
-        uses: szenius/set-timezone@v1.0
-        with:
-          timezoneLinux: "Europe/Berlin"
+      # - name: Configuring timezone
+      #   uses: szenius/set-timezone@v1.0
+      #   with:
+      #     timezoneLinux: "Europe/Berlin"
 
       - name: Running build from src/*.go
         run: |

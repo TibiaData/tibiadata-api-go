@@ -18,35 +18,38 @@ import (
 
 	_ "github.com/mantyr/go-charset/data"
 	"golang.org/x/text/encoding/charmap"
+	"golang.org/x/text/unicode/norm"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
 )
 
-// TibiadataDefaultVoc - default vocation when not specified in request
-var TibiadataDefaultVoc string = "all"
+var (
+	// TibiadataDefaultVoc - default vocation when not specified in request
+	TibiadataDefaultVoc string = "all"
 
-// Tibiadata app flags for running
-var TibiadataAPIversion int = 3
-var TibiadataDebug bool
+	// Tibiadata app flags for running
+	TibiadataAPIversion int = 3
+	TibiadataDebug      bool
 
-// Tibiadata app settings
-var TibiadataHost string // set through env TIBIADATA_HOST
+	// Tibiadata app settings
+	TibiadataHost string // set through env TIBIADATA_HOST
 
-// Tibiadata app resty vars
-var TibiadataUserAgent, TibiadataProxyDomain string
-var TibiadataRequest = TibiadataRequestStruct{
-	Method:   resty.MethodGet,
-	URL:      "",
-	FormData: make(map[string]string),
-}
+	// Tibiadata app resty vars
+	TibiadataUserAgent, TibiadataProxyDomain string
+	TibiadataRequest                         = TibiadataRequestStruct{
+		Method:   resty.MethodGet,
+		URL:      "",
+		FormData: make(map[string]string),
+	}
 
-// Tibiadata app details set to release/build on GitHub
-var TibiadataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
-var TibiadataBuildBuilder = "manual"      // will be set by GitHub Actions
-var TibiadataBuildCommit = "-"            // will be set by GitHub Actions (to git commit)
-var TibiadataBuildEdition = "open-source" //
+	// Tibiadata app details set to release/build on GitHub
+	TibiadataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
+	TibiadataBuildBuilder = "manual"      // will be set by GitHub Actions
+	TibiadataBuildCommit  = "-"           // will be set by GitHub Actions (to git commit)
+	TibiadataBuildEdition = "open-source" //
+)
 
 // Information - child of JSONData
 type Information struct {
@@ -192,6 +195,7 @@ func TibiaDataInitializer() {
 		TibiadataProxyDomain = "https://" + getEnv("TIBIADATA_PROXY", "www.tibia.com") + "/"
 	}
 
+	log.Printf("[info] TibiaData API proxy: %s", TibiadataProxyDomain)
 }
 
 /*
@@ -235,7 +239,6 @@ func TibiaDataAPIHandleSuccessResponse(c *gin.Context, s string, j interface{}) 
 
 // TibiadataUserAgentGenerator func - creates User-Agent for requests
 func TibiadataUserAgentGenerator(version int) string {
-
 	// setting product name
 	useragent := "TibiaData-API/v" + strconv.Itoa(version)
 
@@ -286,8 +289,11 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (stri
 	}
 
 	// defining values for request
-	var res *resty.Response
-	var err error
+	var (
+		res        *resty.Response
+		err        error
+		LogMessage string
+	)
 
 	switch TibiadataRequest.Method {
 	case resty.MethodPost:
@@ -307,7 +313,6 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (stri
 	if err != nil {
 		log.Printf("[error] TibiadataHTMLDataCollectorV3 (Status: %s, URL: %s) in resp1: %s", res.Status(), TibiadataRequest.URL, err)
 
-		var LogMessage string
 		switch res.StatusCode() {
 		case http.StatusForbidden:
 			// throttled request
@@ -378,14 +383,14 @@ func TibiadataHTMLRemoveLinebreaksV3(data string) string {
 	return strings.ReplaceAll(data, "\n", "")
 }
 
+var removeUrlRegex = regexp.MustCompile(`<a.*>(.*)<\/a>`)
+
 // TibiadataRemoveURLsV3 func
 func TibiadataRemoveURLsV3(data string) string {
 	// prepare return value
 	var returnData string
 
-	// Regex to remove URLs
-	regex := regexp.MustCompile(`<a.*>(.*)<\/a>`)
-	result := regex.FindAllStringSubmatch(data, -1)
+	result := removeUrlRegex.FindAllStringSubmatch(data, -1)
 
 	if len(result) > 0 {
 		returnData = result[0][1]
@@ -412,6 +417,8 @@ func TibiadataQueryEscapeStringV3(data string) string {
 	return url.QueryEscape(data)
 }
 
+var datetimeRegex = regexp.MustCompile(`(.*).([0-9][0-9]).([0-9][0-9][0-9][0-9]),.([0-9][0-9]:[0-9][0-9]:[0-9][0-9]).(.*)`)
+
 // TibiadataDatetimeV3 func
 func TibiadataDatetimeV3(date string) string {
 	var returnDate string
@@ -419,13 +426,12 @@ func TibiadataDatetimeV3(date string) string {
 	// If statement to determine if date string is filled or empty
 	if date == "" {
 		// The string that should be returned is the current timestamp
-		returnDate = time.Now().Format(time.RFC3339)
+		returnDate = time.Now().UTC().Format(time.RFC3339)
 	} else {
 		// Converting: Jan 02 2007, 19:20:30 CET -> RFC1123 -> RFC3339
 
 		// regex to exact values..
-		regex1 := regexp.MustCompile(`(.*).([0-9][0-9]).([0-9][0-9][0-9][0-9]),.([0-9][0-9]:[0-9][0-9]:[0-9][0-9]).(.*)`)
-		subma1 := regex1.FindAllStringSubmatch(date, -1)
+		subma1 := datetimeRegex.FindAllStringSubmatch(date, -1)
 
 		if len(subma1) > 0 {
 			// Adding fake-Sun for valid RFC1123 convertion..
@@ -436,7 +442,7 @@ func TibiadataDatetimeV3(date string) string {
 			}
 
 			// Set data to return
-			returnDate = dateDate.Format(time.RFC3339)
+			returnDate = dateDate.UTC().Format(time.RFC3339)
 
 		} else {
 			// Format not defined yet..
@@ -450,7 +456,7 @@ func TibiadataDatetimeV3(date string) string {
 			}
 
 			// Set data to return
-			returnDate = dateDate.Format(time.RFC3339)
+			returnDate = dateDate.UTC().Format(time.RFC3339)
 
 		}
 	}
@@ -460,16 +466,17 @@ func TibiadataDatetimeV3(date string) string {
 
 }
 
+var dateRegex = regexp.MustCompile(`([a-zA-Z]{3}).*([0-9]{2}).*([0-9]{4})`)
+
 // TibiadataDateV3 func
 func TibiadataDateV3(date string) string {
 	// use regex to skip weird formatting on "spaces"
-	regex1 := regexp.MustCompile(`([a-zA-Z]{3}).*([0-9]{2}).*([0-9]{4})`)
-	subma1 := regex1.FindAllStringSubmatch(date, -1)
+	subma1 := dateRegex.FindAllStringSubmatch(date, -1)
 	date = (subma1[0][1] + " " + subma1[0][2] + " " + subma1[0][3])
 
 	// parsing and setting format of return
 	tmpDate, _ := time.Parse("Jan 02 2006", date)
-	date = tmpDate.Format("2006-01-02")
+	date = tmpDate.UTC().Format("2006-01-02")
 
 	return date
 }
@@ -484,12 +491,11 @@ func TibiadataStringToIntegerV3(data string) int {
 	return returnData
 }
 
+var removeHtmlTagRegex = regexp.MustCompile(`(<\/?[a-zA-A]+?[^>]*\/?>)*`)
+
 // match html tag and replace it with ""
 func RemoveHtmlTag(in string) string {
-	// regex to match html tag
-	const pattern = `(<\/?[a-zA-A]+?[^>]*\/?>)*`
-	r := regexp.MustCompile(pattern)
-	groups := r.FindAllString(in, -1)
+	groups := removeHtmlTagRegex.FindAllString(in, -1)
 	// should replace long string first
 	sort.Slice(groups, func(i, j int) bool {
 		return len(groups[i]) > len(groups[j])
@@ -509,7 +515,7 @@ func TibiaDataConvertEncodingtoISO88591(data string) (string, error) {
 
 // TibiaDataConvertEncodingtoUTF8 func - convert string from latin1 (ISO 8859-1) to UTF-8
 func TibiaDataConvertEncodingtoUTF8(data io.Reader) io.Reader {
-	return charmap.ISO8859_1.NewDecoder().Reader(data)
+	return norm.NFKC.Reader(charmap.ISO8859_1.NewDecoder().Reader(data))
 }
 
 // isEnvExist func - check if environment var is set
@@ -532,7 +538,9 @@ func TibiaDataSanitizeDoubleQuoteString(data string) string {
 
 // TibiaDataSanitizeNbspSpaceString func - replaces weird \u00A0 string to real space
 func TibiaDataSanitizeNbspSpaceString(data string) string {
-	return strings.ReplaceAll(data, "\u00A0", " ")
+	ret := strings.ReplaceAll(data, "\u00A0", " ")
+
+	return ret
 }
 
 // getEnv func - read an environment or return a default value

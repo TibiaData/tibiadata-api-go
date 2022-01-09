@@ -37,8 +37,10 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 	}
 
 	// Creating empty vars
-	var ActiveGuilds, FormationGuilds []Guild
-	var GuildCategory string
+	var (
+		ActiveGuilds, FormationGuilds []Guild
+		GuildCategory                 string
+	)
 
 	// Adding fix for First letter to be upper and rest lower
 	world = TibiadataStringWorldFormatToTitleV3(world)

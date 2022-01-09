@@ -10,6 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	BoostedCreatureNameAndRaceRegex = regexp.MustCompile(`<a.*race=(.*)".*?>(.*)</a>`)
+	BoostedCreatureImageRegex       = regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
+	CreatureInformationRegex        = regexp.MustCompile(`.*race=(.*)"><img src="(.*)" border.*div>(.*)<\/div>`)
+)
+
 // TibiaCreaturesOverviewV3 func
 func TibiaCreaturesOverviewV3(c *gin.Context) {
 
@@ -57,15 +63,13 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 	}
 
 	// Regex to get data for name and race param for boosted creature
-	regex1b := regexp.MustCompile(`<a.*race=(.*)".*?>(.*)</a>`)
-	subma1b := regex1b.FindAllStringSubmatch(InnerTableContainerTMPB, -1)
+	subma1b := BoostedCreatureNameAndRaceRegex.FindAllStringSubmatch(InnerTableContainerTMPB, -1)
 	// Settings vars for usage in JSONData
 	BoostedCreatureName := subma1b[0][2]
 	BoostedCreatureRace := subma1b[0][1]
 
 	// Regex to get image of boosted creature
-	regex2b := regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
-	subma2b := regex2b.FindAllStringSubmatch(InnerTableContainerTMPB, -1)
+	subma2b := BoostedCreatureImageRegex.FindAllStringSubmatch(InnerTableContainerTMPB, -1)
 	// Settings vars for usage in JSONData
 	BoostedCreatureImage := subma2b[0][1]
 
@@ -82,8 +86,7 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 		}
 
 		// Regex to get data for name, race and img src param for creature
-		regex1 := regexp.MustCompile(`.*race=(.*)"><img src="(.*)" border.*div>(.*)<\/div>`)
-		subma1 := regex1.FindAllStringSubmatch(CreatureDivHTML, -1)
+		subma1 := CreatureInformationRegex.FindAllStringSubmatch(CreatureDivHTML, -1)
 
 		// check if regex return length is over 0 and the match of name is over 1
 		if len(subma1) > 0 && len(subma1[0][3]) > 1 {

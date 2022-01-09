@@ -10,6 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	WorldDataRowRegex           = regexp.MustCompile(`<td class=.*>(.*):<\/td><td>(.*)<\/td>`)
+	WorldRecordInformationRegex = regexp.MustCompile(`(.*) players \(on (.*)\)`)
+	BattlEyeProtectedSinceRegex = regexp.MustCompile(`Protected by BattlEye since (.*)\.`)
+	OnlinePlayerRegex           = regexp.MustCompile(`<td style=.*name=.*">(.*)<\/a>.*">(.*)<\/td>.*">(.*)<\/td>`)
+)
+
 // TibiaWorldsWorldV3 func
 func TibiaWorldsWorldV3(c *gin.Context) {
 
@@ -75,11 +82,13 @@ func TibiaWorldsWorldV3(c *gin.Context) {
 	}
 
 	// Creating empty vars
-	var WorldsStatus, WorldsRecordDate, WorldsCreationDate, WorldsLocation, WorldsPvpType, WorldsTransferType, WorldsBattleyeDate, WorldsGameWorldType, WorldsTournamentWorldType string
-	var WorldsQuestTitles []string
-	var WorldsPlayersOnline, WorldsRecordPlayers int
-	var WorldsPremiumOnly, WorldsBattleyeProtected bool
-	var WorldsOnlinePlayers []OnlinePlayers
+	var (
+		WorldsStatus, WorldsRecordDate, WorldsCreationDate, WorldsLocation, WorldsPvpType, WorldsTransferType, WorldsBattleyeDate, WorldsGameWorldType, WorldsTournamentWorldType string
+		WorldsQuestTitles                                                                                                                                                         []string
+		WorldsPlayersOnline, WorldsRecordPlayers                                                                                                                                  int
+		WorldsPremiumOnly, WorldsBattleyeProtected                                                                                                                                bool
+		WorldsOnlinePlayers                                                                                                                                                       []OnlinePlayers
+	)
 
 	// Running query over each div
 	ReaderHTML.Find(".Table1 .InnerTableContainer table tr").Each(func(index int, s *goquery.Selection) {
@@ -90,9 +99,7 @@ func TibiaWorldsWorldV3(c *gin.Context) {
 			log.Fatal(err)
 		}
 
-		// Regex to get data for record values
-		regex1 := regexp.MustCompile(`<td class=.*>(.*):<\/td><td>(.*)<\/td>`)
-		subma1 := regex1.FindAllStringSubmatch(WorldsInformationDivHTML, -1)
+		subma1 := WorldDataRowRegex.FindAllStringSubmatch(WorldsInformationDivHTML, -1)
 
 		if len(subma1) > 0 {
 
@@ -115,8 +122,7 @@ func TibiaWorldsWorldV3(c *gin.Context) {
 			}
 			if WorldsInformationLeftColumn == "Online Record" {
 				// Regex to get data for record values
-				regex2 := regexp.MustCompile(`(.*) players \(on (.*)\)`)
-				subma2 := regex2.FindAllStringSubmatch(WorldsInformationRightColumn, -1)
+				subma2 := WorldRecordInformationRegex.FindAllStringSubmatch(WorldsInformationRightColumn, -1)
 
 				if len(subma2) > 0 {
 					// setting record values
@@ -158,8 +164,7 @@ func TibiaWorldsWorldV3(c *gin.Context) {
 					if strings.Contains(WorldsInformationRightColumn, "BattlEye since its release") {
 						WorldsBattleyeDate = "release"
 					} else {
-						regex21 := regexp.MustCompile(`Protected by BattlEye since (.*)\.`)
-						subma21 := regex21.FindAllStringSubmatch(WorldsInformationRightColumn, -1)
+						subma21 := BattlEyeProtectedSinceRegex.FindAllStringSubmatch(WorldsInformationRightColumn, -1)
 						WorldsBattleyeDate = subma21[0][1]
 					}
 				}
@@ -188,9 +193,7 @@ func TibiaWorldsWorldV3(c *gin.Context) {
 			log.Fatal(err)
 		}
 
-		// Regex to get data for record values
-		regex1 := regexp.MustCompile(`<td style=.*name=.*">(.*)<\/a>.*">(.*)<\/td>.*">(.*)<\/td>`)
-		subma1 := regex1.FindAllStringSubmatch(WorldsInformationDivHTML, -1)
+		subma1 := OnlinePlayerRegex.FindAllStringSubmatch(WorldsInformationDivHTML, -1)
 
 		if len(subma1) > 0 {
 

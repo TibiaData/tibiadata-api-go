@@ -10,6 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	HighscoresAgeRegex = regexp.MustCompile(`.*<div class="Text">Highscores.*Last Update: ([0-9]+) minutes ago.*`)
+	SevenColumnRegex   = regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*>(.*)<\/td><td.*>(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
+	SixColumnRegex     = regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*">(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
+)
+
 // TibiaHighscoresV3 func
 func TibiaHighscoresV3(c *gin.Context) {
 
@@ -57,8 +63,7 @@ func TibiaHighscoresV3(c *gin.Context) {
 
 	// Sanatize of category value
 	category = strings.ToLower(category)
-	var categoryid string
-	categoryid = "6"
+	var categoryid string = "6"
 	if len(category) > 0 {
 		switch category {
 		case "achievements", "achievement":
@@ -127,13 +132,14 @@ func TibiaHighscoresV3(c *gin.Context) {
 	}
 
 	// Creating empty HighscoreData var
-	var HighscoreData []Highscore
-	var HighscoreDataVocation, HighscoreDataWorld, HighscoreDataTitle string
-	var HighscoreDataRank, HighscoreDataLevel, HighscoreDataValue, HighscoreAge int
+	var (
+		HighscoreData                                                           []Highscore
+		HighscoreDataVocation, HighscoreDataWorld, HighscoreDataTitle           string
+		HighscoreDataRank, HighscoreDataLevel, HighscoreDataValue, HighscoreAge int
+	)
 
 	// getting age of data
-	regex1 := regexp.MustCompile(`.*<div class="Text">Highscores.*Last Update: ([0-9]+) minutes ago.*`)
-	subma1 := regex1.FindAllStringSubmatch(string(BoxContentHTML), 1)
+	subma1 := HighscoresAgeRegex.FindAllStringSubmatch(string(BoxContentHTML), 1)
 	HighscoreAge = TibiadataStringToIntegerV3(subma1[0][1])
 
 	// Running query over each div
@@ -167,13 +173,9 @@ func TibiaHighscoresV3(c *gin.Context) {
 		*/
 
 		if category == "loyaltypoints" {
-			// Regex when highscore has 7 columns
-			regex1 := regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*>(.*)<\/td><td.*>(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
-			subma1 = regex1.FindAllStringSubmatch(HighscoreDivHTML, -1)
+			subma1 = SevenColumnRegex.FindAllStringSubmatch(HighscoreDivHTML, -1)
 		} else {
-			// Regex when highscore has 6 columns (category except lojalty)
-			regex1 := regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*">(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
-			subma1 = regex1.FindAllStringSubmatch(HighscoreDivHTML, -1)
+			subma1 = SixColumnRegex.FindAllStringSubmatch(HighscoreDivHTML, -1)
 		}
 
 		if len(subma1) > 0 {

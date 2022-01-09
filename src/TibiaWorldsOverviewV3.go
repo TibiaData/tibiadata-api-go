@@ -10,6 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	worldPlayerRecordRegex           = regexp.MustCompile(`.*<\/b>...(.*) players \(on (.*)\)`)
+	worldInformationRegex            = regexp.MustCompile(`.*world=.*">(.*)<\/a><\/td>.*right;">(.*)<\/td><td>(.*)<\/td><td>(.*)<\/td><td align="center" valign="middle">(.*)<\/td><td>(.*)<\/td>`)
+	worldBattlEyeProtectedSinceRegex = regexp.MustCompile(`.*game world has been protected by BattlEye since (.*).&lt;\/p.*`)
+)
+
 // TibiaWorldsOverviewV3 func
 func TibiaWorldsOverviewV3(c *gin.Context) {
 
@@ -61,11 +67,12 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 	}
 
 	// Creating empty vars
-	var RegularWorldsData, TournamentWorldsData []World
-
-	var WorldsRecordDate, WorldsWorldCategory, WorldsBattleyeDate, WorldsTransferType, WorldsTournamentWorldType, WorldsGameWorldType, WorldsStatus string
-	var WorldsRecordPlayers, WorldsAllOnlinePlayers int
-	var WorldsPremiumOnly, WorldsBattleyeProtected bool
+	var (
+		RegularWorldsData, TournamentWorldsData                                                                                                     []World
+		WorldsRecordDate, WorldsWorldCategory, WorldsBattleyeDate, WorldsTransferType, WorldsTournamentWorldType, WorldsGameWorldType, WorldsStatus string
+		WorldsRecordPlayers, WorldsAllOnlinePlayers                                                                                                 int
+		WorldsPremiumOnly, WorldsBattleyeProtected                                                                                                  bool
+	)
 
 	// Running query over each div
 	ReaderHTML.Find(".TableContentContainer .TableContent tbody tr").Each(func(index int, s *goquery.Selection) {
@@ -77,8 +84,7 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 		}
 
 		// Regex to get data for record values
-		regex1 := regexp.MustCompile(`.*<\/b>...(.*) players \(on (.*)\)`)
-		subma1 := regex1.FindAllStringSubmatch(WorldsDivHTML, -1)
+		subma1 := worldPlayerRecordRegex.FindAllStringSubmatch(WorldsDivHTML, -1)
 
 		if len(subma1) > 0 {
 			// setting record values
@@ -92,9 +98,7 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 			WorldsWorldCategory = "tournament"
 		}
 
-		// Regex to get data for name, race and img src param for creature
-		regex2 := regexp.MustCompile(`.*world=.*">(.*)<\/a><\/td>.*right;">(.*)<\/td><td>(.*)<\/td><td>(.*)<\/td><td align="center" valign="middle">(.*)<\/td><td>(.*)<\/td>`)
-		subma2 := regex2.FindAllStringSubmatch(WorldsDivHTML, -1)
+		subma2 := worldInformationRegex.FindAllStringSubmatch(WorldsDivHTML, -1)
 
 		// check if regex return length is over 0
 		if len(subma2) > 0 {
@@ -144,8 +148,7 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 				if strings.Contains(WorldsBattlEye, "BattlEye since its release") {
 					WorldsBattleyeDate = "release"
 				} else {
-					regex21 := regexp.MustCompile(`.*game world has been protected by BattlEye since (.*).&lt;\/p.*`)
-					subma21 := regex21.FindAllStringSubmatch(WorldsBattlEye, -1)
+					subma21 := worldBattlEyeProtectedSinceRegex.FindAllStringSubmatch(WorldsBattlEye, -1)
 					WorldsBattleyeDate = subma21[0][1]
 				}
 			} else {

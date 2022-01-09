@@ -22,8 +22,17 @@ func TibiadataDatetimeV3(date string) string {
 		// The string that should be returned is the current timestamp in UTC
 		returnDate = time.Now().UTC()
 	} else {
-		// Parse: Jan 02 2007, 19:20:30 CET
-		returnDate, err = time.Parse("Jan 02 2006, 15:04:05 MST", date)
+		// timezone use in html: CET/CEST
+		loc, _ := time.LoadLocation("Europe/Berlin")
+
+		// format used in datetime on html: Jan 02 2007, 19:20:30 CET
+		formatting := "Jan 02 2006, 15:04:05 MST"
+
+		// parsing html in time with location set in loc
+		returnDate, err = time.ParseInLocation(formatting, date, loc)
+
+		// parsing html in tiem without loc
+		//returnDate, err = time.Parse("Jan 02 2006, 15:04:05 MST", date)
 
 		if err != nil {
 			log.Println(err)

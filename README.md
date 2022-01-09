@@ -1,6 +1,7 @@
 # TibiaData API in Golang
 
 [![GitHub CI](https://github.com/TibiaData/tibiadata-api-go/workflows/build/badge.svg?branch=main)](https://github.com/TibiaData/tibiadata-api-go/actions?query=workflow%3Abuild)
+[![Codecov](https://codecov.io/gh/TibiaData/tibiadata-api-go/branch/main/graph/badge.svg?token=PSBNLBI10C)](https://codecov.io/gh/TibiaData/tibiadata-api-go)
 [![GitHub go.mod version](https://img.shields.io/github/go-mod/go-version/tibiadata/tibiadata-api-go)](https://github.com/tibiadata/tibiadata-api-go/blob/main/go.mod)
 [![Docker version](https://img.shields.io/docker/v/tibiadata/tibiadata-api-go/latest)](https://hub.docker.com/r/tibiadata/tibiadata-api-go)
 [![Docker size](https://img.shields.io/docker/image-size/tibiadata/tibiadata-api-go/latest)](https://hub.docker.com/r/tibiadata/tibiadata-api-go)

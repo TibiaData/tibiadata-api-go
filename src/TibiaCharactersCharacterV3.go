@@ -119,6 +119,10 @@ type JSONData struct {
 	Information Information `json:"information"`
 }
 
+// From https://pkg.go.dev/golang.org/x/net/html/atom
+// This is an Atom. An Atom is an integer code for a string.
+// Instead of importing the whole lib, we thought it would be
+// best to just simply use the Br constant value.
 const Br = 0x202
 
 func TibiaCharactersCharacterV3(c *gin.Context) {

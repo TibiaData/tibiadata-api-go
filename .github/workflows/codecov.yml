@@ -5,8 +5,7 @@ on:
   pull_request:
 
 jobs:
-  build:
-    name: Code building and testing
+  codecov:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,14 +16,9 @@ jobs:
         with:
           go-version: ^1.17
 
-      - name: Running build from src/*.go
-        run: |
-          go build -o application src/*.go
-
       - name: Runing tests for coverage
         run: |
           go test -race -coverprofile=coverage.out -covermode=atomic `go list ./... | grep -v vendor/`
 
       - name: Uploading coverage to Codecov
-        run: |
-          bash <(curl -s https://codecov.io/bash)
+        uses: codecov/codecov-action@v2

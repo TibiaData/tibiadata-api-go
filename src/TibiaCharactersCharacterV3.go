@@ -8,7 +8,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/net/html/atom"
 	//"time"
 )
 
@@ -119,6 +118,12 @@ type JSONData struct {
 	Characters  Characters  `json:"characters"`
 	Information Information `json:"information"`
 }
+
+// From https://pkg.go.dev/golang.org/x/net/html/atom
+// This is an Atom. An Atom is an integer code for a string.
+// Instead of importing the whole lib, we thought it would be
+// best to just simply use the Br constant value.
+const Br = 0x202
 
 func TibiaCharactersCharacterV3(c *gin.Context) {
 	// getting params from URL
@@ -256,7 +261,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) JSONData {
 
 					stringBuilder := strings.Builder{}
 					for node != nil {
-						if node.DataAtom == atom.Br {
+						if node.DataAtom == Br {
 							//It appears we can ignore br because either the encoding or goquery adds an \n for us
 							//stringBuilder.WriteString("\n")
 						} else {

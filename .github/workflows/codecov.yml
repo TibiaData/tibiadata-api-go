@@ -1,0 +1,24 @@
+name: codecov.io
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  codecov:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.17
+
+      - name: Runing tests for coverage
+        run: |
+          go test -race -coverprofile=coverage.out -covermode=atomic `go list ./... | grep -v vendor/`
+
+      - name: Uploading coverage to Codecov
+        uses: codecov/codecov-action@v2

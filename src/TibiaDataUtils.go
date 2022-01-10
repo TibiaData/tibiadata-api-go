@@ -19,8 +19,8 @@ func TibiadataDatetimeV3(date string) string {
 
 	// If statement to determine if date string is filled or empty
 	if date == "" {
-		// The string that should be returned is the current timestamp in UTC
-		returnDate = time.Now().UTC()
+		// The string that should be returned is the current timestamp
+		returnDate = time.Now()
 	} else {
 		// timezone use in html: CET/CEST
 		loc, _ := time.LoadLocation("Europe/Berlin")

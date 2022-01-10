@@ -111,7 +111,7 @@ func TibiadataDateV3(date string) string {
 func TibiadataStringToIntegerV3(data string) int {
 	returnData, err := strconv.Atoi(data)
 	if err != nil {
-		log.Printf("[warning] TibiadataStringToIntegerV3: couldn't convert %s into an int. error: %s", data, err)
+		log.Printf("[warning] TibiadataStringToIntegerV3: couldn't convert string into int. error: %s", err)
 	}
 
 	return returnData

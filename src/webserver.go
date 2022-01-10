@@ -417,55 +417,6 @@ func TibiadataQueryEscapeStringV3(data string) string {
 	return url.QueryEscape(data)
 }
 
-var datetimeRegex = regexp.MustCompile(`(.*).([0-9][0-9]).([0-9][0-9][0-9][0-9]),.([0-9][0-9]:[0-9][0-9]:[0-9][0-9]).(.*)`)
-
-// TibiadataDatetimeV3 func
-func TibiadataDatetimeV3(date string) string {
-	var returnDate string
-
-	// If statement to determine if date string is filled or empty
-	if date == "" {
-		// The string that should be returned is the current timestamp
-		returnDate = time.Now().UTC().Format(time.RFC3339)
-	} else {
-		// Converting: Jan 02 2007, 19:20:30 CET -> RFC1123 -> RFC3339
-
-		// regex to exact values..
-		subma1 := datetimeRegex.FindAllStringSubmatch(date, -1)
-
-		if len(subma1) > 0 {
-			// Adding fake-Sun for valid RFC1123 convertion..
-			dateDate, err := time.Parse(time.RFC1123, "Sun, "+subma1[0][2]+" "+subma1[0][1]+" "+subma1[0][3]+" "+subma1[0][4]+" "+subma1[0][5])
-			if err != nil {
-				// log.Fatal(err)
-				log.Println(err)
-			}
-
-			// Set data to return
-			returnDate = dateDate.UTC().Format(time.RFC3339)
-
-		} else {
-			// Format not defined yet..
-			log.Println("Incoming date: " + date)
-			log.Println("UNKNOWN FORMAT YET!")
-
-			// Parse the given string to be formatted correct later
-			dateDate, err := time.Parse(time.RFC3339, string(date))
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			// Set data to return
-			returnDate = dateDate.UTC().Format(time.RFC3339)
-
-		}
-	}
-
-	// Return of formatted date and time string to functions..
-	return returnDate
-
-}
-
 var dateRegex = regexp.MustCompile(`([a-zA-Z]{3}).*([0-9]{2}).*([0-9]{4})`)
 
 // TibiadataDateV3 func

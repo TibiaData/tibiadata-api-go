@@ -19,10 +19,10 @@ var (
 func TibiaNewsV3(c *gin.Context) {
 
 	// getting params from URL
-	news_id := TibiadataStringToIntegerV3(c.Param("news_id"))
+	NewsID := TibiadataStringToIntegerV3(c.Param("news_id"))
 
-	// checking the news_id provided
-	if news_id <= 0 {
+	// checking the NewsID provided
+	if NewsID <= 0 {
 		TibiaDataAPIHandleOtherResponse(c, http.StatusBadRequest, "TibiaNewsV3", gin.H{"error": "no valid news_id provided"})
 		return
 	}
@@ -53,7 +53,7 @@ func TibiaNewsV3(c *gin.Context) {
 		tmp2     string
 	)
 
-	TibiadataRequest.URL = "https://www.tibia.com/news/?subtopic=newsarchive&id=" + strconv.Itoa(news_id)
+	TibiadataRequest.URL = "https://www.tibia.com/news/?subtopic=newsarchive&id=" + strconv.Itoa(NewsID)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
@@ -70,7 +70,7 @@ func TibiaNewsV3(c *gin.Context) {
 		log.Fatal(err)
 	}
 
-	NewsData.ID = news_id
+	NewsData.ID = NewsID
 	NewsData.TibiaURL = TibiadataRequest.URL
 
 	ReaderHTML.Find(".NewsHeadline").Each(func(index int, s *goquery.Selection) {

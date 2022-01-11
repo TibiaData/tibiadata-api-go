@@ -104,6 +104,13 @@ func runWebServer() {
 		// Tibia killstatistics
 		v3.GET("/killstatistics/world/:world", TibiaKillstatisticsV3)
 
+		// Tibia news
+		v3.GET("/news/archive", TibiaNewslistV3)       // all categories (default 90 days)
+		v3.GET("/news/archive/:days", TibiaNewslistV3) // all categories
+		v3.GET("/news/id/:news_id", TibiaNewsV3)       // shows one news entry
+		v3.GET("/news/latest", TibiaNewslistV3)        // only news and articles
+		v3.GET("/news/newsticker", TibiaNewslistV3)    // only news_ticker
+
 		// Tibia spells
 		v3.GET("/spells", TibiaSpellsOverviewV3)
 		v3.GET("/spells/spell/:spell", TibiaSpellsSpellV3)

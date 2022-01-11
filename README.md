@@ -107,6 +107,11 @@ Those are the current existing endpoints.
 - GET `/v3/highscores/world/:world/:category`
 - GET `/v3/highscores/world/:world/:category/:vocation`
 - GET `/v3/killstatistics/world/:world`
+- GET `/v3/news/archive`
+- GET `/v3/news/archive/:days`
+- GET `/v3/news/id/:news_id`
+- GET `/v3/news/latest`
+- GET `/v3/news/newsticker`
 - GET `/v3/spells`
 - GET `/v3/spells/spell/:spell`
 - GET `/v3/spells/vocation/:vocation`

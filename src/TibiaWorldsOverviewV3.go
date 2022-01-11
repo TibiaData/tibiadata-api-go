@@ -158,7 +158,7 @@ func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
 					WorldsBattleyeDate = "release"
 				} else {
 					subma21 := worldBattlEyeProtectedSinceRegex.FindAllStringSubmatch(WorldsBattlEye, -1)
-					WorldsBattleyeDate = subma21[0][1]
+					WorldsBattleyeDate = TibiadataDateV3(subma21[0][1])
 				}
 			} else {
 				// This world is without protection..

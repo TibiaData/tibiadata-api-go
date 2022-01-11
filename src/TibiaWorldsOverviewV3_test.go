@@ -45,7 +45,7 @@ func TestWorlds(t *testing.T) {
 	assert.Equal(false, astera.PremiumOnly)
 	assert.Equal("regular", astera.TransferType)
 	assert.Equal(true, astera.BattleyeProtected)
-	assert.Equal("September 12, 2017", astera.BattleyeDate)
+	assert.Equal("2017-09-12", astera.BattleyeDate)
 	assert.Equal("regular", astera.GameWorldType)
 	assert.Equal("", astera.TournamentWorldType)
 

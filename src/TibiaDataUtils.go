@@ -238,3 +238,35 @@ func TibiaDataVocationValidator(vocation string) (string, string) {
 	// returning vars
 	return vocation, vocationid
 }
+
+// TibiadataGetNewsCategory func - extract news category by newsicon
+func TibiadataGetNewsCategory(data string) string {
+	switch {
+	case strings.Contains(data, "newsicon_cipsoft"):
+		return "cipsoft"
+	case strings.Contains(data, "newsicon_community"):
+		return "community"
+	case strings.Contains(data, "newsicon_development"):
+		return "development"
+	case strings.Contains(data, "newsicon_support"):
+		return "support"
+	case strings.Contains(data, "newsicon_technical"):
+		return "technical"
+	default:
+		return "unknown"
+	}
+}
+
+// TibiadataGetNewsType func - extract news type
+func TibiadataGetNewsType(data string) string {
+	switch data {
+	case "News Ticker":
+		return "ticker"
+	case "Featured Article":
+		return "article"
+	case "News":
+		return "news"
+	default:
+		return "unknown"
+	}
+}

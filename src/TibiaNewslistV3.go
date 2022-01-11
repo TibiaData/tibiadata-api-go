@@ -93,32 +93,19 @@ func TibiaNewslistV3(c *gin.Context) {
 	ReaderHTML.Find(".Odd,.Even").Each(func(index int, s *goquery.Selection) {
 		var OneNews News
 
+		// getting category by image src
 		CategoryImg, _ := s.Find("img").Attr("src")
-		switch {
-		case strings.Contains(CategoryImg, "newsicon_cipsoft"):
-			OneNews.Category = "cipsoft"
-		case strings.Contains(CategoryImg, "newsicon_community"):
-			OneNews.Category = "community"
-		case strings.Contains(CategoryImg, "newsicon_development"):
-			OneNews.Category = "development"
-		case strings.Contains(CategoryImg, "newsicon_support"):
-			OneNews.Category = "support"
-		case strings.Contains(CategoryImg, "newsicon_technical"):
-			OneNews.Category = "technical"
-		}
+		OneNews.Category = TibiadataGetNewsCategory(CategoryImg)
 
-		switch NewsType := s.Nodes[0].FirstChild.NextSibling.FirstChild.NextSibling.NextSibling.FirstChild.Data; TibiaDataSanitizeNbspSpaceString(NewsType) {
-		case "News Ticker":
-			OneNews.Type = "ticker"
-		case "Featured Article":
-			OneNews.Type = "article"
-		case "News":
-			OneNews.Type = "news"
-		}
+		// getting type from headline
+		NewsType := s.Nodes[0].FirstChild.NextSibling.FirstChild.NextSibling.NextSibling.FirstChild.Data
+		OneNews.Type = TibiadataGetNewsType(TibiaDataSanitizeNbspSpaceString(NewsType))
 
+		// getting date from headline
 		OneNews.Date = TibiadataDateV3(s.Nodes[0].FirstChild.NextSibling.FirstChild.Data)
 		OneNews.News = s.Find("a").Text()
 
+		// getting remaining things as URLs
 		NewsURL, _ := s.Find("a").Attr("href")
 		p, _ := url.Parse(NewsURL)
 		NewsID := p.Query().Get("id")

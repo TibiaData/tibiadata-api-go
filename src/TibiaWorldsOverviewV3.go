@@ -11,7 +11,7 @@ import (
 )
 
 // Child of Worlds
-type World struct {
+type OverviewWorld struct {
 	Name                string `json:"name"`
 	Status              string `json:"status"`                // Online:
 	PlayersOnline       int    `json:"players_online"`        // Online:
@@ -26,19 +26,19 @@ type World struct {
 }
 
 // Child of JSONData
-type Worlds struct {
-	PlayersOnline    int     `json:"players_online"` // Calculated value
-	RecordPlayers    int     `json:"record_players"` // Overall Maximum:
-	RecordDate       string  `json:"record_date"`    // Overall Maximum:
-	RegularWorlds    []World `json:"regular_worlds"`
-	TournamentWorlds []World `json:"tournament_worlds"`
+type OverviewWorlds struct {
+	PlayersOnline    int             `json:"players_online"` // Calculated value
+	RecordPlayers    int             `json:"record_players"` // Overall Maximum:
+	RecordDate       string          `json:"record_date"`    // Overall Maximum:
+	RegularWorlds    []OverviewWorld `json:"regular_worlds"`
+	TournamentWorlds []OverviewWorld `json:"tournament_worlds"`
 }
 
 //
 // The base includes two levels: Worlds and Information
 type WorldsOverviewResponse struct {
-	Worlds      Worlds      `json:"worlds"`
-	Information Information `json:"information"`
+	Worlds      OverviewWorlds `json:"worlds"`
+	Information Information    `json:"information"`
 }
 
 var (
@@ -73,7 +73,7 @@ func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
 
 	// Creating empty vars
 	var (
-		RegularWorldsData, TournamentWorldsData                                                                                                     []World
+		RegularWorldsData, TournamentWorldsData                                                                                                     []OverviewWorld
 		WorldsRecordDate, WorldsWorldCategory, WorldsBattleyeDate, WorldsTransferType, WorldsTournamentWorldType, WorldsGameWorldType, WorldsStatus string
 		WorldsRecordPlayers, WorldsAllOnlinePlayers                                                                                                 int
 		WorldsPremiumOnly, WorldsBattleyeProtected                                                                                                  bool
@@ -179,7 +179,7 @@ func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
 			}
 
 			// Creating data block to return
-			OneWorld := World{
+			OneWorld := OverviewWorld{
 				Name:                subma2[0][1],
 				Status:              WorldsStatus,
 				PlayersOnline:       WorldsPlayersOnline,
@@ -206,7 +206,7 @@ func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
 	//
 	// Build the data-blob
 	return WorldsOverviewResponse{
-		Worlds{
+		OverviewWorlds{
 			PlayersOnline:    WorldsAllOnlinePlayers,
 			RecordPlayers:    WorldsRecordPlayers,
 			RecordDate:       WorldsRecordDate,

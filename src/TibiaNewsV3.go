@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	martelRegex = regexp.MustCompile(`<img src=\"https:..static.tibia.com.images.global.letters.letter_martel_(.).gif\" ([^\/>]+..)`)
+	martelRegex = regexp.MustCompile(`<img src=\"https:\/\/static.tibia.com\/images\/global\/letters\/letter_martel_(.)\.gif\" ([^\/>]+..)`)
 )
 
 // TibiaNewsV3 func

@@ -110,7 +110,6 @@ func TibiaNewslistV3(c *gin.Context) {
 		p, _ := url.Parse(NewsURL)
 		NewsID := p.Query().Get("id")
 		NewsSplit := strings.Split(NewsURL, NewsID)
-
 		OneNews.ID = TibiadataStringToIntegerV3(NewsID)
 		OneNews.TibiaURL = NewsSplit[0] + NewsID
 

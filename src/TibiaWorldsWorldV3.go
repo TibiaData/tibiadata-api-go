@@ -139,7 +139,7 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 				}
 			}
 			if WorldsInformationLeftColumn == "Creation Date" {
-				WorldsCreationDate = WorldsInformationRightColumn
+				WorldsCreationDate = TibiadataDateV3(WorldsInformationRightColumn)
 			}
 			if WorldsInformationLeftColumn == "Location" {
 				WorldsLocation = WorldsInformationRightColumn
@@ -173,7 +173,7 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 						WorldsBattleyeDate = "release"
 					} else {
 						subma21 := BattlEyeProtectedSinceRegex.FindAllStringSubmatch(WorldsInformationRightColumn, -1)
-						WorldsBattleyeDate = subma21[0][1]
+						WorldsBattleyeDate = TibiadataDateV3(subma21[0][1])
 					}
 				}
 			}

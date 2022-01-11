@@ -16,7 +16,7 @@ type Auction struct {
 	AuctionLeft string `json:"time_left"`
 }
 
-// Child of Houses
+// Child of OverviewHouses
 type House struct {
 	Name        string  `json:"name"`
 	HouseID     int     `json:"house_id"`
@@ -28,7 +28,7 @@ type House struct {
 }
 
 // Child of JSONData
-type Houses struct {
+type OverviewHouses struct {
 	World         string  `json:"world"`
 	Town          string  `json:"town"`
 	HouseList     []House `json:"house_list"`
@@ -45,10 +45,10 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 	world = TibiadataStringWorldFormatToTitleV3(world)
 	town = TibiadataStringWorldFormatToTitleV3(town)
 
-	// The base includes two levels: Houses and Information
+	// The base includes two levels: OverviewHouses and Information
 	type JSONData struct {
-		Houses      Houses      `json:"houses"`
-		Information Information `json:"information"`
+		Houses      OverviewHouses `json:"houses"`
+		Information Information    `json:"information"`
 	}
 
 	var (
@@ -93,7 +93,7 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 
 	// Build the data-blob
 	jsonData := JSONData{
-		Houses{
+		OverviewHouses{
 			World:         world,
 			Town:          town,
 			HouseList:     HouseData,

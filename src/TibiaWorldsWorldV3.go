@@ -10,6 +10,45 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Child of World
+type OnlinePlayers struct {
+	Name     string `json:"name"`
+	Level    int    `json:"level"`
+	Vocation string `json:"vocation"`
+}
+
+// Child of Worlds
+type World struct {
+	Name                string          `json:"name"`
+	Status              string          `json:"status"`                // Status:
+	PlayersOnline       int             `json:"players_online"`        // Players Online:
+	RecordPlayers       int             `json:"record_players"`        // Online Record:
+	RecordDate          string          `json:"record_date"`           // Online Record:
+	CreationDate        string          `json:"creation_date"`         // Creation Date: -> convert to YYYY-MM
+	Location            string          `json:"location"`              // Location:
+	PvpType             string          `json:"pvp_type"`              // PvP Type:
+	PremiumOnly         bool            `json:"premium_only"`          // Premium Type: premium = true / else: false
+	TransferType        string          `json:"transfer_type"`         // Transfer Type: regular (if not present) / locked / blocked
+	WorldsQuestTitles   []string        `json:"world_quest_titles"`    // World Quest Titles:
+	BattleyeProtected   bool            `json:"battleye_protected"`    // BattlEye Status: true if protected / false if "Not protected by BattlEye."
+	BattleyeDate        string          `json:"battleye_date"`         // BattlEye Status: null if since release / else show date?
+	GameWorldType       string          `json:"game_world_type"`       // Game World Type: regular / experimental / tournament (if Tournament World Type exists)
+	TournamentWorldType string          `json:"tournament_world_type"` // Tournament World Type: "" (default?) / regular / restricted
+	OnlinePlayers       []OnlinePlayers `json:"online_players"`
+}
+
+// Child of JSONData
+type Worlds struct {
+	World World `json:"world"`
+}
+
+//
+// The base includes two levels: World and Information
+type WorldResponse struct {
+	Worlds      Worlds      `json:"worlds"`
+	Information Information `json:"information"`
+}
+
 var (
 	WorldDataRowRegex           = regexp.MustCompile(`<td class=.*>(.*):<\/td><td>(.*)<\/td>`)
 	WorldRecordInformationRegex = regexp.MustCompile(`(.*) players \(on (.*)\)`)
@@ -17,50 +56,9 @@ var (
 	OnlinePlayerRegex           = regexp.MustCompile(`<td style=.*name=.*">(.*)<\/a>.*">(.*)<\/td>.*">(.*)<\/td>`)
 )
 
-// TibiaWorldsWorldV3 func
 func TibiaWorldsWorldV3(c *gin.Context) {
-
 	// getting params from URL
 	world := c.Param("world")
-
-	// Child of World
-	type OnlinePlayers struct {
-		Name     string `json:"name"`
-		Level    int    `json:"level"`
-		Vocation string `json:"vocation"`
-	}
-
-	// Child of Worlds
-	type World struct {
-		Name                string          `json:"name"`
-		Status              string          `json:"status"`                // Status:
-		PlayersOnline       int             `json:"players_online"`        // Players Online:
-		RecordPlayers       int             `json:"record_players"`        // Online Record:
-		RecordDate          string          `json:"record_date"`           // Online Record:
-		CreationDate        string          `json:"creation_date"`         // Creation Date: -> convert to YYYY-MM
-		Location            string          `json:"location"`              // Location:
-		PvpType             string          `json:"pvp_type"`              // PvP Type:
-		PremiumOnly         bool            `json:"premium_only"`          // Premium Type: premium = true / else: false
-		TransferType        string          `json:"transfer_type"`         // Transfer Type: regular (if not present) / locked / blocked
-		WorldsQuestTitles   []string        `json:"world_quest_titles"`    // World Quest Titles:
-		BattleyeProtected   bool            `json:"battleye_protected"`    // BattlEye Status: true if protected / false if "Not protected by BattlEye."
-		BattleyeDate        string          `json:"battleye_date"`         // BattlEye Status: null if since release / else show date?
-		GameWorldType       string          `json:"game_world_type"`       // Game World Type: regular / experimental / tournament (if Tournament World Type exists)
-		TournamentWorldType string          `json:"tournament_world_type"` // Tournament World Type: "" (default?) / regular / restricted
-		OnlinePlayers       []OnlinePlayers `json:"online_players"`
-	}
-
-	// Child of JSONData
-	type Worlds struct {
-		World World `json:"world"`
-	}
-
-	//
-	// The base includes two levels: World and Information
-	type JSONData struct {
-		Worlds      Worlds      `json:"worlds"`
-		Information Information `json:"information"`
-	}
 
 	// Adding fix for First letter to be upper and rest lower
 	world = TibiadataStringWorldFormatToTitleV3(world)
@@ -74,6 +72,16 @@ func TibiaWorldsWorldV3(c *gin.Context) {
 		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaWorldsWorldV3", gin.H{"error": err.Error()})
 		return
 	}
+
+	worldJson := TibiaWorldsWorldV3Impl(world, BoxContentHTML)
+
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaWorldsWorldV3", worldJson)
+}
+
+// TibiaWorldsWorldV3 func
+func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
+	//TODO: We need to read the world name from the response rather than pass it into this func
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -198,16 +206,16 @@ func TibiaWorldsWorldV3(c *gin.Context) {
 		if len(subma1) > 0 {
 
 			WorldsOnlinePlayers = append(WorldsOnlinePlayers, OnlinePlayers{
-				Name:     subma1[0][1],
+				Name:     TibiaDataSanitizeNbspSpaceString(subma1[0][1]),
 				Level:    TibiadataStringToIntegerV3(subma1[0][2]),
-				Vocation: subma1[0][3],
+				Vocation: TibiaDataSanitizeNbspSpaceString(subma1[0][3]),
 			})
 		}
 	})
 
 	//
 	// Build the data-blob
-	jsonData := JSONData{
+	return WorldResponse{
 		Worlds: Worlds{
 			World{
 				Name:                world,
@@ -233,7 +241,4 @@ func TibiaWorldsWorldV3(c *gin.Context) {
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaWorldsWorldV3", jsonData)
 }

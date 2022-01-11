@@ -10,46 +10,44 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Child of Worlds
+type World struct {
+	Name                string `json:"name"`
+	Status              string `json:"status"`                // Online:
+	PlayersOnline       int    `json:"players_online"`        // Online:
+	Location            string `json:"location"`              // Location:
+	PvpType             string `json:"pvp_type"`              // PvP Type:
+	PremiumOnly         bool   `json:"premium_only"`          // Additional Information: premium = true / else: false
+	TransferType        string `json:"transfer_type"`         // Additional Information: regular (if not present) / locked / blocked
+	BattleyeProtected   bool   `json:"battleye_protected"`    // BattlEye Status: true if protected / false if "Not protected by BattlEye."
+	BattleyeDate        string `json:"battleye_date"`         // BattlEye Status: null if since release / else show date?
+	GameWorldType       string `json:"game_world_type"`       // BattlEye Status: regular / experimental / tournament (if Tournament World Type exists)
+	TournamentWorldType string `json:"tournament_world_type"` // BattlEye Status: null (default?) / regular / restricted
+}
+
+// Child of JSONData
+type Worlds struct {
+	PlayersOnline    int     `json:"players_online"` // Calculated value
+	RecordPlayers    int     `json:"record_players"` // Overall Maximum:
+	RecordDate       string  `json:"record_date"`    // Overall Maximum:
+	RegularWorlds    []World `json:"regular_worlds"`
+	TournamentWorlds []World `json:"tournament_worlds"`
+}
+
+//
+// The base includes two levels: Worlds and Information
+type WorldsOverviewResponse struct {
+	Worlds      Worlds      `json:"worlds"`
+	Information Information `json:"information"`
+}
+
 var (
 	worldPlayerRecordRegex           = regexp.MustCompile(`.*<\/b>...(.*) players \(on (.*)\)`)
 	worldInformationRegex            = regexp.MustCompile(`.*world=.*">(.*)<\/a><\/td>.*right;">(.*)<\/td><td>(.*)<\/td><td>(.*)<\/td><td align="center" valign="middle">(.*)<\/td><td>(.*)<\/td>`)
 	worldBattlEyeProtectedSinceRegex = regexp.MustCompile(`.*game world has been protected by BattlEye since (.*).&lt;\/p.*`)
 )
 
-// TibiaWorldsOverviewV3 func
 func TibiaWorldsOverviewV3(c *gin.Context) {
-
-	// Child of Worlds
-	type World struct {
-		Name                string `json:"name"`
-		Status              string `json:"status"`                // Online:
-		PlayersOnline       int    `json:"players_online"`        // Online:
-		Location            string `json:"location"`              // Location:
-		PvpType             string `json:"pvp_type"`              // PvP Type:
-		PremiumOnly         bool   `json:"premium_only"`          // Additional Information: premium = true / else: false
-		TransferType        string `json:"transfer_type"`         // Additional Information: regular (if not present) / locked / blocked
-		BattleyeProtected   bool   `json:"battleye_protected"`    // BattlEye Status: true if protected / false if "Not protected by BattlEye."
-		BattleyeDate        string `json:"battleye_date"`         // BattlEye Status: null if since release / else show date?
-		GameWorldType       string `json:"game_world_type"`       // BattlEye Status: regular / experimental / tournament (if Tournament World Type exists)
-		TournamentWorldType string `json:"tournament_world_type"` // BattlEye Status: null (default?) / regular / restricted
-	}
-
-	// Child of JSONData
-	type Worlds struct {
-		PlayersOnline    int     `json:"players_online"` // Calculated value
-		RecordPlayers    int     `json:"record_players"` // Overall Maximum:
-		RecordDate       string  `json:"record_date"`    // Overall Maximum:
-		RegularWorlds    []World `json:"regular_worlds"`
-		TournamentWorlds []World `json:"tournament_worlds"`
-	}
-
-	//
-	// The base includes two levels: Worlds and Information
-	type JSONData struct {
-		Worlds      Worlds      `json:"worlds"`
-		Information Information `json:"information"`
-	}
-
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=worlds"
 	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
@@ -60,6 +58,13 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 		return
 	}
 
+	jsonData := TibiaWorldsOverviewV3Impl(BoxContentHTML)
+
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaWorldsOverviewV3", jsonData)
+}
+
+// TibiaWorldsOverviewV3 func
+func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -102,22 +107,26 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 
 		// check if regex return length is over 0
 		if len(subma2) > 0 {
+			WorldsPlayersOnline := 0
+
+			if subma2[0][2] == "-" {
+				WorldsStatus = "unknown"
+			} else {
+				WorldsPlayersOnline = TibiadataStringToIntegerV3(subma2[0][2])
+
+				// Setting the players_online & overall players_online
+				WorldsAllOnlinePlayers += WorldsPlayersOnline
+
+				if WorldsPlayersOnline > 0 {
+					WorldsStatus = "online"
+				} else {
+					WorldsStatus = "offline"
+				}
+			}
 
 			// Creating better to use vars
-			WorldsPlayersOnline := TibiadataStringToIntegerV3(subma2[0][2])
 			WorldsBattlEye := subma2[0][5]
 			WorldsAdditionalInfo := subma2[0][6]
-
-			// Setting the players_online & overall players_online
-			WorldsAllOnlinePlayers += WorldsPlayersOnline
-			switch {
-			case WorldsPlayersOnline > 0:
-				WorldsStatus = "online"
-			case subma2[0][2] == "-":
-				WorldsStatus = "unknown"
-			default:
-				WorldsStatus = "offline"
-			}
 
 			// Setting the premium_only
 			if strings.Contains(WorldsAdditionalInfo, "premium") {
@@ -196,7 +205,7 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 
 	//
 	// Build the data-blob
-	jsonData := JSONData{
+	return WorldsOverviewResponse{
 		Worlds{
 			PlayersOnline:    WorldsAllOnlinePlayers,
 			RecordPlayers:    WorldsRecordPlayers,
@@ -209,7 +218,4 @@ func TibiaWorldsOverviewV3(c *gin.Context) {
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaWorldsOverviewV3", jsonData)
 }

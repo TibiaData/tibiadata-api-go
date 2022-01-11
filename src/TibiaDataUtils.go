@@ -109,7 +109,7 @@ func TibiadataDateV3(date string) string {
 
 // TibiadataStringToIntegerV3 func
 func TibiadataStringToIntegerV3(data string) int {
-	returnData, err := strconv.Atoi(data)
+	returnData, err := strconv.Atoi(strings.ReplaceAll(data, ",", ""))
 	if err != nil {
 		log.Printf("[warning] TibiadataStringToIntegerV3: couldn't convert string into int. error: %s", err)
 	}

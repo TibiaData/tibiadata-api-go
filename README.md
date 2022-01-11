@@ -56,7 +56,7 @@ services:
     image: ghcr.io/tibiadata/tibiadata-api-go:latest
     restart: always
     environment:
-      - TIBIADATA_UA_HOSTNAME=tibiadata.example.com
+      - TIBIADATA_HOST=tibiadata.example.com
     ports:
       - 8080:8080
 ```

@@ -112,7 +112,7 @@ func TibiadataDateV3(date string) string {
 		tmpDate, _ = time.Parse("Jan 02 2006", date)
 	case dateLength > 11:
 		// dates that contain month fully written
-		tmpDate, _ = time.Parse("January 02 2006", date)
+		tmpDate, _ = time.Parse("January 2 2006", date)
 	default:
 		log.Printf("Weird format detected: %s", date)
 	}

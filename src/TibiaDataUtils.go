@@ -92,19 +92,32 @@ func TibiadataQueryEscapeStringV3(data string) string {
 	return url.QueryEscape(data)
 }
 
-var dateRegex = regexp.MustCompile(`([a-zA-Z]{3}).*([0-9]{2}).*([0-9]{4})`)
-
 // TibiadataDateV3 func
 func TibiadataDateV3(date string) string {
-	// use regex to skip weird formatting on "spaces"
-	subma1 := dateRegex.FindAllStringSubmatch(date, -1)
-	date = (subma1[0][1] + " " + subma1[0][2] + " " + subma1[0][3])
+	// removing weird spacing and comma
+	date = TibiaDataSanitizeNbspSpaceString(strings.ReplaceAll(date, ",", ""))
+
+	// var time parser
+	var tmpDate time.Time
 
 	// parsing and setting format of return
-	tmpDate, _ := time.Parse("Jan 02 2006", date)
-	date = tmpDate.UTC().Format("2006-01-02")
+	switch dateLength := len(date); {
+	case dateLength == 5:
+		// date that contains special formatting only used in date a world was created
+		tmpDate, _ = time.Parse("01/06", date)
+		// we need to return earlier as well, since we don't have the day
+		return tmpDate.UTC().Format("2006-01")
+	case dateLength == 11:
+		// dates that contain first 3 letters in month
+		tmpDate, _ = time.Parse("Jan 02 2006", date)
+	case dateLength > 11:
+		// dates that contain month fully written
+		tmpDate, _ = time.Parse("January 02 2006", date)
+	default:
+		log.Printf("Weird format detected: %s", date)
+	}
 
-	return date
+	return tmpDate.UTC().Format("2006-01-02")
 }
 
 // TibiadataStringToIntegerV3 func

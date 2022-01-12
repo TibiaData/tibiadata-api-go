@@ -11,28 +11,34 @@ import (
 )
 
 // Child of House
-type Auction struct {
+type HousesAction struct {
 	AuctionBid  int    `json:"current_bid"`
 	AuctionLeft string `json:"time_left"`
 }
 
-// Child of OverviewHouses
-type House struct {
-	Name        string  `json:"name"`
-	HouseID     int     `json:"house_id"`
-	Size        int     `json:"size"`
-	Rent        int     `json:"rent"`
-	IsRented    bool    `json:"rented"`
-	IsAuctioned bool    `json:"auctioned"`
-	Auction     Auction `json:"auction"`
+// Child of HousesHouses
+type HousesHouse struct {
+	Name        string       `json:"name"`
+	HouseID     int          `json:"house_id"`
+	Size        int          `json:"size"`
+	Rent        int          `json:"rent"`
+	IsRented    bool         `json:"rented"`
+	IsAuctioned bool         `json:"auctioned"`
+	Auction     HousesAction `json:"auction"`
 }
 
 // Child of JSONData
-type OverviewHouses struct {
-	World         string  `json:"world"`
-	Town          string  `json:"town"`
-	HouseList     []House `json:"house_list"`
-	GuildhallList []House `json:"guildhall_list"`
+type HousesHouses struct {
+	World         string        `json:"world"`
+	Town          string        `json:"town"`
+	HouseList     []HousesHouse `json:"house_list"`
+	GuildhallList []HousesHouse `json:"guildhall_list"`
+}
+
+// The base includes two levels: HousesHouses and Information
+type HousesOverviewResponse struct {
+	Houses      HousesHouses `json:"houses"`
+	Information Information  `json:"information"`
 }
 
 // TibiaHousesOverviewV3 func
@@ -45,15 +51,9 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 	world = TibiadataStringWorldFormatToTitleV3(world)
 	town = TibiadataStringWorldFormatToTitleV3(town)
 
-	// The base includes two levels: OverviewHouses and Information
-	type JSONData struct {
-		Houses      OverviewHouses `json:"houses"`
-		Information Information    `json:"information"`
-	}
-
 	var (
 		// Creating empty vars
-		HouseData, GuildhallData []House
+		HouseData, GuildhallData []HousesHouse
 	)
 
 	// list of different fansite types
@@ -78,7 +78,7 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 		}
 
 		ReaderHTML.Find(".TableContentContainer .TableContent tr").Each(func(index int, s *goquery.Selection) {
-			house := House{}
+			house := HousesHouse{}
 
 			// Storing HTML into HousesDivHTML
 			HousesDivHTML, err := s.Html()
@@ -101,7 +101,7 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 				house.Size = TibiadataStringToIntegerV3(subma1[0][2])
 				house.Rent = TibiaDataConvertValuesWithK(subma1[0][3] + subma1[0][4])
 
-				// Auction details
+				// HousesAction details
 				s := subma1[0][5]
 				switch {
 				case strings.Contains(s, "rented"):
@@ -131,8 +131,8 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 	}
 
 	// Build the data-blob
-	jsonData := JSONData{
-		OverviewHouses{
+	jsonData := HousesOverviewResponse{
+		HousesHouses{
 			World:         world,
 			Town:          town,
 			HouseList:     HouseData,

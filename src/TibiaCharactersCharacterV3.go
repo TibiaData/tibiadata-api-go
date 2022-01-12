@@ -20,32 +20,32 @@ type Houses struct {
 }
 
 // Child of Character
-type Guild struct {
+type CharacterGuild struct {
 	GuildName string `json:"name,omitempty"`
 	Rank      string `json:"rank,omitempty"`
 }
 
 // Child of Characters
 type Character struct {
-	Name              string   `json:"name"`
-	FormerNames       []string `json:"former_names,omitempty"`
-	Traded            bool     `json:"traded,omitempty"`
-	DeletionDate      string   `json:"deletion_date,omitempty"`
-	Sex               string   `json:"sex"`
-	Title             string   `json:"title"`
-	UnlockedTitles    int      `json:"unlocked_titles"`
-	Vocation          string   `json:"vocation"`
-	Level             int      `json:"level"`
-	AchievementPoints int      `json:"achievement_points"`
-	World             string   `json:"world"`
-	FormerWorlds      []string `json:"former_worlds,omitempty"`
-	Residence         string   `json:"residence"`
-	MarriedTo         string   `json:"married_to,omitempty"`
-	Houses            []Houses `json:"houses,omitempty"`
-	Guild             Guild    `json:"guild"`
-	LastLogin         string   `json:"last_login,omitempty"`
-	AccountStatus     string   `json:"account_status"`
-	Comment           string   `json:"comment,omitempty"`
+	Name              string         `json:"name"`
+	FormerNames       []string       `json:"former_names,omitempty"`
+	Traded            bool           `json:"traded,omitempty"`
+	DeletionDate      string         `json:"deletion_date,omitempty"`
+	Sex               string         `json:"sex"`
+	Title             string         `json:"title"`
+	UnlockedTitles    int            `json:"unlocked_titles"`
+	Vocation          string         `json:"vocation"`
+	Level             int            `json:"level"`
+	AchievementPoints int            `json:"achievement_points"`
+	World             string         `json:"world"`
+	FormerWorlds      []string       `json:"former_worlds,omitempty"`
+	Residence         string         `json:"residence"`
+	MarriedTo         string         `json:"married_to,omitempty"`
+	Houses            []Houses       `json:"houses,omitempty"`
+	Guild             CharacterGuild `json:"guild"`
+	LastLogin         string         `json:"last_login,omitempty"`
+	AccountStatus     string         `json:"account_status"`
+	Comment           string         `json:"comment,omitempty"`
 }
 
 // Child of Characters

@@ -10,6 +10,70 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Child of Guild
+type Guildhall struct {
+	Name  string `json:"name"`
+	World string `json:"world"` // Maybe duplicate info? Guild can only be on one world..
+	/*
+		Town      string `json:"town"`       // We can collect that from cached info?
+		Status    string `json:"status"`     // rented (but maybe also auctioned)
+		Owner     string `json:"owner"`      // We can collect that from cached info?
+		HouseID   int    `json:"houseid"`    // We can collect that from cached info?
+	*/
+	PaidUntil string `json:"paid_until"` // Paid until date
+}
+
+// Child of Guild
+type GuildMember struct {
+	Name     string `json:"name"`
+	Title    string `json:"title"`
+	Rank     string `json:"rank"`
+	Vocation string `json:"vocation"`
+	Level    int    `json:"level"`
+	Joined   string `json:"joined"`
+	Status   string `json:"status"`
+}
+
+// Child of Guild
+type InvitedGuildMember struct {
+	Name string `json:"name"`
+	Date string `json:"date"`
+}
+
+// Child of Guilds
+type Guild struct {
+	Name               string               `json:"name"`
+	World              string               `json:"world"`
+	LogoURL            string               `json:"logo_url"`
+	Description        string               `json:"description"`
+	Guildhalls         []Guildhall          `json:"guildhalls"`
+	Active             bool                 `json:"active"`
+	Founded            string               `json:"founded"`
+	Applications       bool                 `json:"open_applications"`
+	Homepage           string               `json:"homepage"`
+	InWar              bool                 `json:"in_war"`
+	DisbandedDate      string               `json:"disband_date"`
+	DisbandedCondition string               `json:"disband_condition"`
+	PlayersOnline      int                  `json:"players_online"`
+	PlayersOffline     int                  `json:"players_offline"`
+	MembersTotal       int                  `json:"members_total"`
+	MembersInvited     int                  `json:"members_invited"`
+	Members            []GuildMember        `json:"members"`
+	Invited            []InvitedGuildMember `json:"invites"`
+}
+
+// Child of JSONData
+type Guilds struct {
+	Guild Guild `json:"guild"`
+}
+
+//
+// The base includes two levels: Guild and Information
+type GuildResponse struct {
+	Guilds      Guilds      `json:"guilds"`
+	Information Information `json:"information"`
+}
+
 var (
 	GuildLogoRegex                     = regexp.MustCompile(`.*img src="(.*)" width=.*`)
 	GuildWorldAndFoundationRegex       = regexp.MustCompile(`The guild was founded on (.*) on (.*).<br/>`)
@@ -22,82 +86,8 @@ var (
 
 // TibiaGuildsGuildV3 func
 func TibiaGuildsGuildV3(c *gin.Context) {
-
 	// getting params from URL
 	guild := c.Param("guild")
-
-	// Child of Guild
-	type Guildhall struct {
-		Name  string `json:"name"`
-		World string `json:"world"` // Maybe duplicate info? Guild can only be on one world..
-		/*
-			Town      string `json:"town"`       // We can collect that from cached info?
-			Status    string `json:"status"`     // rented (but maybe also auctioned)
-			Owner     string `json:"owner"`      // We can collect that from cached info?
-			HouseID   int    `json:"houseid"`    // We can collect that from cached info?
-		*/
-		PaidUntil string `json:"paid_until"` // Paid until date
-	}
-
-	// Child of Guild
-	type Members struct {
-		Name     string `json:"name"`
-		Title    string `json:"title"`
-		Rank     string `json:"rank"`
-		Vocation string `json:"vocation"`
-		Level    int    `json:"level"`
-		Joined   string `json:"joined"`
-		Status   string `json:"status"`
-	}
-	// Child of Guild
-	type Invited struct {
-		Name string `json:"name"`
-		Date string `json:"date"`
-	}
-
-	// Child of Guilds
-	type Guild struct {
-		Name               string      `json:"name"`
-		World              string      `json:"world"`
-		LogoURL            string      `json:"logo_url"`
-		Description        string      `json:"description"`
-		Guildhalls         []Guildhall `json:"guildhalls"`
-		Active             bool        `json:"active"`
-		Founded            string      `json:"founded"`
-		Applications       bool        `json:"open_applications"`
-		Homepage           string      `json:"homepage"`
-		InWar              bool        `json:"in_war"`
-		DisbandedDate      string      `json:"disband_date"`
-		DisbandedCondition string      `json:"disband_condition"`
-		PlayersOnline      int         `json:"players_online"`
-		PlayersOffline     int         `json:"players_offline"`
-		MembersTotal       int         `json:"members_total"`
-		MembersInvited     int         `json:"members_invited"`
-		Members            []Members   `json:"members"`
-		Invited            []Invited   `json:"invites"`
-	}
-
-	// Child of JSONData
-	type Guilds struct {
-		Guild Guild `json:"guild"`
-	}
-
-	//
-	// The base includes two levels: Guild and Information
-	type JSONData struct {
-		Guilds      Guilds      `json:"guilds"`
-		Information Information `json:"information"`
-	}
-
-	// Creating empty vars
-	var (
-		MembersData                                                                                                                                                    []Members
-		InvitedData                                                                                                                                                    []Invited
-		GuildGuildhallData                                                                                                                                             []Guildhall
-		MembersRank, MembersTitle, MembersStatus, GuildDescription, GuildDisbandedDate, GuildDisbandedCondition, GuildHomepage, GuildWorld, GuildLogoURL, GuildFounded string
-		GuildActive, GuildApplications, GuildInWar, GuildNameDetected, GuildDescriptionFinished                                                                        bool
-		MembersCountOnline, MembersCountOffline, MembersCountInvited                                                                                                   int
-	)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiadataQueryEscapeStringV3(guild)
@@ -109,11 +99,30 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 		return
 	}
 
+	jsonData := TibiaGuildsGuildV3Impl(guild, BoxContentHTML)
+
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaGuildsGuildV3", jsonData)
+}
+
+func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
+	// Creating empty vars
+	var (
+		MembersData                                                                                                                                                    []GuildMember
+		InvitedData                                                                                                                                                    []InvitedGuildMember
+		GuildGuildhallData                                                                                                                                             []Guildhall
+		MembersRank, MembersTitle, MembersStatus, GuildDescription, GuildDisbandedDate, GuildDisbandedCondition, GuildHomepage, GuildWorld, GuildLogoURL, GuildFounded string
+		GuildActive, GuildApplications, GuildInWar, GuildDescriptionFinished                                                                                           bool
+		MembersCountOnline, MembersCountOffline, MembersCountInvited                                                                                                   int
+	)
+
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	guildName, _ := ReaderHTML.Find("h1").First().Html()
 
 	// Getting data from div.InnerTableContainer and then first p
 	InnerTableContainerTMPA, err := ReaderHTML.Find(".BoxContent table").Html()
@@ -130,13 +139,6 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 	}
 
 	for _, line := range strings.Split(strings.TrimSuffix(InnerTableContainerTMPB, "\n"), "\n") {
-
-		// setting guild name based on html
-		if !GuildNameDetected {
-			guild = strings.TrimSpace(RemoveHtmlTag(line))
-			GuildNameDetected = true
-		}
-
 		// Guild information
 		if !GuildDescriptionFinished {
 			// First line is the description..
@@ -199,7 +201,6 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 
 	// Running query over each div
 	ReaderHTML.Find(".TableContentContainer .TableContent tbody tr").Each(func(index int, s *goquery.Selection) {
-
 		// Storing HTML into GuildsDivHTML
 		GuildsDivHTML, err := s.Html()
 		if err != nil {
@@ -230,8 +231,8 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 				MembersCountOffline++
 			}
 
-			MembersData = append(MembersData, Members{
-				Name:     TibiaDataSanitizeEscapedString(subma1[0][2]),
+			MembersData = append(MembersData, GuildMember{
+				Name:     TibiaDataSanitizeNbspSpaceString(subma1[0][2]),
 				Title:    MembersTitle,
 				Rank:     MembersRank,
 				Vocation: subma1[0][4],
@@ -239,15 +240,13 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 				Joined:   TibiadataDateV3(subma1[0][6]),
 				Status:   MembersStatus,
 			})
-
 		} else {
-
 			// Regex to get data for record values
 			subma2 := GuildMemberInvitesInformationRegex.FindAllStringSubmatch(GuildsDivHTML, -1)
 
 			if len(subma2) > 0 {
 				MembersCountInvited++
-				InvitedData = append(InvitedData, Invited{
+				InvitedData = append(InvitedData, InvitedGuildMember{
 					Name: subma2[0][1],
 					Date: subma2[0][2],
 				})
@@ -257,10 +256,10 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 
 	//
 	// Build the data-blob
-	jsonData := JSONData{
+	return GuildResponse{
 		Guilds{
 			Guild{
-				Name:               guild,
+				Name:               guildName,
 				World:              GuildWorld,
 				LogoURL:            GuildLogoURL,
 				Description:        GuildDescription,
@@ -286,7 +285,4 @@ func TibiaGuildsGuildV3(c *gin.Context) {
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaGuildsGuildV3", jsonData)
 }

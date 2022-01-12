@@ -9,38 +9,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Child of Guilds
+type OverviewGuild struct {
+	Name        string `json:"name"`
+	LogoURL     string `json:"logo_url"`
+	Description string `json:"description"`
+}
+
+// Child of JSONData
+type OverviewGuilds struct {
+	World     string          `json:"world"`
+	Active    []OverviewGuild `json:"active"`
+	Formation []OverviewGuild `json:"formation"`
+}
+
+//
+// The base includes two levels: Guilds and Information
+type GuildsOverviewResponse struct {
+	Guilds      OverviewGuilds `json:"guilds"`
+	Information Information    `json:"information"`
+}
+
 // TibiaGuildsOverviewV3 func
 func TibiaGuildsOverviewV3(c *gin.Context) {
-
 	// getting params from URL
 	world := c.Param("world")
-
-	// Child of Guilds
-	type Guild struct {
-		Name        string `json:"name"`
-		LogoURL     string `json:"logo_url"`
-		Description string `json:"description"`
-	}
-
-	// Child of JSONData
-	type Guilds struct {
-		World     string  `json:"world"`
-		Active    []Guild `json:"active"`
-		Formation []Guild `json:"formation"`
-	}
-
-	//
-	// The base includes two levels: Guilds and Information
-	type JSONData struct {
-		Guilds      Guilds      `json:"guilds"`
-		Information Information `json:"information"`
-	}
-
-	// Creating empty vars
-	var (
-		ActiveGuilds, FormationGuilds []Guild
-		GuildCategory                 string
-	)
 
 	// Adding fix for First letter to be upper and rest lower
 	world = TibiadataStringWorldFormatToTitleV3(world)
@@ -54,6 +47,19 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaGuildsOverviewV3", gin.H{"error": err.Error()})
 		return
 	}
+
+	jsonData := TibiaGuildsOverviewV3Impl(world, BoxContentHTML)
+
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaGuildsOverviewV3", jsonData)
+}
+
+func TibiaGuildsOverviewV3Impl(world string, BoxContentHTML string) GuildsOverviewResponse {
+	// Creating empty vars
+	var (
+		ActiveGuilds, FormationGuilds []OverviewGuild
+		GuildCategory                 string
+	)
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -90,7 +96,7 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 					description = strings.TrimSpace(nameAndDescriptionNode.FirstChild.NextSibling.NextSibling.Data)
 				}
 
-				OneGuild := Guild{
+				OneGuild := OverviewGuild{
 					Name:        name,
 					LogoURL:     logoURL,
 					Description: description,
@@ -108,8 +114,8 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 
 	//
 	// Build the data-blob
-	jsonData := JSONData{
-		Guilds{
+	return GuildsOverviewResponse{
+		OverviewGuilds{
 			World:     world,
 			Active:    ActiveGuilds,
 			Formation: FormationGuilds,
@@ -119,7 +125,4 @@ func TibiaGuildsOverviewV3(c *gin.Context) {
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaGuildsOverviewV3", jsonData)
 }

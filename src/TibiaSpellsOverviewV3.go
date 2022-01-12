@@ -3,53 +3,46 @@ package main
 import (
 	"log"
 	"net/http"
-	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
 )
 
-var (
-	SpellInformationRegex = regexp.MustCompile(`<td>.*spell=(.*)&amp;voc.*">(.*)<\/a> \((.*)\)<\/td><td>(.*)<\/td><td>(.*)<\/td><td>([0-9]+)<\/td><td>([0-9]+)<\/td><td>([0-9]+)<\/td><td>(.*)<\/td>`)
-)
+// Child of Spells
+type Spell struct {
+	Name         string `json:"name"`
+	Spell        string `json:"spell_id"`
+	Formula      string `json:"formula"`
+	Level        int    `json:"level"`
+	Mana         int    `json:"mana"`
+	Price        int    `json:"price"`
+	GroupAttack  bool   `json:"group_attack"`
+	GroupHealing bool   `json:"group_healing"`
+	GroupSupport bool   `json:"group_support"`
+	TypeInstant  bool   `json:"type_instant"`
+	TypeRune     bool   `json:"type_rune"`
+	PremiumOnly  bool   `json:"premium_only"`
+}
 
-// TibiaSpellsOverviewV3 func
+// Child of JSONData
+type Spells struct {
+	SpellsVocationFilter string  `json:"spells_filter"`
+	Spells               []Spell `json:"spell_list"`
+}
+
+//
+// The base includes two levels: Spells and Information
+type SpellsOverviewResponse struct {
+	Spells      Spells      `json:"spells"`
+	Information Information `json:"information"`
+}
+
 func TibiaSpellsOverviewV3(c *gin.Context) {
-
 	// getting params from URL
 	vocation := c.Param("vocation")
 	if vocation == "" {
 		vocation = TibiadataDefaultVoc
-	}
-
-	// Child of Spells
-	type Spell struct {
-		Name         string `json:"name"`
-		Spell        string `json:"spell_id"`
-		Formula      string `json:"formula"`
-		Level        int    `json:"level"`
-		Mana         int    `json:"mana"`
-		Price        int    `json:"price"`
-		GroupAttack  bool   `json:"group_attack"`
-		GroupHealing bool   `json:"group_healing"`
-		GroupSupport bool   `json:"group_support"`
-		TypeInstant  bool   `json:"type_instant"`
-		TypeRune     bool   `json:"type_rune"`
-		PremiumOnly  bool   `json:"premium_only"`
-	}
-
-	// Child of JSONData
-	type Spells struct {
-		SpellsVocationFilter string  `json:"spells_filter"`
-		Spells               []Spell `json:"spell_list"`
-	}
-
-	//
-	// The base includes two levels: Spells and Information
-	type JSONData struct {
-		Spells      Spells      `json:"spells"`
-		Information Information `json:"information"`
 	}
 
 	// Sanitize of vocation input
@@ -73,80 +66,79 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 		return
 	}
 
+	jsonData := TibiaSpellsOverviewV3Impl(vocationName, BoxContentHTML)
+
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaSpellsOverviewV3", jsonData)
+}
+
+// TibiaSpellsOverviewV3 func
+func TibiaSpellsOverviewV3Impl(vocationName string, BoxContentHTML string) SpellsOverviewResponse {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Creating empty SpellsData var
-	var (
-		SpellsData                                                                  []Spell
-		GroupAttack, GroupHealing, GroupSupport, TypeInstant, TypeRune, PremiumOnly bool
-	)
+	var SpellsData []Spell
 
 	// Running query over each div
-	ReaderHTML.Find(".TableContentContainer table tr").Each(func(index int, s *goquery.Selection) {
-
-		// Storing HTML into SpellDivHTML
-		SpellDivHTML, err := s.Html()
-		if err != nil {
-			log.Fatal(err)
+	ReaderHTML.Find("table.TableContent ~ table tr").Each(func(index int, s *goquery.Selection) {
+		//Skip header row
+		if index == 0 {
+			return
 		}
 
-		subma1 := SpellInformationRegex.FindAllStringSubmatch(SpellDivHTML, 1)
+		spellBuilder := Spell{}
 
-		// check if regex return length is over 0 and the match of name is over 1
-		if len(subma1) > 0 {
-			// SpellGroup
-			GroupAttack = false
-			GroupHealing = false
-			GroupSupport = false
+		s.Find("td").Each(func(index int, s2 *goquery.Selection) {
+			selectionText := s2.Text()
 
-			switch subma1[0][4] {
-			case "Attack":
-				GroupAttack = true
-			case "Healing":
-				GroupHealing = true
-			case "Support":
-				GroupSupport = true
+			switch index {
+			case 0:
+				spellBuilder.Name = selectionText
+				spellBuilder.Spell = selectionText[0:strings.Index(selectionText, " (")]
+				spellBuilder.Formula = selectionText[strings.Index(selectionText, " (")+2 : strings.Index(selectionText, ")")]
+			case 1:
+				switch selectionText {
+				case "Attack":
+					spellBuilder.GroupAttack = true
+				case "Healing":
+					spellBuilder.GroupHealing = true
+				case "Support":
+					spellBuilder.GroupSupport = true
+				}
+			case 2:
+				switch selectionText {
+				case "Instant":
+					spellBuilder.TypeInstant = true
+				case "Rune":
+					spellBuilder.TypeRune = true
+				}
+			case 3:
+				spellBuilder.Level = TibiadataStringToIntegerV3(selectionText)
+			case 4:
+				mana := -1
+				if selectionText != "var." {
+					mana = TibiadataStringToIntegerV3(selectionText)
+				}
+
+				spellBuilder.Mana = mana
+			case 5:
+				price := 0
+				if selectionText != "free" {
+					price = TibiadataStringToIntegerV3(selectionText)
+				}
+
+				spellBuilder.Price = price
+			case 6:
+				if selectionText == "yes" {
+					spellBuilder.PremiumOnly = true
+				}
 			}
+		})
 
-			// Type
-			TypeInstant = false
-			TypeRune = false
-
-			switch subma1[0][5] {
-			case "Instant":
-				TypeInstant = true
-			case "Rune":
-				TypeRune = true
-			}
-
-			// PremiumOnly
-			if subma1[0][9] == "yes" {
-				PremiumOnly = true
-			} else {
-				PremiumOnly = false
-			}
-
-			// Creating data block to return
-			SpellsData = append(SpellsData, Spell{
-				Name:         subma1[0][2],
-				Spell:        subma1[0][1],
-				Formula:      TibiaDataSanitizeDoubleQuoteString(TibiaDataSanitizeEscapedString(subma1[0][3])),
-				Level:        TibiadataStringToIntegerV3(subma1[0][6]),
-				Mana:         TibiadataStringToIntegerV3(subma1[0][7]),
-				Price:        TibiadataStringToIntegerV3(subma1[0][8]),
-				GroupAttack:  GroupAttack,
-				GroupHealing: GroupHealing,
-				GroupSupport: GroupSupport,
-				TypeInstant:  TypeInstant,
-				TypeRune:     TypeRune,
-				PremiumOnly:  PremiumOnly,
-			})
-		}
-
+		SpellsData = append(SpellsData, spellBuilder)
 	})
 
 	// adding readable SpellsVocationFilter field
@@ -154,9 +146,8 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 		vocationName = "all"
 	}
 
-	//
 	// Build the data-blob
-	jsonData := JSONData{
+	return SpellsOverviewResponse{
 		Spells{
 			SpellsVocationFilter: vocationName,
 			Spells:               SpellsData,
@@ -166,7 +157,4 @@ func TibiaSpellsOverviewV3(c *gin.Context) {
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaSpellsOverviewV3", jsonData)
 }

@@ -10,6 +10,27 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Child of Creatures (used for list of creatures and boosted section)
+type OverviewCreature struct {
+	Name     string `json:"name"`
+	Race     string `json:"race"`
+	ImageURL string `json:"image_url"`
+	Featured bool   `json:"featured"`
+}
+
+// Child of JSONData
+type CreaturesContainer struct {
+	Boosted   OverviewCreature   `json:"boosted"`
+	Creatures []OverviewCreature `json:"creature_list"`
+}
+
+//
+// The base includes two levels: Creatures and Information
+type CreaturesOverviewResponse struct {
+	Creatures   CreaturesContainer `json:"creatures"`
+	Information Information        `json:"information"`
+}
+
 var (
 	BoostedCreatureNameAndRaceRegex = regexp.MustCompile(`<a.*race=(.*)".*?>(.*)</a>`)
 	BoostedCreatureImageRegex       = regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
@@ -18,28 +39,6 @@ var (
 
 // TibiaCreaturesOverviewV3 func
 func TibiaCreaturesOverviewV3(c *gin.Context) {
-
-	// Child of Creatures (used for list of creatures and boosted section)
-	type Creature struct {
-		Name     string `json:"name"`
-		Race     string `json:"race"`
-		ImageURL string `json:"image_url"`
-		Featured bool   `json:"featured"`
-	}
-
-	// Child of JSONData
-	type Creatures struct {
-		Boosted   Creature   `json:"boosted"`
-		Creatures []Creature `json:"creature_list"`
-	}
-
-	//
-	// The base includes two levels: Creatures and Information
-	type JSONData struct {
-		Creatures   Creatures   `json:"creatures"`
-		Information Information `json:"information"`
-	}
-
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=creatures"
 	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
@@ -50,6 +49,13 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 		return
 	}
 
+	jsonData := TibiaCreaturesOverviewV3Impl(BoxContentHTML)
+
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaCreaturesOverviewV3", jsonData)
+}
+
+func TibiaCreaturesOverviewV3Impl(BoxContentHTML string) CreaturesOverviewResponse {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -74,7 +80,7 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 	BoostedCreatureImage := subma2b[0][1]
 
 	// Creating empty CreaturesData var
-	var CreaturesData []Creature
+	var CreaturesData []OverviewCreature
 
 	// Running query over each div
 	ReaderHTML.Find(".BoxContent div div").Each(func(index int, s *goquery.Selection) {
@@ -90,7 +96,6 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 
 		// check if regex return length is over 0 and the match of name is over 1
 		if len(subma1) > 0 && len(subma1[0][3]) > 1 {
-
 			// Adding bool to indicate features in creature_list
 			FeaturedRace := false
 			if subma1[0][1] == BoostedCreatureRace {
@@ -98,21 +103,19 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 			}
 
 			// Creating data block to return
-			CreaturesData = append(CreaturesData, Creature{
+			CreaturesData = append(CreaturesData, OverviewCreature{
 				Name:     TibiaDataSanitizeEscapedString(subma1[0][3]),
 				Race:     subma1[0][1],
 				ImageURL: subma1[0][2],
 				Featured: FeaturedRace,
 			})
-
 		}
 	})
 
-	//
 	// Build the data-blob
-	jsonData := JSONData{
-		Creatures{
-			Boosted: Creature{
+	return CreaturesOverviewResponse{
+		CreaturesContainer{
+			Boosted: OverviewCreature{
 				Name:     BoostedCreatureName,
 				Race:     BoostedCreatureRace,
 				ImageURL: BoostedCreatureImage,
@@ -125,7 +128,4 @@ func TibiaCreaturesOverviewV3(c *gin.Context) {
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaCreaturesOverviewV3", jsonData)
 }

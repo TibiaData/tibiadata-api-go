@@ -10,6 +10,35 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Child of JSONData
+type Creature struct {
+	Name             string   `json:"name"`
+	Race             string   `json:"race"`
+	ImageURL         string   `json:"image_url"`
+	Description      string   `json:"description"`
+	Behaviour        string   `json:"behaviour"`
+	Hitpoints        int      `json:"hitpoints"`
+	ImmuneTo         []string `json:"immune"`
+	StrongAgainst    []string `json:"strong"`
+	WeaknessAgainst  []string `json:"weakness"`
+	BeParalysed      bool     `json:"be_paralysed"`
+	BeSummoned       bool     `json:"be_summoned"`
+	SummonMana       int      `json:"summoned_mana"`
+	BeConvinced      bool     `json:"be_convinced"`
+	ConvincedMana    int      `json:"convinced_mana"`
+	SeeInvisible     bool     `json:"see_invisible"`
+	ExperiencePoints int      `json:"experience_points"`
+	IsLootable       bool     `json:"is_lootable"`
+	LootList         []string `json:"loot_list"`
+	Featured         bool     `json:"featured"`
+}
+
+// The base includes two levels: Creature and Information
+type CreatureResponse struct {
+	Creature    Creature    `json:"creature"`
+	Information Information `json:"information"`
+}
+
 var (
 	CreatureDataRegex         = regexp.MustCompile(`.*;">(.*)<\/h2> <img src="(.*)"\/>.*<p>(.*)<\/p> <p>(.*)<\/p> <p>(.*)<\/p>.*`)
 	CreatureHitpointsRegex    = regexp.MustCompile(`.*have (.*) hitpoints. (.*)`)
@@ -22,42 +51,8 @@ var (
 
 // TibiaCreaturesCreatureV3 func
 func TibiaCreaturesCreatureV3(c *gin.Context) {
-
-	// local strings used in this function
-	var localDamageString = " damage"
-
 	// getting params from URL
 	race := c.Param("race")
-
-	// Child of JSONData
-	type Creature struct {
-		Name             string   `json:"name"`
-		Race             string   `json:"race"`
-		ImageURL         string   `json:"image_url"`
-		Description      string   `json:"description"`
-		Behaviour        string   `json:"behaviour"`
-		Hitpoints        int      `json:"hitpoints"`
-		ImmuneTo         []string `json:"immune"`
-		StrongAgainst    []string `json:"strong"`
-		WeaknessAgainst  []string `json:"weakness"`
-		BeParalysed      bool     `json:"be_paralysed"`
-		BeSummoned       bool     `json:"be_summoned"`
-		SummonMana       int      `json:"summoned_mana"`
-		BeConvinced      bool     `json:"be_convinced"`
-		ConvincedMana    int      `json:"convinced_mana"`
-		SeeInvisible     bool     `json:"see_invisible"`
-		ExperiencePoints int      `json:"experience_points"`
-		IsLootable       bool     `json:"is_lootable"`
-		LootList         []string `json:"loot_list"`
-		Featured         bool     `json:"featured"`
-	}
-
-	//
-	// The base includes two levels: Creature and Information
-	type JSONData struct {
-		Creature    Creature    `json:"creature"`
-		Information Information `json:"information"`
-	}
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=creatures&race=" + TibiadataQueryEscapeStringV3(race)
@@ -68,6 +63,16 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaCreaturesCreatureV3", gin.H{"error": err.Error()})
 		return
 	}
+
+	jsonData := TibiaCreaturesCreatureV3Impl(race, BoxContentHTML)
+
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaCreaturesCreatureV3", jsonData)
+}
+
+func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) CreatureResponse {
+	// local strings used in this function
+	var localDamageString = " damage"
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -86,11 +91,20 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 
 	// Preparing vars
 	var (
-		CreatureDescription, CreatureBehaviour                                                                 string
-		CreatureLootList, CreatureImmuneTo, CreatureStrongAgainst, CreatureWeaknessAgainst                     []string
-		CreatureHitpoints, CreatureSummonedMana, CreatureConvincedMana, CreatureExperiencePoints               int
-		CreatureBeParalysed, CreatureBeSummoned, CreatureBeConvinced, CreatureSeeInvisible, CreatureIsLootable bool
+		CreatureDescription, CreatureBehaviour                                                                                    string
+		CreatureLootList, CreatureImmuneTo, CreatureStrongAgainst, CreatureWeaknessAgainst                                        []string
+		CreatureHitpoints, CreatureSummonedMana, CreatureConvincedMana, CreatureExperiencePoints                                  int
+		CreatureBeParalysed, CreatureBeSummoned, CreatureBeConvinced, CreatureSeeInvisible, CreatureIsLootable, CreatureIsBoosted bool
 	)
+
+	//Find boosted creature
+	boostedMonsterTitle, boostedCreatureFound := ReaderHTML.Find("#Monster").First().Attr("title")
+
+	if boostedCreatureFound {
+		boostedCreatureRace := boostedMonsterTitle[strings.Index(boostedMonsterTitle, ": ")+2:]
+
+		CreatureIsBoosted = boostedCreatureRace == race
+	}
 
 	// Preparing data for JSONData
 	if len(subma1) > 0 {
@@ -158,7 +172,7 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 
 	//
 	// Build the data-blob
-	jsonData := JSONData{
+	return CreatureResponse{
 		Creature{
 			Name:             TibiaDataSanitizeEscapedString(subma1[0][1]),
 			Race:             race,
@@ -178,13 +192,11 @@ func TibiaCreaturesCreatureV3(c *gin.Context) {
 			ExperiencePoints: CreatureExperiencePoints,
 			IsLootable:       CreatureIsLootable,
 			LootList:         CreatureLootList,
+			Featured:         CreatureIsBoosted,
 		},
 		Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaCreaturesCreatureV3", jsonData)
 }

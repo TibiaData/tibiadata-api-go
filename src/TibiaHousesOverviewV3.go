@@ -54,41 +54,80 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 	var (
 		// Creating empty vars
 		HouseData, GuildhallData []House
-		Errors                   []error
-
-		// Channels
-		done           = make(chan struct{})
-		housesChan     = make(chan House)
-		guildhallsChan = make(chan House)
-		errorsChan     = make(chan error)
-
-		baseURL = "https://www.tibia.com/community/?subtopic=houses&world=" + TibiadataQueryEscapeStringV3(world) + "&town=" + TibiadataQueryEscapeStringV3(town) + "&type="
 	)
 
-	go houseFetcher(baseURL, "houses", done, housesChan, errorsChan)
-	go houseFetcher(baseURL, "guildhalls", done, guildhallsChan, errorsChan)
+	// list of different fansite types
+	HouseTypes := []string{"houses", "guildhalls"}
+	// running over the FansiteTypes array
+	for _, HouseType := range HouseTypes {
 
-	for n := 2; n > 0; {
-		select {
-		case h := <-housesChan:
-			HouseData = append(HouseData, h)
-		case gh := <-guildhallsChan:
-			GuildhallData = append(GuildhallData, gh)
-		case err := <-errorsChan:
-			Errors = append(Errors, err)
-		case <-done:
-			n--
+		// Getting data with TibiadataHTMLDataCollectorV3
+		TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=houses&world=" + TibiadataQueryEscapeStringV3(world) + "&town=" + TibiadataQueryEscapeStringV3(town) + "&type=" + TibiadataQueryEscapeStringV3(HouseType)
+		BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+
+		// return error (e.g. for maintenance mode)
+		if err != nil {
+			TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaHousesOverviewV3", gin.H{"error": err.Error()})
+			return
 		}
-	}
 
-	close(done)
-	close(guildhallsChan)
-	close(housesChan)
-	close(errorsChan)
+		// Loading HTML data into ReaderHTML for goquery with NewReader
+		ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	if len(Errors) > 0 {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaHousesOverviewV3", gin.H{"error": Errors[0].Error()})
-		return
+		ReaderHTML.Find(".TableContentContainer .TableContent tr").Each(func(index int, s *goquery.Selection) {
+			house := House{}
+
+			// Storing HTML into HousesDivHTML
+			HousesDivHTML, err := s.Html()
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			// Removing linebreaks from HTML
+			HousesDivHTML = TibiadataHTMLRemoveLinebreaksV3(HousesDivHTML)
+			HousesDivHTML = TibiaDataSanitizeNbspSpaceString(HousesDivHTML)
+
+			// Regex to get data for record values
+			regex1 := regexp.MustCompile(`<td.*><nobr>(.*)<\/nobr><\/td><td.*><nobr>([0-9]+).sqm<\/nobr><\/td><td.*><nobr>([0-9]+)(k+).gold<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td>.*houseid" value="([0-9]+)"\/><div.*`)
+			subma1 := regex1.FindAllStringSubmatch(HousesDivHTML, -1)
+
+			if len(subma1) > 0 {
+				// House details
+				house.Name = TibiaDataSanitizeEscapedString(subma1[0][1])
+				house.HouseID = TibiadataStringToIntegerV3(subma1[0][6])
+				house.Size = TibiadataStringToIntegerV3(subma1[0][2])
+				house.Rent = TibiaDataConvertValuesWithK(subma1[0][3] + subma1[0][4])
+
+				// Auction details
+				s := subma1[0][5]
+				switch {
+				case strings.Contains(s, "rented"):
+					house.IsRented = true
+				case strings.Contains(s, "auctioned (no bid yet)"):
+					house.IsAuctioned = true
+				case strings.Contains(s, "auctioned"):
+					house.IsAuctioned = true
+					regex1b := regexp.MustCompile(`auctioned.\(([0-9]+).gold;.(.*).left\)`)
+					subma1b := regex1b.FindAllStringSubmatch(s, -1)
+					house.Auction.AuctionBid = TibiadataStringToIntegerV3(subma1b[0][1])
+					house.Auction.AuctionLeft = subma1b[0][2]
+				}
+
+				// append house to list houses/guildhalls
+				switch HouseType {
+				case "houses":
+					HouseData = append(HouseData, house)
+				case "guildhalls":
+					GuildhallData = append(GuildhallData, house)
+				}
+
+			}
+
+		})
+
 	}
 
 	// Build the data-blob
@@ -107,85 +146,4 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 
 	// return jsonData
 	TibiaDataAPIHandleSuccessResponse(c, "TibiaHousesOverviewV3", jsonData)
-}
-
-func houseFetcher(baseURL, houseType string, done chan struct{}, outputChan chan House, errorsChan chan error) {
-	defer func() {
-		done <- struct{}{}
-	}()
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = baseURL + TibiadataQueryEscapeStringV3(houseType)
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-	if err != nil {
-		// return error (e.g. for maintenance mode)
-		errorsChan <- err
-		return
-	}
-
-	// Loading HTML data into ReaderHTML for goquery with NewReader
-	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	ReaderHTML.Find(".BoxContent table tr").Each(func(index int, s *goquery.Selection) {
-		// Storing HTML into HousesDivHTML
-		HousesDivHTML, err := s.Html()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// Removing linebreaks from HTML
-		HousesDivHTML = TibiadataHTMLRemoveLinebreaksV3(HousesDivHTML)
-
-		// Regex to get data for record values
-		regex1 := regexp.MustCompile(`<td.*><nobr>(.*)<\/nobr><\/td><td.*><nobr>([0-9]+).sqm<\/nobr><\/td><td.*><nobr>([0-9]+)(k+).gold<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td>.*houseid" value="([0-9]+)"\/><div.*`)
-		subma1 := regex1.FindAllStringSubmatch(HousesDivHTML, -1)
-
-		if len(subma1) > 0 {
-			// Default vars
-			var (
-				IsRented, IsAuctioned bool
-				AuctionBid            int
-				AuctionLeft           string
-			)
-
-			s := subma1[0][5]
-			switch {
-			case strings.Contains(s, "rented"):
-				IsRented = true
-			// case strings.Contains(s, "no bid yet"):
-			// nothing to set?
-			case strings.Contains(s, "auctioned"):
-				IsAuctioned = true
-				regex1b := regexp.MustCompile(`auctioned..([0-9]+).gold..(.*).`)
-				subma1b := regex1b.FindAllStringSubmatch(s, -1)
-				AuctionBid = TibiadataStringToIntegerV3(subma1b[0][1])
-				AuctionLeft = subma1b[0][2]
-			}
-
-			// Name
-			Name := TibiaDataSanitizeEscapedString(subma1[0][1])
-			// HouseID
-			HouseID := TibiadataStringToIntegerV3(subma1[0][6])
-			// Size
-			Size := TibiadataStringToIntegerV3(subma1[0][2])
-			// Rent
-			Rent := TibiaDataConvertValuesWithK(subma1[0][3] + subma1[0][4])
-
-			outputChan <- House{
-				Name:        Name,
-				HouseID:     HouseID,
-				Size:        Size,
-				Rent:        Rent,
-				IsRented:    IsRented,
-				IsAuctioned: IsAuctioned,
-				Auction: Auction{
-					AuctionBid:  AuctionBid,
-					AuctionLeft: AuctionLeft,
-				},
-			}
-		}
-	})
 }

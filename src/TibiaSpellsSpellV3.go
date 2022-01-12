@@ -10,6 +10,62 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Child of SpellInformation
+type SpellInformation struct {
+	Formula       string   `json:"formula"`
+	Vocation      []string `json:"vocation"`
+	GroupAttack   bool     `json:"group_attack"`
+	GroupHealing  bool     `json:"group_healing"`
+	GroupSupport  bool     `json:"group_support"`
+	TypeInstant   bool     `json:"type_instant"`
+	TypeRune      bool     `json:"type_rune"`
+	DamageType    string   `json:"damage_type"`
+	CooldownAlone int      `json:"cooldown_alone"`
+	CooldownGroup int      `json:"cooldown_group"`
+	SoulPoints    int      `json:"soul_points"`
+	Amount        int      `json:"amount"`
+	Level         int      `json:"level"`
+	Mana          int      `json:"mana"`
+	Price         int      `json:"price"`
+	City          []string `json:"city"`
+	Premium       bool     `json:"premium_only"`
+}
+
+// Child of RuneInformation
+type RuneInformation struct {
+	Vocation     []string `json:"vocation"`
+	GroupAttack  bool     `json:"group_attack"`
+	GroupHealing bool     `json:"group_healing"`
+	GroupSupport bool     `json:"group_support"`
+	DamageType   string   `json:"damage_type"`
+	Level        int      `json:"level"`
+	MagicLevel   int      `json:"magic_level"`
+}
+
+// Child of Spells
+type SpellData struct {
+	Name                string           `json:"name"`
+	Spell               string           `json:"spell_id"`
+	ImageURL            string           `json:"image_url"`
+	Description         string           `json:"description"`
+	HasSpellInformation bool             `json:"has_spell_information"`
+	SpellInformation    SpellInformation `json:"spell_information"`
+	HasRuneInformation  bool             `json:"has_rune_information"`
+	RuneInformation     RuneInformation  `json:"rune_information"`
+}
+
+// Child of JSONData
+type SpellsContainer struct {
+	Spell SpellData `json:"spell"`
+}
+
+//
+// The base includes two levels: Spell and Information
+type SpellInformationResponse struct {
+	Spells      SpellsContainer `json:"spells"`
+	Information Information     `json:"information"`
+}
+
 var (
 	SpellDataRowRegex      = regexp.MustCompile(`<td.*>(.*):<\/td><td.*>(.*)<\/td>`)
 	SpellNameAndImageRegex = regexp.MustCompile(`<td><img src="(.*)" width=.*<h2>(.*)<\/h2>.*`)
@@ -19,68 +75,8 @@ var (
 
 // TibiaSpellsSpellV3 func
 func TibiaSpellsSpellV3(c *gin.Context) {
-
 	// getting params from URL
 	spell := c.Param("spell")
-
-	// Child of SpellInformation
-	type SpellInformation struct {
-		Formula       string   `json:"formula"`
-		Vocation      []string `json:"vocation"`
-		GroupAttack   bool     `json:"group_attack"`
-		GroupHealing  bool     `json:"group_healing"`
-		GroupSupport  bool     `json:"group_support"`
-		TypeInstant   bool     `json:"type_instant"`
-		TypeRune      bool     `json:"type_rune"`
-		DamageType    string   `json:"damage_type"`
-		CooldownAlone int      `json:"cooldown_alone"`
-		CooldownGroup int      `json:"cooldown_group"`
-		SoulPoints    int      `json:"soul_points"`
-		Amount        int      `json:"amount"`
-		Level         int      `json:"level"`
-		Mana          int      `json:"mana"`
-		Price         int      `json:"price"`
-		City          []string `json:"city"`
-		Premium       bool     `json:"premium_only"`
-	}
-
-	// Child of RuneInformation
-	type RuneInformation struct {
-		Vocation     []string `json:"vocation"`
-		GroupAttack  bool     `json:"group_attack"`
-		GroupHealing bool     `json:"group_healing"`
-		GroupSupport bool     `json:"group_support"`
-		DamageType   string   `json:"damage_type"`
-		Level        int      `json:"level"`
-		MagicLevel   int      `json:"magic_level"`
-	}
-
-	// Child of Spells
-	type Spell struct {
-		Name                string           `json:"name"`
-		Spell               string           `json:"spell_id"`
-		ImageURL            string           `json:"image_url"`
-		Description         string           `json:"description"`
-		HasSpellInformation bool             `json:"has_spell_information"`
-		SpellInformation    SpellInformation `json:"spell_information"`
-		HasRuneInformation  bool             `json:"has_rune_information"`
-		RuneInformation     RuneInformation  `json:"rune_information"`
-	}
-
-	// Child of JSONData
-	type Spells struct {
-		Spell Spell `json:"spell"`
-	}
-
-	//
-	// The base includes two levels: Spell and Information
-	type JSONData struct {
-		Spells      Spells      `json:"spells"`
-		Information Information `json:"information"`
-	}
-
-	// Setting spells string to lower chars
-	spell = strings.ToLower(spell)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=spells&spell=" + TibiadataQueryEscapeStringV3(spell)
@@ -91,6 +87,16 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaSpellsSpellV3", gin.H{"error": err.Error()})
 		return
 	}
+
+	jsonData := TibiaSpellsSpellV3Impl(spell, BoxContentHTML)
+
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaSpellsSpellV3", jsonData)
+}
+
+// TibiaSpellsSpellV3 func
+func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformationResponse {
+	//TODO: There is currently a bug with description, it always comes back empty
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -107,163 +113,168 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 		SpellsInfoGroupAttack, SpellsInfoGroupHealing, SpellsInfoGroupSupport, SpellsInfoTypeInstant, SpellsInfoTypeRune, RuneInfoGroupAttack, RuneInfoGroupHealing, RuneInfoGroupSupport, SpellsInfoPremium, SpellsHasSpellSection, SpellsHasRuneSection bool
 	)
 
-	// Running query over each div
-	ReaderHTML.Find(".BoxContent table tbody tr").Each(func(index int, s *goquery.Selection) {
-
-		// Storing HTML into SpellDivHTML
-		SpellDivHTML, err := s.Html()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		subma1 := SpellDataRowRegex.FindAllStringSubmatch(SpellDivHTML, -1)
+	ReaderHTML.Find(".BoxContent").Each(func(index int, s *goquery.Selection) {
+		NameAndImageSection, _ := s.Find("table tr").First().Html()
 
 		// Get the name and image
-		subma2 := SpellNameAndImageRegex.FindAllStringSubmatch(SpellDivHTML, -1)
+		subma2 := SpellNameAndImageRegex.FindAllStringSubmatch(NameAndImageSection, -1)
 		if len(subma2) > 0 {
 			SpellName = subma2[0][2]
 			SpellImageURL = subma2[0][1]
 		}
 
-		// Determine if this is the spell or rune section
-		if strings.Contains(SpellDivHTML, "<b>Spell Information</b>") {
-			SpellInformationSection = "spell"
-			SpellsHasSpellSection = true
-		} else if strings.Contains(SpellDivHTML, "<b>Rune Information</b>") {
-			SpellInformationSection = "rune"
-			SpellsHasRuneSection = true
-		}
+		s.Find(".TableContainer").Each(func(index int, s *goquery.Selection) {
+			SectionName := s.Find(".CaptionInnerContainer div.Text").Text()
 
-		// check if regex return length is over 0 and the match of name is over 1
-		if len(subma1) > 0 {
-
-			// Creating easy to use vars (and unescape hmtl right string)
-			LeftColumn := subma1[0][1]
-			RightColumn := TibiaDataSanitizeEscapedString(subma1[0][2])
-
-			// Formula
-			if LeftColumn == "Formula" {
-				SpellsInfoFormula = TibiaDataSanitizeDoubleQuoteString(RightColumn)
+			// Determine if this is the spell or rune section
+			if SectionName == "Spell Information" {
+				SpellInformationSection = "spell"
+				SpellsHasSpellSection = true
+			} else if SectionName == "Rune Information" {
+				SpellInformationSection = "rune"
+				SpellsHasRuneSection = true
 			}
 
-			// Vocation
-			if LeftColumn == "Vocation" {
-				switch SpellInformationSection {
-				case "spell":
-					SpellsInfoVocation = strings.Split(RightColumn, ", ")
-				case "rune":
-					RuneInfoVocation = strings.Split(RightColumn, ", ")
+			// Running query over each div
+			s.Find("table.Table2 tbody tr").Each(func(index int, s *goquery.Selection) {
+				// Storing HTML into SpellDivHTML
+				SpellDivHTML, err := s.Html()
+				if err != nil {
+					log.Fatal(err)
 				}
-			}
 
-			// Group information
-			if LeftColumn == "Group" {
-				switch SpellInformationSection {
-				case "spell":
-					switch RightColumn {
-					case "Attack":
-						SpellsInfoGroupAttack = true
-					case "Healing":
-						SpellsInfoGroupHealing = true
-					case "Support":
-						SpellsInfoGroupSupport = true
+				subma1 := SpellDataRowRegex.FindAllStringSubmatch(SpellDivHTML, -1)
+
+				// check if regex return length is over 0 and the match of name is over 1
+				if len(subma1) > 0 {
+					// Creating easy to use vars (and unescape hmtl right string)
+					LeftColumn := subma1[0][1]
+					RightColumn := TibiaDataSanitizeEscapedString(subma1[0][2])
+
+					// Formula
+					if LeftColumn == "Formula" {
+						SpellsInfoFormula = TibiaDataSanitizeDoubleQuoteString(RightColumn)
 					}
-				case "rune":
-					switch RightColumn {
-					case "Attack":
-						RuneInfoGroupAttack = true
-					case "Healing":
-						RuneInfoGroupHealing = true
-					case "Support":
-						RuneInfoGroupSupport = true
+
+					// Vocation
+					if LeftColumn == "Vocation" {
+						switch SpellInformationSection {
+						case "spell":
+							SpellsInfoVocation = strings.Split(RightColumn, ", ")
+						case "rune":
+							RuneInfoVocation = strings.Split(RightColumn, ", ")
+						}
+					}
+
+					// Group information
+					if LeftColumn == "Group" {
+						switch SpellInformationSection {
+						case "spell":
+							switch RightColumn {
+							case "Attack":
+								SpellsInfoGroupAttack = true
+							case "Healing":
+								SpellsInfoGroupHealing = true
+							case "Support":
+								SpellsInfoGroupSupport = true
+							}
+						case "rune":
+							switch RightColumn {
+							case "Attack":
+								RuneInfoGroupAttack = true
+							case "Healing":
+								RuneInfoGroupHealing = true
+							case "Support":
+								RuneInfoGroupSupport = true
+							}
+						}
+					}
+
+					// Spell type
+					if LeftColumn == "Type" {
+						switch RightColumn {
+						case "Instant":
+							SpellsInfoTypeInstant = true
+						case "Rune":
+							SpellsInfoTypeRune = true
+						}
+					}
+
+					// Damage
+					if LeftColumn == "Damage Type" || LeftColumn == "Magic Type" {
+						switch SpellInformationSection {
+						case "spell":
+							SpellsInfoDamageType = strings.ToLower(RightColumn)
+						case "rune":
+							RuneInfoDamageType = strings.ToLower(RightColumn)
+						}
+					}
+
+					// Cooldown
+					if LeftColumn == "Cooldown" {
+						subma3 := SpellCooldownRegex.FindAllStringSubmatch(SpellDivHTML, -1)
+						if len(subma3) > 0 {
+							SpellsInfoCooldownAlone = TibiadataStringToIntegerV3(subma3[0][1])
+							SpellsInfoCooldownGroup = TibiadataStringToIntegerV3(subma3[0][2])
+						}
+
+					}
+
+					// Soul Points
+					if LeftColumn == "Soul Points" {
+						SpellsInfoSoulPoints = TibiadataStringToIntegerV3(RightColumn)
+					}
+
+					// Amount
+					if LeftColumn == "Amount" {
+						SpellsInfoAmount = TibiadataStringToIntegerV3(RightColumn)
+					}
+
+					// Experience Level
+					if LeftColumn == "Exp Lvl" {
+						switch SpellInformationSection {
+						case "spell":
+							SpellsInfoLevel = TibiadataStringToIntegerV3(RightColumn)
+						case "rune":
+							RuneInfoLevel = TibiadataStringToIntegerV3(RightColumn)
+						}
+					}
+
+					// Mana
+					if LeftColumn == "Mana" {
+						SpellsInfoMana = TibiadataStringToIntegerV3(RightColumn)
+					}
+
+					// Price
+					if LeftColumn == "Price" {
+						if RightColumn == "free" {
+							SpellsInfoPrice = 0
+						} else {
+							SpellsInfoPrice = TibiadataStringToIntegerV3(RightColumn)
+						}
+					}
+
+					// City
+					if LeftColumn == "City" {
+						SpellsInfoCity = strings.Split(RightColumn, ", ")
+					}
+
+					// Premium
+					if LeftColumn == "Premium" {
+						if RightColumn == "yes" {
+							SpellsInfoPremium = true
+						} else {
+							SpellsInfoPremium = false
+						}
+					}
+
+					// Magic level
+					if LeftColumn == "Mag Lvl" {
+						RuneInfoMagicLevel = TibiadataStringToIntegerV3(RightColumn)
 					}
 				}
-			}
-
-			// Spell type
-			if LeftColumn == "Type" {
-				switch RightColumn {
-				case "Instant":
-					SpellsInfoTypeInstant = true
-				case "Rune":
-					SpellsInfoTypeRune = true
-				}
-			}
-
-			// Damage
-			if LeftColumn == "Damage Type" {
-				switch SpellInformationSection {
-				case "spell":
-					SpellsInfoDamageType = strings.ToLower(RightColumn)
-				case "rune":
-					RuneInfoDamageType = strings.ToLower(RightColumn)
-				}
-			}
-
-			// Cooldown
-			if LeftColumn == "Cooldown" {
-				subma3 := SpellCooldownRegex.FindAllStringSubmatch(SpellDivHTML, -1)
-				if len(subma3) > 0 {
-					SpellsInfoCooldownAlone = TibiadataStringToIntegerV3(subma3[0][1])
-					SpellsInfoCooldownGroup = TibiadataStringToIntegerV3(subma3[0][2])
-				}
-
-			}
-
-			// Soul Points
-			if LeftColumn == "Soul Points" {
-				SpellsInfoSoulPoints = TibiadataStringToIntegerV3(RightColumn)
-			}
-
-			// Amount
-			if LeftColumn == "Amount" {
-				SpellsInfoAmount = TibiadataStringToIntegerV3(RightColumn)
-			}
-
-			// Experience Level
-			if LeftColumn == "Exp Lvl" {
-				switch SpellInformationSection {
-				case "spell":
-					SpellsInfoLevel = TibiadataStringToIntegerV3(RightColumn)
-				case "rune":
-					RuneInfoLevel = TibiadataStringToIntegerV3(RightColumn)
-				}
-			}
-
-			// Mana
-			if LeftColumn == "Mana" {
-				SpellsInfoMana = TibiadataStringToIntegerV3(RightColumn)
-			}
-
-			// Price
-			if LeftColumn == "Price" {
-				if RightColumn == "free" {
-					SpellsInfoPrice = 0
-				} else {
-					SpellsInfoPrice = TibiadataStringToIntegerV3(RightColumn)
-				}
-			}
-
-			// City
-			if LeftColumn == "City" {
-				SpellsInfoCity = strings.Split(RightColumn, ", ")
-			}
-
-			// Premium
-			if LeftColumn == "Premium" {
-				if RightColumn == "yes" {
-					SpellsInfoPremium = true
-				} else {
-					SpellsInfoPremium = false
-				}
-			}
-
-			// Magic level
-			if LeftColumn == "Mag Lvl" {
-				RuneInfoMagicLevel = TibiadataStringToIntegerV3(RightColumn)
-			}
-
-		}
+			})
+		})
 	})
 
 	// Getting the description
@@ -275,11 +286,11 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 
 	//
 	// Build the data-blob
-	jsonData := JSONData{
-		Spells{
-			Spell{
+	return SpellInformationResponse{
+		SpellsContainer{
+			SpellData{
 				Name:                SpellName,
-				Spell:               spell,
+				Spell:               strings.ToLower(SpellName),
 				ImageURL:            SpellImageURL,
 				Description:         SpellDescription,
 				HasSpellInformation: SpellsHasSpellSection,
@@ -319,7 +330,4 @@ func TibiaSpellsSpellV3(c *gin.Context) {
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaSpellsSpellV3", jsonData)
 }

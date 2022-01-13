@@ -11,13 +11,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Child of JSONData
+type News struct {
+	ID          int    `json:"id"`
+	Date        string `json:"date"`
+	Title       string `json:"title,omitempty"`
+	Category    string `json:"category"`
+	Type        string `json:"type,omitempty"`
+	TibiaURL    string `json:"url"`
+	Content     string `json:"content"`
+	ContentHTML string `json:"content_html"`
+}
+
+//
+// The base
+type NewsResponse struct {
+	News        News        `json:"news"`
+	Information Information `json:"information"`
+}
+
 var (
 	martelRegex = regexp.MustCompile(`<img src=\"https:\/\/static\.tibia\.com\/images\/global\/letters\/letter_martel_(.)\.gif\" ([^\/>]+..)`)
 )
 
 // TibiaNewsV3 func
 func TibiaNewsV3(c *gin.Context) {
-
 	// getting params from URL
 	NewsID := TibiadataStringToIntegerV3(c.Param("news_id"))
 
@@ -26,32 +44,6 @@ func TibiaNewsV3(c *gin.Context) {
 		TibiaDataAPIHandleOtherResponse(c, http.StatusBadRequest, "TibiaNewsV3", gin.H{"error": "no valid news_id provided"})
 		return
 	}
-
-	// Child of JSONData
-	type News struct {
-		ID          int    `json:"id"`
-		Date        string `json:"date"`
-		Title       string `json:"title,omitempty"`
-		Category    string `json:"category"`
-		Type        string `json:"type,omitempty"`
-		TibiaURL    string `json:"url"`
-		Content     string `json:"content"`
-		ContentHTML string `json:"content_html"`
-	}
-
-	//
-	// The base
-	type JSONData struct {
-		News        News        `json:"news"`
-		Information Information `json:"information"`
-	}
-
-	// Declaring vars for later use..
-	var (
-		NewsData News
-		tmp1     *goquery.Selection
-		tmp2     string
-	)
 
 	TibiadataRequest.URL = "https://www.tibia.com/news/?subtopic=newsarchive&id=" + strconv.Itoa(NewsID)
 
@@ -64,6 +56,19 @@ func TibiaNewsV3(c *gin.Context) {
 		return
 	}
 
+	jsonData := TibiaNewsV3Impl(NewsID, TibiadataRequest.URL, BoxContentHTML)
+
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaNewsV3", jsonData)
+}
+
+func TibiaNewsV3Impl(NewsID int, rawUrl string, BoxContentHTML string) NewsResponse {
+	// Declaring vars for later use..
+	var (
+		NewsData News
+		tmp1     *goquery.Selection
+		tmp2     string
+	)
+
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -71,7 +76,7 @@ func TibiaNewsV3(c *gin.Context) {
 	}
 
 	NewsData.ID = NewsID
-	NewsData.TibiaURL = TibiadataRequest.URL
+	NewsData.TibiaURL = rawUrl
 
 	ReaderHTML.Find(".NewsHeadline").Each(func(index int, s *goquery.Selection) {
 
@@ -121,13 +126,11 @@ func TibiaNewsV3(c *gin.Context) {
 
 	//
 	// Build the data-blob
-	jsonData := JSONData{
+	return NewsResponse{
 		NewsData,
 		Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaNewsV3", jsonData)
 }

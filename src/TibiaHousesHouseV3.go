@@ -10,63 +10,63 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Child of Status
+type HouseRental struct {
+	Owner            string `json:"owner"`
+	OwnerSex         string `json:"owner_sex"`
+	PaidUntil        string `json:"paid_until"`
+	MovingDate       string `json:"moving_date"`
+	TransferReceiver string `json:"transfer_receiver"`
+	TransferPrice    int    `json:"transfer_price"`
+	TransferAccept   bool   `json:"transfer_accept"`
+}
+
+// Child of Status
+type HouseAuction struct {
+	CurrentBid     int    `json:"current_bid"`
+	CurrentBidder  string `json:"current_bidder"`
+	AuctionOngoing bool   `json:"auction_ongoing"`
+	AuctionEnd     string `json:"auction_end"`
+}
+
+// Child of House
+type HouseStatus struct {
+	IsAuctioned   bool         `json:"is_auctioned"`
+	IsRented      bool         `json:"is_rented"`
+	IsMoving      bool         `json:"is_moving"`
+	IsTransfering bool         `json:"is_transfering"`
+	Auction       HouseAuction `json:"auction"`
+	Rental        HouseRental  `json:"rental"`
+	Original      string       `json:"original"`
+}
+
+// Child of JSONData
+type House struct {
+	Houseid int         `json:"houseid"`
+	World   string      `json:"world"`
+	Town    string      `json:"town"`
+	Name    string      `json:"name"`
+	Type    string      `json:"type"`
+	Beds    int         `json:"beds"`
+	Size    int         `json:"size"`
+	Rent    int         `json:"rent"`
+	Img     string      `json:"img"`
+	Status  HouseStatus `json:"status"`
+}
+
+//
+// The base includes two levels: Houses and Information
+type HouseResponse struct {
+	House       House       `json:"house"`
+	Information Information `json:"information"`
+}
+
 // TibiaHousesHouseV3 func
 func TibiaHousesHouseV3(c *gin.Context) {
 
 	// getting params from URL
 	world := c.Param("world")
 	houseid := c.Param("houseid")
-
-	// Child of Status
-	type Rental struct {
-		Owner            string `json:"owner"`
-		OwnerSex         string `json:"owner_sex"`
-		PaidUntil        string `json:"paid_until"`
-		MovingDate       string `json:"moving_date"`
-		TransferReceiver string `json:"transfer_receiver"`
-		TransferPrice    int    `json:"transfer_price"`
-		TransferAccept   bool   `json:"transfer_accept"`
-	}
-
-	// Child of Status
-	type Auction struct {
-		CurrentBid     int    `json:"current_bid"`
-		CurrentBidder  string `json:"current_bidder"`
-		AuctionOngoing bool   `json:"auction_ongoing"`
-		AuctionEnd     string `json:"auction_end"`
-	}
-
-	// Child of House
-	type Status struct {
-		IsAuctioned   bool    `json:"is_auctioned"`
-		IsRented      bool    `json:"is_rented"`
-		IsMoving      bool    `json:"is_moving"`
-		IsTransfering bool    `json:"is_transfering"`
-		Auction       Auction `json:"auction"`
-		Rental        Rental  `json:"rental"`
-		Original      string  `json:"original"`
-	}
-
-	// Child of JSONData
-	type House struct {
-		Houseid int    `json:"houseid"`
-		World   string `json:"world"`
-		Town    string `json:"town"`
-		Name    string `json:"name"`
-		Type    string `json:"type"`
-		Beds    int    `json:"beds"`
-		Size    int    `json:"size"`
-		Rent    int    `json:"rent"`
-		Img     string `json:"img"`
-		Status  Status `json:"status"`
-	}
-
-	//
-	// The base includes two levels: Houses and Information
-	type JSONData struct {
-		House       House       `json:"house"`
-		Information Information `json:"information"`
-	}
 
 	// Creating empty vars
 	var HouseData House
@@ -179,7 +179,7 @@ func TibiaHousesHouseV3(c *gin.Context) {
 
 	//
 	// Build the data-blob
-	jsonData := JSONData{
+	jsonData := HouseResponse{
 		HouseData,
 		Information{
 			APIVersion: TibiadataAPIversion,

@@ -114,7 +114,7 @@ type Characters struct {
 
 //
 // The base includes two levels, Characters and Information
-type JSONData struct {
+type CharacterResponse struct {
 	Characters  Characters  `json:"characters"`
 	Information Information `json:"information"`
 }
@@ -153,7 +153,7 @@ var (
 )
 
 // TibiaCharactersCharacterV3 func
-func TibiaCharactersCharacterV3Impl(BoxContentHTML string) JSONData {
+func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 
 	var (
 		// local strings used in this function
@@ -479,7 +479,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) JSONData {
 
 	//
 	// Build the data-blob
-	jsonData := JSONData{
+	return CharacterResponse{
 		Characters{
 			CharacterInformationData,
 			AccountBadgesData,
@@ -493,13 +493,10 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) JSONData {
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	return jsonData
 }
 
 // TibiaDataParseKiller func - insert a html string and get the killers back
 func TibiaDataParseKiller(data string) (string, bool, bool, string) {
-
 	var (
 		// local strings used in this function
 		localTradedString = " (traded)"

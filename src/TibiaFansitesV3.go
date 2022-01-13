@@ -10,6 +10,52 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Child of Fansite
+type ContentType struct {
+	Statistics bool `json:"statistics"`
+	Texts      bool `json:"texts"`
+	Tools      bool `json:"tools"`
+	Wiki       bool `json:"wiki"`
+}
+
+// Child of Fansite
+type SocialMedia struct {
+	Discord   bool `json:"discord"`
+	Facebook  bool `json:"facebook"`
+	Instagram bool `json:"instagram"`
+	Reddit    bool `json:"reddit"`
+	Twitch    bool `json:"twitch"`
+	Twitter   bool `json:"twitter"`
+	Youtube   bool `json:"youtube"`
+}
+
+// Child of Fansites
+type Fansite struct {
+	Name           string      `json:"name"`
+	LogoURL        string      `json:"logo_url"`
+	Homepage       string      `json:"homepage"`
+	Contact        string      `json:"contact"`
+	ContentType    ContentType `json:"content_type"`
+	SocialMedia    SocialMedia `json:"social_media"`
+	Languages      []string    `json:"languages"`
+	Specials       []string    `json:"specials"`
+	FansiteItem    bool        `json:"fansite_item"`
+	FansiteItemURL string      `json:"fansite_item_url"`
+}
+
+// Child of JSONData
+type Fansites struct {
+	PromotedFansites  []Fansite `json:"promoted"`
+	SupportedFansites []Fansite `json:"supported"`
+}
+
+//
+// The base includes two levels: Fansites and Information
+type FansitesResponse struct {
+	Fansites    Fansites    `json:"fansites"`
+	Information Information `json:"information"`
+}
+
 var (
 	FansiteInformationRegex = regexp.MustCompile(`<td><a href="(.*)" target.*img .*src="(.*)" alt="(.*)"\/><\/a>.*<a href=".*">(.*)<\/a><\/td><td.*top;">(.*)<\/td><td.*top;">(.*)<\/td><td.*top;">(.*)<\/td><td.*<ul><li>(.*)<\/li><\/ul><\/td><td.*top;">(.*)<\/td>`)
 	FansiteImgTagRegex      = regexp.MustCompile(`<img[^>]+\bsrc="([^"]+)"`)
@@ -19,52 +65,6 @@ var (
 
 // TibiaFansitesV3 func
 func TibiaFansitesV3(c *gin.Context) {
-
-	// Child of Fansite
-	type ContentType struct {
-		Statistics bool `json:"statistics"`
-		Texts      bool `json:"texts"`
-		Tools      bool `json:"tools"`
-		Wiki       bool `json:"wiki"`
-	}
-	// Child of Fansite
-	type SocialMedia struct {
-		Discord   bool `json:"discord"`
-		Facebook  bool `json:"facebook"`
-		Instagram bool `json:"instagram"`
-		Reddit    bool `json:"reddit"`
-		Twitch    bool `json:"twitch"`
-		Twitter   bool `json:"twitter"`
-		Youtube   bool `json:"youtube"`
-	}
-
-	// Child of Fansites
-	type Fansite struct {
-		Name           string      `json:"name"`
-		LogoURL        string      `json:"logo_url"`
-		Homepage       string      `json:"homepage"`
-		Contact        string      `json:"contact"`
-		ContentType    ContentType `json:"content_type"`
-		SocialMedia    SocialMedia `json:"social_media"`
-		Languages      []string    `json:"languages"`
-		Specials       []string    `json:"specials"`
-		FansiteItem    bool        `json:"fansite_item"`
-		FansiteItemURL string      `json:"fansite_item_url"`
-	}
-
-	// Child of JSONData
-	type Fansites struct {
-		PromotedFansites  []Fansite `json:"promoted"`
-		SupportedFansites []Fansite `json:"supported"`
-	}
-
-	//
-	// The base includes two levels: Fansites and Information
-	type JSONData struct {
-		Fansites    Fansites    `json:"fansites"`
-		Information Information `json:"information"`
-	}
-
 	// Getting data with TibiadataHTMLDataCollectorV3
 	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=fansites"
 	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
@@ -75,6 +75,13 @@ func TibiaFansitesV3(c *gin.Context) {
 		return
 	}
 
+	jsonData := TibiaFansitesV3Impl(BoxContentHTML)
+
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaFansitesV3", jsonData)
+}
+
+func TibiaFansitesV3Impl(BoxContentHTML string) FansitesResponse {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -207,9 +214,8 @@ func TibiaFansitesV3(c *gin.Context) {
 
 	}
 
-	//
 	// Build the data-blob
-	jsonData := JSONData{
+	return FansitesResponse{
 		Fansites{
 			PromotedFansites:  PromotedFansitesData,
 			SupportedFansites: SupportedFansitesData,
@@ -219,7 +225,4 @@ func TibiaFansitesV3(c *gin.Context) {
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaFansitesV3", jsonData)
 }

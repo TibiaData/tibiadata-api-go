@@ -44,9 +44,9 @@ type HouseStatus struct {
 type House struct {
 	Houseid int         `json:"houseid"`
 	World   string      `json:"world"`
-	Town    string      `json:"town"`
+	Town    string      `json:"town,omitempty"`
 	Name    string      `json:"name"`
-	Type    string      `json:"type"`
+	Type    string      `json:"type,omitempty"`
 	Beds    int         `json:"beds"`
 	Size    int         `json:"size"`
 	Rent    int         `json:"rent"`

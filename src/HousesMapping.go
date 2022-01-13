@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 )
 
 var (
@@ -21,14 +22,22 @@ type HousesMapping struct {
 // TibiaDataHousesMappingInitiator func - used to load data from local JSON file
 func TibiaDataHousesMappingInitiator() {
 	// load content from file into variable file
-	file, _ := ioutil.ReadFile("houses_mapping.json")
+	file, err := ioutil.ReadFile("houses_mapping.json")
 
-	// loading json and mapping it into the data variable
-	data := HousesMapping{}
-	_ = json.Unmarshal([]byte(file), &data)
+	if err != nil {
+		log.Println("[error] TibiaData API failed to load content from houses_mapping.json")
+	} else {
+		// loading json and mapping it into the data variable
+		data := HousesMapping{}
+		err = json.Unmarshal([]byte(file), &data)
 
-	// storing data so it's accessible from other places
-	TibiadataHousesMapping = data
+		if err != nil {
+			log.Println("[error] TibiaData API failed to parse content from houses_mapping.json")
+		} else {
+			// storing data so it's accessible from other places
+			TibiadataHousesMapping = data
+		}
+	}
 }
 
 // TibiaDataHousesMapResolver func - used to return both town and type

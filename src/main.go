@@ -70,4 +70,7 @@ func TibiaDataInitializer() {
 	}
 
 	log.Printf("[info] TibiaData API proxy: %s", TibiadataProxyDomain)
+
+	// initializing houses mappings
+	TibiaDataHousesMappingInitiator()
 }

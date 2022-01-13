@@ -105,9 +105,10 @@ func TibiaHousesHouseV3(c *gin.Context) {
 		HouseData.Houseid = TibiadataStringToIntegerV3(houseid)
 		HouseData.World = subma1[0][8]
 
+		HouseData.Town, HouseData.Type = TibiaDataHousesMapResolver(HouseData.Houseid)
+
 		HouseData.Name = TibiaDataSanitizeEscapedString(subma1[0][2])
 		HouseData.Img = subma1[0][1]
-		HouseData.Type = subma1[0][3]
 		HouseData.Beds = TibiadataStringToIntegerV3(subma1[0][4])
 		HouseData.Size = TibiadataStringToIntegerV3(subma1[0][5])
 		HouseData.Rent = TibiaDataConvertValuesWithK(subma1[0][6] + subma1[0][7])

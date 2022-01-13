@@ -12,35 +12,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Child of JSONData
+type NewsItem struct {
+	ID       int    `json:"id"`
+	Date     string `json:"date"`
+	News     string `json:"news"`
+	Category string `json:"category"`
+	Type     string `json:"type"`
+	TibiaURL string `json:"url"`
+	ApiURL   string `json:"url_api,omitempty"`
+}
+
+//
+// The base
+type NewsListResponse struct {
+	News        []NewsItem  `json:"news"`
+	Information Information `json:"information"`
+}
+
 // TibiaNewslistV3 func
 func TibiaNewslistV3(c *gin.Context) {
-
 	// getting params from URL
 	days := TibiadataStringToIntegerV3(c.Param("days"))
 	if days == 0 {
 		days = 90 // default for recent posts
 	}
-
-	// Child of JSONData
-	type News struct {
-		ID       int    `json:"id"`
-		Date     string `json:"date"`
-		News     string `json:"news"`
-		Category string `json:"category"`
-		Type     string `json:"type"`
-		TibiaURL string `json:"url"`
-		ApiURL   string `json:"url_api,omitempty"`
-	}
-
-	//
-	// The base
-	type JSONData struct {
-		News        []News      `json:"news"`
-		Information Information `json:"information"`
-	}
-
-	// Declaring vars for later use..
-	var NewsListData []News
 
 	// generating dates to pass to FormData
 	DateBegin := time.Now().AddDate(0, 0, -days)
@@ -84,6 +80,15 @@ func TibiaNewslistV3(c *gin.Context) {
 		return
 	}
 
+	jsonData := TibiaNewslistV3Impl(days, BoxContentHTML)
+
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaNewslistV3", jsonData)
+}
+
+func TibiaNewslistV3Impl(days int, BoxContentHTML string) NewsListResponse {
+	// Declaring vars for later use..
+	var NewsListData []NewsItem
+
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -91,7 +96,7 @@ func TibiaNewslistV3(c *gin.Context) {
 	}
 
 	ReaderHTML.Find(".Odd,.Even").Each(func(index int, s *goquery.Selection) {
-		var OneNews News
+		var OneNews NewsItem
 
 		// getting category by image src
 		CategoryImg, _ := s.Find("img").Attr("src")
@@ -114,7 +119,7 @@ func TibiaNewslistV3(c *gin.Context) {
 		OneNews.TibiaURL = NewsSplit[0] + NewsID
 
 		if TibiadataHost != "" {
-			OneNews.ApiURL = "http://api.tibiadata.com/v3/news/id/" + NewsID
+			OneNews.ApiURL = "https://" + TibiadataHost + "/v3/news/id/" + NewsID
 		}
 
 		// add to NewsListData for response
@@ -123,13 +128,11 @@ func TibiaNewslistV3(c *gin.Context) {
 
 	//
 	// Build the data-blob
-	jsonData := JSONData{
+	return NewsListResponse{
 		NewsListData,
 		Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaNewslistV3", jsonData)
 }

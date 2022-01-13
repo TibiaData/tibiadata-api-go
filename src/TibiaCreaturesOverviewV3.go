@@ -2,12 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 // Child of Creatures (used for list of creatures and boosted section)
@@ -36,24 +34,6 @@ var (
 	BoostedCreatureImageRegex       = regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
 	CreatureInformationRegex        = regexp.MustCompile(`.*race=(.*)"><img src="(.*)" border.*div>(.*)<\/div>`)
 )
-
-// TibiaCreaturesOverviewV3 func
-func TibiaCreaturesOverviewV3(c *gin.Context) {
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=creatures"
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaCreaturesOverviewV3", gin.H{"error": err.Error()})
-		return
-	}
-
-	jsonData := TibiaCreaturesOverviewV3Impl(BoxContentHTML)
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaCreaturesOverviewV3", jsonData)
-}
 
 func TibiaCreaturesOverviewV3Impl(BoxContentHTML string) CreaturesOverviewResponse {
 	// Loading HTML data into ReaderHTML for goquery with NewReader

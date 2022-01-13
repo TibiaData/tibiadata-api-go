@@ -2,11 +2,9 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 // Child of Guilds
@@ -28,30 +26,6 @@ type OverviewGuilds struct {
 type GuildsOverviewResponse struct {
 	Guilds      OverviewGuilds `json:"guilds"`
 	Information Information    `json:"information"`
-}
-
-// TibiaGuildsOverviewV3 func
-func TibiaGuildsOverviewV3(c *gin.Context) {
-	// getting params from URL
-	world := c.Param("world")
-
-	// Adding fix for First letter to be upper and rest lower
-	world = TibiadataStringWorldFormatToTitleV3(world)
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=guilds&world=" + TibiadataQueryEscapeStringV3(world)
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaGuildsOverviewV3", gin.H{"error": err.Error()})
-		return
-	}
-
-	jsonData := TibiaGuildsOverviewV3Impl(world, BoxContentHTML)
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaGuildsOverviewV3", jsonData)
 }
 
 func TibiaGuildsOverviewV3Impl(world string, BoxContentHTML string) GuildsOverviewResponse {

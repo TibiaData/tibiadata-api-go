@@ -77,20 +77,20 @@ func runWebServer() {
 	v3 := router.Group("/v3")
 	{
 		// Tibia characters
-		v3.GET("/characters/character/:character", TibiaCharactersCharacterV3)
+		v3.GET("/characters/character/:character", tibiaCharactersCharacterV3)
 
 		// Tibia creatures
-		v3.GET("/creatures", TibiaCreaturesOverviewV3)
-		v3.GET("/creatures/creature/:race", TibiaCreaturesCreatureV3)
+		v3.GET("/creatures", tibiaCreaturesOverviewV3)
+		v3.GET("/creatures/creature/:race", tibiaCreaturesCreatureV3)
 
 		// Tibia fansites
-		v3.GET("/fansites", TibiaFansitesV3)
+		v3.GET("/fansites", tibiaFansitesV3)
 
 		// Tibia guilds
-		v3.GET("/guilds/guild/:guild", TibiaGuildsGuildV3)
+		v3.GET("/guilds/guild/:guild", tibiaGuildsGuildV3)
 		//v3.GET("/guilds/guild/:guild/events",TibiaGuildsGuildEventsV3)
 		//v3.GET("/guilds/guild/:guild/wars",TibiaGuildsGuildWarsV3)
-		v3.GET("/guilds/world/:world", TibiaGuildsOverviewV3)
+		v3.GET("/guilds/world/:world", tibiaGuildsOverviewV3)
 
 		// Tibia highscores
 		v3.GET("/highscores/world/:world", func(c *gin.Context) {
@@ -99,26 +99,26 @@ func runWebServer() {
 		v3.GET("/highscores/world/:world/:category", func(c *gin.Context) {
 			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/world/"+c.Param("world")+"/"+c.Param("category")+"/"+TibiadataDefaultVoc)
 		})
-		v3.GET("/highscores/world/:world/:category/:vocation", TibiaHighscoresV3)
+		v3.GET("/highscores/world/:world/:category/:vocation", tibiaHighscoresV3)
 
 		// Tibia killstatistics
-		v3.GET("/killstatistics/world/:world", TibiaKillstatisticsV3)
+		v3.GET("/killstatistics/world/:world", tibiaKillstatisticsV3)
 
 		// Tibia news
-		v3.GET("/news/archive", TibiaNewslistV3)       // all categories (default 90 days)
-		v3.GET("/news/archive/:days", TibiaNewslistV3) // all categories
-		v3.GET("/news/id/:news_id", TibiaNewsV3)       // shows one news entry
-		v3.GET("/news/latest", TibiaNewslistV3)        // only news and articles
-		v3.GET("/news/newsticker", TibiaNewslistV3)    // only news_ticker
+		v3.GET("/news/archive", tibiaNewslistV3)       // all categories (default 90 days)
+		v3.GET("/news/archive/:days", tibiaNewslistV3) // all categories
+		v3.GET("/news/id/:news_id", tibiaNewsV3)       // shows one news entry
+		v3.GET("/news/latest", tibiaNewslistV3)        // only news and articles
+		v3.GET("/news/newsticker", tibiaNewslistV3)    // only news_ticker
 
 		// Tibia spells
-		v3.GET("/spells", TibiaSpellsOverviewV3)
-		v3.GET("/spells/spell/:spell", TibiaSpellsSpellV3)
-		v3.GET("/spells/vocation/:vocation", TibiaSpellsOverviewV3)
+		v3.GET("/spells", tibiaSpellsOverviewV3)
+		v3.GET("/spells/spell/:spell", tibiaSpellsSpellV3)
+		v3.GET("/spells/vocation/:vocation", tibiaSpellsOverviewV3)
 
 		// Tibia worlds
-		v3.GET("/worlds", TibiaWorldsOverviewV3)
-		v3.GET("/worlds/world/:world", TibiaWorldsWorldV3)
+		v3.GET("/worlds", tibiaWorldsOverviewV3)
+		v3.GET("/worlds/world/:world", tibiaWorldsWorldV3)
 	}
 
 	// container version details endpoint
@@ -135,30 +135,300 @@ func runWebServer() {
 	_ = router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
-/*
-// TibiaDataAPIHandleErrorResponse func - handling of responses..
-func TibiaDataAPIHandleErrorResponse(c *gin.Context, s1 string, s2 string, s3 string) {
-	if TibiadataDebug {
-		log.Println("[error] " + s1 + " - (" + c.Request.RequestURI + "). " + s2 + "; " + s3)
-	}
+func tibiaCharactersCharacterV3(c *gin.Context) {
+	// getting params from URL
+	character := c.Param("character")
 
-	// return error response
-	c.JSON(http.StatusOK, gin.H{"error": s2})
-}
-*/
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=characters&name=" + TibiadataQueryEscapeStringV3(character)
 
-// TibiaDataAPIHandleOtherResponse func - handling of responses..
-func TibiaDataAPIHandleOtherResponse(c *gin.Context, httpCode int, s string, j interface{}) {
-	if TibiadataDebug {
-		log.Println("[info] " + s + " - (" + c.Request.RequestURI + ") executed successfully.")
-	}
-
-	// return successful response (with specific status code)
-	c.JSON(httpCode, j)
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaCharactersCharacterV3Impl(BoxContentHTML), http.StatusOK
+		},
+		"TibiaCharactersCharacterV3")
 }
 
-// TibiaDataAPIHandleSuccessResponse func - handling of responses..
-func TibiaDataAPIHandleSuccessResponse(c *gin.Context, s string, j interface{}) {
+func tibiaCreaturesOverviewV3(c *gin.Context) {
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=creatures"
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaCreaturesOverviewV3Impl(BoxContentHTML), http.StatusOK
+		},
+		"TibiaCreaturesOverviewV3")
+}
+
+func tibiaCreaturesCreatureV3(c *gin.Context) {
+	// getting params from URL
+	race := c.Param("race")
+
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=creatures&race=" + TibiadataQueryEscapeStringV3(race)
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaCreaturesCreatureV3Impl(race, BoxContentHTML), http.StatusOK
+		},
+		"TibiaCreaturesCreatureV3")
+}
+
+func tibiaFansitesV3(c *gin.Context) {
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=fansites"
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaFansitesV3Impl(BoxContentHTML), http.StatusOK
+		},
+		"TibiaFansitesV3")
+}
+
+func tibiaGuildsGuildV3(c *gin.Context) {
+	// getting params from URL
+	guild := c.Param("guild")
+
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiadataQueryEscapeStringV3(guild)
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaGuildsGuildV3Impl(guild, BoxContentHTML), http.StatusOK
+		},
+		"TibiaGuildsGuildV3")
+}
+
+func tibiaGuildsOverviewV3(c *gin.Context) {
+	// getting params from URL
+	world := c.Param("world")
+
+	// Adding fix for First letter to be upper and rest lower
+	world = TibiadataStringWorldFormatToTitleV3(world)
+
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=guilds&world=" + TibiadataQueryEscapeStringV3(world)
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaGuildsOverviewV3Impl(world, BoxContentHTML), http.StatusOK
+		},
+		"TibiaGuildsOverviewV3")
+}
+
+func tibiaHighscoresV3(c *gin.Context) {
+	// getting params from URL
+	world := c.Param("world")
+	category := c.Param("category")
+	vocation := c.Param("vocation")
+
+	// maybe return error on faulty vocation value?!
+
+	// Adding fix for First letter to be upper and rest lower
+	if strings.EqualFold(world, "all") {
+		world = ""
+	} else {
+		world = TibiadataStringWorldFormatToTitleV3(world)
+	}
+
+	highscoreCategory := HighscoreCategoryFromString(category)
+
+	// Sanitize of vocation input
+	vocationName, vocationid := TibiaDataVocationValidator(vocation)
+
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=highscores&world=" + TibiadataQueryEscapeStringV3(world) + "&category=" + strconv.Itoa(int(highscoreCategory)) + "&profession=" + TibiadataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000"
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaHighscoresV3Impl(world, highscoreCategory, vocationName, BoxContentHTML), http.StatusOK
+		},
+		"TibiaHighscoresV3")
+}
+
+func tibiaKillstatisticsV3(c *gin.Context) {
+	// getting params from URL
+	world := c.Param("world")
+
+	// Adding fix for First letter to be upper and rest lower
+	world = TibiadataStringWorldFormatToTitleV3(world)
+
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=killstatistics&world=" + TibiadataQueryEscapeStringV3(world)
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaKillstatisticsV3Impl(world, BoxContentHTML), http.StatusOK
+		},
+		"TibiaKillstatisticsV3")
+}
+
+func tibiaNewslistV3(c *gin.Context) {
+	// getting params from URL
+	days := TibiadataStringToIntegerV3(c.Param("days"))
+	if days == 0 {
+		days = 90 // default for recent posts
+	}
+
+	// generating dates to pass to FormData
+	DateBegin := time.Now().AddDate(0, 0, -days)
+	DateEnd := time.Now()
+
+	TibiadataRequest.Method = http.MethodPost
+	TibiadataRequest.URL = "https://www.tibia.com/news/?subtopic=newsarchive"
+	TibiadataRequest.FormData = map[string]string{
+		"filter_begin_day":   strconv.Itoa(DateBegin.UTC().Day()),        // period
+		"filter_begin_month": strconv.Itoa(int(DateBegin.UTC().Month())), // period
+		"filter_begin_year":  strconv.Itoa(DateBegin.UTC().Year()),       // period
+		"filter_end_day":     strconv.Itoa(DateEnd.UTC().Day()),          // period
+		"filter_end_month":   strconv.Itoa(int(DateEnd.UTC().Month())),   // period
+		"filter_end_year":    strconv.Itoa(DateEnd.UTC().Year()),         // period
+		"filter_cipsoft":     "cipsoft",                                  // category
+		"filter_community":   "community",                                // category
+		"filter_development": "development",                              // category
+		"filter_support":     "support",                                  // category
+		"filter_technical":   "technical",                                // category
+	}
+
+	// getting type of news list
+	switch tmp := strings.Split(c.Request.URL.Path, "/"); tmp[3] {
+	case "newsticker":
+		TibiadataRequest.FormData["filter_ticker"] = "ticker"
+	case "latest":
+		TibiadataRequest.FormData["filter_article"] = "article"
+		TibiadataRequest.FormData["filter_news"] = "news"
+	case "archive":
+		TibiadataRequest.FormData["filter_ticker"] = "ticker"
+		TibiadataRequest.FormData["filter_article"] = "article"
+		TibiadataRequest.FormData["filter_news"] = "news"
+	}
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaNewslistV3Impl(days, BoxContentHTML), http.StatusOK
+		},
+		"TibiaNewslistV3")
+}
+
+func tibiaNewsV3(c *gin.Context) {
+	// getting params from URL
+	NewsID := TibiadataStringToIntegerV3(c.Param("news_id"))
+
+	// checking the NewsID provided
+	if NewsID <= 0 {
+		TibiaDataAPIHandleResponse(c, http.StatusBadRequest, "TibiaNewsV3", gin.H{"error": "no valid news_id provided"})
+		return
+	}
+
+	TibiadataRequest.URL = "https://www.tibia.com/news/?subtopic=newsarchive&id=" + strconv.Itoa(NewsID)
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaNewsV3Impl(NewsID, TibiadataRequest.URL, BoxContentHTML), http.StatusOK
+		},
+		"TibiaNewsV3")
+}
+
+func tibiaSpellsOverviewV3(c *gin.Context) {
+	// getting params from URL
+	vocation := c.Param("vocation")
+	if vocation == "" {
+		vocation = TibiadataDefaultVoc
+	}
+
+	// Sanitize of vocation input
+	vocationName, _ := TibiaDataVocationValidator(vocation)
+	if vocationName == "all" || vocationName == "none" {
+		vocationName = ""
+	} else {
+		// removes the last letter (s) from the string (required for spells page)
+		vocationName = strings.TrimSuffix(vocationName, "s")
+		// setting string to first upper case
+		vocationName = strings.Title(vocationName)
+	}
+
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=spells&vocation=" + TibiadataQueryEscapeStringV3(vocationName)
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaSpellsOverviewV3Impl(vocationName, BoxContentHTML), http.StatusOK
+		},
+		"TibiaSpellsOverviewV3")
+}
+
+func tibiaSpellsSpellV3(c *gin.Context) {
+	// getting params from URL
+	spell := c.Param("spell")
+
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=spells&spell=" + TibiadataQueryEscapeStringV3(spell)
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaSpellsSpellV3Impl(spell, BoxContentHTML), http.StatusOK
+		},
+		"TibiaSpellsSpellV3")
+}
+
+func tibiaWorldsOverviewV3(c *gin.Context) {
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=worlds"
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaWorldsOverviewV3Impl(BoxContentHTML), http.StatusOK
+		},
+		"TibiaWorldsOverviewV3")
+}
+
+func tibiaWorldsWorldV3(c *gin.Context) {
+	// getting params from URL
+	world := c.Param("world")
+
+	// Adding fix for First letter to be upper and rest lower
+	world = TibiadataStringWorldFormatToTitleV3(world)
+
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=worlds&world=" + TibiadataQueryEscapeStringV3(world)
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaWorldsWorldV3Impl(world, BoxContentHTML), http.StatusOK
+		},
+		"TibiaWorldsWorldV3")
+}
+
+func tibiaDataRequestHandler(c *gin.Context, requestHandler func(string) (interface{}, int), handlerName string) {
+	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+
+	// return error (e.g. for maintenance mode)
+	if err != nil {
+		TibiaDataAPIHandleResponse(c, http.StatusBadGateway, handlerName, gin.H{"error": err.Error()})
+	}
+
+	jsonData, httpStatusCode := requestHandler(BoxContentHTML)
+
+	// return jsonData
+	TibiaDataAPIHandleResponse(c, httpStatusCode, handlerName, jsonData)
+}
+
+// TibiaDataAPIHandleResponse func - handling of responses..
+func TibiaDataAPIHandleResponse(c *gin.Context, httpCode int, s string, j interface{}) {
 	// print to log about request
 	if gin.IsDebugging() {
 		log.Println("[debug] " + s + " - (" + c.Request.RequestURI + ") returned data:")
@@ -171,7 +441,7 @@ func TibiaDataAPIHandleSuccessResponse(c *gin.Context, s string, j interface{}) 
 	}
 
 	// return successful response
-	c.JSON(http.StatusOK, j)
+	c.JSON(httpCode, j)
 }
 
 // TibiadataUserAgentGenerator func - creates User-Agent for requests
@@ -238,7 +508,6 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (stri
 			Post(TibiadataRequest.URL)
 	default:
 		res, err = client.R().Get(TibiadataRequest.URL)
-
 	}
 
 	if TibiadataDebug {

@@ -2,12 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 // Child of Guild
@@ -83,27 +81,6 @@ var (
 	GuildMemberInformationRegex        = regexp.MustCompile(`<td>(.*)<\/td><td><a.*">(.*)<\/a>(.*)<\/td><td>(.*)<\/td><td>([0-9]+)<\/td><td>(.*)<\/td><td class.*class.*">(.*)<\/span><\/td>`)
 	GuildMemberInvitesInformationRegex = regexp.MustCompile(`<td><a.*">(.*)<\/a><\/td><td>(.*)<\/td>`)
 )
-
-// TibiaGuildsGuildV3 func
-func TibiaGuildsGuildV3(c *gin.Context) {
-	// getting params from URL
-	guild := c.Param("guild")
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiadataQueryEscapeStringV3(guild)
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaGuildsGuildV3", gin.H{"error": err.Error()})
-		return
-	}
-
-	jsonData := TibiaGuildsGuildV3Impl(guild, BoxContentHTML)
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaGuildsGuildV3", jsonData)
-}
 
 func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 	// Creating empty vars

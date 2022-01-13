@@ -2,14 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
-	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 // Child of JSONData
@@ -28,61 +24,6 @@ type NewsItem struct {
 type NewsListResponse struct {
 	News        []NewsItem  `json:"news"`
 	Information Information `json:"information"`
-}
-
-// TibiaNewslistV3 func
-func TibiaNewslistV3(c *gin.Context) {
-	// getting params from URL
-	days := TibiadataStringToIntegerV3(c.Param("days"))
-	if days == 0 {
-		days = 90 // default for recent posts
-	}
-
-	// generating dates to pass to FormData
-	DateBegin := time.Now().AddDate(0, 0, -days)
-	DateEnd := time.Now()
-
-	TibiadataRequest.Method = http.MethodPost
-	TibiadataRequest.URL = "https://www.tibia.com/news/?subtopic=newsarchive"
-	TibiadataRequest.FormData = map[string]string{
-		"filter_begin_day":   strconv.Itoa(DateBegin.UTC().Day()),        // period
-		"filter_begin_month": strconv.Itoa(int(DateBegin.UTC().Month())), // period
-		"filter_begin_year":  strconv.Itoa(DateBegin.UTC().Year()),       // period
-		"filter_end_day":     strconv.Itoa(DateEnd.UTC().Day()),          // period
-		"filter_end_month":   strconv.Itoa(int(DateEnd.UTC().Month())),   // period
-		"filter_end_year":    strconv.Itoa(DateEnd.UTC().Year()),         // period
-		"filter_cipsoft":     "cipsoft",                                  // category
-		"filter_community":   "community",                                // category
-		"filter_development": "development",                              // category
-		"filter_support":     "support",                                  // category
-		"filter_technical":   "technical",                                // category
-	}
-
-	// getting type of news list
-	switch tmp := strings.Split(c.Request.URL.Path, "/"); tmp[3] {
-	case "newsticker":
-		TibiadataRequest.FormData["filter_ticker"] = "ticker"
-	case "latest":
-		TibiadataRequest.FormData["filter_article"] = "article"
-		TibiadataRequest.FormData["filter_news"] = "news"
-	case "archive":
-		TibiadataRequest.FormData["filter_ticker"] = "ticker"
-		TibiadataRequest.FormData["filter_article"] = "article"
-		TibiadataRequest.FormData["filter_news"] = "news"
-	}
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaNewslistV3", gin.H{"error": err.Error()})
-		return
-	}
-
-	jsonData := TibiaNewslistV3Impl(days, BoxContentHTML)
-
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaNewslistV3", jsonData)
 }
 
 func TibiaNewslistV3Impl(days int, BoxContentHTML string) NewsListResponse {

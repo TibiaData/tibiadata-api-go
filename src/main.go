@@ -45,6 +45,7 @@ func main() {
 		log.Printf("[debug] TIbiaData API User-Agent: %s", TibiadataUserAgent)
 	}
 
+	// starting webserver.go stuff
 	runWebServer()
 }
 
@@ -70,4 +71,8 @@ func TibiaDataInitializer() {
 	}
 
 	log.Printf("[info] TibiaData API proxy: %s", TibiadataProxyDomain)
+
+	// initializing houses mappings
+	TibiaDataHousesMappingInitiator()
+
 }

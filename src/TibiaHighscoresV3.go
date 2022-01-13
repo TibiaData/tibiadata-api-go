@@ -10,6 +10,33 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Child of Highscores
+type Highscore struct {
+	Rank     int    `json:"rank"`            // Rank column
+	Name     string `json:"name"`            // Name column
+	Vocation string `json:"vocation"`        // Vocation column
+	World    string `json:"world"`           // World column
+	Level    int    `json:"level"`           // Level column
+	Value    int    `json:"value"`           // Points/SkillLevel column
+	Title    string `json:"title,omitempty"` // Title column (when category: loyalty)
+}
+
+// Child of JSONData
+type Highscores struct {
+	World         string      `json:"world"`
+	Category      string      `json:"category"`
+	Vocation      string      `json:"vocation"`
+	HighscoreAge  int         `json:"highscore_age"`
+	HighscoreList []Highscore `json:"highscore_list"`
+}
+
+//
+// The base includes two levels: Highscores and Information
+type HighscoresResponse struct {
+	Highscores  Highscores  `json:"highscores"`
+	Information Information `json:"information"`
+}
+
 var (
 	HighscoresAgeRegex = regexp.MustCompile(`.*<div class="Text">Highscores.*Last Update: ([0-9]+) minutes ago.*`)
 	SevenColumnRegex   = regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*>(.*)<\/td><td.*>(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
@@ -18,7 +45,6 @@ var (
 
 // TibiaHighscoresV3 func
 func TibiaHighscoresV3(c *gin.Context) {
-
 	// getting params from URL
 	world := c.Param("world")
 	category := c.Param("category")
@@ -26,33 +52,6 @@ func TibiaHighscoresV3(c *gin.Context) {
 
 	// do some validation of category and vocation
 	// maybe return error on faulty value?!
-
-	// Child of Highscores
-	type Highscore struct {
-		Rank     int    `json:"rank"`            // Rank column
-		Name     string `json:"name"`            // Name column
-		Vocation string `json:"vocation"`        // Vocation column
-		World    string `json:"world"`           // World column
-		Level    int    `json:"level"`           // Level column
-		Value    int    `json:"value"`           // Points/SkillLevel column
-		Title    string `json:"title,omitempty"` // Title column (when category: loyalty)
-	}
-
-	// Child of JSONData
-	type Highscores struct {
-		World         string      `json:"world"`
-		Category      string      `json:"category"`
-		Vocation      string      `json:"vocation"`
-		HighscoreAge  int         `json:"highscore_age"`
-		HighscoreList []Highscore `json:"highscore_list"`
-	}
-
-	//
-	// The base includes two levels: Highscores and Information
-	type JSONData struct {
-		Highscores  Highscores  `json:"highscores"`
-		Information Information `json:"information"`
-	}
 
 	// Adding fix for First letter to be upper and rest lower
 	if strings.EqualFold(world, "all") {
@@ -125,6 +124,13 @@ func TibiaHighscoresV3(c *gin.Context) {
 		return
 	}
 
+	jsonData := TibiaHighscoresV3Impl(world, category, vocationName, BoxContentHTML)
+
+	// return jsonData
+	TibiaDataAPIHandleSuccessResponse(c, "TibiaHighscoresV3", jsonData)
+}
+
+func TibiaHighscoresV3Impl(world string, category string, vocationName string, BoxContentHTML string) HighscoresResponse {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -226,7 +232,7 @@ func TibiaHighscoresV3(c *gin.Context) {
 
 	//
 	// Build the data-blob
-	jsonData := JSONData{
+	return HighscoresResponse{
 		Highscores{
 			World:         strings.Title(strings.ToLower(world)),
 			Category:      category,
@@ -239,7 +245,4 @@ func TibiaHighscoresV3(c *gin.Context) {
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaHighscoresV3", jsonData)
 }

@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -50,8 +51,7 @@ func TibiaHighscoresV3(c *gin.Context) {
 	category := c.Param("category")
 	vocation := c.Param("vocation")
 
-	// do some validation of category and vocation
-	// maybe return error on faulty value?!
+	// maybe return error on faulty vocation value?!
 
 	// Adding fix for First letter to be upper and rest lower
 	if strings.EqualFold(world, "all") {
@@ -60,62 +60,13 @@ func TibiaHighscoresV3(c *gin.Context) {
 		world = TibiadataStringWorldFormatToTitleV3(world)
 	}
 
-	// Sanatize of category value
-	category = strings.ToLower(category)
-	var categoryid string = "6"
-	if len(category) > 0 {
-		switch category {
-		case "achievements", "achievement":
-			category = "achievements"
-			categoryid = "1"
-		case "axe", "axefighting":
-			category = "axefighting"
-			categoryid = "2"
-		case "charm", "charms", "charmpoints":
-			category = "charmpoints"
-			categoryid = "3"
-		case "club", "clubfighting":
-			category = "clubfighting"
-			categoryid = "4"
-		case "distance", "distancefighting":
-			category = "distancefighting"
-			categoryid = "5"
-		case "fishing":
-			category = "fishing"
-			categoryid = "7"
-		case "fist", "fistfighting":
-			category = "fistfighting"
-			categoryid = "8"
-		case "goshnar", "goshnars", "goshnarstaint":
-			category = "goshnarstaint"
-			categoryid = "9"
-		case "loyalty", "loyaltypoints":
-			category = "loyaltypoints"
-			categoryid = "10"
-		case "magic", "mlvl", "magiclevel":
-			category = "magiclevel"
-			categoryid = "11"
-		case "shielding", "shield":
-			category = "shielding"
-			categoryid = "12"
-		case "sword", "swordfighting":
-			category = "swordfighting"
-			categoryid = "13"
-		case "drome", "dromescore":
-			category = "dromescore"
-			categoryid = "14"
-		default:
-			category = "experience"
-		}
-	} else {
-		category = "experience"
-	}
+	highscoreCategory := HighscoreCategoryFromString(category)
 
 	// Sanitize of vocation input
 	vocationName, vocationid := TibiaDataVocationValidator(vocation)
 
 	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=highscores&world=" + TibiadataQueryEscapeStringV3(world) + "&category=" + TibiadataQueryEscapeStringV3(categoryid) + "&profession=" + TibiadataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000"
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=highscores&world=" + TibiadataQueryEscapeStringV3(world) + "&category=" + strconv.Itoa(int(highscoreCategory)) + "&profession=" + TibiadataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000"
 	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
 	// return error (e.g. for maintenance mode)
@@ -124,13 +75,13 @@ func TibiaHighscoresV3(c *gin.Context) {
 		return
 	}
 
-	jsonData := TibiaHighscoresV3Impl(world, category, vocationName, BoxContentHTML)
+	jsonData := TibiaHighscoresV3Impl(world, highscoreCategory, vocationName, BoxContentHTML)
 
 	// return jsonData
 	TibiaDataAPIHandleSuccessResponse(c, "TibiaHighscoresV3", jsonData)
 }
 
-func TibiaHighscoresV3Impl(world string, category string, vocationName string, BoxContentHTML string) HighscoresResponse {
+func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationName string, BoxContentHTML string) HighscoresResponse {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -178,7 +129,7 @@ func TibiaHighscoresV3Impl(world string, category string, vocationName string, B
 			Sword		=>	Rank		Name	Vocation	World		Level	Skill Level
 		*/
 
-		if category == "loyaltypoints" {
+		if category == loyaltypoints {
 			subma1 = SevenColumnRegex.FindAllStringSubmatch(HighscoreDivHTML, -1)
 		} else {
 			subma1 = SixColumnRegex.FindAllStringSubmatch(HighscoreDivHTML, -1)
@@ -193,13 +144,13 @@ func TibiaHighscoresV3Impl(world string, category string, vocationName string, B
 				log.Println("3 -> " + subma1[0][3])
 				log.Println("4 -> " + subma1[0][4])
 				log.Println("5 -> " + subma1[0][5])
-				if category == "loyaltypoints" {
+				if category == loyaltypoints {
 					log.Println("6 -> " + subma1[0][6])
 				}
 			}
 
 			HighscoreDataRank++
-			if category == "loyaltypoints" {
+			if category == loyaltypoints {
 				HighscoreDataTitle = subma1[0][2]
 				HighscoreDataVocation = subma1[0][3]
 				HighscoreDataWorld = subma1[0][4]
@@ -230,12 +181,14 @@ func TibiaHighscoresV3Impl(world string, category string, vocationName string, B
 		log.Println(HighscoreData)
 	}
 
+	categoryString, _ := category.String()
+
 	//
 	// Build the data-blob
 	return HighscoresResponse{
 		Highscores{
 			World:         strings.Title(strings.ToLower(world)),
-			Category:      category,
+			Category:      categoryString,
 			Vocation:      vocationName,
 			HighscoreAge:  HighscoreAge,
 			HighscoreList: HighscoreData,

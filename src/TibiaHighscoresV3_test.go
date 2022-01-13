@@ -14,7 +14,7 @@ func TestHighscoresAll(t *testing.T) {
 		return
 	}
 
-	highscoresJson := TibiaHighscoresV3Impl("", "experience", "all", string(data))
+	highscoresJson := TibiaHighscoresV3Impl("", experience, "all", string(data))
 	assert := assert.New(t)
 
 	assert.Equal("", highscoresJson.Highscores.World)

@@ -13,6 +13,3 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-
-# TibiaData related files that should be ignored
-houses_mapping.json

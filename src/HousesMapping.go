@@ -2,8 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
+	"net/http"
+	"time"
+
+	"github.com/go-resty/resty/v2"
 )
 
 var (
@@ -21,15 +24,34 @@ type HousesMapping struct {
 
 // TibiaDataHousesMappingInitiator func - used to load data from local JSON file
 func TibiaDataHousesMappingInitiator() {
-	// load content from file into variable file
-	file, err := ioutil.ReadFile("houses_mapping.json")
 
-	if err != nil {
-		log.Println("[error] TibiaData API failed to load content from houses_mapping.json")
-	} else {
-		// loading json and mapping it into the data variable
+	// Setting up resty client
+	client := resty.New()
+
+	// Set client timeout  and retry
+	client.SetTimeout(5 * time.Second)
+	client.SetRetryCount(2)
+
+	// Set headers for all requests
+	client.SetHeaders(map[string]string{
+		"Content-Type": "application/json",
+		"User-Agent":   TibiadataUserAgent,
+	})
+
+	// Enabling Content length value for all request
+	client.SetContentLength(true)
+
+	// Disable redirection of client (so we skip parsing maintenance page)
+	client.SetRedirectPolicy(resty.NoRedirectPolicy())
+
+	TibiadataAssetsURL := "https://raw.githubusercontent.com/TibiaData/tibiadata-api-assets/main/data/houses_mapping.json"
+	res, err := client.R().Get(TibiadataAssetsURL)
+
+	switch res.StatusCode() {
+	case http.StatusOK:
+		// adding response into the data field
 		data := HousesMapping{}
-		err = json.Unmarshal([]byte(file), &data)
+		err = json.Unmarshal([]byte(res.Body()), &data)
 
 		if err != nil {
 			log.Println("[error] TibiaData API failed to parse content from houses_mapping.json")
@@ -37,6 +59,9 @@ func TibiaDataHousesMappingInitiator() {
 			// storing data so it's accessible from other places
 			TibiadataHousesMapping = data
 		}
+
+	default:
+		log.Printf("[error] TibiaData API failed to load houses mapping. %s", err)
 	}
 }
 

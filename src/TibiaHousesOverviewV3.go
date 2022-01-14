@@ -8,6 +8,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-gonic/gin"
+	"github.com/go-resty/resty/v2"
 )
 
 // Child of House
@@ -52,9 +53,11 @@ func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string) Houses
 	HouseTypes := []string{"houses", "guildhalls"}
 	// running over the FansiteTypes array
 	for _, HouseType := range HouseTypes {
-		// Getting data with TibiadataHTMLDataCollectorV3
-		TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=houses&world=" + TibiadataQueryEscapeStringV3(world) + "&town=" + TibiadataQueryEscapeStringV3(town) + "&type=" + TibiadataQueryEscapeStringV3(HouseType)
-		BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
+		tibiadataRequest := TibiadataRequestStruct{
+			Method: resty.MethodGet,
+			URL:    "https://www.tibia.com/community/?subtopic=houses&world=" + TibiadataQueryEscapeStringV3(world) + "&town=" + TibiadataQueryEscapeStringV3(town) + "&type=" + TibiadataQueryEscapeStringV3(HouseType),
+		}
+		BoxContentHTML, err := TibiadataHTMLDataCollectorV3(tibiadataRequest)
 
 		// return error (e.g. for maintenance mode)
 		if err != nil {

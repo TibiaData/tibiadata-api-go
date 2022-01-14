@@ -2,12 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 // Child of Status
@@ -62,27 +60,9 @@ type HouseResponse struct {
 }
 
 // TibiaHousesHouseV3 func
-func TibiaHousesHouseV3(c *gin.Context) {
-
-	// getting params from URL
-	world := c.Param("world")
-	houseid := c.Param("houseid")
-
+func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse {
 	// Creating empty vars
 	var HouseData House
-
-	// Adding fix for First letter to be upper and rest lower
-	world = TibiadataStringWorldFormatToTitleV3(world)
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=houses&page=view&world=" + TibiadataQueryEscapeStringV3(world) + "&houseid=" + TibiadataQueryEscapeStringV3(houseid)
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaHousesHouseV3", gin.H{"error": err.Error()})
-		return
-	}
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -180,14 +160,11 @@ func TibiaHousesHouseV3(c *gin.Context) {
 
 	//
 	// Build the data-blob
-	jsonData := HouseResponse{
+	return HouseResponse{
 		HouseData,
 		Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaHousesHouseV3", jsonData)
 }

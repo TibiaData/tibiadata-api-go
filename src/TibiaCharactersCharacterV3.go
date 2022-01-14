@@ -2,12 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 	//"time"
 )
 
@@ -124,26 +122,6 @@ type CharacterResponse struct {
 // Instead of importing the whole lib, we thought it would be
 // best to just simply use the Br constant value.
 const Br = 0x202
-
-func TibiaCharactersCharacterV3(c *gin.Context) {
-	// getting params from URL
-	character := c.Param("character")
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=characters&name=" + TibiadataQueryEscapeStringV3(character)
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaCharactersCharacterV3", gin.H{"error": err.Error()})
-		return
-	}
-
-	jsonData := TibiaCharactersCharacterV3Impl(BoxContentHTML)
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaCharactersCharacterV3", jsonData)
-}
 
 var (
 	deathRegex               = regexp.MustCompile(`<td.*>(.*)<\/td><td>(.*) at Level ([0-9]+) by (.*).<\/td>`)

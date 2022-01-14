@@ -2,12 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 // Child of World
@@ -55,29 +53,6 @@ var (
 	BattlEyeProtectedSinceRegex = regexp.MustCompile(`Protected by BattlEye since (.*)\.`)
 	OnlinePlayerRegex           = regexp.MustCompile(`<td style=.*name=.*">(.*)<\/a>.*">(.*)<\/td>.*">(.*)<\/td>`)
 )
-
-func TibiaWorldsWorldV3(c *gin.Context) {
-	// getting params from URL
-	world := c.Param("world")
-
-	// Adding fix for First letter to be upper and rest lower
-	world = TibiadataStringWorldFormatToTitleV3(world)
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=worlds&world=" + TibiadataQueryEscapeStringV3(world)
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaWorldsWorldV3", gin.H{"error": err.Error()})
-		return
-	}
-
-	worldJson := TibiaWorldsWorldV3Impl(world, BoxContentHTML)
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaWorldsWorldV3", worldJson)
-}
 
 // TibiaWorldsWorldV3 func
 func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {

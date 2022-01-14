@@ -2,11 +2,9 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 // Child of KillStatistics
@@ -38,30 +36,6 @@ type KillStatistics struct {
 type KillStatisticsResponse struct {
 	KillStatistics KillStatistics `json:"killstatistics"`
 	Information    Information    `json:"information"`
-}
-
-// TibiaKillstatisticsV3 func
-func TibiaKillstatisticsV3(c *gin.Context) {
-	// getting params from URL
-	world := c.Param("world")
-
-	// Adding fix for First letter to be upper and rest lower
-	world = TibiadataStringWorldFormatToTitleV3(world)
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=killstatistics&world=" + TibiadataQueryEscapeStringV3(world)
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaKillstatisticsV3", gin.H{"error": err.Error()})
-		return
-	}
-
-	jsonData := TibiaKillstatisticsV3Impl(world, BoxContentHTML)
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaKillstatisticsV3", jsonData)
 }
 
 func TibiaKillstatisticsV3Impl(world string, BoxContentHTML string) KillStatisticsResponse {

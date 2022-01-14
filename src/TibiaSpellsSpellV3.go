@@ -2,12 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 // Child of SpellInformation
@@ -72,27 +70,6 @@ var (
 	SpellCooldownRegex     = regexp.MustCompile(`([0-9]+)s \(.*:.([0-9]+)s\)`)
 	SpellDescriptionRegex  = regexp.MustCompile(`(.*)\.(Spell|Rune) InformationName:.*`)
 )
-
-// TibiaSpellsSpellV3 func
-func TibiaSpellsSpellV3(c *gin.Context) {
-	// getting params from URL
-	spell := c.Param("spell")
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=spells&spell=" + TibiadataQueryEscapeStringV3(spell)
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaSpellsSpellV3", gin.H{"error": err.Error()})
-		return
-	}
-
-	jsonData := TibiaSpellsSpellV3Impl(spell, BoxContentHTML)
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaSpellsSpellV3", jsonData)
-}
 
 // TibiaSpellsSpellV3 func
 func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformationResponse {

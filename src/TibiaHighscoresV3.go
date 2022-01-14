@@ -2,13 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 // Child of Highscores
@@ -43,43 +40,6 @@ var (
 	SevenColumnRegex   = regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*>(.*)<\/td><td.*>(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
 	SixColumnRegex     = regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*">(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
 )
-
-// TibiaHighscoresV3 func
-func TibiaHighscoresV3(c *gin.Context) {
-	// getting params from URL
-	world := c.Param("world")
-	category := c.Param("category")
-	vocation := c.Param("vocation")
-
-	// maybe return error on faulty vocation value?!
-
-	// Adding fix for First letter to be upper and rest lower
-	if strings.EqualFold(world, "all") {
-		world = ""
-	} else {
-		world = TibiadataStringWorldFormatToTitleV3(world)
-	}
-
-	highscoreCategory := HighscoreCategoryFromString(category)
-
-	// Sanitize of vocation input
-	vocationName, vocationid := TibiaDataVocationValidator(vocation)
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=highscores&world=" + TibiadataQueryEscapeStringV3(world) + "&category=" + strconv.Itoa(int(highscoreCategory)) + "&profession=" + TibiadataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000"
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaHighscoresV3", gin.H{"error": err.Error()})
-		return
-	}
-
-	jsonData := TibiaHighscoresV3Impl(world, highscoreCategory, vocationName, BoxContentHTML)
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaHighscoresV3", jsonData)
-}
 
 func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationName string, BoxContentHTML string) HighscoresResponse {
 	// Loading HTML data into ReaderHTML for goquery with NewReader

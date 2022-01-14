@@ -2,12 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 // Child of Fansite
@@ -62,24 +60,6 @@ var (
 	FansiteLanguagesRegex   = regexp.MustCompile("iti__flag.iti__(..)")
 	FansiteAnchorRegex      = regexp.MustCompile(`.*src="(.*)" alt=".*`)
 )
-
-// TibiaFansitesV3 func
-func TibiaFansitesV3(c *gin.Context) {
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=fansites"
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaFansitesV3", gin.H{"error": err.Error()})
-		return
-	}
-
-	jsonData := TibiaFansitesV3Impl(BoxContentHTML)
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaFansitesV3", jsonData)
-}
 
 func TibiaFansitesV3Impl(BoxContentHTML string) FansitesResponse {
 	// Loading HTML data into ReaderHTML for goquery with NewReader

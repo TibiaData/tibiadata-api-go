@@ -2,13 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 // Child of JSONData
@@ -33,33 +30,6 @@ type NewsResponse struct {
 var (
 	martelRegex = regexp.MustCompile(`<img src=\"https:\/\/static\.tibia\.com\/images\/global\/letters\/letter_martel_(.)\.gif\" ([^\/>]+..)`)
 )
-
-// TibiaNewsV3 func
-func TibiaNewsV3(c *gin.Context) {
-	// getting params from URL
-	NewsID := TibiadataStringToIntegerV3(c.Param("news_id"))
-
-	// checking the NewsID provided
-	if NewsID <= 0 {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadRequest, "TibiaNewsV3", gin.H{"error": "no valid news_id provided"})
-		return
-	}
-
-	TibiadataRequest.URL = "https://www.tibia.com/news/?subtopic=newsarchive&id=" + strconv.Itoa(NewsID)
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaNewslistV3", gin.H{"error": err.Error()})
-		return
-	}
-
-	jsonData := TibiaNewsV3Impl(NewsID, TibiadataRequest.URL, BoxContentHTML)
-
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaNewsV3", jsonData)
-}
 
 func TibiaNewsV3Impl(NewsID int, rawUrl string, BoxContentHTML string) NewsResponse {
 	// Declaring vars for later use..

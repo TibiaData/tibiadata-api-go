@@ -42,15 +42,7 @@ type HousesOverviewResponse struct {
 }
 
 // TibiaHousesOverviewV3 func
-func TibiaHousesOverviewV3(c *gin.Context) {
-	// getting params from URL
-	world := c.Param("world")
-	town := c.Param("town")
-
-	// Adding fix for First letter to be upper and rest lower
-	world = TibiadataStringWorldFormatToTitleV3(world)
-	town = TibiadataStringWorldFormatToTitleV3(town)
-
+func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string) HousesOverviewResponse {
 	var (
 		// Creating empty vars
 		HouseData, GuildhallData []HousesHouse
@@ -60,15 +52,16 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 	HouseTypes := []string{"houses", "guildhalls"}
 	// running over the FansiteTypes array
 	for _, HouseType := range HouseTypes {
-
 		// Getting data with TibiadataHTMLDataCollectorV3
 		TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=houses&world=" + TibiadataQueryEscapeStringV3(world) + "&town=" + TibiadataQueryEscapeStringV3(town) + "&type=" + TibiadataQueryEscapeStringV3(HouseType)
 		BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
 
 		// return error (e.g. for maintenance mode)
 		if err != nil {
-			TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaHousesOverviewV3", gin.H{"error": err.Error()})
-			return
+			TibiaDataAPIHandleResponse(c, http.StatusBadGateway, "TibiaHousesOverviewV3", gin.H{"error": err.Error()})
+
+			//TODO: Need to refactor this properly
+			return HousesOverviewResponse{}
 		}
 
 		// Loading HTML data into ReaderHTML for goquery with NewReader
@@ -123,15 +116,12 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 				case "guildhalls":
 					GuildhallData = append(GuildhallData, house)
 				}
-
 			}
-
 		})
-
 	}
 
 	// Build the data-blob
-	jsonData := HousesOverviewResponse{
+	return HousesOverviewResponse{
 		HousesHouses{
 			World:         world,
 			Town:          town,
@@ -143,7 +133,4 @@ func TibiaHousesOverviewV3(c *gin.Context) {
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaHousesOverviewV3", jsonData)
 }

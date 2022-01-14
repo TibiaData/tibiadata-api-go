@@ -2,11 +2,9 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 // Child of Spells
@@ -36,40 +34,6 @@ type Spells struct {
 type SpellsOverviewResponse struct {
 	Spells      Spells      `json:"spells"`
 	Information Information `json:"information"`
-}
-
-func TibiaSpellsOverviewV3(c *gin.Context) {
-	// getting params from URL
-	vocation := c.Param("vocation")
-	if vocation == "" {
-		vocation = TibiadataDefaultVoc
-	}
-
-	// Sanitize of vocation input
-	vocationName, _ := TibiaDataVocationValidator(vocation)
-	if vocationName == "all" || vocationName == "none" {
-		vocationName = ""
-	} else {
-		// removes the last letter (s) from the string (required for spells page)
-		vocationName = strings.TrimSuffix(vocationName, "s")
-		// setting string to first upper case
-		vocationName = strings.Title(vocationName)
-	}
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	TibiadataRequest.URL = "https://www.tibia.com/library/?subtopic=spells&vocation=" + TibiadataQueryEscapeStringV3(vocationName)
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(TibiadataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleOtherResponse(c, http.StatusBadGateway, "TibiaSpellsOverviewV3", gin.H{"error": err.Error()})
-		return
-	}
-
-	jsonData := TibiaSpellsOverviewV3Impl(vocationName, BoxContentHTML)
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaSpellsOverviewV3", jsonData)
 }
 
 // TibiaSpellsOverviewV3 func

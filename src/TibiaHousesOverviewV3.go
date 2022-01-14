@@ -42,6 +42,11 @@ type HousesOverviewResponse struct {
 	Information Information  `json:"information"`
 }
 
+var (
+	houseOverviewDataRegex      = regexp.MustCompile(`<td.*><nobr>(.*)<\/nobr><\/td><td.*><nobr>([0-9]+).sqm<\/nobr><\/td><td.*><nobr>([0-9]+)(k+).gold<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td>.*houseid" value="([0-9]+)"\/><div.*`)
+	houseOverviewAuctionedRegex = regexp.MustCompile(`auctioned.\(([0-9]+).gold;.(.*).left\)`)
+)
+
 // TibiaHousesOverviewV3 func
 func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string) HousesOverviewResponse {
 	var (
@@ -86,9 +91,7 @@ func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string) Houses
 			HousesDivHTML = TibiadataHTMLRemoveLinebreaksV3(HousesDivHTML)
 			HousesDivHTML = TibiaDataSanitizeNbspSpaceString(HousesDivHTML)
 
-			// Regex to get data for record values
-			regex1 := regexp.MustCompile(`<td.*><nobr>(.*)<\/nobr><\/td><td.*><nobr>([0-9]+).sqm<\/nobr><\/td><td.*><nobr>([0-9]+)(k+).gold<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td>.*houseid" value="([0-9]+)"\/><div.*`)
-			subma1 := regex1.FindAllStringSubmatch(HousesDivHTML, -1)
+			subma1 := houseOverviewDataRegex.FindAllStringSubmatch(HousesDivHTML, -1)
 
 			if len(subma1) > 0 {
 				// House details
@@ -106,8 +109,7 @@ func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string) Houses
 					house.IsAuctioned = true
 				case strings.Contains(s, "auctioned"):
 					house.IsAuctioned = true
-					regex1b := regexp.MustCompile(`auctioned.\(([0-9]+).gold;.(.*).left\)`)
-					subma1b := regex1b.FindAllStringSubmatch(s, -1)
+					subma1b := houseOverviewAuctionedRegex.FindAllStringSubmatch(s, -1)
 					house.Auction.AuctionBid = TibiadataStringToIntegerV3(subma1b[0][1])
 					house.Auction.AuctionLeft = subma1b[0][2]
 				}

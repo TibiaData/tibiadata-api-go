@@ -128,6 +128,8 @@ var (
 	summonRegex              = regexp.MustCompile(`(an? .+) of ([^<]+)`)
 	accountBadgesRegex       = regexp.MustCompile(`\(this\), &#39;(.*)&#39;, &#39;(.*)&#39;,.*\).*src="(.*)" alt=.*`)
 	accountAchievementsRegex = regexp.MustCompile(`<td class="[a-zA-Z0-9_.-]+">(.*)<\/td><td>(.*)?<?.*<\/td>`)
+	titleRegex               = regexp.MustCompile(`(.*) \(([0-9]+).*`)
+	characterInfoRegex       = regexp.MustCompile(`<td.*<nobr>[0-9]+\..(.*)<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td><td style="width: 70%">(.*)<\/td><td.*`)
 )
 
 // TibiaCharactersCharacterV3 func
@@ -189,8 +191,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 				case "Sex:":
 					CharacterInformationData.Sex = RowData
 				case "Title:":
-					regex1t := regexp.MustCompile(`(.*) \(([0-9]+).*`)
-					subma1t := regex1t.FindAllStringSubmatch(RowData, -1)
+					subma1t := titleRegex.FindAllStringSubmatch(RowData, -1)
 					CharacterInformationData.Title = subma1t[0][1]
 					CharacterInformationData.UnlockedTitles = TibiadataStringToIntegerV3(subma1t[0][2])
 				case "Vocation:":
@@ -408,9 +409,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 				// Removing line breaks
 				CharacterListHTML = TibiadataHTMLRemoveLinebreaksV3(CharacterListHTML)
 
-				// Regex to get data for fansites
-				regex1 := regexp.MustCompile(`<td.*<nobr>[0-9]+\..(.*)<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td><td style="width: 70%">(.*)<\/td><td.*`)
-				subma1 := regex1.FindAllStringSubmatch(CharacterListHTML, -1)
+				subma1 := characterInfoRegex.FindAllStringSubmatch(CharacterListHTML, -1)
 
 				if len(subma1) > 0 {
 					TmpCharacterName := subma1[0][1]

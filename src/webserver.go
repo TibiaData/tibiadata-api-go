@@ -102,8 +102,8 @@ func runWebServer() {
 		v3.GET("/highscores/world/:world/:category/:vocation", tibiaHighscoresV3)
 
 		// Tibia houses
-		v3.GET("/houses/world/:world/house/:houseid", TibiaHousesHouseV3)
-		v3.GET("/houses/world/:world/town/:town", TibiaHousesOverviewV3)
+		v3.GET("/houses/world/:world/house/:houseid", tibiaHousesHouseV3)
+		v3.GET("/houses/world/:world/town/:town", tibiaHousesOverviewV3)
 
 		// Tibia killstatistics
 		v3.GET("/killstatistics/world/:world", tibiaKillstatisticsV3)
@@ -255,6 +255,41 @@ func tibiaHighscoresV3(c *gin.Context) {
 			return TibiaHighscoresV3Impl(world, highscoreCategory, vocationName, BoxContentHTML), http.StatusOK
 		},
 		"TibiaHighscoresV3")
+}
+
+func tibiaHousesHouseV3(c *gin.Context) {
+	// getting params from URL
+	world := c.Param("world")
+	houseid := c.Param("houseid")
+
+	// Adding fix for First letter to be upper and rest lower
+	world = TibiadataStringWorldFormatToTitleV3(world)
+
+	// Getting data with TibiadataHTMLDataCollectorV3
+	TibiadataRequest.URL = "https://www.tibia.com/community/?subtopic=houses&page=view&world=" + TibiadataQueryEscapeStringV3(world) + "&houseid=" + TibiadataQueryEscapeStringV3(houseid)
+
+	tibiaDataRequestHandler(
+		c,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaHousesHouseV3Impl(houseid, BoxContentHTML), http.StatusOK
+		},
+		"TibiaHousesHouseV3")
+}
+
+//TODO: This API needs to be refactored somehow to use tibiaDataRequestHandler
+func tibiaHousesOverviewV3(c *gin.Context) {
+	// getting params from URL
+	world := c.Param("world")
+	town := c.Param("town")
+
+	// Adding fix for First letter to be upper and rest lower
+	world = TibiadataStringWorldFormatToTitleV3(world)
+	town = TibiadataStringWorldFormatToTitleV3(town)
+
+	jsonData := TibiaHousesOverviewV3Impl(c, world, town)
+
+	// return jsonData
+	TibiaDataAPIHandleResponse(c, http.StatusOK, "TibiaHousesOverviewV3", jsonData)
 }
 
 func tibiaKillstatisticsV3(c *gin.Context) {

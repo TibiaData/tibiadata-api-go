@@ -20,6 +20,21 @@ var (
 	TibiadataBuildEdition = "open-source" //
 )
 
+// @title           TibiaData API
+// @version         edge
+// @description     This is the API documentation for the TibiaData API written in Golang.
+// @termsOfService  https://tibiadata.com/terms/
+
+// @contact.name   TibiaData Support
+// @contact.url    https://tibiadata.com/contact/
+// @contact.email  tobias@tibiadata.com
+
+// @license.name  MIT
+// @license.url   https://github.com/TibiaData/tibiadata-api-go/blob/main/LICENSE
+
+// @host      dev.tibiadata.com
+// @BasePath  /
+
 func main() {
 	// logging start of TibiaData
 	log.Printf("[info] TibiaData API starting..")

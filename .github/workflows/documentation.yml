@@ -25,7 +25,7 @@ jobs:
         run: |
           swag init --dir=src/
 
-      - name: Manipulate swagger files with Release info
+      - name: Manipulate swagger.json with Release info
         run: |
           # set version of swagger.json to release name
           cat docs/swagger.json | jq '.info.version = "${{ github.event.release.tag_name }}"' > docs/swagger.json

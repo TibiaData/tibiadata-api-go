@@ -432,6 +432,9 @@ func tibiaKillstatisticsV3(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  NewsListResponse
 // @Router       /v3/news/archive [get]
+func tibiaNewslistArchiveV3() {
+	// Not used function.. but required for documentation purpose
+}
 
 // News archive (with day filter) godoc
 // @Summary      Show news archive (with days filter)
@@ -442,6 +445,9 @@ func tibiaKillstatisticsV3(c *gin.Context) {
 // @Param        days path int true "The number of days to show"
 // @Success      200  {object}  NewsListResponse
 // @Router      /v3/news/archive/{days} [get]
+func tibiaNewslistArchiveDaysV3() {
+	// Not used function.. but required for documentation purpose
+}
 
 // Latest news godoc
 // @Summary      Show newslist (90 days)
@@ -451,6 +457,9 @@ func tibiaKillstatisticsV3(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  NewsListResponse
 // @Router       /v3/news/latest [get]
+func tibiaNewslistLatestV3() {
+	// Not used function.. but required for documentation purpose
+}
 
 // News ticker godoc
 // @Summary      Show news tickers (90 days)
@@ -460,7 +469,6 @@ func tibiaKillstatisticsV3(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  NewsListResponse
 // @Router       /v3/news/newsticker [get]
-
 func tibiaNewslistV3(c *gin.Context) {
 	// getting params from URL
 	days := TibiadataStringToIntegerV3(c.Param("days"))

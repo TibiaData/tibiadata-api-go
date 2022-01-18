@@ -90,4 +90,8 @@ func TibiaDataInitializer() {
 	// initializing houses mappings
 	TibiaDataHousesMappingInitiator()
 
+	// run some functions that are empty but required for documentation to be done
+	tibiaNewslistArchiveV3()
+	tibiaNewslistArchiveDaysV3()
+	tibiaNewslistLatestV3()
 }

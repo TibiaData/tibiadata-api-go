@@ -1,0 +1,46 @@
+name: documentation
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+
+      - name: Install swag by swaggo
+        run: |
+          go install github.com/swaggo/swag/cmd/swag@latest
+
+      - name: Run swag to initiate docs
+        run: |
+          swag init --dir=src/
+
+      - name: Manipulate swagger files with Release info
+        run: |
+          # set version of swagger.json to release name
+          cat docs/swagger.json | jq '.info.version = "${{ github.event.release.tag_name }}"' > docs/swagger.json
+
+      - name: Upload swagger.json to release page
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: docs/swagger.json
+          tag: ${{ github.ref }}
+
+      - name: Trigger workflow in tibiadata-api-docs repo
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"ref":"main"}' \
+            https://api.github.com/repos/TibiaData/tibiadata-api-docs/actions/workflows/update.yml/dispatches

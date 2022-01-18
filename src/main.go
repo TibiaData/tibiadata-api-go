@@ -37,6 +37,10 @@ var (
 // @host      localhost:8080
 // @BasePath  /
 
+// @securityDefinitions.apikey  ApiKeyAuth
+// @in                          header
+// @name                        Authorization
+
 func main() {
 	// logging start of TibiaData
 	log.Printf("[info] TibiaData API starting..")

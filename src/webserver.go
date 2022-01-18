@@ -432,8 +432,9 @@ func tibiaKillstatisticsV3(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  NewsListResponse
 // @Router       /v3/news/archive [get]
-func tibiaNewslistArchiveV3() {
+func tibiaNewslistArchiveV3() bool {
 	// Not used function.. but required for documentation purpose
+	return false
 }
 
 // News archive (with day filter) godoc
@@ -445,8 +446,9 @@ func tibiaNewslistArchiveV3() {
 // @Param        days path int true "The number of days to show"
 // @Success      200  {object}  NewsListResponse
 // @Router      /v3/news/archive/{days} [get]
-func tibiaNewslistArchiveDaysV3() {
+func tibiaNewslistArchiveDaysV3() bool {
 	// Not used function.. but required for documentation purpose
+	return false
 }
 
 // Latest news godoc
@@ -457,8 +459,9 @@ func tibiaNewslistArchiveDaysV3() {
 // @Produce      json
 // @Success      200  {object}  NewsListResponse
 // @Router       /v3/news/latest [get]
-func tibiaNewslistLatestV3() {
+func tibiaNewslistLatestV3() bool {
 	// Not used function.. but required for documentation purpose
+	return false
 }
 
 // News ticker godoc

@@ -91,7 +91,7 @@ func TibiaDataInitializer() {
 	TibiaDataHousesMappingInitiator()
 
 	// run some functions that are empty but required for documentation to be done
-	tibiaNewslistArchiveV3()
-	tibiaNewslistArchiveDaysV3()
-	tibiaNewslistLatestV3()
+	_ = tibiaNewslistArchiveV3()
+	_ = tibiaNewslistArchiveDaysV3()
+	_ = tibiaNewslistLatestV3()
 }

@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.5.0] - 2022-01-19
+
+### Added
+* Add unit tests for Spells Overview API, fix bugs in Spells Overview API ([#55](https://github.com/TibiaData/tibiadata-api-go/pull/55) by [kamilon](https://github.com/kamilon))
+* Add unit tests for Spells API, fix various bugs in pulling of spell data ([#56](https://github.com/TibiaData/tibiadata-api-go/pull/56) by [kamilon](https://github.com/kamilon))
+* Add unit tests for Kill Statistics API, move to goquery ([#57](https://github.com/TibiaData/tibiadata-api-go/pull/57) by [kamilon](https://github.com/kamilon))
+* Add unit tests for Guild Overview and Guild API ([#58](https://github.com/TibiaData/tibiadata-api-go/pull/58) by [kamilon](https://github.com/kamilon))
+* Add unit tests for Creatures Overview and Creature API, fix bug ([#59](https://github.com/TibiaData/tibiadata-api-go/pull/59) by [kamilon](https://github.com/kamilon))
+* Add unit tests for Highscores API ([#61](https://github.com/TibiaData/tibiadata-api-go/pull/61) by [kamilon](https://github.com/kamilon))
+* Add unit tests for Fansites API ([#62](https://github.com/TibiaData/tibiadata-api-go/pull/62) by [kamilon](https://github.com/kamilon))
+* Add unit tests for News List API and News API ([#60](https://github.com/TibiaData/tibiadata-api-go/pull/60) by [kamilon](https://github.com/kamilon))
+* Create and use HighscoreCategory enum ([#63](https://github.com/TibiaData/tibiadata-api-go/pull/63) by [kamilon](https://github.com/kamilon))
+* Feature: Tibia Houses endpoints ([#26](https://github.com/TibiaData/tibiadata-api-go/pull/26) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Changed
+* Refactor gin server to reduce code duplication ([#64](https://github.com/TibiaData/tibiadata-api-go/pull/64) by [kamilon](https://github.com/kamilon))
+* Cache new regex queries ([#66](https://github.com/TibiaData/tibiadata-api-go/pull/66) by [kamilon](https://github.com/kamilon))
+
+### Fixed
+* Fix race condition with TibiadataRequestStruct ([#65](https://github.com/TibiaData/tibiadata-api-go/pull/65) by [kamilon](https://github.com/kamilon))
+* Bump docker/build-push-action from 2.7.0 to 2.8.0 ([#68](https://github.com/TibiaData/tibiadata-api-go/pull/68) by [dependabot](https://github.com/dependabot))
+
 ## [0.4.0] - 2022-01-12
 
 ### Added
@@ -66,6 +88,7 @@
 
 Initial commit
 
+[0.5.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.1.1...v0.2.0

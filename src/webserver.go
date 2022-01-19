@@ -141,7 +141,6 @@ func runWebServer() {
 // @Accept       json
 // @Produce      json
 // @Param        character path string true "The character name"
-// @Security     ApiKeyAuth
 // @Success      200  {object}  CharacterResponse
 // @Router       /v3/characters/character/{character} [get]
 func tibiaCharactersCharacterV3(c *gin.Context) {
@@ -168,7 +167,6 @@ func tibiaCharactersCharacterV3(c *gin.Context) {
 // @Tags         creatures
 // @Accept       json
 // @Produce      json
-// @Security     ApiKeyAuth
 // @Success      200  {object}  CreaturesOverviewResponse
 // @Router       /v3/creatures [get]
 func tibiaCreaturesOverviewV3(c *gin.Context) {
@@ -193,7 +191,6 @@ func tibiaCreaturesOverviewV3(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        race path string true "The race of creature"
-// @Security     ApiKeyAuth
 // @Success      200  {object}  CreatureResponse
 // @Router       /v3/creatures/creature/{race} [get]
 func tibiaCreaturesCreatureV3(c *gin.Context) {
@@ -220,7 +217,6 @@ func tibiaCreaturesCreatureV3(c *gin.Context) {
 // @Tags         fansites
 // @Accept       json
 // @Produce      json
-// @Security     ApiKeyAuth
 // @Success      200  {object}  FansitesResponse
 // @Router       /v3/fansites [get]
 func tibiaFansitesV3(c *gin.Context) {
@@ -245,7 +241,6 @@ func tibiaFansitesV3(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        guild path string true "The name of guild"
-// @Security     ApiKeyAuth
 // @Success      200  {object}  GuildResponse
 // @Router       /v3/guilds/guild/{guild} [get]
 func tibiaGuildsGuildV3(c *gin.Context) {
@@ -273,7 +268,6 @@ func tibiaGuildsGuildV3(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        world path string true "The world"
-// @Security     ApiKeyAuth
 // @Success      200  {object}  GuildsOverviewResponse
 // @Router       /v3/guilds/world/{world} [get]
 func tibiaGuildsOverviewV3(c *gin.Context) {
@@ -306,7 +300,6 @@ func tibiaGuildsOverviewV3(c *gin.Context) {
 // @Param        world    path string true "The world (default: all)"
 // @Param        category path string true "The category (default: experience)"
 // @Param        vocation path string true "The vocation (default: all)"
-// @Security     ApiKeyAuth
 // @Success      200  {object}  HighscoresResponse
 // @Router       /v3/highscores/world/{world}/{category}/{vocation} [get]
 func tibiaHighscoresV3(c *gin.Context) {
@@ -351,7 +344,6 @@ func tibiaHighscoresV3(c *gin.Context) {
 // @Produce      json
 // @Param        world    path string true "The world to show"
 // @Param        houseid  path int    true "The ID of the house"
-// @Security     ApiKeyAuth
 // @Success      200  {object}  HouseResponse
 // @Router       /v3/houses/world/{world}/house/{houseid} [get]
 func tibiaHousesHouseV3(c *gin.Context) {
@@ -384,7 +376,6 @@ func tibiaHousesHouseV3(c *gin.Context) {
 // @Produce      json
 // @Param        world path string true "The world to show"
 // @Param        town  path string true "The town to show"
-// @Security     ApiKeyAuth
 // @Success      200  {object}  HousesOverviewResponse
 // @Router       /v3/houses/world/{world}/town/{town} [get]
 //TODO: This API needs to be refactored somehow to use tibiaDataRequestHandler
@@ -410,7 +401,6 @@ func tibiaHousesOverviewV3(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        world path string true "The world to show"
-// @Security     ApiKeyAuth
 // @Success      200  {object}  KillStatisticsResponse
 // @Router       /v3/killstatistics/world/{world} [get]
 func tibiaKillstatisticsV3(c *gin.Context) {
@@ -440,7 +430,6 @@ func tibiaKillstatisticsV3(c *gin.Context) {
 // @Tags         news
 // @Accept       json
 // @Produce      json
-// @Security     ApiKeyAuth
 // @Success      200  {object}  NewsListResponse
 // @Router       /v3/news/archive [get]
 func tibiaNewslistArchiveV3() bool {
@@ -455,7 +444,6 @@ func tibiaNewslistArchiveV3() bool {
 // @Accept       json
 // @Produce      json
 // @Param        days path int true "The number of days to show"
-// @Security     ApiKeyAuth
 // @Success      200  {object}  NewsListResponse
 // @Router      /v3/news/archive/{days} [get]
 func tibiaNewslistArchiveDaysV3() bool {
@@ -469,7 +457,6 @@ func tibiaNewslistArchiveDaysV3() bool {
 // @Tags         news
 // @Accept       json
 // @Produce      json
-// @Security     ApiKeyAuth
 // @Success      200  {object}  NewsListResponse
 // @Router       /v3/news/latest [get]
 func tibiaNewslistLatestV3() bool {
@@ -483,7 +470,6 @@ func tibiaNewslistLatestV3() bool {
 // @Tags         news
 // @Accept       json
 // @Produce      json
-// @Security     ApiKeyAuth
 // @Success      200  {object}  NewsListResponse
 // @Router       /v3/news/newsticker [get]
 func tibiaNewslistV3(c *gin.Context) {
@@ -544,7 +530,6 @@ func tibiaNewslistV3(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        news_id path int true "The ID of news entry"
-// @Security     ApiKeyAuth
 // @Success      200  {object}  NewsResponse
 // @Router       /v3/news/id/{news_id} [get]
 func tibiaNewsV3(c *gin.Context) {
@@ -577,7 +562,6 @@ func tibiaNewsV3(c *gin.Context) {
 // @Tags         spells
 // @Accept       json
 // @Produce      json
-// @Security     ApiKeyAuth
 // @Success      200  {object}  SpellsOverviewResponse
 // @Router       /v3/spells [get]
 func tibiaSpellsOverviewV3(c *gin.Context) {
@@ -619,7 +603,6 @@ func tibiaSpellsOverviewV3(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        spell path string true "The name of spell"
-// @Security     ApiKeyAuth
 // @Success      200  {object}  SpellInformationResponse
 // @Router       /v3/spells/spell/{spell} [get]
 func tibiaSpellsSpellV3(c *gin.Context) {
@@ -646,7 +629,6 @@ func tibiaSpellsSpellV3(c *gin.Context) {
 // @Tags         worlds
 // @Accept       json
 // @Produce      json
-// @Security     ApiKeyAuth
 // @Success      200  {object}  WorldsOverviewResponse
 // @Router       /v3/worlds [get]
 func tibiaWorldsOverviewV3(c *gin.Context) {
@@ -671,7 +653,6 @@ func tibiaWorldsOverviewV3(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        world path string true "The name of world"
-// @Security     ApiKeyAuth
 // @Success      200  {object}  WorldResponse
 // @Router       /v3/worlds/world/{world} [get]
 func tibiaWorldsWorldV3(c *gin.Context) {

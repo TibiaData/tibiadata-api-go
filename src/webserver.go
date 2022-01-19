@@ -134,6 +134,15 @@ func runWebServer() {
 	_ = router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
+// Character godoc
+// @Summary      Show one character
+// @Description  Show all information about one character available
+// @Tags         characters
+// @Accept       json
+// @Produce      json
+// @Param        character path string true "The character name"
+// @Success      200  {object}  CharacterResponse
+// @Router       /v3/characters/character/{character} [get]
 func tibiaCharactersCharacterV3(c *gin.Context) {
 	// getting params from URL
 	character := c.Param("character")
@@ -152,6 +161,14 @@ func tibiaCharactersCharacterV3(c *gin.Context) {
 		"TibiaCharactersCharacterV3")
 }
 
+// Creatures godoc
+// @Summary      List of creatures
+// @Description  Show all creatures listed
+// @Tags         creatures
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  CreaturesOverviewResponse
+// @Router       /v3/creatures [get]
 func tibiaCreaturesOverviewV3(c *gin.Context) {
 	tibiadataRequest := TibiadataRequestStruct{
 		Method: resty.MethodGet,
@@ -167,6 +184,15 @@ func tibiaCreaturesOverviewV3(c *gin.Context) {
 		"TibiaCreaturesOverviewV3")
 }
 
+// Creature godoc
+// @Summary      Show one creature
+// @Description  Show all information about one creature
+// @Tags         creatures
+// @Accept       json
+// @Produce      json
+// @Param        race path string true "The race of creature"
+// @Success      200  {object}  CreatureResponse
+// @Router       /v3/creatures/creature/{race} [get]
 func tibiaCreaturesCreatureV3(c *gin.Context) {
 	// getting params from URL
 	race := c.Param("race")
@@ -185,6 +211,14 @@ func tibiaCreaturesCreatureV3(c *gin.Context) {
 		"TibiaCreaturesCreatureV3")
 }
 
+// Fansites godoc
+// @Summary      Promoted and supported fansites
+// @Description  List of all promoted and supported fansites
+// @Tags         fansites
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  FansitesResponse
+// @Router       /v3/fansites [get]
 func tibiaFansitesV3(c *gin.Context) {
 	tibiadataRequest := TibiadataRequestStruct{
 		Method: resty.MethodGet,
@@ -200,6 +234,15 @@ func tibiaFansitesV3(c *gin.Context) {
 		"TibiaFansitesV3")
 }
 
+// Guild godoc
+// @Summary      Show one guild
+// @Description  Show all information about one guild
+// @Tags         guilds
+// @Accept       json
+// @Produce      json
+// @Param        guild path string true "The name of guild"
+// @Success      200  {object}  GuildResponse
+// @Router       /v3/guilds/guild/{guild} [get]
 func tibiaGuildsGuildV3(c *gin.Context) {
 	// getting params from URL
 	guild := c.Param("guild")
@@ -218,6 +261,15 @@ func tibiaGuildsGuildV3(c *gin.Context) {
 		"TibiaGuildsGuildV3")
 }
 
+// Guilds godoc
+// @Summary      List all guilds from a world
+// @Description  Show all guilds on a certain world
+// @Tags         guilds
+// @Accept       json
+// @Produce      json
+// @Param        world path string true "The world"
+// @Success      200  {object}  GuildsOverviewResponse
+// @Router       /v3/guilds/world/{world} [get]
 func tibiaGuildsOverviewV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")
@@ -239,6 +291,17 @@ func tibiaGuildsOverviewV3(c *gin.Context) {
 		"TibiaGuildsOverviewV3")
 }
 
+// Highscores godoc
+// @Summary      Highscores of tibia
+// @Description  Show all highscores of tibia
+// @Tags         highscores
+// @Accept       json
+// @Produce      json
+// @Param        world    path string true "The world (default: all)"
+// @Param        category path string true "The category (default: experience)"
+// @Param        vocation path string true "The vocation (default: all)"
+// @Success      200  {object}  HighscoresResponse
+// @Router       /v3/highscores/world/{world}/{category}/{vocation} [get]
 func tibiaHighscoresV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")
@@ -273,6 +336,16 @@ func tibiaHighscoresV3(c *gin.Context) {
 		"TibiaHighscoresV3")
 }
 
+// House godoc
+// @Summary      House view
+// @Description  Show all information about one house
+// @Tags         houses
+// @Accept       json
+// @Produce      json
+// @Param        world    path string true "The world to show"
+// @Param        houseid  path int    true "The ID of the house"
+// @Success      200  {object}  HouseResponse
+// @Router       /v3/houses/world/{world}/house/{houseid} [get]
 func tibiaHousesHouseV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")
@@ -295,6 +368,16 @@ func tibiaHousesHouseV3(c *gin.Context) {
 		"TibiaHousesHouseV3")
 }
 
+// Houses godoc
+// @Summary      List of houses
+// @Description  Show all houses filtered on world and town
+// @Tags         houses
+// @Accept       json
+// @Produce      json
+// @Param        world path string true "The world to show"
+// @Param        town  path string true "The town to show"
+// @Success      200  {object}  HousesOverviewResponse
+// @Router       /v3/houses/world/{world}/town/{town} [get]
 //TODO: This API needs to be refactored somehow to use tibiaDataRequestHandler
 func tibiaHousesOverviewV3(c *gin.Context) {
 	// getting params from URL
@@ -311,6 +394,15 @@ func tibiaHousesOverviewV3(c *gin.Context) {
 	TibiaDataAPIHandleResponse(c, http.StatusOK, "TibiaHousesOverviewV3", jsonData)
 }
 
+// Killstatistics godoc
+// @Summary      The killstatistics
+// @Description  Show all killstatistics filtered on world
+// @Tags         killstatistics
+// @Accept       json
+// @Produce      json
+// @Param        world path string true "The world to show"
+// @Success      200  {object}  KillStatisticsResponse
+// @Router       /v3/killstatistics/world/{world} [get]
 func tibiaKillstatisticsV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")
@@ -332,6 +424,54 @@ func tibiaKillstatisticsV3(c *gin.Context) {
 		"TibiaKillstatisticsV3")
 }
 
+// News archive godoc
+// @Summary      Show news archive (90 days)
+// @Description  Show news archive with a filtering on 90 days
+// @Tags         news
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  NewsListResponse
+// @Router       /v3/news/archive [get]
+func tibiaNewslistArchiveV3() bool {
+	// Not used function.. but required for documentation purpose
+	return false
+}
+
+// News archive (with day filter) godoc
+// @Summary      Show news archive (with days filter)
+// @Description  Show news archive with a filtering option on days
+// @Tags         news
+// @Accept       json
+// @Produce      json
+// @Param        days path int true "The number of days to show"
+// @Success      200  {object}  NewsListResponse
+// @Router       /v3/news/archive/{days} [get]
+func tibiaNewslistArchiveDaysV3() bool {
+	// Not used function.. but required for documentation purpose
+	return false
+}
+
+// Latest news godoc
+// @Summary      Show newslist (90 days)
+// @Description  Show newslist with filtering on articles and news of last 90 days
+// @Tags         news
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  NewsListResponse
+// @Router       /v3/news/latest [get]
+func tibiaNewslistLatestV3() bool {
+	// Not used function.. but required for documentation purpose
+	return false
+}
+
+// News ticker godoc
+// @Summary      Show news tickers (90 days)
+// @Description  Show news of type news tickers of last 90 days
+// @Tags         news
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  NewsListResponse
+// @Router       /v3/news/newsticker [get]
 func tibiaNewslistV3(c *gin.Context) {
 	// getting params from URL
 	days := TibiadataStringToIntegerV3(c.Param("days"))
@@ -383,6 +523,15 @@ func tibiaNewslistV3(c *gin.Context) {
 		"TibiaNewslistV3")
 }
 
+// News entry godoc
+// @Summary      Show one news entry
+// @Description  Show one news entry
+// @Tags         news
+// @Accept       json
+// @Produce      json
+// @Param        news_id path int true "The ID of news entry"
+// @Success      200  {object}  NewsResponse
+// @Router       /v3/news/id/{news_id} [get]
 func tibiaNewsV3(c *gin.Context) {
 	// getting params from URL
 	NewsID := TibiadataStringToIntegerV3(c.Param("news_id"))
@@ -407,6 +556,14 @@ func tibiaNewsV3(c *gin.Context) {
 		"TibiaNewsV3")
 }
 
+// Spells godoc
+// @Summary      List all spells
+// @Description  Show all spells
+// @Tags         spells
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  SpellsOverviewResponse
+// @Router       /v3/spells [get]
 func tibiaSpellsOverviewV3(c *gin.Context) {
 	// getting params from URL
 	vocation := c.Param("vocation")
@@ -439,6 +596,15 @@ func tibiaSpellsOverviewV3(c *gin.Context) {
 		"TibiaSpellsOverviewV3")
 }
 
+// Spell godoc
+// @Summary      Show one spell
+// @Description  Show all information about one spell
+// @Tags         spells
+// @Accept       json
+// @Produce      json
+// @Param        spell path string true "The name of spell"
+// @Success      200  {object}  SpellInformationResponse
+// @Router       /v3/spells/spell/{spell} [get]
 func tibiaSpellsSpellV3(c *gin.Context) {
 	// getting params from URL
 	spell := c.Param("spell")
@@ -457,6 +623,14 @@ func tibiaSpellsSpellV3(c *gin.Context) {
 		"TibiaSpellsSpellV3")
 }
 
+// Worlds godoc
+// @Summary      List of all worlds
+// @Description  Show all worlds of Tibia
+// @Tags         worlds
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  WorldsOverviewResponse
+// @Router       /v3/worlds [get]
 func tibiaWorldsOverviewV3(c *gin.Context) {
 	tibiadataRequest := TibiadataRequestStruct{
 		Method: resty.MethodGet,
@@ -472,6 +646,15 @@ func tibiaWorldsOverviewV3(c *gin.Context) {
 		"TibiaWorldsOverviewV3")
 }
 
+// World godoc
+// @Summary      Show one world
+// @Description  Show all information about one world
+// @Tags         worlds
+// @Accept       json
+// @Produce      json
+// @Param        world path string true "The name of world"
+// @Success      200  {object}  WorldResponse
+// @Router       /v3/worlds/world/{world} [get]
 func tibiaWorldsWorldV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")

@@ -20,6 +20,23 @@ var (
 	TibiadataBuildEdition = "open-source" //
 )
 
+// @title           TibiaData API
+// @version         edge
+// @description     This is the API documentation for the TibiaData API.
+// @description     The documentation contains version 3 and above.
+// @termsOfService  https://tibiadata.com/terms/
+
+// @contact.name   TibiaData
+// @contact.url    https://www.tibiadata.com/contact/
+// @contact.email  tobias@tibiadata.com
+
+// @license.name  MIT
+// @license.url   https://github.com/TibiaData/tibiadata-api-go/blob/main/LICENSE
+
+// @schemes   http
+// @host      localhost:8080
+// @BasePath  /
+
 func main() {
 	// logging start of TibiaData
 	log.Printf("[info] TibiaData API starting..")
@@ -75,4 +92,8 @@ func TibiaDataInitializer() {
 	// initializing houses mappings
 	TibiaDataHousesMappingInitiator()
 
+	// run some functions that are empty but required for documentation to be done
+	_ = tibiaNewslistArchiveV3()
+	_ = tibiaNewslistArchiveDaysV3()
+	_ = tibiaNewslistLatestV3()
 }

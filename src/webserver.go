@@ -445,7 +445,7 @@ func tibiaNewslistArchiveV3() bool {
 // @Produce      json
 // @Param        days path int true "The number of days to show"
 // @Success      200  {object}  NewsListResponse
-// @Router      /v3/news/archive/{days} [get]
+// @Router       /v3/news/archive/{days} [get]
 func tibiaNewslistArchiveDaysV3() bool {
 	// Not used function.. but required for documentation purpose
 	return false

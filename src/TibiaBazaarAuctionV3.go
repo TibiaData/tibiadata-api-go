@@ -2,146 +2,152 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/go-resty/resty/v2"
 	"log"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/go-resty/resty/v2"
+
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
-// TibiaCharbazaarAuctionV3 func
-func TibiaCharbazaarAuctionV3(c *gin.Context) {
+// Child of BazaarAuction
+type BazaarAuctionBid struct {
+	Type   string `json:"type"`
+	Amount int    `json:"amount"`
+}
 
-	id := TibiadataStringToIntegerV3(c.Param("id"))
+// Child of BazaarAuction
+type BazaarAuctionDetails struct {
+	CharacterName string           `json:"character_name"`
+	Level         int              `json:"level"`
+	Vocation      string           `json:"vocation"`
+	Gender        string           `json:"gender"`
+	World         string           `json:"world"`
+	AuctionStart  string           `json:"auction_start"`
+	AuctionEnd    string           `json:"auction_end"`
+	Bid           BazaarAuctionBid `json:"bid"`
+}
 
-	// Child of Details
-	type Bid struct {
-		Type   string `json:"type"`
-		Amount int    `json:"amount"`
-	}
+// Child of BazaarAuction
+type General struct {
+	HitPoints                 int    `json:"hitPoints"`
+	Mana                      int    `json:"mana"`
+	Capacity                  int    `json:"capacity"`
+	Speed                     int    `json:"speed"`
+	Blessings                 int    `json:"blessings"`
+	Mounts                    int    `json:"mounts"`
+	Outfits                   int    `json:"outfits"`
+	Titles                    int    `json:"titles"`
+	AxeFighting               int    `json:"axe_fighting"`
+	ClubFighting              int    `json:"club_fighting"`
+	DistanceFighting          int    `json:"distance_fighting"`
+	Fishing                   int    `json:"fishing"`
+	FistFighting              int    `json:"fist_fighting"`
+	MagicLevel                int    `json:"magic_level"`
+	Shielding                 int    `json:"shielding"`
+	SwordFighting             int    `json:"sword_fighting"`
+	CreationDate              string `json:"creation_date"`
+	Experience                int    `json:"experience"`
+	Gold                      int    `json:"gold"`
+	AchievementPoints         int    `json:"achievement_points"`
+	RegularWorldTransfer      string `json:"regular_world_transfer"` // woot
+	CharmExpansion            bool   `json:"charm_expansion"`
+	AvailableCharmPoints      int    `json:"available_charm_points"`
+	SpentCharmPoints          int    `json:"spent_charm_points"`
+	DailyRewardStreak         int    `json:"daily_reward_streak"`
+	HuntingTaskPoints         int    `json:"hunting_task_points"`
+	PermanentHuntingTaskSlots int    `json:"permanent_hunting_task_slots"`
+	PermanentPreySlots        int    `json:"permanent_prey_slots"`
+	PreyWildCards             int    `json:"prey_wild_cards"`
+	Hirelings                 int    `json:"hirelings"`
+	HirelingJobs              int    `json:"hireling_jobs"`
+	HirelingOutfits           int    `json:"hireling_outfits"`
+	ExaltedDust               int    `json:"exalted_dust"`
+}
 
-	// Child of Auction
-	type Details struct {
-		CharacterName string `json:"characterName"`
-		Level         int    `json:"level"`
-		Vocation      string `json:"vocation"`
-		Gender        string `json:"gender"`
-		World         string `json:"world"`
-		AuctionStart  string `json:"auctionStart"`
-		AuctionEnd    string `json:"auctionEnd"`
-		Bid           Bid    `json:"bid"`
-	}
+// Child of BazaarAuction
+type BazaarAuctionItem struct {
+	Name   string `json:"name"`
+	Amount int    `json:"amount"`
+}
 
-	// Child of Auction
-	type General struct {
-		HitPoints                 int    `json:"hitPoints"`
-		Mana                      int    `json:"mana"`
-		Capacity                  int    `json:"capacity"`
-		Speed                     int    `json:"speed"`
-		Blessings                 int    `json:"blessings"`
-		Mounts                    int    `json:"mounts"`
-		Outfits                   int    `json:"outfits"`
-		Titles                    int    `json:"titles"`
-		AxeFighting               int    `json:"axeFighting"`
-		ClubFighting              int    `json:"clubFighting"`
-		DistanceFighting          int    `json:"distanceFighting"`
-		Fishing                   int    `json:"fishing"`
-		FistFighting              int    `json:"fistFighting"`
-		MagicLevel                int    `json:"magicLevel"`
-		Shielding                 int    `json:"shielding"`
-		SwordFighting             int    `json:"swordFighting"`
-		CreationDate              string `json:"creationDate"`
-		Experience                int    `json:"experience"`
-		Gold                      int    `json:"gold"`
-		AchievementPoints         int    `json:"achievementPoints"`
-		RegularWorldTransfer      string `json:"regularWorldTransfer"`
-		CharmExpansion            bool   `json:"charmExpansion"`
-		AvailableCharmPoints      int    `json:"availableCharmPoints"`
-		SpentCharmPoints          int    `json:"spentCharmPoints"`
-		DailyRewardStreak         int    `json:"dailyRewardStreak"`
-		HuntingTaskPoints         int    `json:"huntingTaskPoints"`
-		PermanentHuntingTaskSlots int    `json:"permanentHuntingTaskSlots"`
-		PermanentPreySlots        int    `json:"permanentPreySlots"`
-		PreyWildCards             int    `json:"preyWildCards"`
-		Hirelings                 int    `json:"hirelings"`
-		HirelingJobs              int    `json:"hirelingJobs"`
-		HirelingOutfits           int    `json:"hirelingOutfits"`
-		ExaltedDust               int    `json:"exaltedDust"`
-	}
+// Child of BazaarAuction
+type BazaarAuctionOutfit struct {
+	Name   string `json:"name"`
+	Addon1 bool   `json:"addon_1"`
+	Addon2 bool   `json:"addon_2"`
+}
 
-	// Child of Auction
-	type Item struct {
-		Name   string `json:"name"`
-		Amount int    `json:"amount"`
-	}
+// Child of BazaarAuction
+type BazaarAuctionBlessings struct {
+	AdventurersBlessing int `json:"adventurers_blessing"`
+	BloodOfTheMountain  int `json:"blood_of_the_mountain"`
+	EmbraceOfTibia      int `json:"embrace_of_tibia"`
+	FireOfTheSuns       int `json:"fire_of_the_suns"`
+	HeartOfTheMountain  int `json:"heart_of_the_mountain"`
+	SparkOfThePhoenix   int `json:"spark_of_the_phoenix"`
+	SpiritualShielding  int `json:"spiritual_shielding"`
+	TwistOfFate         int `json:"twist_of_fate"`
+	WisdomOfSolitude    int `json:"wisdom_of_solitude"`
+}
 
-	// Child of Auction
-	type Outfit struct {
-		Name   string `json:"name"`
-		Addon1 bool   `json:"addon1"`
-		Addon2 bool   `json:"addon2"`
-	}
+// Child of BazaarAuction
+type BazaarAuctionCharm struct {
+	Name string `json:"name"`
+	Cost int    `json:"cost"`
+}
 
-	// Child of Auction
-	type Blessings struct {
-		AdventurersBlessing int `json:"adventurersBlessing"`
-		BloodOfTheMountain  int `json:"bloodOfTheMountain"`
-		EmbraceOfTibia      int `json:"embraceOfTibia"`
-		FireOfTheSuns       int `json:"fireOfTheSuns"`
-		HeartOfTheMountain  int `json:"heartOfTheMountain"`
-		SparkOfThePhoenix   int `json:"sparkOfThePhoenix"`
-		SpiritualShielding  int `json:"spiritualShielding"`
-		TwistOfFate         int `json:"twistOfFate"`
-		WisdomOfSolitude    int `json:"wisdomOfSolitude"`
-	}
+// Child of BazaarAuction
+type BazaarAuctionBestiaryEntry struct {
+	Name  string `json:"name"`
+	Kills int    `json:"kills"`
+	Step  int    `json:"step"`
+}
 
-	// Child of Auction
-	type Charm struct {
-		Name string `json:"name"`
-		Cost int    `json:"cost"`
-	}
+// Child of BazaarAuctionResponse
+type BazaarAuction struct {
+	Id                          int                          `json:"id"`
+	Details                     BazaarAuctionDetails         `json:"details"`
+	General                     General                      `json:"general"`
+	ItemSummary                 []BazaarAuctionItem          `json:"item_summary"`
+	StoreItemSummary            []BazaarAuctionItem          `json:"store_item_summary"`
+	Mounts                      []string                     `json:"mounts"`
+	StoreMounts                 []string                     `json:"store_mounts"`
+	Outfits                     []BazaarAuctionOutfit        `json:"outfits"`
+	StoreOutfits                []BazaarAuctionOutfit        `json:"store_outfits"`
+	Familiars                   []string                     `json:"familiars"`
+	Blessings                   BazaarAuctionBlessings       `json:"blessings"`
+	Imbuements                  []string                     `json:"imbuements"`
+	Charms                      []BazaarAuctionCharm         `json:"charms"`
+	CompletedCyclopediaMapAreas []string                     `json:"completed_cyclopedia_map_areas"`
+	CompletedQuestLines         []string                     `json:"completed_quest_lines"`
+	Titles                      []string                     `json:"titles"`
+	Achievements                []string                     `json:"achievements"`
+	BestiaryProgress            []BazaarAuctionBestiaryEntry `json:"bestiary_progress"`
+}
 
-	// Child of Auction
-	type BestiaryEntry struct {
-		Name  string `json:"name"`
-		Kills int    `json:"kills"`
-		Step  int    `json:"step"`
-	}
+// The base includes two levels: Auction and Information
+type BazaarAuctionResponse struct {
+	Auction     BazaarAuction `json:"auction"`
+	Information Information   `json:"information"`
+}
 
-	// Child of JSONData
-	type Auction struct {
-		Id                          int             `json:"id"`
-		Details                     Details         `json:"details"`
-		General                     General         `json:"general"`
-		ItemSummary                 []Item          `json:"itemSummary"`
-		StoreItemSummary            []Item          `json:"storeItemSummary"`
-		Mounts                      []string        `json:"mounts"`
-		StoreMounts                 []string        `json:"storeMounts"`
-		Outfits                     []Outfit        `json:"outfits"`
-		StoreOutfits                []Outfit        `json:"storeOutfits"`
-		Familiars                   []string        `json:"familiars"`
-		Blessings                   Blessings       `json:"blessings"`
-		Imbuements                  []string        `json:"imbuements"`
-		Charms                      []Charm         `json:"charms"`
-		CompletedCyclopediaMapAreas []string        `json:"completedCyclopediaMapAreas"`
-		CompletedQuestLines         []string        `json:"completedQuestLines"`
-		Titles                      []string        `json:"titles"`
-		Achievements                []string        `json:"achievements"`
-		BestiaryProgress            []BestiaryEntry `json:"bestiaryProgress"`
-	}
+const (
+	OddEvenSelector         = ".Odd,.Even"
+	PageLinkSelector        = ".PageLink"
+	CVIconSelector          = ".CVIcon"
+	ItemSummarySection      = 0
+	StoreItemSummarySection = 1
+	MountsSection           = 2
+	StoreMountsSection      = 3
+	OutfitsSection          = 4
+	StoreOutfitsSection     = 5
+)
 
-	// The base includes two levels: Auction and Information
-	type JSONData struct {
-		Auction     Auction     `json:"auction"`
-		Information Information `json:"information"`
-	}
-
-	// Getting data with TibiadataHTMLDataCollectorV3
-	BoxContentHTML := TibiadataHTMLDataCollectorV3("https://www.tibia.com/charactertrade/?page=details&auctionid=" +
-		strconv.Itoa(id))
+// TibiaBazaarAuctionV3Impl func
+func TibiaBazaarAuctionV3Impl(BoxContentHTML string) BazaarAuctionResponse {
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -149,15 +155,21 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 		log.Fatal(err)
 	}
 
+	var id int
+	ReaderHTML.Find("input[name=auctionid]").Each(func(i int, selection *goquery.Selection) {
+		// collect the auction ID
+		id = TibiadataStringToIntegerV3(selection.AttrOr("value", ""))
+	})
+
 	// Extract details section
-	var details Details
+	var details BazaarAuctionDetails
 	ReaderHTML.Find(".Auction").Each(func(index int, s *goquery.Selection) {
 		detailsHeader := strings.Split(s.Find(".AuctionHeader").Text(), "Level: ")
 		details.CharacterName = detailsHeader[0]
 
 		detailsHeader = strings.Split(detailsHeader[1], "|")
 
-		level := TibiadataStringToIntegerV3(detailsHeader[0])
+		level := TibiadataStringToIntegerV3(strings.TrimSpace(detailsHeader[0]))
 
 		details.Level = level
 		details.Vocation = strings.TrimSpace(strings.Split(detailsHeader[1], "Vocation: ")[1])
@@ -177,9 +189,11 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 
 			auctionStartDate := TibiaDataSanitizeNbspSpaceString(nodes[1+lookupIndex].FirstChild.Data)
 			auctionStartDate = strings.Split(auctionStartDate, " CET")[0] + ":00 CET"
+			auctionStartDate = strings.Split(auctionStartDate, " CEST")[0] + ":00 CEST"
 
 			auctionEndDate := TibiaDataSanitizeNbspSpaceString(nodes[3+lookupIndex].FirstChild.Data)
 			auctionEndDate = strings.Split(auctionEndDate, " CET")[0] + ":00 CET"
+			auctionEndDate = strings.Split(auctionEndDate, " CEST")[0] + ":00 CEST"
 
 			details.AuctionStart = TibiadataDatetimeV3(auctionStartDate)
 			details.AuctionEnd = TibiadataDatetimeV3(auctionEndDate)
@@ -187,7 +201,7 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 			bidType := strings.Split(nodes[4+lookupIndex].FirstChild.FirstChild.Data, " Bid:")[0]
 			bidAmount := TibiadataStringToIntegerV3(nodes[4+lookupIndex].LastChild.FirstChild.FirstChild.Data)
 
-			details.Bid = Bid{
+			details.Bid = BazaarAuctionBid{
 				Type:   bidType,
 				Amount: bidAmount,
 			}
@@ -247,11 +261,11 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 	})
 
 	// Extract items summary
-	var itemSummary []Item
+	var itemSummary []BazaarAuctionItem
 	ReaderHTML.Find("#ItemSummary").Each(func(index int, s *goquery.Selection) {
 
 		for k, v := range ParseItems(s) {
-			itemSummary = append(itemSummary, Item{Name: k, Amount: v})
+			itemSummary = append(itemSummary, BazaarAuctionItem{Name: k, Amount: v})
 		}
 
 		totalPages := s.Find(PageLinkSelector).Size()
@@ -264,18 +278,18 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 					log.Fatal(err)
 				}
 				for k, v := range ParseItems(ItemPageReaderHTML.Contents()) {
-					itemSummary = append(itemSummary, Item{Name: k, Amount: v})
+					itemSummary = append(itemSummary, BazaarAuctionItem{Name: k, Amount: v})
 				}
 			}
 		}
 	})
 
 	// Extract store items summary
-	var storeItemSummary []Item
+	var storeItemSummary []BazaarAuctionItem
 	ReaderHTML.Find("#StoreItemSummary").Each(func(index int, s *goquery.Selection) {
 
 		for k, v := range ParseItems(s) {
-			storeItemSummary = append(storeItemSummary, Item{Name: k, Amount: v})
+			storeItemSummary = append(storeItemSummary, BazaarAuctionItem{Name: k, Amount: v})
 		}
 
 		totalPages := s.Find(PageLinkSelector).Size()
@@ -288,7 +302,7 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 					log.Fatal(err)
 				}
 				for k, v := range ParseItems(ItemPageReaderHTML.Contents()) {
-					storeItemSummary = append(storeItemSummary, Item{Name: k, Amount: v})
+					storeItemSummary = append(storeItemSummary, BazaarAuctionItem{Name: k, Amount: v})
 				}
 			}
 		}
@@ -335,10 +349,10 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 	})
 
 	// Extract outfits
-	var outfits []Outfit
+	var outfits []BazaarAuctionOutfit
 	ReaderHTML.Find("#Outfits").Each(func(index int, s *goquery.Selection) {
 		for k, v := range ParseOutfits(s) {
-			outfits = append(outfits, Outfit{
+			outfits = append(outfits, BazaarAuctionOutfit{
 				Name:   k,
 				Addon1: v[0],
 				Addon2: v[1],
@@ -354,7 +368,7 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 					log.Fatal(err)
 				}
 				for k, v := range ParseOutfits(OutfitsPageReaderHTML.Contents()) {
-					outfits = append(outfits, Outfit{
+					outfits = append(outfits, BazaarAuctionOutfit{
 						Name:   k,
 						Addon1: v[0],
 						Addon2: v[1],
@@ -365,10 +379,10 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 	})
 
 	// Extract store outfits
-	var storeOutfits []Outfit
+	var storeOutfits []BazaarAuctionOutfit
 	ReaderHTML.Find("#StoreOutfits").Each(func(index int, s *goquery.Selection) {
 		for k, v := range ParseOutfits(s) {
-			outfits = append(outfits, Outfit{
+			outfits = append(outfits, BazaarAuctionOutfit{
 				Name:   k,
 				Addon1: v[0],
 				Addon2: v[1],
@@ -384,7 +398,7 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 					log.Fatal(err)
 				}
 				for k, v := range ParseOutfits(OutfitsPageReaderHTML.Contents()) {
-					outfits = append(outfits, Outfit{
+					outfits = append(outfits, BazaarAuctionOutfit{
 						Name:   k,
 						Addon1: v[0],
 						Addon2: v[1],
@@ -406,7 +420,7 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 	})
 
 	// Extract blessings
-	var blessings Blessings
+	var blessings BazaarAuctionBlessings
 	ReaderHTML.Find("#Blessings").Each(func(index int, s *goquery.Selection) {
 		s.Find(OddEvenSelector).Each(func(index int, s *goquery.Selection) {
 			node := s.Nodes[0].FirstChild
@@ -449,7 +463,7 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 	})
 
 	// Extract Charms
-	var charms []Charm
+	var charms []BazaarAuctionCharm
 	ReaderHTML.Find("#Charms").Each(func(index int, s *goquery.Selection) {
 		s.Find(OddEvenSelector).Each(func(index int, s *goquery.Selection) {
 			node := s.Nodes[0].FirstChild
@@ -457,7 +471,7 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 				return
 			}
 			if !strings.Contains(node.Parent.Attr[0].Val, "IndicateMoreEntries") {
-				charms = append(charms, Charm{
+				charms = append(charms, BazaarAuctionCharm{
 					Cost: TibiadataStringToIntegerV3(node.FirstChild.Data),
 					Name: node.NextSibling.FirstChild.Data,
 				})
@@ -513,12 +527,12 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 	})
 
 	// Extract Bestiary Progress
-	var bestiaryProgress []BestiaryEntry
+	var bestiaryProgress []BazaarAuctionBestiaryEntry
 	ReaderHTML.Find("#BestiaryProgress").Each(func(index int, s *goquery.Selection) {
 		s.Find(OddEvenSelector).Each(func(index int, s *goquery.Selection) {
 			node := s.Nodes[0].FirstChild
 			if !strings.Contains(node.Parent.Attr[0].Val, "IndicateMoreEntries") {
-				bestiaryProgress = append(bestiaryProgress, BestiaryEntry{
+				bestiaryProgress = append(bestiaryProgress, BazaarAuctionBestiaryEntry{
 					Step:  TibiadataStringToIntegerV3(node.FirstChild.Data),
 					Kills: TibiadataStringToIntegerV3(strings.Split(node.NextSibling.FirstChild.Data, " x")[0]),
 					Name:  node.NextSibling.NextSibling.FirstChild.Data,
@@ -527,8 +541,9 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 		})
 	})
 
-	jsonData := JSONData{
-		Auction: Auction{
+	// Build the data-blob
+	return BazaarAuctionResponse{
+		BazaarAuction{
 			Id:                          id,
 			Details:                     details,
 			General:                     general,
@@ -548,14 +563,11 @@ func TibiaCharbazaarAuctionV3(c *gin.Context) {
 			Achievements:                achievements,
 			BestiaryProgress:            bestiaryProgress,
 		},
-		Information: Information{
+		Information{
 			APIVersion: TibiadataAPIversion,
 			Timestamp:  TibiadataDatetimeV3(""),
 		},
 	}
-
-	// return jsonData
-	TibiaDataAPIHandleSuccessResponse(c, "TibiaCharbazaarAuctionV3", jsonData)
 }
 
 func ParseItems(s *goquery.Selection) map[string]int {
@@ -565,8 +577,10 @@ func ParseItems(s *goquery.Selection) map[string]int {
 		itemTitle, exists := s.Attr("title")
 
 		if exists {
-			var itemAmount int
-			var itemName string
+			var (
+				itemAmount int
+				itemName   string
+			)
 
 			nodes := s.Find(".ObjectAmount").First().Nodes
 			if nodes == nil {
@@ -675,13 +689,3 @@ type AjaxResponseObject struct {
 type AjaxJSONData struct {
 	AjaxObjects []AjaxResponseObject `json:"AjaxObjects"`
 }
-
-const OddEvenSelector = ".Odd,.Even"
-const PageLinkSelector = ".PageLink"
-const CVIconSelector = ".CVIcon"
-const ItemSummarySection = 0
-const StoreItemSummarySection = 1
-const MountsSection = 2
-const StoreMountsSection = 3
-const OutfitsSection = 4
-const StoreOutfitsSection = 5

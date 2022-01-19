@@ -71,6 +71,9 @@ func runWebServer() {
 	// TibiaData API version 3
 	v3 := router.Group("/v3")
 	{
+		// Tibia bazaar
+		v3.GET("/bazaar/auction/:id", tibiaBazaarAuctionV3)
+
 		// Tibia characters
 		v3.GET("/characters/character/:character", tibiaCharactersCharacterV3)
 
@@ -118,9 +121,6 @@ func runWebServer() {
 		// Tibia worlds
 		v3.GET("/worlds", tibiaWorldsOverviewV3)
 		v3.GET("/worlds/world/:world", tibiaWorldsWorldV3)
-
-		// TibiaBazaarAuctionV3
-		v3.GET("/charbazaar/auction/:id", TibiaCharbazaarAuctionV3)
 	}
 
 	// container version details endpoint
@@ -135,6 +135,33 @@ func runWebServer() {
 
 	// Start the router
 	_ = router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+}
+
+// Bazaar auction godoc
+// @Summary      Show one bazaar auction
+// @Description  Show all information about one bazaar auction
+// @Tags         bazaar
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "The ID of auction"
+// @Success      200  {object}  BazaarAuctionResponse
+// @Router       /v3/bazaar/auction/{id} [get]
+func tibiaBazaarAuctionV3(c *gin.Context) {
+	// getting params from URL
+	id := c.Param("id")
+
+	tibiadataRequest := TibiadataRequestStruct{
+		Method: resty.MethodGet,
+		URL:    "https://www.tibia.com/charactertrade/?page=details&auctionid=" + id,
+	}
+
+	tibiaDataRequestHandler(
+		c,
+		tibiadataRequest,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaBazaarAuctionV3Impl(BoxContentHTML), http.StatusOK
+		},
+		"TibiaBazaarAuctionV3")
 }
 
 // Character godoc

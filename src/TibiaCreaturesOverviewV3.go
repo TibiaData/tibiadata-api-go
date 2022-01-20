@@ -36,6 +36,10 @@ var (
 )
 
 func TibiaCreaturesOverviewV3Impl(BoxContentHTML string) CreaturesOverviewResponse {
+	var (
+		BoostedCreatureName, BoostedCreatureRace, BoostedCreatureImage string
+	)
+
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -50,14 +54,20 @@ func TibiaCreaturesOverviewV3Impl(BoxContentHTML string) CreaturesOverviewRespon
 
 	// Regex to get data for name and race param for boosted creature
 	subma1b := BoostedCreatureNameAndRaceRegex.FindAllStringSubmatch(InnerTableContainerTMPB, -1)
-	// Settings vars for usage in JSONData
-	BoostedCreatureName := subma1b[0][2]
-	BoostedCreatureRace := subma1b[0][1]
+
+	if len(subma1b) > 0 {
+		// Settings vars for usage in JSONData
+		BoostedCreatureName = subma1b[0][2]
+		BoostedCreatureRace = subma1b[0][1]
+	}
 
 	// Regex to get image of boosted creature
 	subma2b := BoostedCreatureImageRegex.FindAllStringSubmatch(InnerTableContainerTMPB, -1)
-	// Settings vars for usage in JSONData
-	BoostedCreatureImage := subma2b[0][1]
+
+	if len(subma2b) > 0 {
+		// Settings vars for usage in JSONData
+		BoostedCreatureImage = subma2b[0][1]
+	}
 
 	// Creating empty CreaturesData var
 	var CreaturesData []OverviewCreature

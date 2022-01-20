@@ -57,7 +57,10 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 
 	// getting age of data
 	subma1 := HighscoresAgeRegex.FindAllStringSubmatch(string(BoxContentHTML), 1)
-	HighscoreAge = TibiadataStringToIntegerV3(subma1[0][1])
+
+	if len(subma1) > 0 {
+		HighscoreAge = TibiadataStringToIntegerV3(subma1[0][1])
+	}
 
 	// Running query over each div
 	ReaderHTML.Find(".TableContent tr").First().NextAll().Each(func(index int, s *goquery.Selection) {

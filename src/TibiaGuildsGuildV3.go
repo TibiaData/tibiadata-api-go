@@ -106,8 +106,12 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	subma1b := GuildLogoRegex.FindAllStringSubmatch(InnerTableContainerTMPA, -1)
-	GuildLogoURL = subma1b[0][1]
+
+	if len(subma1b) > 0 {
+		GuildLogoURL = subma1b[0][1]
+	}
 
 	// Getting data from div.InnerTableContainer and then first p
 	InnerTableContainerTMPB, err := ReaderHTML.Find("#GuildInformationContainer").Html()

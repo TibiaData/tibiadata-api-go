@@ -501,17 +501,19 @@ func tibiaNewslistV3(c *gin.Context) {
 		},
 	}
 
-	// getting type of news list
-	switch tmp := strings.Split(c.Request.URL.Path, "/"); tmp[3] {
-	case "newsticker":
-		tibiadataRequest.FormData["filter_ticker"] = "ticker"
-	case "latest":
-		tibiadataRequest.FormData["filter_article"] = "article"
-		tibiadataRequest.FormData["filter_news"] = "news"
-	case "archive":
-		tibiadataRequest.FormData["filter_ticker"] = "ticker"
-		tibiadataRequest.FormData["filter_article"] = "article"
-		tibiadataRequest.FormData["filter_news"] = "news"
+	if c.Request != nil {
+		// getting type of news list
+		switch tmp := strings.Split(c.Request.URL.Path, "/"); tmp[3] {
+		case "newsticker":
+			tibiadataRequest.FormData["filter_ticker"] = "ticker"
+		case "latest":
+			tibiadataRequest.FormData["filter_article"] = "article"
+			tibiadataRequest.FormData["filter_news"] = "news"
+		case "archive":
+			tibiadataRequest.FormData["filter_ticker"] = "ticker"
+			tibiadataRequest.FormData["filter_article"] = "article"
+			tibiadataRequest.FormData["filter_news"] = "news"
+		}
 	}
 
 	tibiaDataRequestHandler(

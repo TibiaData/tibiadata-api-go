@@ -68,7 +68,7 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) CreatureRe
 
 	// Preparing vars
 	var (
-		CreatureDescription, CreatureBehaviour                                                                                    string
+		CreatureName, CreatureImageURL, CreatureDescription, CreatureBehaviour                                                    string
 		CreatureLootList, CreatureImmuneTo, CreatureStrongAgainst, CreatureWeaknessAgainst                                        []string
 		CreatureHitpoints, CreatureSummonedMana, CreatureConvincedMana, CreatureExperiencePoints                                  int
 		CreatureBeParalysed, CreatureBeSummoned, CreatureBeConvinced, CreatureSeeInvisible, CreatureIsLootable, CreatureIsBoosted bool
@@ -85,6 +85,8 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) CreatureRe
 
 	// Preparing data for JSONData
 	if len(subma1) > 0 {
+		CreatureName = TibiaDataSanitizeEscapedString(subma1[0][1])
+		CreatureImageURL = subma1[0][2]
 
 		// Description (and unescape hmtl string)
 		CreatureDescription = strings.ReplaceAll(subma1[0][3], "<br/>", "\n")
@@ -147,13 +149,12 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) CreatureRe
 		}
 	}
 
-	//
 	// Build the data-blob
 	return CreatureResponse{
 		Creature{
-			Name:             TibiaDataSanitizeEscapedString(subma1[0][1]),
+			Name:             CreatureName,
 			Race:             race,
-			ImageURL:         subma1[0][2],
+			ImageURL:         CreatureImageURL,
 			Description:      CreatureDescription,
 			Behaviour:        CreatureBehaviour,
 			Hitpoints:        CreatureHitpoints,

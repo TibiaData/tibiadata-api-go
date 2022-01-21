@@ -103,7 +103,7 @@ func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse
 		HouseData.Size = TibiadataStringToIntegerV3(subma1[0][5])
 		HouseData.Rent = TibiaDataConvertValuesWithK(subma1[0][6] + subma1[0][7])
 
-		HouseData.Status.Original = TibiaDataSanitizeEscapedString(RemoveHtmlTag(subma1[0][9]))
+		HouseData.Status.Original = strings.TrimSpace(TibiaDataSanitizeNbspSpaceString(TibiaDataSanitizeEscapedString(RemoveHtmlTag(subma1[0][9]))))
 
 		switch {
 		case strings.Contains(HouseData.Status.Original, "has been rented by"):
@@ -152,7 +152,7 @@ func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse
 				// storing values from regex
 				HouseData.Status.Auction.AuctionEnd = TibiadataDatetimeV3(subma2[0][3])
 				HouseData.Status.Auction.CurrentBid = TibiadataStringToIntegerV3(subma2[0][4])
-				HouseData.Status.Auction.CurrentBidder = subma2[0][5]
+				HouseData.Status.Auction.CurrentBidder = TibiaDataSanitizeNbspSpaceString(subma2[0][5])
 				if subma2[0][2] == "will end" {
 					HouseData.Status.Auction.AuctionOngoing = true
 				}

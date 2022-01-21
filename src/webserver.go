@@ -388,7 +388,7 @@ func tibiaHousesOverviewV3(c *gin.Context) {
 	world = TibiadataStringWorldFormatToTitleV3(world)
 	town = TibiadataStringWorldFormatToTitleV3(town)
 
-	jsonData := TibiaHousesOverviewV3Impl(c, world, town)
+	jsonData := TibiaHousesOverviewV3Impl(c, world, town, TibiadataHTMLDataCollectorV3)
 
 	// return jsonData
 	TibiaDataAPIHandleResponse(c, http.StatusOK, "TibiaHousesOverviewV3", jsonData)

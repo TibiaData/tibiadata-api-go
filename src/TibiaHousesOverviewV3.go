@@ -12,20 +12,20 @@ import (
 )
 
 // Child of House
-type HousesAction struct {
+type HousesAuction struct {
 	AuctionBid  int    `json:"current_bid"`
 	AuctionLeft string `json:"time_left"`
 }
 
 // Child of HousesHouses
 type HousesHouse struct {
-	Name        string       `json:"name"`
-	HouseID     int          `json:"house_id"`
-	Size        int          `json:"size"`
-	Rent        int          `json:"rent"`
-	IsRented    bool         `json:"rented"`
-	IsAuctioned bool         `json:"auctioned"`
-	Auction     HousesAction `json:"auction"`
+	Name        string        `json:"name"`
+	HouseID     int           `json:"house_id"`
+	Size        int           `json:"size"`
+	Rent        int           `json:"rent"`
+	IsRented    bool          `json:"rented"`
+	IsAuctioned bool          `json:"auctioned"`
+	Auction     HousesAuction `json:"auction"`
 }
 
 // Child of JSONData
@@ -48,7 +48,7 @@ var (
 )
 
 // TibiaHousesOverviewV3 func
-func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string) HousesOverviewResponse {
+func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string, htmlDataCollector func(TibiadataRequestStruct) (string, error)) HousesOverviewResponse {
 	var (
 		// Creating empty vars
 		HouseData, GuildhallData []HousesHouse
@@ -62,7 +62,7 @@ func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string) Houses
 			Method: resty.MethodGet,
 			URL:    "https://www.tibia.com/community/?subtopic=houses&world=" + TibiadataQueryEscapeStringV3(world) + "&town=" + TibiadataQueryEscapeStringV3(town) + "&type=" + TibiadataQueryEscapeStringV3(HouseType),
 		}
-		BoxContentHTML, err := TibiadataHTMLDataCollectorV3(tibiadataRequest)
+		BoxContentHTML, err := htmlDataCollector(tibiadataRequest)
 
 		// return error (e.g. for maintenance mode)
 		if err != nil {

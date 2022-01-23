@@ -13,6 +13,7 @@ import (
 	_ "github.com/mantyr/go-charset/data"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
 )
@@ -51,6 +52,9 @@ func runWebServer() {
 	log.Printf("[info] TibiaData API gin-mode: %s", gin.Mode())
 
 	router := gin.Default()
+
+	// gin middleware to enable GZIP support
+	router.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	// disable proxy feature of gin
 	_ = router.SetTrustedProxies(nil)

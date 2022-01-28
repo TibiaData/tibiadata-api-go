@@ -60,7 +60,7 @@ type Achievements struct {
 	Secret bool   `json:"secret"`
 }
 
-// Child of DeathEntries
+// Child of Deaths
 type Killers struct {
 	Name   string `json:"name"`
 	Player bool   `json:"player"`
@@ -68,18 +68,13 @@ type Killers struct {
 	Summon string `json:"summon"`
 }
 
-// Child of Deaths
-type DeathEntries struct {
+// Child of Characters
+type Deaths struct {
 	Time    string    `json:"time"`
 	Level   int       `json:"level"`
 	Killers []Killers `json:"killers"`
 	Assists []Killers `json:"assists"`
 	Reason  string    `json:"reason"`
-}
-
-// Child of Characters
-type Deaths struct {
-	DeathEntries []DeathEntries `json:"death_entries,omitempty"`
 }
 
 // Child of Characters
@@ -104,7 +99,7 @@ type Characters struct {
 	Character          Character          `json:"character"`
 	AccountBadges      []AccountBadges    `json:"account_badges,omitempty"`
 	Achievements       []Achievements     `json:"achievements,omitempty"`
-	Deaths             Deaths             `json:"deaths,omitempty"`
+	Deaths             []Deaths           `json:"deaths,omitempty"`
 	AccountInformation AccountInformation `json:"account_information,omitempty"`
 	OtherCharacters    []OtherCharacters  `json:"other_characters,omitempty"`
 }
@@ -143,7 +138,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 		CharacterInformationData Character
 		AccountBadgesData        []AccountBadges
 		AchievementsData         []Achievements
-		DeathsData               Deaths
+		DeathsData               []Deaths
 		AccountInformationData   AccountInformation
 		OtherCharactersData      []OtherCharacters
 	)
@@ -386,7 +381,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 					}
 
 					// append deadentry to death list
-					DeathsData.DeathEntries = append(DeathsData.DeathEntries, DeathEntries{
+					DeathsData = append(DeathsData, Deaths{
 						Time:    TibiadataDatetimeV3(subma1[0][1]),
 						Level:   TibiadataStringToIntegerV3(subma1[0][3]),
 						Killers: DeathKillers,

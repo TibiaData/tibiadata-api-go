@@ -129,9 +129,9 @@ func TestNumber4(t *testing.T) {
 	assert.Equal("Nataraya Soldrac", characterJson.Characters.Character.FormerNames[3])
 
 	//validate death data
-	assert.Equal(79, len(characterJson.Characters.Deaths.DeathEntries))
+	assert.Equal(79, len(characterJson.Characters.Deaths))
 
-	firstDeath := characterJson.Characters.Deaths.DeathEntries[0]
+	firstDeath := characterJson.Characters.Deaths[0]
 	assert.Equal(28, len(firstDeath.Killers))
 }
 

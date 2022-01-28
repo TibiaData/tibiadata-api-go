@@ -6,13 +6,13 @@ on:
       - "main"
       - "feature-*"
       - "bug-*"
-    tags:
-      - "v*"
     paths:
       - "src/**"
       - "Dockerfile"
       - "go.mod"
       - "go.sum"
+  release:
+    types: [published]
 
 jobs:
   build:

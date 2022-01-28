@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.5.1] - 2022-01-28
+
+### Added
+* Adding gzip compression middleware ([#73](https://github.com/TibiaData/tibiadata-api-go/pull/73) by [tobiasehlert](https://github.com/tobiasehlert))
+* Swagger documentation annotations ([#67](https://github.com/TibiaData/tibiadata-api-go/pull/67) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Changed
+* Add some 'fake' unit tests to up coverage on webserver.go ([#71](https://github.com/TibiaData/tibiadata-api-go/pull/71) by [kamilon](https://github.com/kamilon))
+* Add unit tests for House Overview and House APIs ([#72](https://github.com/TibiaData/tibiadata-api-go/pull/72) by [kamilon](https://github.com/kamilon))
+
 ## [0.5.0] - 2022-01-19
 
 ### Added
@@ -88,6 +98,7 @@
 
 Initial commit
 
+[0.5.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.5.1...v0.5.1
 [0.5.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.2.0...v0.3.0

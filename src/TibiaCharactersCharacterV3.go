@@ -79,8 +79,7 @@ type DeathEntries struct {
 
 // Child of Characters
 type Deaths struct {
-	DeathEntries    []DeathEntries `json:"death_entries,omitempty"`
-	TruncatedDeaths bool           `json:"truncated,omitempty"` // deathlist can be truncated.. but we don't have logic for that atm
+	DeathEntries []DeathEntries `json:"death_entries,omitempty"`
 }
 
 // Child of Characters
@@ -320,7 +319,6 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 
 				// Removing line breaks
 				CharacterListHTML = TibiadataHTMLRemoveLinebreaksV3(CharacterListHTML)
-				//log.Println(CharacterListHTML)
 				CharacterListHTML = strings.ReplaceAll(CharacterListHTML, ".<br/>Assisted by", ". Assisted by")
 
 				// Regex to get data for deaths

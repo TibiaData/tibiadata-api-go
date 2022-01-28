@@ -244,11 +244,11 @@ func tibiaFansitesV3(c *gin.Context) {
 // @Router       /v3/guild/{guild} [get]
 func tibiaGuildsGuildV3(c *gin.Context) {
 	// getting params from URL
-	name := c.Param("name")
+	guild := c.Param("name")
 
 	tibiadataRequest := TibiadataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiadataQueryEscapeStringV3(name),
+		URL:    "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiadataQueryEscapeStringV3(guild),
 	}
 
 	tibiaDataRequestHandler(

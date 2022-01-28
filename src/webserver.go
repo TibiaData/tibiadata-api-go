@@ -139,7 +139,7 @@ func runWebServer() {
 // @Tags         characters
 // @Accept       json
 // @Produce      json
-// @Param        name path string true "The character name"
+// @Param        name path string true "The character name" extensions(x-example=Trollefar)
 // @Success      200  {object}  CharacterResponse
 // @Router       /v3/character/{name} [get]
 func tibiaCharactersCharacterV3(c *gin.Context) {
@@ -189,7 +189,7 @@ func tibiaCreaturesOverviewV3(c *gin.Context) {
 // @Tags         creatures
 // @Accept       json
 // @Produce      json
-// @Param        race path string true "The race of creature"
+// @Param        race path string true "The race of creature" extensions(x-example=nightmare)
 // @Success      200  {object}  CreatureResponse
 // @Router       /v3/creature/{race} [get]
 func tibiaCreaturesCreatureV3(c *gin.Context) {
@@ -239,7 +239,7 @@ func tibiaFansitesV3(c *gin.Context) {
 // @Tags         guilds
 // @Accept       json
 // @Produce      json
-// @Param        name path string true "The name of guild"
+// @Param        name path string true "The name of guild" extensions(x-example=Elysium)
 // @Success      200  {object}  GuildResponse
 // @Router       /v3/guild/{guild} [get]
 func tibiaGuildsGuildV3(c *gin.Context) {
@@ -266,7 +266,7 @@ func tibiaGuildsGuildV3(c *gin.Context) {
 // @Tags         guilds
 // @Accept       json
 // @Produce      json
-// @Param        world path string true "The world"
+// @Param        world path string true "The world" extensions(x-example=Antica)
 // @Success      200  {object}  GuildsOverviewResponse
 // @Router       /v3/guilds/{world} [get]
 func tibiaGuildsOverviewV3(c *gin.Context) {
@@ -296,9 +296,9 @@ func tibiaGuildsOverviewV3(c *gin.Context) {
 // @Tags         highscores
 // @Accept       json
 // @Produce      json
-// @Param        world    path string true "The world (default: all)"
-// @Param        category path string true "The category (default: experience)"
-// @Param        vocation path string true "The vocation (default: all)"
+// @Param        world    path string true "The world" default(all) extensions(x-example=Antica)
+// @Param        category path string true "The category" default(experience) Enums(achievements, axefighting, charmpoints, clubfighting, distancefighting, experience, fishing, fistfighting, goshnarstaint, loyaltypoints, magiclevel, shielding, swordfighting, dromescore) extensions(x-example=fishing)
+// @Param        vocation path string true "The vocation" default(all) Enums(all, knights, paladins, sorcerers, druids) extensions(x-example=knights)
 // @Success      200  {object}  HighscoresResponse
 // @Router       /v3/highscores/{world}/{category}/{vocation} [get]
 func tibiaHighscoresV3(c *gin.Context) {
@@ -341,8 +341,8 @@ func tibiaHighscoresV3(c *gin.Context) {
 // @Tags         houses
 // @Accept       json
 // @Produce      json
-// @Param        world     path string true "The world to show"
-// @Param        house_id  path int    true "The ID of the house"
+// @Param        world     path string true "The world to show" extensions(x-example=Antica)
+// @Param        house_id  path int    true "The ID of the house" extensions(x-example=35019)
 // @Success      200  {object}  HouseResponse
 // @Router       /v3/house/{world}/{house_id} [get]
 func tibiaHousesHouseV3(c *gin.Context) {
@@ -373,8 +373,8 @@ func tibiaHousesHouseV3(c *gin.Context) {
 // @Tags         houses
 // @Accept       json
 // @Produce      json
-// @Param        world path string true "The world to show"
-// @Param        town  path string true "The town to show"
+// @Param        world path string true "The world to show" extensions(x-example=Antica)
+// @Param        town  path string true "The town to show" extensions(x-example=Venore)
 // @Success      200  {object}  HousesOverviewResponse
 // @Router       /v3/houses/{world}/{town} [get]
 //TODO: This API needs to be refactored somehow to use tibiaDataRequestHandler
@@ -399,7 +399,7 @@ func tibiaHousesOverviewV3(c *gin.Context) {
 // @Tags         killstatistics
 // @Accept       json
 // @Produce      json
-// @Param        world path string true "The world to show"
+// @Param        world path string true "The world to show" extensions(x-example=Antica)
 // @Success      200  {object}  KillStatisticsResponse
 // @Router       /v3/killstatistics/{world} [get]
 func tibiaKillstatisticsV3(c *gin.Context) {
@@ -442,7 +442,7 @@ func tibiaNewslistArchiveV3() bool {
 // @Tags         news
 // @Accept       json
 // @Produce      json
-// @Param        days path int true "The number of days to show"
+// @Param        days path int true "The number of days to show" default(90) minimum(1) extensions(x-example=30)
 // @Success      200  {object}  NewsListResponse
 // @Router       /v3/news/archive/{days} [get]
 func tibiaNewslistArchiveDaysV3() bool {
@@ -530,7 +530,7 @@ func tibiaNewslistV3(c *gin.Context) {
 // @Tags         news
 // @Accept       json
 // @Produce      json
-// @Param        news_id path int true "The ID of news entry"
+// @Param        news_id path int true "The ID of news entry" extensions(x-example=6512)
 // @Success      200  {object}  NewsResponse
 // @Router       /v3/news/id/{news_id} [get]
 func tibiaNewsV3(c *gin.Context) {
@@ -603,7 +603,7 @@ func tibiaSpellsOverviewV3(c *gin.Context) {
 // @Tags         spells
 // @Accept       json
 // @Produce      json
-// @Param        spell_id path string true "The name of spell"
+// @Param        spell_id path string true "The name of spell" extensions(x-example=stronghaste)
 // @Success      200  {object}  SpellInformationResponse
 // @Router       /v3/spell/{spell_id} [get]
 func tibiaSpellsSpellV3(c *gin.Context) {
@@ -653,7 +653,7 @@ func tibiaWorldsOverviewV3(c *gin.Context) {
 // @Tags         worlds
 // @Accept       json
 // @Produce      json
-// @Param        name path string true "The name of world"
+// @Param        name path string true "The name of world" extensions(x-example=Antica)
 // @Success      200  {object}  WorldResponse
 // @Router       /v3/world/{name} [get]
 func tibiaWorldsWorldV3(c *gin.Context) {

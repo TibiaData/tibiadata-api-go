@@ -6,6 +6,8 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"strconv"
 	"strings"
 	"time"
@@ -134,8 +136,33 @@ func runWebServer() {
 		})
 	})
 
-	// Start the router
-	_ = router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	// build the http server
+	server := &http.Server{
+		Addr:    ":8080", // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+		Handler: router,
+	}
+
+	// graceful shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+
+	// we run a go routine that will receive the shutdown input
+	go func() {
+		<-quit
+		log.Println("Received shutdown input")
+		if err := server.Close(); err != nil {
+			log.Fatal("Server Close Error:", err)
+		}
+	}()
+
+	// run the server
+	if err := server.ListenAndServe(); err != nil {
+		if err == http.ErrServerClosed {
+			log.Println("Server gracefully shut down")
+		} else {
+			log.Fatal("Server closed unexpectedly")
+		}
+	}
 }
 
 // Character godoc

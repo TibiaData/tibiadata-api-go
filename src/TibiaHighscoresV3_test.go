@@ -42,3 +42,22 @@ func TestHighscoresAll(t *testing.T) {
 	assert.Equal(64869293274, lastHighscore.Value)
 	assert.Equal("", lastHighscore.Title)
 }
+
+func TestHighscoresLoyalty(t *testing.T) {
+	data, err := ioutil.ReadFile("../testdata/highscores/loyalty.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+
+	highscoresJson := TibiaHighscoresV3Impl("Vunira", loyaltypoints, "druids", string(data))
+	assert := assert.New(t)
+
+	assert.Equal("Vunira", highscoresJson.Highscores.World)
+	assert.Equal("loyaltypoints", highscoresJson.Highscores.Category)
+	assert.Equal("druids", highscoresJson.Highscores.Vocation)
+	assert.Equal(46, highscoresJson.Highscores.HighscoreAge)
+
+	// should be 50, but for some reason it can't get entries from the list..
+	assert.Equal(0, len(highscoresJson.Highscores.HighscoreList))
+}

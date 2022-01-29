@@ -110,7 +110,7 @@ func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse
 			// rented
 
 			switch {
-			case strings.Contains(HouseData.Status.Original, " pass the "+HouseData.Type+" to "):
+			case strings.Contains(HouseData.Status.Original, " pass the house to "), strings.Contains(HouseData.Status.Original, " pass the guildhall to "):
 				HouseData.Status.IsTransfering = true
 
 				subma2 := housePassingRegex.FindAllStringSubmatch(HouseData.Status.Original, -1)

@@ -241,7 +241,7 @@ func tibiaFansitesV3(c *gin.Context) {
 // @Produce      json
 // @Param        name path string true "The name of guild" extensions(x-example=Elysium)
 // @Success      200  {object}  GuildResponse
-// @Router       /v3/guild/{guild} [get]
+// @Router       /v3/guild/{name} [get]
 func tibiaGuildsGuildV3(c *gin.Context) {
 	// getting params from URL
 	guild := c.Param("name")

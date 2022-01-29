@@ -46,6 +46,10 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	tibiaKillstatisticsV3(c)
 	assert.Equal(200, w.Code)
 
+	assert.False(false, tibiaNewslistArchiveV3())
+	assert.False(false, tibiaNewslistArchiveDaysV3())
+	assert.False(false, tibiaNewslistLatestV3())
+
 	tibiaNewslistV3(c)
 	assert.Equal(200, w.Code)
 
@@ -63,4 +67,6 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 
 	tibiaWorldsWorldV3(c)
 	assert.Equal(200, w.Code)
+
+	assert.Equal("TibiaData-API/v3 (release/unknown; build/manual; commit/-; edition/open-source; unittest.example.com)", TibiadataUserAgentGenerator(3))
 }

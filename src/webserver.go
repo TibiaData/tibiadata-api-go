@@ -58,6 +58,11 @@ func runWebServer() {
 	// gin middleware to enable GZIP support
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 
+	// set 404 not found page
+	router.NoRoute(func(c *gin.Context) {
+		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
+	})
+
 	// disable proxy feature of gin
 	_ = router.SetTrustedProxies(nil)
 

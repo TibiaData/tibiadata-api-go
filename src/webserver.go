@@ -60,7 +60,7 @@ func runWebServer() {
 
 	// set 404 not found page
 	router.NoRoute(func(c *gin.Context) {
-		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
+		c.JSON(http.StatusNotFound, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
 	})
 
 	// disable proxy feature of gin
@@ -68,13 +68,13 @@ func runWebServer() {
 
 	// Ping-endpoint
 	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
 	})
 
 	router.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"status": "UP",
 		})
 	})
@@ -133,7 +133,7 @@ func runWebServer() {
 
 	// container version details endpoint
 	router.GET("/versions", func(c *gin.Context) {
-		c.JSON(200, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"release": TibiadataBuildRelease,
 			"build":   TibiadataBuildBuilder,
 			"commit":  TibiadataBuildCommit,

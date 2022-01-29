@@ -103,8 +103,6 @@ Those are the current existing endpoints.
 - GET `/v3/fansites`
 - GET `/v3/guild/:name`
 - GET `/v3/guilds/:world`
-- GET `/v3/highscores/:world`
-- GET `/v3/highscores/:world/:category`
 - GET `/v3/highscores/:world/:category/:vocation`
 - GET `/v3/house/:world/:house_id`
 - GET `/v3/houses/:world/:town`

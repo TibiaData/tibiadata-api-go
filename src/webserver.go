@@ -154,18 +154,18 @@ func runWebServer() {
 	// we run a go routine that will receive the shutdown input
 	go func() {
 		<-quit
-		log.Println("Received shutdown input")
+		log.Println("[info] TibiaData API received shutdown input")
 		if err := server.Close(); err != nil {
-			log.Fatal("Server Close Error:", err)
+			log.Fatal("[error] TibiaData API server close error:", err)
 		}
 	}()
 
 	// run the server
 	if err := server.ListenAndServe(); err != nil {
 		if err == http.ErrServerClosed {
-			log.Println("Server gracefully shut down")
+			log.Println("[info] TibiaData API server gracefully shut down")
 		} else {
-			log.Fatal("Server closed unexpectedly")
+			log.Fatal("[error] TibiaData API server closed unexpectedly")
 		}
 	}
 }

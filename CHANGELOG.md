@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.6.0] - 2022-01-31
+
+### Added
+* Addition of some more tests ([#76](https://github.com/TibiaData/tibiadata-api-go/pull/76) by [tobiasehlert](https://github.com/tobiasehlert))
+* Implement graceful shutdown ([#78](https://github.com/TibiaData/tibiadata-api-go/pull/78) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Implement 404 page not found ([#77](https://github.com/TibiaData/tibiadata-api-go/pull/77) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+
+### Changed
+* Switching to http status codes ([#79](https://github.com/TibiaData/tibiadata-api-go/pull/79) by [tobiasehlert](https://github.com/tobiasehlert))
+* Cleanup of characters deathlist ([#75](https://github.com/TibiaData/tibiadata-api-go/pull/75) by [tobiasehlert](https://github.com/tobiasehlert))
+* Adjustment of endpoint namings ([#74](https://github.com/TibiaData/tibiadata-api-go/pull/74) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [0.5.1] - 2022-01-28
 
 ### Added
@@ -98,7 +110,8 @@
 
 Initial commit
 
-[0.5.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.5.1...v0.5.1
+[0.6.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.5.1...v0.6.0
+[0.5.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.2.0...v0.3.0

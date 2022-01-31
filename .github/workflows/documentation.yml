@@ -27,7 +27,8 @@ jobs:
       - name: Manipulate swagger.json with Release info
         run: |
           # set version of swagger.json to release name
-          cat docs/swagger.json | jq '.info.version = "${{ github.event.release.tag_name }}"' > docs/swagger.json
+          contents="$(jq '.info.version = "${{ github.event.release.tag_name }}"' docs/swagger.json)" && \
+          echo "${contents}" > docs/swagger.json
 
       - name: Upload swagger.json to release page
         uses: svenstaro/upload-release-action@v2

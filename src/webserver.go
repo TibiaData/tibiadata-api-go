@@ -83,36 +83,36 @@ func runWebServer() {
 	v3 := router.Group("/v3")
 	{
 		// Tibia characters
-		v3.GET("/characters/character/:character", tibiaCharactersCharacterV3)
+		v3.GET("/character/:name", tibiaCharactersCharacterV3)
 
 		// Tibia creatures
+		v3.GET("/creature/:race", tibiaCreaturesCreatureV3)
 		v3.GET("/creatures", tibiaCreaturesOverviewV3)
-		v3.GET("/creatures/creature/:race", tibiaCreaturesCreatureV3)
 
 		// Tibia fansites
 		v3.GET("/fansites", tibiaFansitesV3)
 
 		// Tibia guilds
-		v3.GET("/guilds/guild/:guild", tibiaGuildsGuildV3)
-		//v3.GET("/guilds/guild/:guild/events",TibiaGuildsGuildEventsV3)
-		//v3.GET("/guilds/guild/:guild/wars",TibiaGuildsGuildWarsV3)
-		v3.GET("/guilds/world/:world", tibiaGuildsOverviewV3)
+		v3.GET("/guild/:name", tibiaGuildsGuildV3)
+		//v3.GET("/guild/:name/events",TibiaGuildsGuildEventsV3)
+		//v3.GET("/guild/:name/wars",TibiaGuildsGuildWarsV3)
+		v3.GET("/guilds/:world", tibiaGuildsOverviewV3)
 
 		// Tibia highscores
-		v3.GET("/highscores/world/:world", func(c *gin.Context) {
-			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/world/"+c.Param("world")+"/experience/"+TibiadataDefaultVoc)
+		v3.GET("/highscores/:world", func(c *gin.Context) {
+			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/experience/"+TibiadataDefaultVoc)
 		})
-		v3.GET("/highscores/world/:world/:category", func(c *gin.Context) {
-			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/world/"+c.Param("world")+"/"+c.Param("category")+"/"+TibiadataDefaultVoc)
+		v3.GET("/highscores/:world/:category", func(c *gin.Context) {
+			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/"+c.Param("category")+"/"+TibiadataDefaultVoc)
 		})
-		v3.GET("/highscores/world/:world/:category/:vocation", tibiaHighscoresV3)
+		v3.GET("/highscores/:world/:category/:vocation", tibiaHighscoresV3)
 
 		// Tibia houses
-		v3.GET("/houses/world/:world/house/:houseid", tibiaHousesHouseV3)
-		v3.GET("/houses/world/:world/town/:town", tibiaHousesOverviewV3)
+		v3.GET("/house/:world/:house_id", tibiaHousesHouseV3)
+		v3.GET("/houses/:world/:town", tibiaHousesOverviewV3)
 
 		// Tibia killstatistics
-		v3.GET("/killstatistics/world/:world", tibiaKillstatisticsV3)
+		v3.GET("/killstatistics/:world", tibiaKillstatisticsV3)
 
 		// Tibia news
 		v3.GET("/news/archive", tibiaNewslistV3)       // all categories (default 90 days)
@@ -122,13 +122,12 @@ func runWebServer() {
 		v3.GET("/news/newsticker", tibiaNewslistV3)    // only news_ticker
 
 		// Tibia spells
+		v3.GET("/spell/:spell_id", tibiaSpellsSpellV3)
 		v3.GET("/spells", tibiaSpellsOverviewV3)
-		v3.GET("/spells/spell/:spell", tibiaSpellsSpellV3)
-		v3.GET("/spells/vocation/:vocation", tibiaSpellsOverviewV3)
 
 		// Tibia worlds
+		v3.GET("/world/:name", tibiaWorldsWorldV3)
 		v3.GET("/worlds", tibiaWorldsOverviewV3)
-		v3.GET("/worlds/world/:world", tibiaWorldsWorldV3)
 	}
 
 	// container version details endpoint
@@ -176,16 +175,16 @@ func runWebServer() {
 // @Tags         characters
 // @Accept       json
 // @Produce      json
-// @Param        character path string true "The character name"
+// @Param        name path string true "The character name" extensions(x-example=Trollefar)
 // @Success      200  {object}  CharacterResponse
-// @Router       /v3/characters/character/{character} [get]
+// @Router       /v3/character/{name} [get]
 func tibiaCharactersCharacterV3(c *gin.Context) {
 	// getting params from URL
-	character := c.Param("character")
+	name := c.Param("name")
 
 	tibiadataRequest := TibiadataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/community/?subtopic=characters&name=" + TibiadataQueryEscapeStringV3(character),
+		URL:    "https://www.tibia.com/community/?subtopic=characters&name=" + TibiadataQueryEscapeStringV3(name),
 	}
 
 	tibiaDataRequestHandler(
@@ -226,9 +225,9 @@ func tibiaCreaturesOverviewV3(c *gin.Context) {
 // @Tags         creatures
 // @Accept       json
 // @Produce      json
-// @Param        race path string true "The race of creature"
+// @Param        race path string true "The race of creature" extensions(x-example=nightmare)
 // @Success      200  {object}  CreatureResponse
-// @Router       /v3/creatures/creature/{race} [get]
+// @Router       /v3/creature/{race} [get]
 func tibiaCreaturesCreatureV3(c *gin.Context) {
 	// getting params from URL
 	race := c.Param("race")
@@ -276,12 +275,12 @@ func tibiaFansitesV3(c *gin.Context) {
 // @Tags         guilds
 // @Accept       json
 // @Produce      json
-// @Param        guild path string true "The name of guild"
+// @Param        name path string true "The name of guild" extensions(x-example=Elysium)
 // @Success      200  {object}  GuildResponse
-// @Router       /v3/guilds/guild/{guild} [get]
+// @Router       /v3/guild/{name} [get]
 func tibiaGuildsGuildV3(c *gin.Context) {
 	// getting params from URL
-	guild := c.Param("guild")
+	guild := c.Param("name")
 
 	tibiadataRequest := TibiadataRequestStruct{
 		Method: resty.MethodGet,
@@ -303,9 +302,9 @@ func tibiaGuildsGuildV3(c *gin.Context) {
 // @Tags         guilds
 // @Accept       json
 // @Produce      json
-// @Param        world path string true "The world"
+// @Param        world path string true "The world" extensions(x-example=Antica)
 // @Success      200  {object}  GuildsOverviewResponse
-// @Router       /v3/guilds/world/{world} [get]
+// @Router       /v3/guilds/{world} [get]
 func tibiaGuildsOverviewV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")
@@ -333,11 +332,11 @@ func tibiaGuildsOverviewV3(c *gin.Context) {
 // @Tags         highscores
 // @Accept       json
 // @Produce      json
-// @Param        world    path string true "The world (default: all)"
-// @Param        category path string true "The category (default: experience)"
-// @Param        vocation path string true "The vocation (default: all)"
+// @Param        world    path string true "The world" default(all) extensions(x-example=Antica)
+// @Param        category path string true "The category" default(experience) Enums(achievements, axefighting, charmpoints, clubfighting, distancefighting, experience, fishing, fistfighting, goshnarstaint, loyaltypoints, magiclevel, shielding, swordfighting, dromescore) extensions(x-example=fishing)
+// @Param        vocation path string true "The vocation" default(all) Enums(all, knights, paladins, sorcerers, druids) extensions(x-example=knights)
 // @Success      200  {object}  HighscoresResponse
-// @Router       /v3/highscores/world/{world}/{category}/{vocation} [get]
+// @Router       /v3/highscores/{world}/{category}/{vocation} [get]
 func tibiaHighscoresV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")
@@ -378,14 +377,14 @@ func tibiaHighscoresV3(c *gin.Context) {
 // @Tags         houses
 // @Accept       json
 // @Produce      json
-// @Param        world    path string true "The world to show"
-// @Param        houseid  path int    true "The ID of the house"
+// @Param        world     path string true "The world to show" extensions(x-example=Antica)
+// @Param        house_id  path int    true "The ID of the house" extensions(x-example=35019)
 // @Success      200  {object}  HouseResponse
-// @Router       /v3/houses/world/{world}/house/{houseid} [get]
+// @Router       /v3/house/{world}/{house_id} [get]
 func tibiaHousesHouseV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")
-	houseid := c.Param("houseid")
+	houseid := c.Param("house_id")
 
 	// Adding fix for First letter to be upper and rest lower
 	world = TibiadataStringWorldFormatToTitleV3(world)
@@ -410,10 +409,10 @@ func tibiaHousesHouseV3(c *gin.Context) {
 // @Tags         houses
 // @Accept       json
 // @Produce      json
-// @Param        world path string true "The world to show"
-// @Param        town  path string true "The town to show"
+// @Param        world path string true "The world to show" extensions(x-example=Antica)
+// @Param        town  path string true "The town to show" extensions(x-example=Venore)
 // @Success      200  {object}  HousesOverviewResponse
-// @Router       /v3/houses/world/{world}/town/{town} [get]
+// @Router       /v3/houses/{world}/{town} [get]
 //TODO: This API needs to be refactored somehow to use tibiaDataRequestHandler
 func tibiaHousesOverviewV3(c *gin.Context) {
 	// getting params from URL
@@ -436,9 +435,9 @@ func tibiaHousesOverviewV3(c *gin.Context) {
 // @Tags         killstatistics
 // @Accept       json
 // @Produce      json
-// @Param        world path string true "The world to show"
+// @Param        world path string true "The world to show" extensions(x-example=Antica)
 // @Success      200  {object}  KillStatisticsResponse
-// @Router       /v3/killstatistics/world/{world} [get]
+// @Router       /v3/killstatistics/{world} [get]
 func tibiaKillstatisticsV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")
@@ -479,7 +478,7 @@ func tibiaNewslistArchiveV3() bool {
 // @Tags         news
 // @Accept       json
 // @Produce      json
-// @Param        days path int true "The number of days to show"
+// @Param        days path int true "The number of days to show" default(90) minimum(1) extensions(x-example=30)
 // @Success      200  {object}  NewsListResponse
 // @Router       /v3/news/archive/{days} [get]
 func tibiaNewslistArchiveDaysV3() bool {
@@ -567,7 +566,7 @@ func tibiaNewslistV3(c *gin.Context) {
 // @Tags         news
 // @Accept       json
 // @Produce      json
-// @Param        news_id path int true "The ID of news entry"
+// @Param        news_id path int true "The ID of news entry" extensions(x-example=6512)
 // @Success      200  {object}  NewsResponse
 // @Router       /v3/news/id/{news_id} [get]
 func tibiaNewsV3(c *gin.Context) {
@@ -640,12 +639,12 @@ func tibiaSpellsOverviewV3(c *gin.Context) {
 // @Tags         spells
 // @Accept       json
 // @Produce      json
-// @Param        spell path string true "The name of spell"
+// @Param        spell_id path string true "The name of spell" extensions(x-example=stronghaste)
 // @Success      200  {object}  SpellInformationResponse
-// @Router       /v3/spells/spell/{spell} [get]
+// @Router       /v3/spell/{spell_id} [get]
 func tibiaSpellsSpellV3(c *gin.Context) {
 	// getting params from URL
-	spell := c.Param("spell")
+	spell := c.Param("spell_id")
 
 	tibiadataRequest := TibiadataRequestStruct{
 		Method: resty.MethodGet,
@@ -690,12 +689,12 @@ func tibiaWorldsOverviewV3(c *gin.Context) {
 // @Tags         worlds
 // @Accept       json
 // @Produce      json
-// @Param        world path string true "The name of world"
+// @Param        name path string true "The name of world" extensions(x-example=Antica)
 // @Success      200  {object}  WorldResponse
-// @Router       /v3/worlds/world/{world} [get]
+// @Router       /v3/world/{name} [get]
 func tibiaWorldsWorldV3(c *gin.Context) {
 	// getting params from URL
-	world := c.Param("world")
+	world := c.Param("name")
 
 	// Adding fix for First letter to be upper and rest lower
 	world = TibiadataStringWorldFormatToTitleV3(world)

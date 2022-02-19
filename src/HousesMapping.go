@@ -44,7 +44,7 @@ func TibiaDataHousesMappingInitiator() {
 	// Disable redirection of client (so we skip parsing maintenance page)
 	client.SetRedirectPolicy(resty.NoRedirectPolicy())
 
-	TibiadataAssetsURL := "https://assets.tibiadata.com/data.json"
+	TibiadataAssetsURL := "https://assets.tibiadata.com/data.min.json"
 	res, err := client.R().Get(TibiadataAssetsURL)
 
 	switch res.StatusCode() {
@@ -54,7 +54,7 @@ func TibiaDataHousesMappingInitiator() {
 		err = json.Unmarshal([]byte(res.Body()), &data)
 
 		if err != nil {
-			log.Println("[error] TibiaData API failed to parse content from assets.tibiadata.com/data.json")
+			log.Println("[error] TibiaData API failed to parse content from assets.tibiadata.com/data.min.json")
 		} else {
 			// storing data so it's accessible from other places
 			TibiadataHousesMapping = data

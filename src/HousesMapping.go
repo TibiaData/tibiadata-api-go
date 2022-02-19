@@ -44,7 +44,7 @@ func TibiaDataHousesMappingInitiator() {
 	// Disable redirection of client (so we skip parsing maintenance page)
 	client.SetRedirectPolicy(resty.NoRedirectPolicy())
 
-	TibiadataAssetsURL := "https://raw.githubusercontent.com/TibiaData/tibiadata-api-assets/main/data/houses_mapping.json"
+	TibiadataAssetsURL := "https://assets.tibiadata.com/data.json"
 	res, err := client.R().Get(TibiadataAssetsURL)
 
 	switch res.StatusCode() {

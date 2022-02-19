@@ -54,7 +54,7 @@ func TibiaDataHousesMappingInitiator() {
 		err = json.Unmarshal([]byte(res.Body()), &data)
 
 		if err != nil {
-			log.Println("[error] TibiaData API failed to parse content from houses_mapping.json")
+			log.Println("[error] TibiaData API failed to parse content from assets.tibiadata.com/data.json")
 		} else {
 			// storing data so it's accessible from other places
 			TibiadataHousesMapping = data

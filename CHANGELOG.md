@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.1] - 2022-02-27
+
+### Changed
+* Switching assets download URL to assets.tibiadata.com
+* Bump docker/build-push-action from 2.8.0 to 2.9.0 ([#80](https://github.com/TibiaData/tibiadata-api-go/pull/80) by [dependabot](https://github.com/dependabot))
+* Bump golang from 1.17.6 to 1.17.7 ([#81](https://github.com/TibiaData/tibiadata-api-go/pull/81) by [dependabot](https://github.com/dependabot))
+* Bump docker/login-action from 1.12.0 to 1.13.0 ([#82](https://github.com/TibiaData/tibiadata-api-go/pull/82) by [dependabot](https://github.com/dependabot))
+
 ## [0.6.0] - 2022-01-31
 
 ### Added
@@ -110,6 +118,7 @@
 
 Initial commit
 
+[0.6.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.4.0...v0.5.0

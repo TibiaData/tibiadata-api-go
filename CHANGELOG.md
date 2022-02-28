@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.6.2] - 2022-02-28
+
+### Fixed
+* Adding if to prevent panic due to regex ([#84](https://github.com/TibiaData/tibiadata-api-go/pull/84) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [0.6.1] - 2022-02-27
 
 ### Changed
@@ -118,6 +123,7 @@
 
 Initial commit
 
+[0.6.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.5.0...v0.5.1

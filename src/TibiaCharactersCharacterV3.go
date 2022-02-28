@@ -268,13 +268,17 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 				// Removing line breaks
 				CharacterListHTML = TibiadataHTMLRemoveLinebreaksV3(CharacterListHTML)
 
-				subma1 := accountBadgesRegex.FindAllStringSubmatch(CharacterListHTML, -1)
+				// prevent failure of regex that parses account badges
+				if CharacterListHTML != "There are no account badges set to be displayed for this character." {
 
-				AccountBadgesData = append(AccountBadgesData, AccountBadges{
-					Name:        subma1[0][1],
-					IconURL:     subma1[0][3],
-					Description: subma1[0][2],
-				})
+					subma1 := accountBadgesRegex.FindAllStringSubmatch(CharacterListHTML, -1)
+
+					AccountBadgesData = append(AccountBadgesData, AccountBadges{
+						Name:        subma1[0][1],
+						IconURL:     subma1[0][3],
+						Description: subma1[0][2],
+					})
+				}
 			})
 		case "Account Achievements":
 			// Running query over each tr in list

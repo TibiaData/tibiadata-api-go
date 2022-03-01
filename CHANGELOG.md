@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.0.0] - 2022-03-01
+
+### The release of API v3
+
+Bumping version to *v3.0.0* so that GitHub releases match API version.
+
+Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-released-v3-0-0/) for more information.
+
 ## [0.6.2] - 2022-02-28
 
 ### Fixed
@@ -123,6 +131,7 @@
 
 Initial commit
 
+[3.0.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.6.2...v3.0.0
 [0.6.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.5.1...v0.6.0

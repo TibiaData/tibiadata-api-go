@@ -95,10 +95,11 @@ func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse
 		HouseData.Houseid = TibiaDataStringToIntegerV3(houseid)
 		HouseData.World = subma1[0][8]
 
-		HouseData.Town, HouseData.Type = TibiaDataHousesMapResolver(HouseData.Houseid)
+		HouseData.Town = TibiaDataHousesMapResolver(HouseData.Houseid)
 
 		HouseData.Name = TibiaDataSanitizeEscapedString(subma1[0][2])
 		HouseData.Img = subma1[0][1]
+		HouseData.Type = subma1[0][3]
 		HouseData.Beds = TibiaDataStringToIntegerV3(subma1[0][4])
 		HouseData.Size = TibiaDataStringToIntegerV3(subma1[0][5])
 		HouseData.Rent = TibiaDataConvertValuesWithK(subma1[0][6] + subma1[0][7])

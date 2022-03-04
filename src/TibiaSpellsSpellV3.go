@@ -191,35 +191,35 @@ func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformatio
 					if LeftColumn == "Cooldown" {
 						subma3 := SpellCooldownRegex.FindAllStringSubmatch(SpellDivHTML, -1)
 						if len(subma3) > 0 {
-							SpellsInfoCooldownAlone = TibiadataStringToIntegerV3(subma3[0][1])
-							SpellsInfoCooldownGroup = TibiadataStringToIntegerV3(subma3[0][2])
+							SpellsInfoCooldownAlone = TibiaDataStringToIntegerV3(subma3[0][1])
+							SpellsInfoCooldownGroup = TibiaDataStringToIntegerV3(subma3[0][2])
 						}
 
 					}
 
 					// Soul Points
 					if LeftColumn == "Soul Points" {
-						SpellsInfoSoulPoints = TibiadataStringToIntegerV3(RightColumn)
+						SpellsInfoSoulPoints = TibiaDataStringToIntegerV3(RightColumn)
 					}
 
 					// Amount
 					if LeftColumn == "Amount" {
-						SpellsInfoAmount = TibiadataStringToIntegerV3(RightColumn)
+						SpellsInfoAmount = TibiaDataStringToIntegerV3(RightColumn)
 					}
 
 					// Experience Level
 					if LeftColumn == "Exp Lvl" {
 						switch SpellInformationSection {
 						case "spell":
-							SpellsInfoLevel = TibiadataStringToIntegerV3(RightColumn)
+							SpellsInfoLevel = TibiaDataStringToIntegerV3(RightColumn)
 						case "rune":
-							RuneInfoLevel = TibiadataStringToIntegerV3(RightColumn)
+							RuneInfoLevel = TibiaDataStringToIntegerV3(RightColumn)
 						}
 					}
 
 					// Mana
 					if LeftColumn == "Mana" {
-						SpellsInfoMana = TibiadataStringToIntegerV3(RightColumn)
+						SpellsInfoMana = TibiaDataStringToIntegerV3(RightColumn)
 					}
 
 					// Price
@@ -227,7 +227,7 @@ func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformatio
 						if RightColumn == "free" {
 							SpellsInfoPrice = 0
 						} else {
-							SpellsInfoPrice = TibiadataStringToIntegerV3(RightColumn)
+							SpellsInfoPrice = TibiaDataStringToIntegerV3(RightColumn)
 						}
 					}
 
@@ -247,7 +247,7 @@ func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformatio
 
 					// Magic level
 					if LeftColumn == "Mag Lvl" {
-						RuneInfoMagicLevel = TibiadataStringToIntegerV3(RightColumn)
+						RuneInfoMagicLevel = TibiaDataStringToIntegerV3(RightColumn)
 					}
 				}
 			})
@@ -303,8 +303,8 @@ func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformatio
 			},
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

@@ -25,7 +25,7 @@ func TestAnticaThaisHousesOverview(t *testing.T) {
 		nil,
 		"Antica",
 		"Thais",
-		func(request TibiadataRequestStruct) (string, error) {
+		func(request TibiaDataRequestStruct) (string, error) {
 			if strings.Contains(request.URL, "guildhalls") {
 				return string(guildData), nil
 			}
@@ -95,7 +95,7 @@ func TestPremiaFarmineHousesOverview(t *testing.T) {
 		nil,
 		"Premia",
 		"Farmine",
-		func(request TibiadataRequestStruct) (string, error) {
+		func(request TibiaDataRequestStruct) (string, error) {
 			if strings.Contains(request.URL, "guildhalls") {
 				return string(guildData), nil
 			}
@@ -138,7 +138,7 @@ func TestPremiaEdronHousesOverview(t *testing.T) {
 		nil,
 		"Premia",
 		"Edron",
-		func(request TibiadataRequestStruct) (string, error) {
+		func(request TibiaDataRequestStruct) (string, error) {
 			if strings.Contains(request.URL, "guildhalls") {
 				return string(guildData), nil
 			}

@@ -16,8 +16,8 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-// TibiadataDatetimeV3 func
-func TibiadataDatetimeV3(date string) string {
+// TibiaDataDatetimeV3 func
+func TibiaDataDatetimeV3(date string) string {
 	//TODO: Normalization needs to happen above this layer
 	date = norm.NFKC.String(date)
 
@@ -52,15 +52,15 @@ func TibiadataDatetimeV3(date string) string {
 	return returnDate.UTC().Format(time.RFC3339)
 }
 
-// TibiadataHTMLRemoveLinebreaksV3 func
-func TibiadataHTMLRemoveLinebreaksV3(data string) string {
+// TibiaDataHTMLRemoveLinebreaksV3 func
+func TibiaDataHTMLRemoveLinebreaksV3(data string) string {
 	return strings.ReplaceAll(data, "\n", "")
 }
 
 var removeUrlRegex = regexp.MustCompile(`<a.*>(.*)<\/a>`)
 
-// TibiadataRemoveURLsV3 func
-func TibiadataRemoveURLsV3(data string) string {
+// TibiaDataRemoveURLsV3 func
+func TibiaDataRemoveURLsV3(data string) string {
 	// prepare return value
 	var returnData string
 
@@ -75,13 +75,13 @@ func TibiadataRemoveURLsV3(data string) string {
 	return returnData
 }
 
-// TibiadataStringWorldFormatToTitleV3 func
-func TibiadataStringWorldFormatToTitleV3(world string) string {
+// TibiaDataStringWorldFormatToTitleV3 func
+func TibiaDataStringWorldFormatToTitleV3(world string) string {
 	return strings.Title(strings.ToLower(world))
 }
 
-// TibiadataQueryEscapeStringV3 func - encode string to be correct formatted
-func TibiadataQueryEscapeStringV3(data string) string {
+// TibiaDataQueryEscapeStringV3 func - encode string to be correct formatted
+func TibiaDataQueryEscapeStringV3(data string) string {
 	// switching "+" to " "
 	data = strings.ReplaceAll(data, "+", " ")
 
@@ -92,8 +92,8 @@ func TibiadataQueryEscapeStringV3(data string) string {
 	return url.QueryEscape(data)
 }
 
-// TibiadataDateV3 func
-func TibiadataDateV3(date string) string {
+// TibiaDataDateV3 func
+func TibiaDataDateV3(date string) string {
 	// removing weird spacing and comma
 	date = TibiaDataSanitizeNbspSpaceString(strings.ReplaceAll(date, ",", ""))
 
@@ -120,11 +120,11 @@ func TibiadataDateV3(date string) string {
 	return tmpDate.UTC().Format("2006-01-02")
 }
 
-// TibiadataStringToIntegerV3 func
-func TibiadataStringToIntegerV3(data string) int {
+// TibiaDataStringToIntegerV3 func
+func TibiaDataStringToIntegerV3(data string) int {
 	returnData, err := strconv.Atoi(strings.ReplaceAll(data, ",", ""))
 	if err != nil {
-		log.Printf("[warning] TibiadataStringToIntegerV3: couldn't convert string into int. error: %s", err)
+		log.Printf("[warning] TibiaDataStringToIntegerV3: couldn't convert string into int. error: %s", err)
 	}
 
 	return returnData
@@ -224,7 +224,7 @@ func getEnvAsInt(name string, defaultVal int) int {
 
 // TibiaDataConvertValuesWithK func - convert price strings that contain k, kk or more to 3x0
 func TibiaDataConvertValuesWithK(data string) int {
-	return TibiadataStringToIntegerV3(strings.ReplaceAll(data, "k", "") + strings.Repeat("000", strings.Count(data, "k")))
+	return TibiaDataStringToIntegerV3(strings.ReplaceAll(data, "k", "") + strings.Repeat("000", strings.Count(data, "k")))
 }
 
 // TibiaDataVocationValidator func - return valid vocation string and vocation id
@@ -257,8 +257,8 @@ func TibiaDataVocationValidator(vocation string) (string, string) {
 	return vocation, vocationid
 }
 
-// TibiadataGetNewsCategory func - extract news category by newsicon
-func TibiadataGetNewsCategory(data string) string {
+// TibiaDataGetNewsCategory func - extract news category by newsicon
+func TibiaDataGetNewsCategory(data string) string {
 	switch {
 	case strings.Contains(data, "newsicon_cipsoft"):
 		return "cipsoft"
@@ -275,8 +275,8 @@ func TibiadataGetNewsCategory(data string) string {
 	}
 }
 
-// TibiadataGetNewsType func - extract news type
-func TibiadataGetNewsType(data string) string {
+// TibiaDataGetNewsType func - extract news type
+func TibiaDataGetNewsType(data string) string {
 	switch data {
 	case "News Ticker":
 		return "ticker"

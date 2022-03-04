@@ -3,21 +3,21 @@ package main
 import "log"
 
 var (
-	// TibiadataDefaultVoc - default vocation when not specified in request
-	TibiadataDefaultVoc string = "all"
+	// TibiaDataDefaultVoc - default vocation when not specified in request
+	TibiaDataDefaultVoc string = "all"
 
-	// Tibiadata app flags for running
-	TibiadataAPIversion int = 3
-	TibiadataDebug      bool
+	// TibiaData app flags for running
+	TibiaDataAPIversion int = 3
+	TibiaDataDebug      bool
 
-	// Tibiadata app settings
-	TibiadataHost string // set through env TIBIADATA_HOST
+	// TibiaData app settings
+	TibiaDataHost string // set through env TIBIADATA_HOST
 
-	// Tibiadata app details set to release/build on GitHub
-	TibiadataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
-	TibiadataBuildBuilder = "manual"      // will be set by GitHub Actions
-	TibiadataBuildCommit  = "-"           // will be set by GitHub Actions (to git commit)
-	TibiadataBuildEdition = "open-source" //
+	// TibiaData app details set to release/build on GitHub
+	TibiaDataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
+	TibiaDataBuildBuilder = "manual"      // will be set by GitHub Actions
+	TibiaDataBuildCommit  = "-"           // will be set by GitHub Actions (to git commit)
+	TibiaDataBuildEdition = "open-source" //
 )
 
 // @title           TibiaData API
@@ -45,21 +45,21 @@ func main() {
 	TibiaDataInitializer()
 
 	// logging build information
-	log.Printf("[info] TibiaData API release: %s", TibiadataBuildRelease)
-	log.Printf("[info] TibiaData API build: %s", TibiadataBuildBuilder)
-	log.Printf("[info] TibiaData API commit: %s", TibiadataBuildCommit)
-	log.Printf("[info] TibiaData API edition: %s", TibiadataBuildEdition)
+	log.Printf("[info] TibiaData API release: %s", TibiaDataBuildRelease)
+	log.Printf("[info] TibiaData API build: %s", TibiaDataBuildBuilder)
+	log.Printf("[info] TibiaData API commit: %s", TibiaDataBuildCommit)
+	log.Printf("[info] TibiaData API edition: %s", TibiaDataBuildEdition)
 
 	// setting tibiadata-application to log much less if DEBUG_MODE is false (default is false)
 	if !getEnvAsBool("DEBUG_MODE", false) {
 		log.Printf("[info] TibiaData API debug-mode: disabled")
 	} else {
 		// setting debug to true for more logging
-		TibiadataDebug = true
+		TibiaDataDebug = true
 		log.Printf("[info] TibiaData API debug-mode: enabled")
 
 		// logging user-agent string
-		log.Printf("[debug] TIbiaData API User-Agent: %s", TibiadataUserAgent)
+		log.Printf("[debug] TIbiaData API User-Agent: %s", TibiaDataUserAgent)
 	}
 
 	// starting webserver.go stuff
@@ -68,26 +68,26 @@ func main() {
 
 // TibiaDataInitializer func - init things at beginning
 func TibiaDataInitializer() {
-	// setting TibiadataBuildEdition
+	// setting TibiaDataBuildEdition
 	if isEnvExist("TIBIADATA_EDITION") {
-		TibiadataBuildEdition = getEnv("TIBIADATA_EDITION", "open-source")
+		TibiaDataBuildEdition = getEnv("TIBIADATA_EDITION", "open-source")
 	}
 
 	// adding information of host
-	TibiadataHost = getEnv("TIBIADATA_HOST", "")
-	if TibiadataHost != "" {
-		TibiadataHost = "+https://" + TibiadataHost
+	TibiaDataHost = getEnv("TIBIADATA_HOST", "")
+	if TibiaDataHost != "" {
+		TibiaDataHost = "+https://" + TibiaDataHost
 	}
 
-	// generating TibiadataUserAgent with TibiadataUserAgentGenerator function
-	TibiadataUserAgent = TibiadataUserAgentGenerator(TibiadataAPIversion)
+	// generating TibiaDataUserAgent with TibiaDataUserAgentGenerator function
+	TibiaDataUserAgent = TibiaDataUserAgentGenerator(TibiaDataAPIversion)
 
-	// setting TibiadataProxyDomain
+	// setting TibiaDataProxyDomain
 	if isEnvExist("TIBIADATA_PROXY") {
-		TibiadataProxyDomain = "https://" + getEnv("TIBIADATA_PROXY", "www.tibia.com") + "/"
+		TibiaDataProxyDomain = "https://" + getEnv("TIBIADATA_PROXY", "www.tibia.com") + "/"
 	}
 
-	log.Printf("[info] TibiaData API proxy: %s", TibiadataProxyDomain)
+	log.Printf("[info] TibiaData API proxy: %s", TibiaDataProxyDomain)
 
 	// initializing houses mappings
 	TibiaDataHousesMappingInitiator()

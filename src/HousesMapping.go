@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	TibiadataHousesMapping HousesMapping
+	TibiaDataHousesMapping HousesMapping
 )
 
 type AssetsHouse struct {
@@ -35,7 +35,7 @@ func TibiaDataHousesMappingInitiator() {
 	// Set headers for all requests
 	client.SetHeaders(map[string]string{
 		"Content-Type": "application/json",
-		"User-Agent":   TibiadataUserAgent,
+		"User-Agent":   TibiaDataUserAgent,
 	})
 
 	// Enabling Content length value for all request
@@ -44,8 +44,8 @@ func TibiaDataHousesMappingInitiator() {
 	// Disable redirection of client (so we skip parsing maintenance page)
 	client.SetRedirectPolicy(resty.NoRedirectPolicy())
 
-	TibiadataAssetsURL := "https://assets.tibiadata.com/data.min.json"
-	res, err := client.R().Get(TibiadataAssetsURL)
+	TibiaDataAssetsURL := "https://assets.tibiadata.com/data.min.json"
+	res, err := client.R().Get(TibiaDataAssetsURL)
 
 	switch res.StatusCode() {
 	case http.StatusOK:
@@ -57,7 +57,7 @@ func TibiaDataHousesMappingInitiator() {
 			log.Println("[error] TibiaData API failed to parse content from assets.tibiadata.com/data.min.json")
 		} else {
 			// storing data so it's accessible from other places
-			TibiadataHousesMapping = data
+			TibiaDataHousesMapping = data
 		}
 
 	default:
@@ -67,7 +67,7 @@ func TibiaDataHousesMappingInitiator() {
 
 // TibiaDataHousesMapResolver func - used to return both town and type
 func TibiaDataHousesMapResolver(houseid int) (town string, housetype string) {
-	for _, value := range TibiadataHousesMapping.Houses {
+	for _, value := range TibiaDataHousesMapping.Houses {
 		if houseid == value.HouseID {
 			return value.Town, value.HouseType
 		}

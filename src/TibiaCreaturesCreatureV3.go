@@ -96,7 +96,7 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) CreatureRe
 		// Regex to get data..
 		subma2 := CreatureHitpointsRegex.FindAllStringSubmatch(subma1[0][4], -1)
 		// Add data to vars
-		CreatureHitpoints = TibiadataStringToIntegerV3(subma2[0][1])
+		CreatureHitpoints = TibiaDataStringToIntegerV3(subma2[0][1])
 		CreatureBehaviour = subma2[0][2]
 		if !strings.Contains(subma1[0][4], "cannot be paralysed") {
 			CreatureBeParalysed = true
@@ -124,12 +124,12 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) CreatureRe
 			subma2402 := subma24[0][2]
 			if strings.Contains(subma2402, "convince these creatures but they cannot be") {
 				CreatureBeConvinced = true
-				CreatureConvincedMana = TibiadataStringToIntegerV3(subma24[0][1])
+				CreatureConvincedMana = TibiaDataStringToIntegerV3(subma24[0][1])
 			} else if strings.Contains(subma2402, "summon or convince these creatures") {
 				CreatureBeSummoned = true
-				CreatureSummonedMana = TibiadataStringToIntegerV3(subma24[0][1])
+				CreatureSummonedMana = TibiaDataStringToIntegerV3(subma24[0][1])
 				CreatureBeConvinced = true
-				CreatureConvincedMana = TibiadataStringToIntegerV3(subma24[0][1])
+				CreatureConvincedMana = TibiaDataStringToIntegerV3(subma24[0][1])
 			}
 		}
 
@@ -137,7 +137,7 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) CreatureRe
 		// Regex to get loot information
 		subma3 := CreatureLootRegex.FindAllStringSubmatch(subma1[0][5], -1)
 		// Adding data to vars
-		CreatureExperiencePoints = TibiadataStringToIntegerV3(subma3[0][1])
+		CreatureExperiencePoints = TibiaDataStringToIntegerV3(subma3[0][1])
 		if subma3[0][2] != "nothing" {
 			CreatureIsLootable = true
 			CreatureLootListTmp := strings.Split(strings.Replace(strings.Replace(subma3[0][2], "items ", "", 1), " and sometimes other ", "", 1), ", ")
@@ -173,8 +173,8 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) CreatureRe
 			Featured:         CreatureIsBoosted,
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

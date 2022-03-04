@@ -48,7 +48,7 @@ var (
 )
 
 // TibiaHousesOverviewV3 func
-func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string, htmlDataCollector func(TibiadataRequestStruct) (string, error)) HousesOverviewResponse {
+func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string, htmlDataCollector func(TibiaDataRequestStruct) (string, error)) HousesOverviewResponse {
 	var (
 		// Creating empty vars
 		HouseData, GuildhallData []HousesHouse
@@ -58,9 +58,9 @@ func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string, htmlDa
 	HouseTypes := []string{"houses", "guildhalls"}
 	// running over the FansiteTypes array
 	for _, HouseType := range HouseTypes {
-		tibiadataRequest := TibiadataRequestStruct{
+		tibiadataRequest := TibiaDataRequestStruct{
 			Method: resty.MethodGet,
-			URL:    "https://www.tibia.com/community/?subtopic=houses&world=" + TibiadataQueryEscapeStringV3(world) + "&town=" + TibiadataQueryEscapeStringV3(town) + "&type=" + TibiadataQueryEscapeStringV3(HouseType),
+			URL:    "https://www.tibia.com/community/?subtopic=houses&world=" + TibiaDataQueryEscapeStringV3(world) + "&town=" + TibiaDataQueryEscapeStringV3(town) + "&type=" + TibiaDataQueryEscapeStringV3(HouseType),
 		}
 		BoxContentHTML, err := htmlDataCollector(tibiadataRequest)
 
@@ -88,7 +88,7 @@ func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string, htmlDa
 			}
 
 			// Removing linebreaks from HTML
-			HousesDivHTML = TibiadataHTMLRemoveLinebreaksV3(HousesDivHTML)
+			HousesDivHTML = TibiaDataHTMLRemoveLinebreaksV3(HousesDivHTML)
 			HousesDivHTML = TibiaDataSanitizeNbspSpaceString(HousesDivHTML)
 
 			subma1 := houseOverviewDataRegex.FindAllStringSubmatch(HousesDivHTML, -1)
@@ -96,8 +96,8 @@ func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string, htmlDa
 			if len(subma1) > 0 {
 				// House details
 				house.Name = TibiaDataSanitizeEscapedString(subma1[0][1])
-				house.HouseID = TibiadataStringToIntegerV3(subma1[0][6])
-				house.Size = TibiadataStringToIntegerV3(subma1[0][2])
+				house.HouseID = TibiaDataStringToIntegerV3(subma1[0][6])
+				house.Size = TibiaDataStringToIntegerV3(subma1[0][2])
 				house.Rent = TibiaDataConvertValuesWithK(subma1[0][3] + subma1[0][4])
 
 				// HousesAction details
@@ -110,7 +110,7 @@ func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string, htmlDa
 				case strings.Contains(s, "auctioned"):
 					house.IsAuctioned = true
 					subma1b := houseOverviewAuctionedRegex.FindAllStringSubmatch(s, -1)
-					house.Auction.AuctionBid = TibiadataStringToIntegerV3(subma1b[0][1])
+					house.Auction.AuctionBid = TibiaDataStringToIntegerV3(subma1b[0][1])
 					house.Auction.AuctionLeft = subma1b[0][2]
 				}
 
@@ -134,8 +134,8 @@ func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string, htmlDa
 			GuildhallList: GuildhallData,
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

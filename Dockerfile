@@ -2,9 +2,9 @@
 FROM golang:1.17.7
 
 # get args
-ARG TibiadataBuildBuilder=dockerfile
-ARG TibiadataBuildRelease=-
-ARG TibiadataBuildCommit=-
+ARG TibiaDataBuildBuilder=dockerfile
+ARG TibiaDataBuildRelease=-
+ARG TibiaDataBuildCommit=-
 
 # create and set workingfolder
 WORKDIR /go/src/
@@ -19,7 +19,7 @@ RUN go mod download
 COPY src/ .
 
 # compile the program
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s -X 'main.TibiadataBuildBuilder=${TibiadataBuildBuilder}' -X 'main.TibiadataBuildRelease=${TibiadataBuildRelease}' -X 'main.TibiadataBuildCommit=${TibiadataBuildCommit}'" -o app .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s -X 'main.TibiaDataBuildBuilder=${TibiaDataBuildBuilder}' -X 'main.TibiaDataBuildRelease=${TibiaDataBuildRelease}' -X 'main.TibiaDataBuildCommit=${TibiaDataBuildCommit}'" -o app .
 
 
 # get latest alpine container

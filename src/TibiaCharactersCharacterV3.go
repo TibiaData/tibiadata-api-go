@@ -174,7 +174,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 					if strings.Contains(Tmp[0], ", will be deleted at") {
 						Tmp2 := strings.Split(Tmp[0], ", will be deleted at ")
 						CharacterInformationData.Name = Tmp2[0]
-						CharacterInformationData.DeletionDate = TibiadataDatetimeV3(strings.TrimSpace(Tmp2[1]))
+						CharacterInformationData.DeletionDate = TibiaDataDatetimeV3(strings.TrimSpace(Tmp2[1]))
 					}
 					if strings.Contains(RowData, localTradedString) {
 						CharacterInformationData.Traded = true
@@ -187,13 +187,13 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 				case "Title:":
 					subma1t := titleRegex.FindAllStringSubmatch(RowData, -1)
 					CharacterInformationData.Title = subma1t[0][1]
-					CharacterInformationData.UnlockedTitles = TibiadataStringToIntegerV3(subma1t[0][2])
+					CharacterInformationData.UnlockedTitles = TibiaDataStringToIntegerV3(subma1t[0][2])
 				case "Vocation:":
 					CharacterInformationData.Vocation = RowData
 				case "Level:":
-					CharacterInformationData.Level = TibiadataStringToIntegerV3(RowData)
+					CharacterInformationData.Level = TibiaDataStringToIntegerV3(RowData)
 				case "nobr", "Achievement Points:":
-					CharacterInformationData.AchievementPoints = TibiadataStringToIntegerV3(RowData)
+					CharacterInformationData.AchievementPoints = TibiaDataStringToIntegerV3(RowData)
 				case "World:":
 					CharacterInformationData.World = RowData
 				case "Former World:":
@@ -203,7 +203,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 				case "Account Status:":
 					CharacterInformationData.AccountStatus = RowData
 				case "Married To:":
-					CharacterInformationData.MarriedTo = TibiadataRemoveURLsV3(RowData)
+					CharacterInformationData.MarriedTo = TibiaDataRemoveURLsV3(RowData)
 				case "House:":
 					AnchorQuery := s.Find("a")
 					HouseName := AnchorQuery.Nodes[0].FirstChild.Data
@@ -217,8 +217,8 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 					CharacterInformationData.Houses = append(CharacterInformationData.Houses, Houses{
 						Name:    HouseName,
 						Town:    HouseTown,
-						Paid:    TibiadataDateV3(HousePaidUntil),
-						HouseID: TibiadataStringToIntegerV3(HouseId),
+						Paid:    TibiaDataDateV3(HousePaidUntil),
+						HouseID: TibiaDataStringToIntegerV3(HouseId),
 					})
 				case "Guild Membership:":
 					CharacterInformationData.Guild.Rank = RowData
@@ -227,7 +227,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 					CharacterInformationData.Guild.GuildName = TibiaDataSanitizeNbspSpaceString(RowNameQuery.Nodes[0].NextSibling.LastChild.LastChild.Data)
 				case "Last Login:":
 					if RowData != "never logged in" {
-						CharacterInformationData.LastLogin = TibiadataDatetimeV3(RowData)
+						CharacterInformationData.LastLogin = TibiaDataDatetimeV3(RowData)
 					}
 				case "Comment:":
 					node := RowNameQuery.Nodes[0].NextSibling.FirstChild
@@ -248,7 +248,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 				case "Loyalty Title:":
 					AccountInformationData.LoyaltyTitle = RowData
 				case "Created:":
-					AccountInformationData.Created = TibiadataDatetimeV3(RowData)
+					AccountInformationData.Created = TibiaDataDatetimeV3(RowData)
 				case "Position:":
 					TmpPosition := strings.Split(RowData, "<")
 					AccountInformationData.Position = strings.TrimSpace(TmpPosition[0])
@@ -266,7 +266,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 				}
 
 				// Removing line breaks
-				CharacterListHTML = TibiadataHTMLRemoveLinebreaksV3(CharacterListHTML)
+				CharacterListHTML = TibiaDataHTMLRemoveLinebreaksV3(CharacterListHTML)
 
 				// prevent failure of regex that parses account badges
 				if CharacterListHTML != "There are no account badges set to be displayed for this character." {
@@ -290,7 +290,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 				}
 
 				// Removing line breaks
-				CharacterListHTML = TibiadataHTMLRemoveLinebreaksV3(CharacterListHTML)
+				CharacterListHTML = TibiaDataHTMLRemoveLinebreaksV3(CharacterListHTML)
 
 				subma1a := accountAchievementsRegex.FindAllStringSubmatch(CharacterListHTML, -1)
 				if len(subma1a) > 0 {
@@ -317,7 +317,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 				}
 
 				// Removing line breaks
-				CharacterListHTML = TibiadataHTMLRemoveLinebreaksV3(CharacterListHTML)
+				CharacterListHTML = TibiaDataHTMLRemoveLinebreaksV3(CharacterListHTML)
 				CharacterListHTML = strings.ReplaceAll(CharacterListHTML, ".<br/>Assisted by", ". Assisted by")
 
 				// Regex to get data for deaths
@@ -386,8 +386,8 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 
 					// append deadentry to death list
 					DeathsData = append(DeathsData, Deaths{
-						Time:    TibiadataDatetimeV3(subma1[0][1]),
-						Level:   TibiadataStringToIntegerV3(subma1[0][3]),
+						Time:    TibiaDataDatetimeV3(subma1[0][1]),
+						Level:   TibiaDataStringToIntegerV3(subma1[0][3]),
 						Killers: DeathKillers,
 						Assists: DeathAssists,
 						Reason:  ReasonString,
@@ -404,7 +404,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 				}
 
 				// Removing line breaks
-				CharacterListHTML = TibiadataHTMLRemoveLinebreaksV3(CharacterListHTML)
+				CharacterListHTML = TibiaDataHTMLRemoveLinebreaksV3(CharacterListHTML)
 
 				subma1 := characterInfoRegex.FindAllStringSubmatch(CharacterListHTML, -1)
 
@@ -463,8 +463,8 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 			OtherCharactersData,
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

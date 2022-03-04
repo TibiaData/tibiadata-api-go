@@ -55,13 +55,13 @@ func TibiaKillstatisticsV3Impl(world string, BoxContentHTML string) KillStatisti
 	ReaderHTML.Find("#KillStatisticsTable .TableContent tr.Odd,tr.Even").Each(func(index int, s *goquery.Selection) {
 		DataColumns := s.Find("td").Nodes
 
-		KillStatisticsLastDayKilledPlayers := TibiadataStringToIntegerV3(DataColumns[1].FirstChild.Data)
+		KillStatisticsLastDayKilledPlayers := TibiaDataStringToIntegerV3(DataColumns[1].FirstChild.Data)
 		TotalLastDayKilledPlayers += KillStatisticsLastDayKilledPlayers
-		KillStatisticsLastDayKilledByPlayers := TibiadataStringToIntegerV3(DataColumns[2].FirstChild.Data)
+		KillStatisticsLastDayKilledByPlayers := TibiaDataStringToIntegerV3(DataColumns[2].FirstChild.Data)
 		TotalLastDayKilledByPlayers += KillStatisticsLastDayKilledByPlayers
-		KillStatisticsLastWeekKilledPlayers := TibiadataStringToIntegerV3(DataColumns[3].FirstChild.Data)
+		KillStatisticsLastWeekKilledPlayers := TibiaDataStringToIntegerV3(DataColumns[3].FirstChild.Data)
 		TotalLastWeekKilledPlayers += KillStatisticsLastWeekKilledPlayers
-		KillStatisticsLastWeekKilledByPlayers := TibiadataStringToIntegerV3(DataColumns[4].FirstChild.Data)
+		KillStatisticsLastWeekKilledByPlayers := TibiaDataStringToIntegerV3(DataColumns[4].FirstChild.Data)
 		TotalLastWeekKilledByPlayers += KillStatisticsLastWeekKilledByPlayers
 
 		// Append new Entry item to KillStatisticsData
@@ -88,8 +88,8 @@ func TibiaKillstatisticsV3Impl(world string, BoxContentHTML string) KillStatisti
 			},
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

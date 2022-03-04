@@ -62,7 +62,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 * Cache new regex queries ([#66](https://github.com/TibiaData/tibiadata-api-go/pull/66) by [kamilon](https://github.com/kamilon))
 
 ### Fixed
-* Fix race condition with TibiadataRequestStruct ([#65](https://github.com/TibiaData/tibiadata-api-go/pull/65) by [kamilon](https://github.com/kamilon))
+* Fix race condition with TibiaDataRequestStruct ([#65](https://github.com/TibiaData/tibiadata-api-go/pull/65) by [kamilon](https://github.com/kamilon))
 * Bump docker/build-push-action from 2.7.0 to 2.8.0 ([#68](https://github.com/TibiaData/tibiadata-api-go/pull/68) by [dependabot](https://github.com/dependabot))
 
 ## [0.4.0] - 2022-01-12

@@ -95,8 +95,8 @@ func TibiaGuildsOverviewV3Impl(world string, BoxContentHTML string) GuildsOvervi
 			Formation: FormationGuilds,
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

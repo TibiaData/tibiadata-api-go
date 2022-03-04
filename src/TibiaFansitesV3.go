@@ -88,7 +88,7 @@ func TibiaFansitesV3Impl(BoxContentHTML string) FansitesResponse {
 			}
 
 			// Removing line breaks
-			FansiteTrHTML = TibiadataHTMLRemoveLinebreaksV3(FansiteTrHTML)
+			FansiteTrHTML = TibiaDataHTMLRemoveLinebreaksV3(FansiteTrHTML)
 
 			// Regex to get data for fansites
 			subma1 := FansiteInformationRegex.FindAllStringSubmatch(FansiteTrHTML, -1)
@@ -201,8 +201,8 @@ func TibiaFansitesV3Impl(BoxContentHTML string) FansitesResponse {
 			SupportedFansites: SupportedFansitesData,
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

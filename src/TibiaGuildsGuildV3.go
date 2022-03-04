@@ -138,7 +138,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 				// Regex to get GuildWorld and GuildFounded
 				subma1b := GuildWorldAndFoundationRegex.FindAllStringSubmatch(line, -1)
 				GuildWorld = subma1b[0][1]
-				GuildFounded = TibiadataDateV3(subma1b[0][2])
+				GuildFounded = TibiaDataDateV3(subma1b[0][2])
 			}
 
 			// If to get GuildActive
@@ -165,7 +165,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 				GuildGuildhallData = append(GuildGuildhallData, Guildhall{
 					Name:      TibiaDataSanitizeEscapedString(subma1b[0][1]),
 					World:     GuildWorld,
-					PaidUntil: TibiadataDateV3(subma1b[0][2]),
+					PaidUntil: TibiaDataDateV3(subma1b[0][2]),
 				})
 			}
 
@@ -189,7 +189,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 		}
 
 		// Removing linebreaks from HTML
-		GuildsDivHTML = TibiadataHTMLRemoveLinebreaksV3(GuildsDivHTML)
+		GuildsDivHTML = TibiaDataHTMLRemoveLinebreaksV3(GuildsDivHTML)
 
 		// Regex to get data for record values
 		subma1 := GuildMemberInformationRegex.FindAllStringSubmatch(GuildsDivHTML, -1)
@@ -217,8 +217,8 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 				Title:    MembersTitle,
 				Rank:     MembersRank,
 				Vocation: subma1[0][4],
-				Level:    TibiadataStringToIntegerV3(subma1[0][5]),
-				Joined:   TibiadataDateV3(subma1[0][6]),
+				Level:    TibiaDataStringToIntegerV3(subma1[0][5]),
+				Joined:   TibiaDataDateV3(subma1[0][6]),
 				Status:   MembersStatus,
 			})
 		} else {
@@ -262,8 +262,8 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 			},
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

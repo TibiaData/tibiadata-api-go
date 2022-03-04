@@ -21,8 +21,8 @@ import (
 )
 
 var (
-	// Tibiadata app resty vars
-	TibiadataUserAgent, TibiadataProxyDomain string
+	// TibiaData app resty vars
+	TibiaDataUserAgent, TibiaDataProxyDomain string
 )
 
 // Information - child of JSONData
@@ -31,8 +31,8 @@ type Information struct {
 	Timestamp  string `json:"timestamp"`
 }
 
-// TibiadataRequest - struct of request information
-type TibiadataRequestStruct struct {
+// TibiaDataRequest - struct of request information
+type TibiaDataRequestStruct struct {
 	Method   string            `json:"method"`    // Request method (default: GET)
 	URL      string            `json:"url"`       // Request URL
 	FormData map[string]string `json:"form_data"` // Request form content (used when POST)
@@ -100,10 +100,10 @@ func runWebServer() {
 
 		// Tibia highscores
 		v3.GET("/highscores/:world", func(c *gin.Context) {
-			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/experience/"+TibiadataDefaultVoc)
+			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/experience/"+TibiaDataDefaultVoc)
 		})
 		v3.GET("/highscores/:world/:category", func(c *gin.Context) {
-			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/"+c.Param("category")+"/"+TibiadataDefaultVoc)
+			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/"+c.Param("category")+"/"+TibiaDataDefaultVoc)
 		})
 		v3.GET("/highscores/:world/:category/:vocation", tibiaHighscoresV3)
 
@@ -133,10 +133,10 @@ func runWebServer() {
 	// container version details endpoint
 	router.GET("/versions", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"release": TibiadataBuildRelease,
-			"build":   TibiadataBuildBuilder,
-			"commit":  TibiadataBuildCommit,
-			"edition": TibiadataBuildEdition,
+			"release": TibiaDataBuildRelease,
+			"build":   TibiaDataBuildBuilder,
+			"commit":  TibiaDataBuildCommit,
+			"edition": TibiaDataBuildEdition,
 		})
 	})
 
@@ -182,9 +182,9 @@ func tibiaCharactersCharacterV3(c *gin.Context) {
 	// getting params from URL
 	name := c.Param("name")
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/community/?subtopic=characters&name=" + TibiadataQueryEscapeStringV3(name),
+		URL:    "https://www.tibia.com/community/?subtopic=characters&name=" + TibiaDataQueryEscapeStringV3(name),
 	}
 
 	tibiaDataRequestHandler(
@@ -205,7 +205,7 @@ func tibiaCharactersCharacterV3(c *gin.Context) {
 // @Success      200  {object}  CreaturesOverviewResponse
 // @Router       /v3/creatures [get]
 func tibiaCreaturesOverviewV3(c *gin.Context) {
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
 		URL:    "https://www.tibia.com/library/?subtopic=creatures",
 	}
@@ -232,9 +232,9 @@ func tibiaCreaturesCreatureV3(c *gin.Context) {
 	// getting params from URL
 	race := c.Param("race")
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/library/?subtopic=creatures&race=" + TibiadataQueryEscapeStringV3(race),
+		URL:    "https://www.tibia.com/library/?subtopic=creatures&race=" + TibiaDataQueryEscapeStringV3(race),
 	}
 
 	tibiaDataRequestHandler(
@@ -255,7 +255,7 @@ func tibiaCreaturesCreatureV3(c *gin.Context) {
 // @Success      200  {object}  FansitesResponse
 // @Router       /v3/fansites [get]
 func tibiaFansitesV3(c *gin.Context) {
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
 		URL:    "https://www.tibia.com/community/?subtopic=fansites",
 	}
@@ -282,9 +282,9 @@ func tibiaGuildsGuildV3(c *gin.Context) {
 	// getting params from URL
 	guild := c.Param("name")
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiadataQueryEscapeStringV3(guild),
+		URL:    "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiaDataQueryEscapeStringV3(guild),
 	}
 
 	tibiaDataRequestHandler(
@@ -310,11 +310,11 @@ func tibiaGuildsOverviewV3(c *gin.Context) {
 	world := c.Param("world")
 
 	// Adding fix for First letter to be upper and rest lower
-	world = TibiadataStringWorldFormatToTitleV3(world)
+	world = TibiaDataStringWorldFormatToTitleV3(world)
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/community/?subtopic=guilds&world=" + TibiadataQueryEscapeStringV3(world),
+		URL:    "https://www.tibia.com/community/?subtopic=guilds&world=" + TibiaDataQueryEscapeStringV3(world),
 	}
 
 	tibiaDataRequestHandler(
@@ -349,7 +349,7 @@ func tibiaHighscoresV3(c *gin.Context) {
 	if strings.EqualFold(world, "all") {
 		world = ""
 	} else {
-		world = TibiadataStringWorldFormatToTitleV3(world)
+		world = TibiaDataStringWorldFormatToTitleV3(world)
 	}
 
 	highscoreCategory := HighscoreCategoryFromString(category)
@@ -357,9 +357,9 @@ func tibiaHighscoresV3(c *gin.Context) {
 	// Sanitize of vocation input
 	vocationName, vocationid := TibiaDataVocationValidator(vocation)
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/community/?subtopic=highscores&world=" + TibiadataQueryEscapeStringV3(world) + "&category=" + strconv.Itoa(int(highscoreCategory)) + "&profession=" + TibiadataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000",
+		URL:    "https://www.tibia.com/community/?subtopic=highscores&world=" + TibiaDataQueryEscapeStringV3(world) + "&category=" + strconv.Itoa(int(highscoreCategory)) + "&profession=" + TibiaDataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000",
 	}
 
 	tibiaDataRequestHandler(
@@ -387,11 +387,11 @@ func tibiaHousesHouseV3(c *gin.Context) {
 	houseid := c.Param("house_id")
 
 	// Adding fix for First letter to be upper and rest lower
-	world = TibiadataStringWorldFormatToTitleV3(world)
+	world = TibiaDataStringWorldFormatToTitleV3(world)
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/community/?subtopic=houses&page=view&world=" + TibiadataQueryEscapeStringV3(world) + "&houseid=" + TibiadataQueryEscapeStringV3(houseid),
+		URL:    "https://www.tibia.com/community/?subtopic=houses&page=view&world=" + TibiaDataQueryEscapeStringV3(world) + "&houseid=" + TibiaDataQueryEscapeStringV3(houseid),
 	}
 
 	tibiaDataRequestHandler(
@@ -420,10 +420,10 @@ func tibiaHousesOverviewV3(c *gin.Context) {
 	town := c.Param("town")
 
 	// Adding fix for First letter to be upper and rest lower
-	world = TibiadataStringWorldFormatToTitleV3(world)
-	town = TibiadataStringWorldFormatToTitleV3(town)
+	world = TibiaDataStringWorldFormatToTitleV3(world)
+	town = TibiaDataStringWorldFormatToTitleV3(town)
 
-	jsonData := TibiaHousesOverviewV3Impl(c, world, town, TibiadataHTMLDataCollectorV3)
+	jsonData := TibiaHousesOverviewV3Impl(c, world, town, TibiaDataHTMLDataCollectorV3)
 
 	// return jsonData
 	TibiaDataAPIHandleResponse(c, http.StatusOK, "TibiaHousesOverviewV3", jsonData)
@@ -443,11 +443,11 @@ func tibiaKillstatisticsV3(c *gin.Context) {
 	world := c.Param("world")
 
 	// Adding fix for First letter to be upper and rest lower
-	world = TibiadataStringWorldFormatToTitleV3(world)
+	world = TibiaDataStringWorldFormatToTitleV3(world)
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/community/?subtopic=killstatistics&world=" + TibiadataQueryEscapeStringV3(world),
+		URL:    "https://www.tibia.com/community/?subtopic=killstatistics&world=" + TibiaDataQueryEscapeStringV3(world),
 	}
 
 	tibiaDataRequestHandler(
@@ -509,7 +509,7 @@ func tibiaNewslistLatestV3() bool {
 // @Router       /v3/news/newsticker [get]
 func tibiaNewslistV3(c *gin.Context) {
 	// getting params from URL
-	days := TibiadataStringToIntegerV3(c.Param("days"))
+	days := TibiaDataStringToIntegerV3(c.Param("days"))
 	if days == 0 {
 		days = 90 // default for recent posts
 	}
@@ -518,7 +518,7 @@ func tibiaNewslistV3(c *gin.Context) {
 	DateBegin := time.Now().AddDate(0, 0, -days)
 	DateEnd := time.Now()
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: http.MethodPost,
 		URL:    "https://www.tibia.com/news/?subtopic=newsarchive",
 		FormData: map[string]string{
@@ -571,7 +571,7 @@ func tibiaNewslistV3(c *gin.Context) {
 // @Router       /v3/news/id/{news_id} [get]
 func tibiaNewsV3(c *gin.Context) {
 	// getting params from URL
-	NewsID := TibiadataStringToIntegerV3(c.Param("news_id"))
+	NewsID := TibiaDataStringToIntegerV3(c.Param("news_id"))
 
 	// checking the NewsID provided
 	if NewsID <= 0 {
@@ -579,7 +579,7 @@ func tibiaNewsV3(c *gin.Context) {
 		return
 	}
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
 		URL:    "https://www.tibia.com/news/?subtopic=newsarchive&id=" + strconv.Itoa(NewsID),
 	}
@@ -605,7 +605,7 @@ func tibiaSpellsOverviewV3(c *gin.Context) {
 	// getting params from URL
 	vocation := c.Param("vocation")
 	if vocation == "" {
-		vocation = TibiadataDefaultVoc
+		vocation = TibiaDataDefaultVoc
 	}
 
 	// Sanitize of vocation input
@@ -619,9 +619,9 @@ func tibiaSpellsOverviewV3(c *gin.Context) {
 		vocationName = strings.Title(vocationName)
 	}
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/library/?subtopic=spells&vocation=" + TibiadataQueryEscapeStringV3(vocationName),
+		URL:    "https://www.tibia.com/library/?subtopic=spells&vocation=" + TibiaDataQueryEscapeStringV3(vocationName),
 	}
 
 	tibiaDataRequestHandler(
@@ -646,9 +646,9 @@ func tibiaSpellsSpellV3(c *gin.Context) {
 	// getting params from URL
 	spell := c.Param("spell_id")
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/library/?subtopic=spells&spell=" + TibiadataQueryEscapeStringV3(spell),
+		URL:    "https://www.tibia.com/library/?subtopic=spells&spell=" + TibiaDataQueryEscapeStringV3(spell),
 	}
 
 	tibiaDataRequestHandler(
@@ -669,7 +669,7 @@ func tibiaSpellsSpellV3(c *gin.Context) {
 // @Success      200  {object}  WorldsOverviewResponse
 // @Router       /v3/worlds [get]
 func tibiaWorldsOverviewV3(c *gin.Context) {
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
 		URL:    "https://www.tibia.com/community/?subtopic=worlds",
 	}
@@ -697,11 +697,11 @@ func tibiaWorldsWorldV3(c *gin.Context) {
 	world := c.Param("name")
 
 	// Adding fix for First letter to be upper and rest lower
-	world = TibiadataStringWorldFormatToTitleV3(world)
+	world = TibiaDataStringWorldFormatToTitleV3(world)
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/community/?subtopic=worlds&world=" + TibiadataQueryEscapeStringV3(world),
+		URL:    "https://www.tibia.com/community/?subtopic=worlds&world=" + TibiaDataQueryEscapeStringV3(world),
 	}
 
 	tibiaDataRequestHandler(
@@ -713,8 +713,8 @@ func tibiaWorldsWorldV3(c *gin.Context) {
 		"TibiaWorldsWorldV3")
 }
 
-func tibiaDataRequestHandler(c *gin.Context, tibiaDataRequest TibiadataRequestStruct, requestHandler func(string) (interface{}, int), handlerName string) {
-	BoxContentHTML, err := TibiadataHTMLDataCollectorV3(tibiaDataRequest)
+func tibiaDataRequestHandler(c *gin.Context, tibiaDataRequest TibiaDataRequestStruct, requestHandler func(string) (interface{}, int), handlerName string) {
+	BoxContentHTML, err := TibiaDataHTMLDataCollectorV3(tibiaDataRequest)
 
 	// return error (e.g. for maintenance mode)
 	if err != nil {
@@ -736,7 +736,7 @@ func TibiaDataAPIHandleResponse(c *gin.Context, httpCode int, s string, j interf
 		log.Printf("[debug] %s\n", js)
 	}
 
-	if TibiadataDebug {
+	if TibiaDataDebug {
 		log.Println("[info] " + s + " - (" + c.Request.RequestURI + ") executed successfully.")
 	}
 
@@ -744,31 +744,31 @@ func TibiaDataAPIHandleResponse(c *gin.Context, httpCode int, s string, j interf
 	c.JSON(httpCode, j)
 }
 
-// TibiadataUserAgentGenerator func - creates User-Agent for requests
-func TibiadataUserAgentGenerator(version int) string {
+// TibiaDataUserAgentGenerator func - creates User-Agent for requests
+func TibiaDataUserAgentGenerator(version int) string {
 	// setting product name
 	useragent := "TibiaData-API/v" + strconv.Itoa(version)
 
 	// adding details in parenthesis
 	useragentDetails := []string{
-		"release/" + TibiadataBuildRelease,
-		"build/" + TibiadataBuildBuilder,
-		"commit/" + TibiadataBuildCommit,
-		"edition/" + TibiadataBuildEdition,
-		TibiadataHost,
+		"release/" + TibiaDataBuildRelease,
+		"build/" + TibiaDataBuildBuilder,
+		"commit/" + TibiaDataBuildCommit,
+		"edition/" + TibiaDataBuildEdition,
+		TibiaDataHost,
 	}
 	useragent += " (" + strings.Join(useragentDetails, "; ") + ")"
 
 	return useragent
 }
 
-// TibiadataHTMLDataCollectorV3 func
-func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (string, error) {
+// TibiaDataHTMLDataCollectorV3 func
+func TibiaDataHTMLDataCollectorV3(TibiaDataRequest TibiaDataRequestStruct) (string, error) {
 	// Setting up resty client
 	client := resty.New()
 
-	// Set Debug if enabled by TibiadataDebug var
-	if TibiadataDebug {
+	// Set Debug if enabled by TibiaDataDebug var
+	if TibiaDataDebug {
 		client.SetDebug(true)
 		client.EnableTrace()
 	}
@@ -780,7 +780,7 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (stri
 	// Set headers for all requests
 	client.SetHeaders(map[string]string{
 		"Content-Type": "application/json",
-		"User-Agent":   TibiadataUserAgent,
+		"User-Agent":   TibiaDataUserAgent,
 	})
 
 	// Enabling Content length value for all request
@@ -790,8 +790,8 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (stri
 	client.SetRedirectPolicy(resty.NoRedirectPolicy())
 
 	// Replace domain with proxy if env TIBIADATA_PROXY set
-	if TibiadataProxyDomain != "" {
-		TibiadataRequest.URL = strings.ReplaceAll(TibiadataRequest.URL, "https://www.tibia.com/", TibiadataProxyDomain)
+	if TibiaDataProxyDomain != "" {
+		TibiaDataRequest.URL = strings.ReplaceAll(TibiaDataRequest.URL, "https://www.tibia.com/", TibiaDataProxyDomain)
 	}
 
 	// defining values for request
@@ -801,28 +801,28 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (stri
 		LogMessage string
 	)
 
-	switch TibiadataRequest.Method {
+	switch TibiaDataRequest.Method {
 	case resty.MethodPost:
 		res, err = client.R().
-			SetFormData(TibiadataRequest.FormData).
-			Post(TibiadataRequest.URL)
+			SetFormData(TibiaDataRequest.FormData).
+			Post(TibiaDataRequest.URL)
 	default:
-		res, err = client.R().Get(TibiadataRequest.URL)
+		res, err = client.R().Get(TibiaDataRequest.URL)
 	}
 
-	if TibiadataDebug {
+	if TibiaDataDebug {
 		// logging trace information for resty
-		TibiadataRequestTraceLogger(res, err)
+		TibiaDataRequestTraceLogger(res, err)
 	}
 
 	if err != nil {
-		log.Printf("[error] TibiadataHTMLDataCollectorV3 (Status: %s, URL: %s) in resp1: %s", res.Status(), TibiadataRequest.URL, err)
+		log.Printf("[error] TibiaDataHTMLDataCollectorV3 (Status: %s, URL: %s) in resp1: %s", res.Status(), TibiaDataRequest.URL, err)
 
 		switch res.StatusCode() {
 		case http.StatusForbidden:
 			// throttled request
 			LogMessage = "request throttled due to rate-limitation on tibia.com"
-			log.Printf("[warning] TibiadataHTMLDataCollectorV3: %s!", LogMessage)
+			log.Printf("[warning] TibiaDataHTMLDataCollectorV3: %s!", LogMessage)
 			return "", errors.New(LogMessage)
 
 		case http.StatusFound:
@@ -830,14 +830,14 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (stri
 			location, _ := res.RawResponse.Location()
 			if location.Host == "maintenance.tibia.com" {
 				LogMessage := "maintenance mode detected on tibia.com"
-				log.Printf("[info] TibiadataHTMLDataCollectorV3: %s!", LogMessage)
+				log.Printf("[info] TibiaDataHTMLDataCollectorV3: %s!", LogMessage)
 				return "", errors.New(LogMessage)
 			}
 			fallthrough
 
 		default:
 			LogMessage = "unknown error occurred on tibia.com"
-			log.Printf("[error] TibiadataHTMLDataCollectorV3: %s!", LogMessage)
+			log.Printf("[error] TibiaDataHTMLDataCollectorV3: %s!", LogMessage)
 			return "", errors.New(LogMessage)
 		}
 	}
@@ -851,7 +851,7 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (stri
 	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(resIo2)
 	if err != nil {
-		log.Printf("[error] TibiadataHTMLDataCollectorV3 (URL: %s) error: %s", TibiadataRequest.URL, err)
+		log.Printf("[error] TibiaDataHTMLDataCollectorV3 (URL: %s) error: %s", TibiaDataRequest.URL, err)
 	}
 
 	// Find of this to get div with class BoxContent
@@ -864,8 +864,8 @@ func TibiadataHTMLDataCollectorV3(TibiadataRequest TibiadataRequestStruct) (stri
 	return data, nil
 }
 
-// TibiadataRequestTraceLogger func - prints out trace information to log
-func TibiadataRequestTraceLogger(res *resty.Response, err error) {
+// TibiaDataRequestTraceLogger func - prints out trace information to log
+func TibiaDataRequestTraceLogger(res *resty.Response, err error) {
 	log.Println("TRACE RESTY",
 		"\n~~~ TRACE INFO ~~~",
 		"\nDNSLookup      :", res.Request.TraceInfo().DNSLookup,

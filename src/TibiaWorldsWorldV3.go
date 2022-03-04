@@ -101,7 +101,7 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 				}
 			}
 			if WorldsInformationLeftColumn == "Players Online" {
-				WorldsPlayersOnline = TibiadataStringToIntegerV3(WorldsInformationRightColumn)
+				WorldsPlayersOnline = TibiaDataStringToIntegerV3(WorldsInformationRightColumn)
 			}
 			if WorldsInformationLeftColumn == "Online Record" {
 				// Regex to get data for record values
@@ -109,12 +109,12 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 
 				if len(subma2) > 0 {
 					// setting record values
-					WorldsRecordPlayers = TibiadataStringToIntegerV3(subma2[0][1])
-					WorldsRecordDate = TibiadataDatetimeV3(subma2[0][2])
+					WorldsRecordPlayers = TibiaDataStringToIntegerV3(subma2[0][1])
+					WorldsRecordDate = TibiaDataDatetimeV3(subma2[0][2])
 				}
 			}
 			if WorldsInformationLeftColumn == "Creation Date" {
-				WorldsCreationDate = TibiadataDateV3(WorldsInformationRightColumn)
+				WorldsCreationDate = TibiaDataDateV3(WorldsInformationRightColumn)
 			}
 			if WorldsInformationLeftColumn == "Location" {
 				WorldsLocation = WorldsInformationRightColumn
@@ -133,7 +133,7 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 					WorldsQuestTitlesTmp := strings.Split(WorldsInformationRightColumn, ", ")
 					for _, str := range WorldsQuestTitlesTmp {
 						if str != "" {
-							WorldsQuestTitles = append(WorldsQuestTitles, TibiadataRemoveURLsV3(str))
+							WorldsQuestTitles = append(WorldsQuestTitles, TibiaDataRemoveURLsV3(str))
 						}
 					}
 				}
@@ -148,7 +148,7 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 						WorldsBattleyeDate = "release"
 					} else {
 						subma21 := BattlEyeProtectedSinceRegex.FindAllStringSubmatch(WorldsInformationRightColumn, -1)
-						WorldsBattleyeDate = TibiadataDateV3(subma21[0][1])
+						WorldsBattleyeDate = TibiaDataDateV3(subma21[0][1])
 					}
 				}
 			}
@@ -182,7 +182,7 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 
 			WorldsOnlinePlayers = append(WorldsOnlinePlayers, OnlinePlayers{
 				Name:     TibiaDataSanitizeNbspSpaceString(subma1[0][1]),
-				Level:    TibiadataStringToIntegerV3(subma1[0][2]),
+				Level:    TibiaDataStringToIntegerV3(subma1[0][2]),
 				Vocation: TibiaDataSanitizeNbspSpaceString(subma1[0][3]),
 			})
 		}
@@ -212,8 +212,8 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 			},
 		},
 		Information: Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

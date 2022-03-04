@@ -114,8 +114,8 @@ func TibiaCreaturesOverviewV3Impl(BoxContentHTML string) CreaturesOverviewRespon
 			Creatures: CreaturesData,
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

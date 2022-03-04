@@ -59,7 +59,7 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 	subma1 := HighscoresAgeRegex.FindAllStringSubmatch(string(BoxContentHTML), 1)
 
 	if len(subma1) > 0 {
-		HighscoreAge = TibiadataStringToIntegerV3(subma1[0][1])
+		HighscoreAge = TibiaDataStringToIntegerV3(subma1[0][1])
 	}
 
 	// Running query over each div
@@ -101,7 +101,7 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 		if len(subma1) > 0 {
 
 			// Debugging of what is in which column
-			if TibiadataDebug {
+			if TibiaDataDebug {
 				log.Println("1 -> " + subma1[0][1])
 				log.Println("2 -> " + subma1[0][2])
 				log.Println("3 -> " + subma1[0][3])
@@ -117,13 +117,13 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 				HighscoreDataTitle = subma1[0][2]
 				HighscoreDataVocation = subma1[0][3]
 				HighscoreDataWorld = subma1[0][4]
-				HighscoreDataLevel = TibiadataStringToIntegerV3(subma1[0][5])
-				HighscoreDataValue = TibiadataStringToIntegerV3(subma1[0][6])
+				HighscoreDataLevel = TibiaDataStringToIntegerV3(subma1[0][5])
+				HighscoreDataValue = TibiaDataStringToIntegerV3(subma1[0][6])
 			} else {
 				HighscoreDataVocation = subma1[0][2]
 				HighscoreDataWorld = subma1[0][3]
-				HighscoreDataLevel = TibiadataStringToIntegerV3(subma1[0][4])
-				HighscoreDataValue = TibiadataStringToIntegerV3(subma1[0][5])
+				HighscoreDataLevel = TibiaDataStringToIntegerV3(subma1[0][4])
+				HighscoreDataValue = TibiaDataStringToIntegerV3(subma1[0][5])
 			}
 
 			HighscoreData = append(HighscoreData, Highscore{
@@ -140,7 +140,7 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 	})
 
 	// Printing the HighscoreData data to log
-	if TibiadataDebug {
+	if TibiaDataDebug {
 		log.Println(HighscoreData)
 	}
 
@@ -157,8 +157,8 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 			HighscoreList: HighscoreData,
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

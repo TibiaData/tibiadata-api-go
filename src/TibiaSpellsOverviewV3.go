@@ -80,18 +80,18 @@ func TibiaSpellsOverviewV3Impl(vocationName string, BoxContentHTML string) Spell
 					spellBuilder.TypeRune = true
 				}
 			case 3:
-				spellBuilder.Level = TibiadataStringToIntegerV3(selectionText)
+				spellBuilder.Level = TibiaDataStringToIntegerV3(selectionText)
 			case 4:
 				mana := -1
 				if selectionText != "var." {
-					mana = TibiadataStringToIntegerV3(selectionText)
+					mana = TibiaDataStringToIntegerV3(selectionText)
 				}
 
 				spellBuilder.Mana = mana
 			case 5:
 				price := 0
 				if selectionText != "free" {
-					price = TibiadataStringToIntegerV3(selectionText)
+					price = TibiaDataStringToIntegerV3(selectionText)
 				}
 
 				spellBuilder.Price = price
@@ -117,8 +117,8 @@ func TibiaSpellsOverviewV3Impl(vocationName string, BoxContentHTML string) Spell
 			Spells:               SpellsData,
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

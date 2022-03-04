@@ -14,7 +14,7 @@ func TestNewsList(t *testing.T) {
 		return
 	}
 
-	TibiadataHost = "unittest.example.com"
+	TibiaDataHost = "unittest.example.com"
 
 	newsListJson := TibiaNewslistV3Impl(90, string(data))
 	assert := assert.New(t)

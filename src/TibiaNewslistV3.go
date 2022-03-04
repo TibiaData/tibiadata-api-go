@@ -41,14 +41,14 @@ func TibiaNewslistV3Impl(days int, BoxContentHTML string) NewsListResponse {
 
 		// getting category by image src
 		CategoryImg, _ := s.Find("img").Attr("src")
-		OneNews.Category = TibiadataGetNewsCategory(CategoryImg)
+		OneNews.Category = TibiaDataGetNewsCategory(CategoryImg)
 
 		// getting type from headline
 		NewsType := s.Nodes[0].FirstChild.NextSibling.FirstChild.NextSibling.NextSibling.FirstChild.Data
-		OneNews.Type = TibiadataGetNewsType(TibiaDataSanitizeNbspSpaceString(NewsType))
+		OneNews.Type = TibiaDataGetNewsType(TibiaDataSanitizeNbspSpaceString(NewsType))
 
 		// getting date from headline
-		OneNews.Date = TibiadataDateV3(s.Nodes[0].FirstChild.NextSibling.FirstChild.Data)
+		OneNews.Date = TibiaDataDateV3(s.Nodes[0].FirstChild.NextSibling.FirstChild.Data)
 		OneNews.News = s.Find("a").Text()
 
 		// getting remaining things as URLs
@@ -56,11 +56,11 @@ func TibiaNewslistV3Impl(days int, BoxContentHTML string) NewsListResponse {
 		p, _ := url.Parse(NewsURL)
 		NewsID := p.Query().Get("id")
 		NewsSplit := strings.Split(NewsURL, NewsID)
-		OneNews.ID = TibiadataStringToIntegerV3(NewsID)
+		OneNews.ID = TibiaDataStringToIntegerV3(NewsID)
 		OneNews.TibiaURL = NewsSplit[0] + NewsID
 
-		if TibiadataHost != "" {
-			OneNews.ApiURL = "https://" + TibiadataHost + "/v3/news/id/" + NewsID
+		if TibiaDataHost != "" {
+			OneNews.ApiURL = "https://" + TibiaDataHost + "/v3/news/id/" + NewsID
 		}
 
 		// add to NewsListData for response
@@ -72,8 +72,8 @@ func TibiaNewslistV3Impl(days int, BoxContentHTML string) NewsListResponse {
 	return NewsListResponse{
 		NewsListData,
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

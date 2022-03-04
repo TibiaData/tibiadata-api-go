@@ -7,15 +7,15 @@ import (
 )
 
 func TestTibiaCETDateFormat(t *testing.T) {
-	assert.Equal(t, "2021-12-24T08:52:16Z", TibiadataDatetimeV3("Dec 24 2021, 09:52:16 CET"))
+	assert.Equal(t, "2021-12-24T08:52:16Z", TibiaDataDatetimeV3("Dec 24 2021, 09:52:16 CET"))
 }
 
 func TestTibiaCESTDateFormat(t *testing.T) {
-	assert.Equal(t, "2021-12-24T07:52:16Z", TibiadataDatetimeV3("Dec 24 2021, 09:52:16 CEST"))
+	assert.Equal(t, "2021-12-24T07:52:16Z", TibiaDataDatetimeV3("Dec 24 2021, 09:52:16 CEST"))
 }
 
 func TestTibiaUTCDateFormat(t *testing.T) {
-	assert.Equal(t, "2021-12-24T09:52:16Z", TibiadataDatetimeV3("Dec 24 2021, 09:52:16 UTC"))
+	assert.Equal(t, "2021-12-24T09:52:16Z", TibiaDataDatetimeV3("Dec 24 2021, 09:52:16 UTC"))
 }
 
 func TestEnvFunctions(t *testing.T) {
@@ -52,22 +52,22 @@ func TestTibiaDataVocationValidator(t *testing.T) {
 	assert.Equal(y, "5")
 }
 
-func TestTibiadataGetNewsCategory(t *testing.T) {
+func TestTibiaDataGetNewsCategory(t *testing.T) {
 	assert := assert.New(t)
 
-	assert.Equal("cipsoft", TibiadataGetNewsCategory("newsicon_cipsoft"))
-	assert.Equal("community", TibiadataGetNewsCategory("newsicon_community"))
-	assert.Equal("development", TibiadataGetNewsCategory("newsicon_development"))
-	assert.Equal("support", TibiadataGetNewsCategory("newsicon_support"))
-	assert.Equal("technical", TibiadataGetNewsCategory("newsicon_technical"))
-	assert.Equal("unknown", TibiadataGetNewsCategory("newsicon_tibiadata"))
+	assert.Equal("cipsoft", TibiaDataGetNewsCategory("newsicon_cipsoft"))
+	assert.Equal("community", TibiaDataGetNewsCategory("newsicon_community"))
+	assert.Equal("development", TibiaDataGetNewsCategory("newsicon_development"))
+	assert.Equal("support", TibiaDataGetNewsCategory("newsicon_support"))
+	assert.Equal("technical", TibiaDataGetNewsCategory("newsicon_technical"))
+	assert.Equal("unknown", TibiaDataGetNewsCategory("newsicon_tibiadata"))
 }
 
-func TestTibiadataGetNewsType(t *testing.T) {
+func TestTibiaDataGetNewsType(t *testing.T) {
 	assert := assert.New(t)
 
-	assert.Equal("ticker", TibiadataGetNewsType("News Ticker"))
-	assert.Equal("article", TibiadataGetNewsType("Featured Article"))
-	assert.Equal("news", TibiadataGetNewsType("News"))
-	assert.Equal("unknown", TibiadataGetNewsType("TibiaData"))
+	assert.Equal("ticker", TibiaDataGetNewsType("News Ticker"))
+	assert.Equal("article", TibiaDataGetNewsType("Featured Article"))
+	assert.Equal("news", TibiaDataGetNewsType("News"))
+	assert.Equal("unknown", TibiaDataGetNewsType("TibiaData"))
 }

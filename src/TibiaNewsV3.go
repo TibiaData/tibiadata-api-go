@@ -52,12 +52,12 @@ func TibiaNewsV3Impl(NewsID int, rawUrl string, BoxContentHTML string) NewsRespo
 
 		// getting category by image src
 		CategoryImg, _ := s.Find("img").Attr("src")
-		NewsData.Category = TibiadataGetNewsCategory(CategoryImg)
+		NewsData.Category = TibiaDataGetNewsCategory(CategoryImg)
 
 		// getting date from headline
 		tmp1 = s.Find(".NewsHeadlineDate")
 		tmp2, _ = tmp1.Html()
-		NewsData.Date = TibiadataDateV3(strings.ReplaceAll(tmp2, " - ", ""))
+		NewsData.Date = TibiaDataDateV3(strings.ReplaceAll(tmp2, " - ", ""))
 
 		// getting headline text (which could be title or also type)
 		tmp1 = s.Find(".NewsHeadlineText")
@@ -99,8 +99,8 @@ func TibiaNewsV3Impl(NewsID int, rawUrl string, BoxContentHTML string) NewsRespo
 	return NewsResponse{
 		NewsData,
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

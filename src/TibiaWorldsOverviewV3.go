@@ -75,8 +75,8 @@ func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
 
 		if len(subma1) > 0 {
 			// setting record values
-			WorldsRecordPlayers = TibiadataStringToIntegerV3(subma1[0][1])
-			WorldsRecordDate = TibiadataDatetimeV3(subma1[0][2])
+			WorldsRecordPlayers = TibiaDataStringToIntegerV3(subma1[0][1])
+			WorldsRecordDate = TibiaDataDatetimeV3(subma1[0][2])
 		}
 
 		if strings.Contains(WorldsDivHTML, ">Regular Worlds<") {
@@ -94,7 +94,7 @@ func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
 			if subma2[0][2] == "-" {
 				WorldsStatus = "unknown"
 			} else {
-				WorldsPlayersOnline = TibiadataStringToIntegerV3(subma2[0][2])
+				WorldsPlayersOnline = TibiaDataStringToIntegerV3(subma2[0][2])
 
 				// Setting the players_online & overall players_online
 				WorldsAllOnlinePlayers += WorldsPlayersOnline
@@ -140,7 +140,7 @@ func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
 					WorldsBattleyeDate = "release"
 				} else {
 					subma21 := worldBattlEyeProtectedSinceRegex.FindAllStringSubmatch(WorldsBattlEye, -1)
-					WorldsBattleyeDate = TibiadataDateV3(subma21[0][1])
+					WorldsBattleyeDate = TibiaDataDateV3(subma21[0][1])
 				}
 			} else {
 				// This world is without protection..
@@ -196,8 +196,8 @@ func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
 			TournamentWorlds: TournamentWorldsData,
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

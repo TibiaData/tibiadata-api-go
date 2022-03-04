@@ -92,15 +92,15 @@ func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse
 	subma1 := houseDataRegex.FindAllStringSubmatch(HouseHTML, -1)
 
 	if len(subma1) > 0 {
-		HouseData.Houseid = TibiadataStringToIntegerV3(houseid)
+		HouseData.Houseid = TibiaDataStringToIntegerV3(houseid)
 		HouseData.World = subma1[0][8]
 
 		HouseData.Town, HouseData.Type = TibiaDataHousesMapResolver(HouseData.Houseid)
 
 		HouseData.Name = TibiaDataSanitizeEscapedString(subma1[0][2])
 		HouseData.Img = subma1[0][1]
-		HouseData.Beds = TibiadataStringToIntegerV3(subma1[0][4])
-		HouseData.Size = TibiadataStringToIntegerV3(subma1[0][5])
+		HouseData.Beds = TibiaDataStringToIntegerV3(subma1[0][4])
+		HouseData.Size = TibiaDataStringToIntegerV3(subma1[0][5])
 		HouseData.Rent = TibiaDataConvertValuesWithK(subma1[0][6] + subma1[0][7])
 
 		HouseData.Status.Original = strings.TrimSpace(TibiaDataSanitizeNbspSpaceString(TibiaDataSanitizeEscapedString(RemoveHtmlTag(subma1[0][9]))))
@@ -119,14 +119,14 @@ func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse
 					HouseData.Status.Rental.TransferAccept = true
 				}
 				HouseData.Status.Rental.TransferReceiver = subma2[0][3]
-				HouseData.Status.Rental.TransferPrice = TibiadataStringToIntegerV3(subma2[0][4])
+				HouseData.Status.Rental.TransferPrice = TibiaDataStringToIntegerV3(subma2[0][4])
 				fallthrough
 
 			case strings.Contains(HouseData.Status.Original, " will move out on "):
 				HouseData.Status.IsMoving = true
 				subma2 := moveOutRegex.FindAllStringSubmatch(HouseData.Status.Original, -1)
 				// storing values from regex
-				HouseData.Status.Rental.MovingDate = TibiadataDatetimeV3(subma2[0][2])
+				HouseData.Status.Rental.MovingDate = TibiaDataDatetimeV3(subma2[0][2])
 				fallthrough
 
 			default:
@@ -134,7 +134,7 @@ func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse
 				subma2 := paidUntilRegex.FindAllStringSubmatch(HouseData.Status.Original, -1)
 				// storing values from regex
 				HouseData.Status.Rental.Owner = subma2[0][2]
-				HouseData.Status.Rental.PaidUntil = TibiadataDatetimeV3(subma2[0][4])
+				HouseData.Status.Rental.PaidUntil = TibiaDataDatetimeV3(subma2[0][4])
 				switch subma2[0][3] {
 				case "She":
 					HouseData.Status.Rental.OwnerSex = "female"
@@ -150,8 +150,8 @@ func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse
 			if !strings.Contains(HouseData.Status.Original, "No bid has been submitted so far.") {
 				subma2 := houseAuctionedRegex.FindAllStringSubmatch(HouseData.Status.Original, -1)
 				// storing values from regex
-				HouseData.Status.Auction.AuctionEnd = TibiadataDatetimeV3(subma2[0][3])
-				HouseData.Status.Auction.CurrentBid = TibiadataStringToIntegerV3(subma2[0][4])
+				HouseData.Status.Auction.AuctionEnd = TibiaDataDatetimeV3(subma2[0][3])
+				HouseData.Status.Auction.CurrentBid = TibiaDataStringToIntegerV3(subma2[0][4])
 				HouseData.Status.Auction.CurrentBidder = TibiaDataSanitizeNbspSpaceString(subma2[0][5])
 				if subma2[0][2] == "will end" {
 					HouseData.Status.Auction.AuctionOngoing = true
@@ -164,8 +164,8 @@ func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse
 	return HouseResponse{
 		HouseData,
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
 		},
 	}
 }

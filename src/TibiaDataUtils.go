@@ -159,15 +159,6 @@ func TibiaDataConvertEncodingtoUTF8(data io.Reader) io.Reader {
 	return norm.NFKC.Reader(charmap.ISO8859_1.NewDecoder().Reader(data))
 }
 
-// isEnvExist func - check if environment var is set
-func isEnvExist(key string) bool {
-	if _, ok := os.LookupEnv(key); ok {
-		return true
-	}
-
-	return false
-}
-
 // TibiaDataSanitizeEscapedString func - run unescape string on string
 func TibiaDataSanitizeEscapedString(data string) string {
 	return html.UnescapeString(data)
@@ -181,6 +172,15 @@ func TibiaDataSanitizeDoubleQuoteString(data string) string {
 // TibiaDataSanitizeNbspSpaceString func - replaces weird \u00A0 string to real space
 func TibiaDataSanitizeNbspSpaceString(data string) string {
 	return strings.ReplaceAll(data, "\u00A0", " ")
+}
+
+// isEnvExist func - check if environment var is set
+func isEnvExist(key string) bool {
+	if _, ok := os.LookupEnv(key); ok {
+		return true
+	}
+
+	return false
 }
 
 // getEnv func - read an environment or return a default value

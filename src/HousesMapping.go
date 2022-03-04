@@ -14,9 +14,8 @@ var (
 )
 
 type AssetsHouse struct {
-	HouseID   int    `json:"house_id"`
-	Town      string `json:"town"`
-	HouseType string `json:"type"`
+	HouseID int    `json:"house_id"`
+	Town    string `json:"town"`
 }
 type HousesMapping struct {
 	Houses []AssetsHouse `json:"houses"`
@@ -65,12 +64,12 @@ func TibiaDataHousesMappingInitiator() {
 	}
 }
 
-// TibiaDataHousesMapResolver func - used to return both town and type
-func TibiaDataHousesMapResolver(houseid int) (town string, housetype string) {
+// TibiaDataHousesMapResolver func - used to return town
+func TibiaDataHousesMapResolver(houseid int) (town string) {
 	for _, value := range TibiaDataHousesMapping.Houses {
 		if houseid == value.HouseID {
-			return value.Town, value.HouseType
+			return value.Town
 		}
 	}
-	return "", ""
+	return ""
 }

@@ -1,14 +1,14 @@
 package main
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestOverview(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/creatures/creatures.html")
+	data, err := os.ReadFile("../testdata/creatures/creatures.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return

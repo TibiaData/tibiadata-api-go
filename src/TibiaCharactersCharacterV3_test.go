@@ -1,14 +1,14 @@
 package main
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNumber1(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/characters/Darkside Rafa.html")
+	data, err := os.ReadFile("../testdata/characters/Darkside Rafa.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -40,7 +40,7 @@ func TestNumber1(t *testing.T) {
 }
 
 func TestNumber2(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/characters/Zugspitze Housekeeper.html")
+	data, err := os.ReadFile("../testdata/characters/Zugspitze Housekeeper.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -94,7 +94,7 @@ func TestNumber2(t *testing.T) {
 }
 
 func TestNumber3(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/characters/Borttagna Gubben.html")
+	data, err := os.ReadFile("../testdata/characters/Borttagna Gubben.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -110,7 +110,7 @@ func TestNumber3(t *testing.T) {
 }
 
 func TestNumber4(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/characters/Riley No Hands.html")
+	data, err := os.ReadFile("../testdata/characters/Riley No Hands.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -136,7 +136,7 @@ func TestNumber4(t *testing.T) {
 }
 
 func TestNumber5(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/characters/Torbjörn.html")
+	data, err := os.ReadFile("../testdata/characters/Torbjörn.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -150,7 +150,7 @@ func TestNumber5(t *testing.T) {
 }
 
 func BenchmarkNumber1(b *testing.B) {
-	data, err := ioutil.ReadFile("../testdata/characters/Darkside Rafa.html")
+	data, err := os.ReadFile("../testdata/characters/Darkside Rafa.html")
 	if err != nil {
 		b.Errorf("File reading error: %s", err)
 		return
@@ -166,7 +166,7 @@ func BenchmarkNumber1(b *testing.B) {
 }
 
 func BenchmarkNumber2(b *testing.B) {
-	data, err := ioutil.ReadFile("../testdata/characters/Riley No Hands.html")
+	data, err := os.ReadFile("../testdata/characters/Riley No Hands.html")
 	if err != nil {
 		b.Errorf("File reading error: %s", err)
 		return

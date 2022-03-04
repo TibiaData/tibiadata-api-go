@@ -1,14 +1,14 @@
 package main
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDemon(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/creatures/creature/demon.html")
+	data, err := os.ReadFile("../testdata/creatures/creature/demon.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -54,7 +54,7 @@ func TestDemon(t *testing.T) {
 }
 
 func TestQuaraPredatorFeatured(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/creatures/creature/quara predator.html")
+	data, err := os.ReadFile("../testdata/creatures/creature/quara predator.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return

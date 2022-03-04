@@ -1,14 +1,14 @@
 package main
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestOrderofGlory(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/guilds/guild/Order of Glory.html")
+	data, err := os.ReadFile("../testdata/guilds/guild/Order of Glory.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return

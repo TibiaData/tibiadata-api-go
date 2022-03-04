@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 
@@ -9,13 +9,13 @@ import (
 )
 
 func TestAnticaThaisHousesOverview(t *testing.T) {
-	houseData, err := ioutil.ReadFile("../testdata/houses/overview/AnticaThaisHouses.html")
+	houseData, err := os.ReadFile("../testdata/houses/overview/AnticaThaisHouses.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
 	}
 
-	guildData, err := ioutil.ReadFile("../testdata/houses/overview/AnticaThaisGuilds.html")
+	guildData, err := os.ReadFile("../testdata/houses/overview/AnticaThaisGuilds.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -79,13 +79,13 @@ func TestAnticaThaisHousesOverview(t *testing.T) {
 }
 
 func TestPremiaFarmineHousesOverview(t *testing.T) {
-	houseData, err := ioutil.ReadFile("../testdata/houses/overview/PremiaFarmineHouses.html")
+	houseData, err := os.ReadFile("../testdata/houses/overview/PremiaFarmineHouses.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
 	}
 
-	guildData, err := ioutil.ReadFile("../testdata/houses/overview/PremiaFarmineGuilds.html")
+	guildData, err := os.ReadFile("../testdata/houses/overview/PremiaFarmineGuilds.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -122,13 +122,13 @@ func TestPremiaFarmineHousesOverview(t *testing.T) {
 }
 
 func TestPremiaEdronHousesOverview(t *testing.T) {
-	houseData, err := ioutil.ReadFile("../testdata/houses/overview/PremiaEdronHouses.html")
+	houseData, err := os.ReadFile("../testdata/houses/overview/PremiaEdronHouses.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
 	}
 
-	guildData, err := ioutil.ReadFile("../testdata/houses/overview/PremiaEdronGuilds.html")
+	guildData, err := os.ReadFile("../testdata/houses/overview/PremiaEdronGuilds.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return

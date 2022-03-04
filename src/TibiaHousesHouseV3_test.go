@@ -1,14 +1,14 @@
 package main
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCormaya10(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/houses/Premia/Edron/Cormaya10.html")
+	data, err := os.ReadFile("../testdata/houses/Premia/Edron/Cormaya10.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -48,7 +48,7 @@ func TestCormaya10(t *testing.T) {
 }
 
 func TestCormaya11(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/houses/Premia/Edron/Cormaya11.html")
+	data, err := os.ReadFile("../testdata/houses/Premia/Edron/Cormaya11.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -85,7 +85,7 @@ func TestCormaya11(t *testing.T) {
 }
 
 func TestBeachHomeApartmentsFlat14(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/houses/Premia/Thais/BeachHomeApartmentsFlat14.html")
+	data, err := os.ReadFile("../testdata/houses/Premia/Thais/BeachHomeApartmentsFlat14.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -122,7 +122,7 @@ func TestBeachHomeApartmentsFlat14(t *testing.T) {
 }
 
 func TestBeachHomeApartmentsFlat15(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/houses/Premia/Thais/BeachHomeApartmentsFlat15.html")
+	data, err := os.ReadFile("../testdata/houses/Premia/Thais/BeachHomeApartmentsFlat15.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return

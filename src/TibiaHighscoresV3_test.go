@@ -1,14 +1,14 @@
 package main
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestHighscoresAll(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/highscores/all.html")
+	data, err := os.ReadFile("../testdata/highscores/all.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -44,7 +44,7 @@ func TestHighscoresAll(t *testing.T) {
 }
 
 func TestHighscoresLoyalty(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/highscores/loyalty.html")
+	data, err := os.ReadFile("../testdata/highscores/loyalty.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return

@@ -1,14 +1,14 @@
 package main
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestWorldEndebra(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/worlds/world/Endebra.html")
+	data, err := os.ReadFile("../testdata/worlds/world/Endebra.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -38,7 +38,7 @@ func TestWorldEndebra(t *testing.T) {
 }
 
 func TestWorldPremia(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/worlds/world/Premia.html")
+	data, err := os.ReadFile("../testdata/worlds/world/Premia.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -71,7 +71,7 @@ func TestWorldPremia(t *testing.T) {
 	assert.Equal(0, len(world.OnlinePlayers))
 }
 func TestWorldWintera(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/worlds/world/Wintera.html")
+	data, err := os.ReadFile("../testdata/worlds/world/Wintera.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return
@@ -110,7 +110,7 @@ func TestWorldWintera(t *testing.T) {
 }
 
 func TestWorldZuna(t *testing.T) {
-	data, err := ioutil.ReadFile("../testdata/worlds/world/Zuna.html")
+	data, err := os.ReadFile("../testdata/worlds/world/Zuna.html")
 	if err != nil {
 		t.Errorf("File reading error: %s", err)
 		return

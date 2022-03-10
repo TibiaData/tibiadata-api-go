@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.1.0] - 2022-03-10
+
+### Changed
+* Renaming Tibiadata to TibiaData ([#90](https://github.com/TibiaData/tibiadata-api-go/pull/90) by [tobiasehlert](https://github.com/tobiasehlert))
+* Removing injection of houseType from assets ([#95](https://github.com/TibiaData/tibiadata-api-go/pull/95) by [tobiasehlert](https://github.com/tobiasehlert))
+* Removing return of loyalty title on no title ([#98](https://github.com/TibiaData/tibiadata-api-go/pull/98) by [tobiasehlert](https://github.com/tobiasehlert))
+* Bump docker/login-action from 1.14.0 to 1.14.1 ([#87](https://github.com/TibiaData/tibiadata-api-go/pull/87) by [dependabot](https://github.com/dependabot))
+* Bump actions/checkout from 2 to 3 ([#88](https://github.com/TibiaData/tibiadata-api-go/pull/88) by [dependabot](https://github.com/dependabot))
+* Bump golang from 1.17.7 to 1.17.8 ([#96](https://github.com/TibiaData/tibiadata-api-go/pull/96) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+* Environment function logic fix ([#91](https://github.com/TibiaData/tibiadata-api-go/pull/91) by [tobiasehlert](https://github.com/tobiasehlert))
+* Stop using ioutil as it is deprecated ([#92](https://github.com/TibiaData/tibiadata-api-go/pull/92) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Adding sanitize of nsbp string in death section of players ([#99](https://github.com/TibiaData/tibiadata-api-go/pull/99) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [3.0.0] - 2022-03-01
 
 ### The release of API v3
@@ -131,6 +146,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.1.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.6.2...v3.0.0
 [0.6.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.6.0...v0.6.1

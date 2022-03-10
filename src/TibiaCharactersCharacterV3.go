@@ -246,7 +246,9 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 
 					CharacterInformationData.Comment = stringBuilder.String()
 				case "Loyalty Title:":
-					AccountInformationData.LoyaltyTitle = RowData
+					if RowData != "(no title)" {
+						AccountInformationData.LoyaltyTitle = RowData
+					}
 				case "Created:":
 					AccountInformationData.Created = TibiaDataDatetimeV3(RowData)
 				case "Position:":

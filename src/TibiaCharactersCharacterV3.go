@@ -499,5 +499,8 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 		data = rs[0][2]
 	}
 
+	// replacing \u00A0 with normal space
+	data = TibiaDataSanitizeNbspSpaceString(data)
+
 	return data, isPlayer, isTraded, theSummon
 }

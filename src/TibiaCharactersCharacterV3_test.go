@@ -107,6 +107,7 @@ func TestNumber3(t *testing.T) {
 	assert.Equal("2022-03-08T00:09:13Z", characterJson.Characters.Character.DeletionDate)
 	assert.Equal("", characterJson.Characters.Character.LastLogin)
 	assert.Equal("Free Account", characterJson.Characters.Character.AccountStatus)
+	assert.Empty(characterJson.Characters.AccountInformation.LoyaltyTitle)
 }
 
 func TestNumber4(t *testing.T) {

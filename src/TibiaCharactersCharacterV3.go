@@ -330,8 +330,8 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 					DeathKillers := []Killers{}
 					DeathAssists := []Killers{}
 
-					// store for reply later on..
-					ReasonString := RemoveHtmlTag(subma1[0][2] + " at Level " + subma1[0][3] + " by " + subma1[0][4] + ".")
+					// store for reply later on.. and replacing \u00A0 with normal space
+					ReasonString := TibiaDataSanitizeNbspSpaceString(RemoveHtmlTag(subma1[0][2] + " at Level " + subma1[0][3] + " by " + subma1[0][4] + "."))
 
 					// if kill is with assist..
 					if strings.Contains(subma1[0][4], ". Assisted by ") {

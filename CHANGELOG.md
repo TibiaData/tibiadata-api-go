@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.1.1] - 2022-03-15
+
+### Fixed
+* Adding sanitize of nbsp string in death reason of players ([#100](https://github.com/TibiaData/tibiadata-api-go/pull/100) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [3.1.0] - 2022-03-10
 
 ### Changed
@@ -13,7 +18,7 @@
 ### Fixed
 * Environment function logic fix ([#91](https://github.com/TibiaData/tibiadata-api-go/pull/91) by [tobiasehlert](https://github.com/tobiasehlert))
 * Stop using ioutil as it is deprecated ([#92](https://github.com/TibiaData/tibiadata-api-go/pull/92) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
-* Adding sanitize of nsbp string in death section of players ([#99](https://github.com/TibiaData/tibiadata-api-go/pull/99) by [tobiasehlert](https://github.com/tobiasehlert))
+* Adding sanitize of nbsp string in death section of players ([#99](https://github.com/TibiaData/tibiadata-api-go/pull/99) by [tobiasehlert](https://github.com/tobiasehlert))
 
 ## [3.0.0] - 2022-03-01
 
@@ -146,6 +151,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.1.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.6.2...v3.0.0
 [0.6.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.6.1...v0.6.2

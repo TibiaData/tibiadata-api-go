@@ -60,7 +60,7 @@ type HouseResponse struct {
 }
 
 var (
-	houseDataRegex = regexp.MustCompile(`<td.*src="(.*)" width.*<b>(.*)<\/b>.*This (house|guildhall) can.*to ([0-9]+) beds..*<b>([0-9]+) square.*<b>([0-9]+)([k]+).gold<\/b>.*on <b>([A-Za-z]+)<\/b>.(.*)<\/td>`)
+	houseDataRegex = regexp.MustCompile(`<td.*src="(.*)" width.*<b>(.*)<\/b>.*This (house|guildhall) can.*to ([0-9]+) beds?..*<b>([0-9]+) square.*<b>([0-9]+)([k]+).gold<\/b>.*on <b>([A-Za-z]+)<\/b>.(.*)<\/td>`)
 	// matching for this: and <wants to|will> pass the <HouseType> to <TransferReceiver> for <TransferPrice> gold
 	housePassingRegex = regexp.MustCompile(`and (wants to|will) pass the (house|guildhall) to (.*) for ([0-9]+) gold`)
 	// matching for this: <OwnerSex> will move out on <MovingDate> (

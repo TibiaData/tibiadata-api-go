@@ -181,9 +181,9 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 		if len(subma1) > 0 {
 
 			WorldsOnlinePlayers = append(WorldsOnlinePlayers, OnlinePlayers{
-				Name:     TibiaDataSanitizeNbspSpaceString(subma1[0][1]),
+				Name:     TibiaDataSanitizeStrings(subma1[0][1]),
 				Level:    TibiaDataStringToIntegerV3(subma1[0][2]),
-				Vocation: TibiaDataSanitizeNbspSpaceString(subma1[0][3]),
+				Vocation: TibiaDataSanitizeStrings(subma1[0][3]),
 			})
 		}
 	})

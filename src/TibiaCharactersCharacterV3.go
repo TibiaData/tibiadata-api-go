@@ -167,7 +167,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 				RowName := RowNameQuery.Nodes[0].FirstChild.Data
 				RowData := RowNameQuery.Nodes[0].NextSibling.FirstChild.Data
 
-				switch TibiaDataSanitizeNbspSpaceString(RowName) {
+				switch TibiaDataSanitizeStrings(RowName) {
 				case "Name:":
 					Tmp := strings.Split(RowData, "<")
 					CharacterInformationData.Name = strings.TrimSpace(Tmp[0])
@@ -224,7 +224,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 					CharacterInformationData.Guild.Rank = RowData
 
 					//TODO: I don't understand why the unicode nbsp is there...
-					CharacterInformationData.Guild.GuildName = TibiaDataSanitizeNbspSpaceString(RowNameQuery.Nodes[0].NextSibling.LastChild.LastChild.Data)
+					CharacterInformationData.Guild.GuildName = TibiaDataSanitizeStrings(RowNameQuery.Nodes[0].NextSibling.LastChild.LastChild.Data)
 				case "Last Login:":
 					if RowData != "never logged in" {
 						CharacterInformationData.LastLogin = TibiaDataDatetimeV3(RowData)
@@ -330,8 +330,8 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 					DeathKillers := []Killers{}
 					DeathAssists := []Killers{}
 
-					// store for reply later on.. and replacing \u00A0 with normal space
-					ReasonString := TibiaDataSanitizeNbspSpaceString(RemoveHtmlTag(subma1[0][2] + " at Level " + subma1[0][3] + " by " + subma1[0][4] + "."))
+					// store for reply later on.. and sanitizing string
+					ReasonString := TibiaDataSanitizeStrings(RemoveHtmlTag(subma1[0][2] + " at Level " + subma1[0][3] + " by " + subma1[0][4] + "."))
 
 					// if kill is with assist..
 					if strings.Contains(subma1[0][4], ". Assisted by ") {
@@ -441,7 +441,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 
 					// Create the character and append it to the other characters list
 					OtherCharactersData = append(OtherCharactersData, OtherCharacters{
-						Name:    TmpCharacterName,
+						Name:    TibiaDataSanitizeStrings(TmpCharacterName),
 						World:   subma1[0][2],
 						Status:  TmpStatus,
 						Deleted: TmpDeleted,
@@ -501,8 +501,8 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 		data = rs[0][2]
 	}
 
-	// replacing \u00A0 with normal space
-	data = TibiaDataSanitizeNbspSpaceString(data)
+	// sanitizing string
+	data = TibiaDataSanitizeStrings(data)
 
 	return data, isPlayer, isTraded, theSummon
 }

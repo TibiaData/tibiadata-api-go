@@ -95,7 +95,7 @@ func TibiaDataQueryEscapeStringV3(data string) string {
 // TibiaDataDateV3 func
 func TibiaDataDateV3(date string) string {
 	// removing weird spacing and comma
-	date = TibiaDataSanitizeNbspSpaceString(strings.ReplaceAll(date, ",", ""))
+	date = TibiaDataSanitizeStrings(strings.ReplaceAll(date, ",", ""))
 
 	// var time parser
 	var tmpDate time.Time
@@ -169,9 +169,14 @@ func TibiaDataSanitizeDoubleQuoteString(data string) string {
 	return strings.ReplaceAll(data, "\"", "'")
 }
 
-// TibiaDataSanitizeNbspSpaceString func - replaces weird \u00A0 string to real space
-func TibiaDataSanitizeNbspSpaceString(data string) string {
-	return strings.ReplaceAll(data, "\u00A0", " ")
+// TibiaDataSanitizeStrings func - replacing various encoded strings to pure html
+func TibiaDataSanitizeStrings(data string) string {
+	// replaces weird \u00A0 string to real space
+	data = strings.ReplaceAll(data, "\u00A0", " ")
+	// replaces weird \u0026 string to amp (&)
+	data = strings.ReplaceAll(data, "\u0026", "&")
+	// returning string unescaped
+	return TibiaDataSanitizeEscapedString(data)
 }
 
 // isEnvExist func - check if environment var is set

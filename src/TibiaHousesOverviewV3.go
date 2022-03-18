@@ -89,7 +89,7 @@ func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string, htmlDa
 
 			// Removing linebreaks from HTML
 			HousesDivHTML = TibiaDataHTMLRemoveLinebreaksV3(HousesDivHTML)
-			HousesDivHTML = TibiaDataSanitizeNbspSpaceString(HousesDivHTML)
+			HousesDivHTML = TibiaDataSanitizeStrings(HousesDivHTML)
 
 			subma1 := houseOverviewDataRegex.FindAllStringSubmatch(HousesDivHTML, -1)
 

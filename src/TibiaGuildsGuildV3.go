@@ -131,8 +131,15 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 				GuildDescriptionFinished = true
 			}
 
-		} else if GuildDescriptionFinished {
+		}
+		
+		if GuildDescriptionFinished || strings.HasPrefix(line, "The guild was founded on ") {
 			// The rest of the Guild information
+
+			if strings.HasPrefix(GuildDescription, "The guild was founded on ") {
+				GuildDescription = ""
+				GuildDescriptionFinished = true
+			}
 
 			if strings.Contains(line, "The guild was founded on") {
 				// Regex to get GuildWorld and GuildFounded

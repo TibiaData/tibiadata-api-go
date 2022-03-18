@@ -213,7 +213,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 			}
 
 			MembersData = append(MembersData, GuildMember{
-				Name:     TibiaDataSanitizeNbspSpaceString(subma1[0][2]),
+				Name:     TibiaDataSanitizeStrings(subma1[0][2]),
 				Title:    MembersTitle,
 				Rank:     MembersRank,
 				Vocation: subma1[0][4],
@@ -228,7 +228,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 			if len(subma2) > 0 {
 				MembersCountInvited++
 				InvitedData = append(InvitedData, InvitedGuildMember{
-					Name: subma2[0][1],
+					Name: TibiaDataSanitizeStrings(subma2[0][1]),
 					Date: subma2[0][2],
 				})
 			}

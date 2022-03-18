@@ -45,7 +45,7 @@ func TibiaNewslistV3Impl(days int, BoxContentHTML string) NewsListResponse {
 
 		// getting type from headline
 		NewsType := s.Nodes[0].FirstChild.NextSibling.FirstChild.NextSibling.NextSibling.FirstChild.Data
-		OneNews.Type = TibiaDataGetNewsType(TibiaDataSanitizeNbspSpaceString(NewsType))
+		OneNews.Type = TibiaDataGetNewsType(TibiaDataSanitizeStrings(NewsType))
 
 		// getting date from headline
 		OneNews.Date = TibiaDataDateV3(s.Nodes[0].FirstChild.NextSibling.FirstChild.Data)

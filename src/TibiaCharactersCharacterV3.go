@@ -495,14 +495,50 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 	}
 
 	// get summon information
-	rs := summonRegex.FindAllStringSubmatch(data, -1)
-	if len(rs) >= 1 {
-		theSummon = rs[0][1]
-		data = rs[0][2]
+	if strings.HasPrefix(data, "a ") || strings.HasPrefix(data, "an ") {
+		// trim away "an " and "a "
+		tmpData := strings.TrimPrefix(strings.TrimPrefix(data, "an "), "a ")
+
+		if containsCreaturesWithOf(tmpData) {
+			// this is not a summon, since it is a creature with a of in the middle
+		} else {
+			rs := summonRegex.FindAllStringSubmatch(data, -1)
+			if len(rs) >= 1 {
+				theSummon = rs[0][1]
+				data = rs[0][2]
+			}
+		}
 	}
 
 	// sanitizing string
 	data = TibiaDataSanitizeStrings(data)
 
 	return data, isPlayer, isTraded, theSummon
+}
+
+// containsCreaturesWithOf checks if creature is present in special creatures list
+func containsCreaturesWithOf(str string) bool {
+
+	// this list should be based on the https://assets.tibiadata.com/data.json creatures name and plural_name field (currently only singular version)
+	creaturesWithOf := []string{
+		"acolyte of the cult",
+		"adept of the cult",
+		"cloak of terror",
+		"energuardian of tales",
+		"enlightened of the cult",
+		"guardian of tales",
+		"hand of cursed fate",
+		"monk of the order",
+		"novice of the cult",
+		"priestess of the wild sun",
+		"sight of surrender",
+		"son of verminor",
+	}
+
+	for _, v := range creaturesWithOf {
+		if v == str {
+			return true
+		}
+	}
+	return false
 }

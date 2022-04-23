@@ -134,6 +134,30 @@ func TestNumber4(t *testing.T) {
 
 	firstDeath := characterJson.Characters.Deaths[0]
 	assert.Equal(28, len(firstDeath.Killers))
+
+	creatureWithOfDeath := characterJson.Characters.Deaths[16]
+	assert.Equal(2, len(creatureWithOfDeath.Killers))
+	assert.Equal(260, creatureWithOfDeath.Level)
+	assert.Equal("an undead elite gladiator", creatureWithOfDeath.Killers[0].Name)
+	assert.False(creatureWithOfDeath.Killers[0].Player)
+	assert.False(creatureWithOfDeath.Killers[0].Traded)
+	assert.Empty(creatureWithOfDeath.Killers[0].Summon)
+	assert.Equal("a priestess of the wild sun", creatureWithOfDeath.Killers[1].Name)
+
+	tradedInDeath := characterJson.Characters.Deaths[18]
+	assert.Equal(3, len(tradedInDeath.Assists))
+	assert.Equal(261, tradedInDeath.Level)
+	assert.Equal("Vithrann", tradedInDeath.Assists[1].Name)
+	assert.True(tradedInDeath.Assists[1].Player)
+	assert.Equal("Adam No Hands", tradedInDeath.Assists[2].Name)
+	assert.True(tradedInDeath.Assists[2].Traded)
+
+	longDeath := characterJson.Characters.Deaths[78]
+	assert.Equal(5, len(longDeath.Assists))
+	assert.Equal(231, longDeath.Level)
+	assert.Equal("Adam No Hands", longDeath.Assists[4].Name)
+	assert.Equal("a paladin familiar", longDeath.Assists[4].Summon)
+	assert.True(longDeath.Assists[4].Traded)
 }
 
 func TestNumber5(t *testing.T) {

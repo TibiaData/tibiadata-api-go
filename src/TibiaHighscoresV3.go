@@ -100,18 +100,6 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 
 		if len(subma1) > 0 {
 
-			// Debugging of what is in which column
-			if TibiaDataDebug {
-				log.Println("1 -> " + subma1[0][1])
-				log.Println("2 -> " + subma1[0][2])
-				log.Println("3 -> " + subma1[0][3])
-				log.Println("4 -> " + subma1[0][4])
-				log.Println("5 -> " + subma1[0][5])
-				if category == loyaltypoints {
-					log.Println("6 -> " + subma1[0][6])
-				}
-			}
-
 			HighscoreDataRank++
 			if category == loyaltypoints {
 				HighscoreDataTitle = subma1[0][2]
@@ -138,11 +126,6 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 
 		}
 	})
-
-	// Printing the HighscoreData data to log
-	if TibiaDataDebug {
-		log.Println(HighscoreData)
-	}
 
 	categoryString, _ := category.String()
 

@@ -84,6 +84,43 @@ func TestCormaya11(t *testing.T) {
 	assert.Equal("2022-01-21T09:00:00Z", houseAuction.AuctionEnd)
 }
 
+func TestCormaya9c(t *testing.T) {
+	data, err := os.ReadFile("../testdata/houses/Premia/Edron/Cormaya9c.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+
+	houseJson := TibiaHousesHouseV3Impl("54023", string(data))
+	assert := assert.New(t)
+
+	assert.Equal(54023, houseJson.House.Houseid)
+	assert.Equal("Premia", houseJson.House.World)
+	assert.Equal("", houseJson.House.Town) //depends on TibiaDataHousesMapResolver
+	assert.Equal("Cormaya 9c", houseJson.House.Name)
+	assert.Equal("house", houseJson.House.Type)
+	assert.Equal(2, houseJson.House.Beds)
+	assert.Equal(25, houseJson.House.Size)
+	assert.Equal(80000, houseJson.House.Rent)
+	assert.Equal("https://static.tibia.com/images/houses/house_54023.png", houseJson.House.Img)
+
+	houseStatus := houseJson.House.Status
+	assert.NotNil(houseStatus)
+	assert.True(houseStatus.IsAuctioned)
+	assert.False(houseStatus.IsRented)
+	assert.False(houseStatus.IsMoving)
+	assert.False(houseStatus.IsTransfering)
+	assert.Equal(HouseRental{Owner: "", OwnerSex: "", PaidUntil: "", MovingDate: "", TransferReceiver: "", TransferPrice: 0, TransferAccept: false}, houseStatus.Rental)
+	assert.Equal("The house is currently being auctioned. The auction has ended at Jan 21 2022, 10:00:00 CET. The highest bid so far is 12345 gold and has been submitted by Ciuchy Szajba.", houseStatus.Original)
+
+	houseAuction := houseJson.House.Status.Auction
+	assert.NotNil(houseAuction)
+	assert.Equal(12345, houseAuction.CurrentBid)
+	assert.Equal("Ciuchy Szajba", houseAuction.CurrentBidder)
+	assert.False(houseAuction.AuctionOngoing)
+	assert.Equal("2022-01-21T09:00:00Z", houseAuction.AuctionEnd)
+}
+
 func TestBeachHomeApartmentsFlat14(t *testing.T) {
 	data, err := os.ReadFile("../testdata/houses/Premia/Thais/BeachHomeApartmentsFlat14.html")
 	if err != nil {

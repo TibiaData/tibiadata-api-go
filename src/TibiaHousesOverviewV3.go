@@ -25,6 +25,7 @@ type HousesHouse struct {
 	Rent        int           `json:"rent"`
 	IsRented    bool          `json:"rented"`
 	IsAuctioned bool          `json:"auctioned"`
+	IsFinished  bool          `json:"finished"`
 	Auction     HousesAuction `json:"auction"`
 }
 
@@ -44,7 +45,7 @@ type HousesOverviewResponse struct {
 
 var (
 	houseOverviewDataRegex      = regexp.MustCompile(`<td.*><nobr>(.*)<\/nobr><\/td><td.*><nobr>([0-9]+).sqm<\/nobr><\/td><td.*><nobr>([0-9]+)(k+).gold<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td>.*houseid" value="([0-9]+)"\/><div.*`)
-	houseOverviewAuctionedRegex = regexp.MustCompile(`auctioned.\(([0-9]+).gold;.(.*).left\)`)
+	houseOverviewAuctionedRegex = regexp.MustCompile(`auctioned.\(([0-9]+).gold;.(finished|(.*).left)\)`)
 )
 
 // TibiaHousesOverviewV3 func
@@ -111,7 +112,11 @@ func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string, htmlDa
 					house.IsAuctioned = true
 					subma1b := houseOverviewAuctionedRegex.FindAllStringSubmatch(s, -1)
 					house.Auction.AuctionBid = TibiaDataStringToIntegerV3(subma1b[0][1])
-					house.Auction.AuctionLeft = subma1b[0][2]
+					if subma1b[0][2] == "finished" {
+						house.IsFinished = true
+					} else {
+						house.Auction.AuctionLeft = subma1b[0][3]
+					}
 				}
 
 				// append house to list houses/guildhalls

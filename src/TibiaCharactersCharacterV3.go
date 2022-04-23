@@ -496,10 +496,7 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 
 	// get summon information
 	if strings.HasPrefix(data, "a ") || strings.HasPrefix(data, "an ") {
-		// trim away "an " and "a "
-		tmpData := strings.TrimPrefix(strings.TrimPrefix(data, "an "), "a ")
-
-		if containsCreaturesWithOf(tmpData) {
+		if containsCreaturesWithOf(data) {
 			// this is not a summon, since it is a creature with a of in the middle
 		} else {
 			rs := summonRegex.FindAllStringSubmatch(data, -1)
@@ -534,6 +531,9 @@ func containsCreaturesWithOf(str string) bool {
 		"sight of surrender",
 		"son of verminor",
 	}
+
+	// trim away "an " and "a "
+	str = strings.TrimPrefix(strings.TrimPrefix(str, "an "), "a ")
 
 	for _, v := range creaturesWithOf {
 		if v == str {

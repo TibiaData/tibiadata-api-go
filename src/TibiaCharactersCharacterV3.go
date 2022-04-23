@@ -203,7 +203,8 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 				case "Account Status:":
 					CharacterInformationData.AccountStatus = RowData
 				case "Married To:":
-					CharacterInformationData.MarriedTo = TibiaDataRemoveURLsV3(RowData)
+					AnchorQuery := s.Find("a")
+					CharacterInformationData.MarriedTo = AnchorQuery.Nodes[0].FirstChild.Data
 				case "House:":
 					AnchorQuery := s.Find("a")
 					HouseName := AnchorQuery.Nodes[0].FirstChild.Data

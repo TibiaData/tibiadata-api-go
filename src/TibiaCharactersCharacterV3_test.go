@@ -104,9 +104,15 @@ func TestNumber3(t *testing.T) {
 	assert := assert.New(t)
 
 	assert.Equal("Borttagna Gubben", characterJson.Characters.Character.Name)
+	assert.True(characterJson.Characters.Character.Traded)
+	assert.Equal(2, len(characterJson.Characters.Character.FormerWorlds))
+	assert.Equal("Zuna", characterJson.Characters.Character.FormerWorlds[0])
+	assert.Equal("Zunera", characterJson.Characters.Character.FormerWorlds[1])
+	assert.Equal("Bubble", characterJson.Characters.Character.MarriedTo)
 	assert.Equal("2022-03-08T00:09:13Z", characterJson.Characters.Character.DeletionDate)
 	assert.Equal("", characterJson.Characters.Character.LastLogin)
 	assert.Equal("Free Account", characterJson.Characters.Character.AccountStatus)
+	assert.Equal("Fansite Admin", characterJson.Characters.AccountInformation.Position)
 	assert.Empty(characterJson.Characters.AccountInformation.LoyaltyTitle)
 }
 

@@ -46,6 +46,7 @@ func TestAnticaThaisHousesOverview(t *testing.T) {
 	assert.Equal(50000, firstHouse.Rent)
 	assert.True(firstHouse.IsRented)
 	assert.False(firstHouse.IsAuctioned)
+	assert.False(firstHouse.IsFinished)
 	assert.Equal(HousesAuction{AuctionBid: 0, AuctionLeft: ""}, firstHouse.Auction)
 
 	lastHouse := housesJson.Houses.HouseList[117]
@@ -55,6 +56,7 @@ func TestAnticaThaisHousesOverview(t *testing.T) {
 	assert.Equal(600000, lastHouse.Rent)
 	assert.True(lastHouse.IsRented)
 	assert.False(lastHouse.IsAuctioned)
+	assert.False(lastHouse.IsFinished)
 	assert.Equal(HousesAuction{AuctionBid: 0, AuctionLeft: ""}, lastHouse.Auction)
 
 	assert.Equal(14, len(housesJson.Houses.GuildhallList))
@@ -66,6 +68,7 @@ func TestAnticaThaisHousesOverview(t *testing.T) {
 	assert.Equal(500000, firstGuild.Rent)
 	assert.True(firstGuild.IsRented)
 	assert.False(firstGuild.IsAuctioned)
+	assert.False(firstGuild.IsFinished)
 	assert.Equal(HousesAuction{AuctionBid: 0, AuctionLeft: ""}, firstGuild.Auction)
 
 	lastGuild := housesJson.Houses.GuildhallList[13]
@@ -75,6 +78,7 @@ func TestAnticaThaisHousesOverview(t *testing.T) {
 	assert.Equal(5000000, lastGuild.Rent)
 	assert.True(lastGuild.IsRented)
 	assert.False(lastGuild.IsAuctioned)
+	assert.False(lastGuild.IsFinished)
 	assert.Equal(HousesAuction{AuctionBid: 0, AuctionLeft: ""}, lastGuild.Auction)
 }
 
@@ -116,6 +120,7 @@ func TestPremiaFarmineHousesOverview(t *testing.T) {
 	assert.Equal(150000, firstHouse.Rent)
 	assert.False(firstHouse.IsRented)
 	assert.True(firstHouse.IsAuctioned)
+	assert.False(firstHouse.IsFinished)
 	assert.Equal(HousesAuction{AuctionBid: 0, AuctionLeft: ""}, firstHouse.Auction)
 
 	assert.Equal(0, len(housesJson.Houses.GuildhallList))
@@ -159,7 +164,18 @@ func TestPremiaEdronHousesOverview(t *testing.T) {
 	assert.Equal(150000, auctionedHouse.Rent)
 	assert.False(auctionedHouse.IsRented)
 	assert.True(auctionedHouse.IsAuctioned)
+	assert.False(auctionedHouse.IsFinished)
 	assert.Equal(HousesAuction{AuctionBid: 200000, AuctionLeft: "9 hours"}, auctionedHouse.Auction)
+
+	secondAuctionedHouse := housesJson.Houses.HouseList[56]
+	assert.Equal("Cormaya 9c", secondAuctionedHouse.Name)
+	assert.Equal(54023, secondAuctionedHouse.HouseID)
+	assert.Equal(25, secondAuctionedHouse.Size)
+	assert.Equal(80000, secondAuctionedHouse.Rent)
+	assert.False(secondAuctionedHouse.IsRented)
+	assert.True(secondAuctionedHouse.IsAuctioned)
+	assert.True(secondAuctionedHouse.IsFinished)
+	assert.Equal(HousesAuction{AuctionBid: 12345, AuctionLeft: ""}, secondAuctionedHouse.Auction)
 
 	assert.Equal(6, len(housesJson.Houses.GuildhallList))
 }

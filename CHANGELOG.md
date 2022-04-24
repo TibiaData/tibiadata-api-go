@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.2.0] - 2022-04-24
+
+### Changed
+* Adding support for finished auctions ([#115](https://github.com/TibiaData/tibiadata-api-go/pull/115), [#118](https://github.com/TibiaData/tibiadata-api-go/pull/118) by [tobiasehlert](https://github.com/tobiasehlert))
+* Enhancing deaths parsing of characters ([#116](https://github.com/TibiaData/tibiadata-api-go/pull/116) by [tobiasehlert](https://github.com/tobiasehlert))
+* Bump golang from 1.17.8 to 1.18.1 ([#108](https://github.com/TibiaData/tibiadata-api-go/pull/108), [#113](https://github.com/TibiaData/tibiadata-api-go/pull/113) by [dependabot](https://github.com/dependabot))
+* Bump various workflow versions ([#101](https://github.com/TibiaData/tibiadata-api-go/pull/101), [#102](https://github.com/TibiaData/tibiadata-api-go/pull/102), [#109](https://github.com/TibiaData/tibiadata-api-go/pull/109), [#110](https://github.com/TibiaData/tibiadata-api-go/pull/110), [#111](https://github.com/TibiaData/tibiadata-api-go/pull/111), [#112](https://github.com/TibiaData/tibiadata-api-go/pull/112) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+* Fix regex to handle one bed in house ([#105](https://github.com/TibiaData/tibiadata-api-go/pull/105) by [tobiasehlert](https://github.com/tobiasehlert))
+* Fix encoding of apostrophes in multiple places ([#106](https://github.com/TibiaData/tibiadata-api-go/pull/106) by [tobiasehlert](https://github.com/tobiasehlert))
+* Fix guild description to contain guild details ([#107](https://github.com/TibiaData/tibiadata-api-go/pull/107) by [tobiasehlert](https://github.com/tobiasehlert))
+* Fix characters missing marriage and some more tests ([#117](https://github.com/TibiaData/tibiadata-api-go/pull/117) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [3.1.1] - 2022-03-15
 
 ### Fixed
@@ -151,6 +165,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.2.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.1.1...v3.2.0
 [3.1.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v0.6.2...v3.0.0

@@ -15,6 +15,7 @@ import (
 type HousesAuction struct {
 	AuctionBid  int    `json:"current_bid"`
 	AuctionLeft string `json:"time_left"`
+	IsFinished  bool   `json:"finished"`
 }
 
 // Child of HousesHouses
@@ -25,7 +26,6 @@ type HousesHouse struct {
 	Rent        int           `json:"rent"`
 	IsRented    bool          `json:"rented"`
 	IsAuctioned bool          `json:"auctioned"`
-	IsFinished  bool          `json:"finished"`
 	Auction     HousesAuction `json:"auction"`
 }
 
@@ -113,7 +113,7 @@ func TibiaHousesOverviewV3Impl(c *gin.Context, world string, town string, htmlDa
 					subma1b := houseOverviewAuctionedRegex.FindAllStringSubmatch(s, -1)
 					house.Auction.AuctionBid = TibiaDataStringToIntegerV3(subma1b[0][1])
 					if subma1b[0][2] == "finished" {
-						house.IsFinished = true
+						house.Auction.IsFinished = true
 					} else {
 						house.Auction.AuctionLeft = subma1b[0][3]
 					}

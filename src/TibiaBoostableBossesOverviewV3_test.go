@@ -1,20 +1,26 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestBoostableBossesOverview(t *testing.T) {
-	data, err := os.ReadFile("../testdata/boostablebosses/boostablebosses.html")
+	file, err := static.TestFiles.Open("testdata/boostablebosses/boostablebosses.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	boostableBossesJson := TibiaBoostableBossesOverviewV3Impl(string(data))
+	boostableBossesJson, _ := TibiaBoostableBossesOverviewV3Impl(string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Goshnar's Malice", boostableBossesJson.BoostableBosses.Boosted.Name)

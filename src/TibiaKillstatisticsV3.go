@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -38,11 +39,11 @@ type KillStatisticsResponse struct {
 	Information    Information    `json:"information"`
 }
 
-func TibiaKillstatisticsV3Impl(world string, BoxContentHTML string) KillStatisticsResponse {
+func TibiaKillstatisticsV3Impl(world string, BoxContentHTML string) (*KillStatisticsResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaKillstatisticsV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Creating empty KillStatisticsData var
@@ -76,7 +77,7 @@ func TibiaKillstatisticsV3Impl(world string, BoxContentHTML string) KillStatisti
 
 	//
 	// Build the data-blob
-	return KillStatisticsResponse{
+	return &KillStatisticsResponse{
 		KillStatistics{
 			World:   world,
 			Entries: KillStatisticsData,
@@ -90,6 +91,9 @@ func TibiaKillstatisticsV3Impl(world string, BoxContentHTML string) KillStatisti
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }

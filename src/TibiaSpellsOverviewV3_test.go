@@ -1,20 +1,30 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestOverviewAll(t *testing.T) {
-	data, err := os.ReadFile("../testdata/spells/overviewall.html")
+	file, err := static.TestFiles.Open("testdata/spells/overviewall.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	spellsOverviewJson := TibiaSpellsOverviewV3Impl("", string(data))
+	spellsOverviewJson, err := TibiaSpellsOverviewV3Impl("", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal(142, len(spellsOverviewJson.Spells.Spells))
@@ -49,13 +59,22 @@ func TestOverviewAll(t *testing.T) {
 }
 
 func TestOverviewDruid(t *testing.T) {
-	data, err := os.ReadFile("../testdata/spells/overviewdruid.html")
+	file, err := static.TestFiles.Open("testdata/spells/overviewdruid.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	spellsOverviewJson := TibiaSpellsOverviewV3Impl("druid", string(data))
+	spellsOverviewJson, err := TibiaSpellsOverviewV3Impl("druid", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("druid", spellsOverviewJson.Spells.SpellsVocationFilter)

@@ -21,7 +21,6 @@ type BoostableBossesContainer struct {
 	BoostableBosses []OverviewBoostableBoss `json:"boostable_boss_list"`
 }
 
-//
 // The base includes two levels: BoostableBosses and Information
 type BoostableBossesOverviewResponse struct {
 	BoostableBosses BoostableBossesContainer `json:"boostable_bosses"`
@@ -34,7 +33,7 @@ var (
 	BoostableBossInformationRegex = regexp.MustCompile(`<img src="(.*)" border.*div>(.*)<\/div>`)
 )
 
-func TibiaBoostableBossesOverviewV3Impl(BoxContentHTML string) BoostableBossesOverviewResponse {
+func TibiaBoostableBossesOverviewV3Impl(BoxContentHTML string) (*BoostableBossesOverviewResponse, error) {
 	var (
 		BoostedBossName, BoostedBossImage string
 	)
@@ -100,7 +99,7 @@ func TibiaBoostableBossesOverviewV3Impl(BoxContentHTML string) BoostableBossesOv
 	})
 
 	// Build the data-blob
-	return BoostableBossesOverviewResponse{
+	return &BoostableBossesOverviewResponse{
 		BoostableBossesContainer{
 			Boosted: OverviewBoostableBoss{
 				Name:     TibiaDataSanitizeEscapedString(BoostedBossName),
@@ -113,5 +112,5 @@ func TibiaBoostableBossesOverviewV3Impl(BoxContentHTML string) BoostableBossesOv
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
 		},
-	}
+	}, nil
 }

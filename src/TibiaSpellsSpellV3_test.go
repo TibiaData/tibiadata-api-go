@@ -1,20 +1,30 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFindPerson(t *testing.T) {
-	data, err := os.ReadFile("../testdata/spells/spell/Find Person.html")
+	file, err := static.TestFiles.Open("testdata/spells/spell/Find Person.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	findPersonJson := TibiaSpellsSpellV3Impl("Find Person", string(data))
+	findPersonJson, err := TibiaSpellsSpellV3Impl("Find Person", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("", findPersonJson.Spells.Spell.Description)
@@ -46,13 +56,22 @@ func TestFindPerson(t *testing.T) {
 }
 
 func TestHeavyMagicMissileRune(t *testing.T) {
-	data, err := os.ReadFile("../testdata/spells/spell/Heavy Magic Missile Rune.html")
+	file, err := static.TestFiles.Open("testdata/spells/spell/Heavy Magic Missile Rune.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	hmmJson := TibiaSpellsSpellV3Impl("Heavy Magic Missile Rune", string(data))
+	hmmJson, err := TibiaSpellsSpellV3Impl("Heavy Magic Missile Rune", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("", hmmJson.Spells.Spell.Description)

@@ -1,11 +1,13 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/TibiaData/tibiadata-api-go/src/validation"
 )
 
 // Child of Guild
@@ -82,7 +84,7 @@ var (
 	GuildMemberInvitesInformationRegex = regexp.MustCompile(`<td><a.*">(.*)<\/a><\/td><td>(.*)<\/td>`)
 )
 
-func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
+func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) (*GuildResponse, error) {
 	// Creating empty vars
 	var (
 		MembersData                                                                                                                                                    []GuildMember
@@ -96,15 +98,22 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaGuildsGuildV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
-	guildName, _ := ReaderHTML.Find("h1").First().Html()
+	guildName, err := ReaderHTML.Find("h1").First().Html()
+	if err != nil {
+		return nil, fmt.Errorf("[error] TibiaGuildsGuildV3Impl failed at ReaderHTML.Find, err: %s", err)
+	}
+
+	if guildName == "" {
+		return nil, validation.ErrorGuildNotFound
+	}
 
 	// Getting data from div.InnerTableContainer and then first p
 	InnerTableContainerTMPA, err := ReaderHTML.Find(".BoxContent table").Html()
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaGuildsGuildV3Impl failed at InnerTableContainerTMPA ReaderHTML.Find, err: %s", err)
 	}
 
 	subma1b := GuildLogoRegex.FindAllStringSubmatch(InnerTableContainerTMPA, -1)
@@ -116,7 +125,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 	// Getting data from div.InnerTableContainer and then first p
 	InnerTableContainerTMPB, err := ReaderHTML.Find("#GuildInformationContainer").Html()
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaGuildsGuildV3Impl failed at InnerTableContainerTMPB ReaderHTML.Find, err: %s", err)
 	}
 
 	for _, line := range strings.Split(strings.TrimSuffix(InnerTableContainerTMPB, "\n"), "\n") {
@@ -187,12 +196,15 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 		}
 	}
 
+	var insideError error
+
 	// Running query over each div
-	ReaderHTML.Find(".TableContentContainer .TableContent tbody tr").Each(func(index int, s *goquery.Selection) {
+	ReaderHTML.Find(".TableContentContainer .TableContent tbody tr").EachWithBreak(func(index int, s *goquery.Selection) bool {
 		// Storing HTML into GuildsDivHTML
 		GuildsDivHTML, err := s.Html()
 		if err != nil {
-			log.Fatal(err)
+			insideError = fmt.Errorf("[error]  TibiaGuildsGuildV3Impl failed at GuildsDivHTML, err := s.Html(), err: %s", err)
+			return false
 		}
 
 		// Removing linebreaks from HTML
@@ -240,11 +252,17 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 				})
 			}
 		}
+
+		return true
 	})
+
+	if insideError != nil {
+		return nil, insideError
+	}
 
 	//
 	// Build the data-blob
-	return GuildResponse{
+	return &GuildResponse{
 		Guilds{
 			Guild{
 				Name:               guildName,
@@ -259,18 +277,20 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 				InWar:              GuildInWar,
 				DisbandedDate:      GuildDisbandedDate,
 				DisbandedCondition: GuildDisbandedCondition,
-
-				PlayersOnline:  MembersCountOnline,
-				PlayersOffline: MembersCountOffline,
-				MembersTotal:   (MembersCountOnline + MembersCountOffline),
-				MembersInvited: MembersCountInvited,
-				Members:        MembersData,
-				Invited:        InvitedData,
+				PlayersOnline:      MembersCountOnline,
+				PlayersOffline:     MembersCountOffline,
+				MembersTotal:       (MembersCountOnline + MembersCountOffline),
+				MembersInvited:     MembersCountInvited,
+				Members:            MembersData,
+				Invited:            InvitedData,
 			},
 		},
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }

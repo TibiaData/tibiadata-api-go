@@ -1,20 +1,30 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestWorlds(t *testing.T) {
-	data, err := os.ReadFile("../testdata/worlds/worlds.html")
+	file, err := static.TestFiles.Open("testdata/worlds/worlds.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	worldsJson := TibiaWorldsOverviewV3Impl(string(data))
+	worldsJson, err := TibiaWorldsOverviewV3Impl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal(8720, worldsJson.Worlds.PlayersOnline)

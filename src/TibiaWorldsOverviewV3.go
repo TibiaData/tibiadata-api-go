@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"net/http"
 	"regexp"
 	"strings"
 
@@ -46,11 +47,11 @@ var (
 )
 
 // TibiaWorldsOverviewV3 func
-func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
+func TibiaWorldsOverviewV3Impl(BoxContentHTML string) (*WorldsOverviewResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaWorldsOverviewV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Creating empty vars
@@ -59,15 +60,17 @@ func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
 		WorldsRecordDate, WorldsWorldCategory, WorldsBattleyeDate, WorldsTransferType, WorldsTournamentWorldType, WorldsGameWorldType, WorldsStatus string
 		WorldsRecordPlayers, WorldsAllOnlinePlayers                                                                                                 int
 		WorldsPremiumOnly, WorldsBattleyeProtected                                                                                                  bool
+
+		insideError error
 	)
 
 	// Running query over each div
-	ReaderHTML.Find(".TableContentContainer .TableContent tbody tr").Each(func(index int, s *goquery.Selection) {
-
+	ReaderHTML.Find(".TableContentContainer .TableContent tbody tr").EachWithBreak(func(index int, s *goquery.Selection) bool {
 		// Storing HTML into CreatureDivHTML
 		WorldsDivHTML, err := s.Html()
 		if err != nil {
-			log.Fatal(err)
+			insideError = fmt.Errorf("[error] TibiaWorldsOverviewV3Impl failed at WorldsDivHTML, err := s.Html(), err: %s", err)
+			return false
 		}
 
 		// Regex to get data for record values
@@ -183,11 +186,17 @@ func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
 				TournamentWorldsData = append(TournamentWorldsData, OneWorld)
 			}
 		}
+
+		return true
 	})
+
+	if insideError != nil {
+		return nil, insideError
+	}
 
 	//
 	// Build the data-blob
-	return WorldsOverviewResponse{
+	return &WorldsOverviewResponse{
 		OverviewWorlds{
 			PlayersOnline:    WorldsAllOnlinePlayers,
 			RecordPlayers:    WorldsRecordPlayers,
@@ -198,6 +207,9 @@ func TibiaWorldsOverviewV3Impl(BoxContentHTML string) WorldsOverviewResponse {
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }

@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"net/http"
 	"regexp"
 	"strings"
 
@@ -35,7 +36,7 @@ var (
 	CreatureInformationRegex        = regexp.MustCompile(`.*race=(.*)"><img src="(.*)" border.*div>(.*)<\/div>`)
 )
 
-func TibiaCreaturesOverviewV3Impl(BoxContentHTML string) CreaturesOverviewResponse {
+func TibiaCreaturesOverviewV3Impl(BoxContentHTML string) (*CreaturesOverviewResponse, error) {
 	var (
 		BoostedCreatureName, BoostedCreatureRace, BoostedCreatureImage string
 	)
@@ -43,13 +44,13 @@ func TibiaCreaturesOverviewV3Impl(BoxContentHTML string) CreaturesOverviewRespon
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaCreaturesOverviewV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Getting data from div.InnerTableContainer and then first p
 	InnerTableContainerTMPB, err := ReaderHTML.Find(".InnerTableContainer p").First().Html()
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaCreaturesOverviewV3Impl failed at ReaderHTML.Find, err: %s", err)
 	}
 
 	// Regex to get data for name and race param for boosted creature
@@ -69,16 +70,21 @@ func TibiaCreaturesOverviewV3Impl(BoxContentHTML string) CreaturesOverviewRespon
 		BoostedCreatureImage = subma2b[0][1]
 	}
 
-	// Creating empty CreaturesData var
-	var CreaturesData []OverviewCreature
+	var (
+		// Creating empty CreaturesData var
+		CreaturesData []OverviewCreature
+
+		// Creating empty error var
+		insideError error
+	)
 
 	// Running query over each div
-	ReaderHTML.Find(".BoxContent div div").Each(func(index int, s *goquery.Selection) {
-
+	ReaderHTML.Find(".BoxContent div div").EachWithBreak(func(index int, s *goquery.Selection) bool {
 		// Storing HTML into CreatureDivHTML
 		CreatureDivHTML, err := s.Html()
 		if err != nil {
-			log.Fatal(err)
+			insideError = fmt.Errorf("[error] TibiaCreaturesOverviewV3Impl failed at CreatureDivHTML, err := s.Html(), err: %s", err)
+			return false
 		}
 
 		// Regex to get data for name, race and img src param for creature
@@ -100,10 +106,16 @@ func TibiaCreaturesOverviewV3Impl(BoxContentHTML string) CreaturesOverviewRespon
 				Featured: FeaturedRace,
 			})
 		}
+
+		return true
 	})
 
+	if insideError != nil {
+		return nil, insideError
+	}
+
 	// Build the data-blob
-	return CreaturesOverviewResponse{
+	return &CreaturesOverviewResponse{
 		CreaturesContainer{
 			Boosted: OverviewCreature{
 				Name:     BoostedCreatureName,
@@ -116,6 +128,9 @@ func TibiaCreaturesOverviewV3Impl(BoxContentHTML string) CreaturesOverviewRespon
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }

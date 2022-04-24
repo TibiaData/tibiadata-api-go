@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"net/http"
 	"regexp"
 	"strings"
 
@@ -55,13 +56,13 @@ var (
 )
 
 // TibiaWorldsWorldV3 func
-func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
+func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) (*WorldResponse, error) {
 	//TODO: We need to read the world name from the response rather than pass it into this func
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaWorldsWorldV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Creating empty vars
@@ -71,21 +72,22 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 		WorldsPlayersOnline, WorldsRecordPlayers                                                                                                                                  int
 		WorldsPremiumOnly, WorldsBattleyeProtected                                                                                                                                bool
 		WorldsOnlinePlayers                                                                                                                                                       []OnlinePlayers
+
+		insideError error
 	)
 
 	// Running query over each div
-	ReaderHTML.Find(".Table1 .InnerTableContainer table tr").Each(func(index int, s *goquery.Selection) {
-
+	ReaderHTML.Find(".Table1 .InnerTableContainer table tr").EachWithBreak(func(index int, s *goquery.Selection) bool {
 		// Storing HTML into CreatureDivHTML
 		WorldsInformationDivHTML, err := s.Html()
 		if err != nil {
-			log.Fatal(err)
+			insideError = fmt.Errorf("[error] TibiaWorldsWorldV3Impl failed at WorldsInformationDivHTML, err := s.Html(), err: %s", err)
+			return false
 		}
 
 		subma1 := WorldDataRowRegex.FindAllStringSubmatch(WorldsInformationDivHTML, -1)
 
 		if len(subma1) > 0 {
-
 			// Creating easy to use vars (and unescape hmtl right string)
 			WorldsInformationLeftColumn := subma1[0][1]
 			WorldsInformationRightColumn := TibiaDataSanitizeEscapedString(subma1[0][2])
@@ -103,6 +105,7 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 			if WorldsInformationLeftColumn == "Players Online" {
 				WorldsPlayersOnline = TibiaDataStringToIntegerV3(WorldsInformationRightColumn)
 			}
+
 			if WorldsInformationLeftColumn == "Online Record" {
 				// Regex to get data for record values
 				subma2 := WorldRecordInformationRegex.FindAllStringSubmatch(WorldsInformationRightColumn, -1)
@@ -113,21 +116,27 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 					WorldsRecordDate = TibiaDataDatetimeV3(subma2[0][2])
 				}
 			}
+
 			if WorldsInformationLeftColumn == "Creation Date" {
 				WorldsCreationDate = TibiaDataDateV3(WorldsInformationRightColumn)
 			}
+
 			if WorldsInformationLeftColumn == "Location" {
 				WorldsLocation = WorldsInformationRightColumn
 			}
+
 			if WorldsInformationLeftColumn == "PvP Type" {
 				WorldsPvpType = WorldsInformationRightColumn
 			}
+
 			if WorldsInformationLeftColumn == "Premium Type" {
 				WorldsPremiumOnly = true
 			}
+
 			if WorldsInformationLeftColumn == "Transfer Type" {
 				WorldsTransferType = WorldsInformationRightColumn
 			}
+
 			if WorldsInformationLeftColumn == "World Quest Titles" {
 				if WorldsInformationRightColumn != "This game world currently has no title." {
 					WorldsQuestTitlesTmp := strings.Split(WorldsInformationRightColumn, ", ")
@@ -138,8 +147,8 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 					}
 				}
 			}
-			if WorldsInformationLeftColumn == "BattlEye Status" {
 
+			if WorldsInformationLeftColumn == "BattlEye Status" {
 				if WorldsInformationRightColumn == "Not protected by BattlEye." {
 					WorldsBattleyeProtected = false
 				} else {
@@ -152,9 +161,11 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 					}
 				}
 			}
+
 			if WorldsInformationLeftColumn == "Game World Type" {
 				WorldsGameWorldType = strings.ToLower(WorldsInformationRightColumn)
 			}
+
 			if WorldsInformationLeftColumn == "Tournament World Type" {
 				WorldsGameWorldType = "tournament"
 				if WorldsInformationRightColumn == "Restricted Store" {
@@ -165,32 +176,42 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 			}
 		}
 
+		return true
 	})
 
-	// Running query over each div
-	ReaderHTML.Find(".Table2 .InnerTableContainer table tr").First().NextAll().Each(func(index int, s *goquery.Selection) {
+	if insideError != nil {
+		return nil, insideError
+	}
 
+	// Running query over each div
+	ReaderHTML.Find(".Table2 .InnerTableContainer table tr").First().NextAll().EachWithBreak(func(index int, s *goquery.Selection) bool {
 		// Storing HTML into CreatureDivHTML
 		WorldsInformationDivHTML, err := s.Html()
 		if err != nil {
-			log.Fatal(err)
+			insideError = fmt.Errorf("[error] TibiaWorldsWorldV3Impl failed at WorldsInformationDivHTML, err := s.Html(), err: %s", err)
+			return false
 		}
 
 		subma1 := OnlinePlayerRegex.FindAllStringSubmatch(WorldsInformationDivHTML, -1)
 
 		if len(subma1) > 0 {
-
 			WorldsOnlinePlayers = append(WorldsOnlinePlayers, OnlinePlayers{
 				Name:     TibiaDataSanitizeStrings(subma1[0][1]),
 				Level:    TibiaDataStringToIntegerV3(subma1[0][2]),
 				Vocation: TibiaDataSanitizeStrings(subma1[0][3]),
 			})
 		}
+
+		return true
 	})
+
+	if insideError != nil {
+		return nil, insideError
+	}
 
 	//
 	// Build the data-blob
-	return WorldResponse{
+	return &WorldResponse{
 		Worlds: Worlds{
 			World{
 				Name:                world,
@@ -214,6 +235,9 @@ func TibiaWorldsWorldV3Impl(world string, BoxContentHTML string) WorldResponse {
 		Information: Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }

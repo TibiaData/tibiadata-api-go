@@ -1,20 +1,30 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewsById(t *testing.T) {
-	data, err := os.ReadFile("../testdata/news/archive/6529.html")
+	file, err := static.TestFiles.Open("testdata/news/archive/6529.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	newsArticleJson := TibiaNewsV3Impl(6529, "https://www.tibia.com/news/?subtopic=newsarchive&id=6529", string(data))
+	newsArticleJson, err := TibiaNewsV3Impl(6529, "https://www.tibia.com/news/?subtopic=newsarchive&id=6529", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal(6529, newsArticleJson.News.ID)
@@ -28,13 +38,22 @@ func TestNewsById(t *testing.T) {
 }
 
 func TestNews6512(t *testing.T) {
-	data, err := os.ReadFile("../testdata/news/archive/6512.html")
+	file, err := static.TestFiles.Open("testdata/news/archive/6512.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	newsArticleJson := TibiaNewsV3Impl(6512, "https://www.tibia.com/news/?subtopic=newsarchive&id=6512", string(data))
+	newsArticleJson, err := TibiaNewsV3Impl(6512, "https://www.tibia.com/news/?subtopic=newsarchive&id=6512", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal(6512, newsArticleJson.News.ID)
@@ -48,13 +67,22 @@ func TestNews6512(t *testing.T) {
 }
 
 func TestNews6481(t *testing.T) {
-	data, err := os.ReadFile("../testdata/news/archive/6481.html")
+	file, err := static.TestFiles.Open("testdata/news/archive/6481.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	newsArticleJson := TibiaNewsV3Impl(6481, "https://www.tibia.com/news/?subtopic=newsarchive&id=6481", string(data))
+	newsArticleJson, err := TibiaNewsV3Impl(6481, "https://www.tibia.com/news/?subtopic=newsarchive&id=6481", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal(6481, newsArticleJson.News.ID)

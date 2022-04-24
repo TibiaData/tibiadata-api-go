@@ -1,20 +1,30 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPremia(t *testing.T) {
-	data, err := os.ReadFile("../testdata/guilds/Premia.html")
+	file, err := static.TestFiles.Open("testdata/guilds/Premia.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	premiaGuildsJson := TibiaGuildsOverviewV3Impl("Premia", string(data))
+	premiaGuildsJson, err := TibiaGuildsOverviewV3Impl("Premia", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("Premia", premiaGuildsJson.Guilds.World)

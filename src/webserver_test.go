@@ -19,6 +19,11 @@ var _ = func() bool {
 func TestFakeToUpCodeCoverage(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
+	// adding support for proxy for tests
+	if isEnvExist("TIBIADATA_PROXY") {
+		TibiaDataProxyDomain = "https://" + getEnv("TIBIADATA_PROXY", "www.tibia.com") + "/"
+	}
+
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 

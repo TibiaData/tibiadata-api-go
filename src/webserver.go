@@ -1185,7 +1185,7 @@ func TibiaDataHTMLDataCollectorV3(TibiaDataRequest TibiaDataRequestStruct) (stri
 	}
 
 	if err != nil {
-		log.Printf("[error] TibiaDataHTMLDataCollectorV3 (Status: %s, URL: %s) in resp1: %s", res.Status(), TibiaDataRequest.URL, err)
+		log.Printf("[error] TibiaDataHTMLDataCollectorV3 (Status: %s, URL: %s) in resp1: %s", res.Status(), res.Request.URL, err)
 
 		switch res.StatusCode() {
 		case http.StatusForbidden:
@@ -1220,7 +1220,7 @@ func TibiaDataHTMLDataCollectorV3(TibiaDataRequest TibiaDataRequestStruct) (stri
 	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(resIo2)
 	if err != nil {
-		log.Printf("[error] TibiaDataHTMLDataCollectorV3 (URL: %s) error: %s", TibiaDataRequest.URL, err)
+		log.Printf("[error] TibiaDataHTMLDataCollectorV3 (URL: %s) error: %s", res.Request.URL, err)
 	}
 
 	// Find of this to get div with class BoxContent

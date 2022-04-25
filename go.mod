@@ -4,12 +4,16 @@ go 1.19
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
+	github.com/TibiaData/tibiadata-api-go/src/static v0.0.0-00010101000000-000000000000
+	github.com/TibiaData/tibiadata-api-go/src/validation v0.0.0-00010101000000-000000000000
 	github.com/gin-gonic/gin v1.8.2
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/mantyr/go-charset v0.0.0-20160510214718-44d054d82c4a
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/text v0.6.0
 )
+
+require github.com/TibiaData/tibiadata-api-go/src/tibiamapping v0.0.0-00010101000000-000000000000 // indirect
 
 require (
 	github.com/goccy/go-json v0.10.0 // indirect
@@ -39,3 +43,9 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/TibiaData/tibiadata-api-go/src/tibiamapping => ./src/tibiamapping
+
+replace github.com/TibiaData/tibiadata-api-go/src/static => ./src/static
+
+replace github.com/TibiaData/tibiadata-api-go/src/validation => ./src/validation

@@ -222,7 +222,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 						HouseID: TibiaDataStringToIntegerV3(HouseId),
 					})
 				case "Guild Membership:":
-					CharacterInformationData.Guild.Rank = RowData
+					CharacterInformationData.Guild.Rank = strings.TrimSuffix(RowData, " of the ")
 
 					//TODO: I don't understand why the unicode nbsp is there...
 					CharacterInformationData.Guild.GuildName = TibiaDataSanitizeStrings(RowNameQuery.Nodes[0].NextSibling.LastChild.LastChild.Data)

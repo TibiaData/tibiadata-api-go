@@ -57,7 +57,7 @@ type FansitesResponse struct {
 var (
 	FansiteInformationRegex = regexp.MustCompile(`<td><a href="(.*)" target.*img .*src="(.*)" alt="(.*)"\/><\/a>.*<a href=".*">(.*)<\/a><\/td><td.*top;">(.*)<\/td><td.*top;">(.*)<\/td><td.*top;">(.*)<\/td><td.*<ul><li>(.*)<\/li><\/ul><\/td><td.*top;">(.*)<\/td>`)
 	FansiteImgTagRegex      = regexp.MustCompile(`<img[^>]+\bsrc="([^"]+)"`)
-	FansiteLanguagesRegex   = regexp.MustCompile("iti__flag.iti__(..)")
+	FansiteLanguagesRegex   = regexp.MustCompile(`id="Language_([a-z]{2})`)
 	FansiteAnchorRegex      = regexp.MustCompile(`.*src="(.*)" alt=".*`)
 )
 
@@ -141,7 +141,7 @@ func TibiaFansitesV3Impl(BoxContentHTML string) FansitesResponse {
 				found := FansiteLanguagesRegex.FindAllString(subma1[0][7], -1)
 				FansiteLanguagesData := make([]string, len(found))
 				for i := range FansiteLanguagesData {
-					FansiteLanguagesData[i] = strings.ReplaceAll(found[i], "iti__flag iti__", "")
+					FansiteLanguagesData[i] = strings.ReplaceAll(found[i], "id=\"Language_", "")
 				}
 
 				// Specials

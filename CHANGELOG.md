@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.2.1] - 2022-04-26
+
+### Changed
+* Bump github/codeql-action from 1 to 2 ([#122](https://github.com/TibiaData/tibiadata-api-go/pull/122) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+* Trimming suffix on guild rank ([#121](https://github.com/TibiaData/tibiadata-api-go/pull/121) by [tobiasehlert](https://github.com/tobiasehlert))
+* Change go version in go.mod ([#124](https://github.com/TibiaData/tibiadata-api-go/pull/124) by [sergot](https://github.com/sergot))
+* Adjusting parsing of fansite page ([#125](https://github.com/TibiaData/tibiadata-api-go/pull/125) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [3.2.0] - 2022-04-24
 
 ### Changed
@@ -165,6 +175,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.2.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.1.1...v3.2.0
 [3.1.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.0.0...v3.1.0

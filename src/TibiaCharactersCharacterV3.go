@@ -424,7 +424,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 					TmpMain := false
 					if strings.Contains(TmpCharacterName, "Main Character") {
 						TmpMain = true
-						Tmp := strings.Split(subma1[0][1], "<")
+						Tmp := strings.Split(TmpCharacterName, "<")
 						TmpCharacterName = strings.TrimSpace(Tmp[0])
 					}
 

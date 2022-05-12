@@ -3,7 +3,7 @@
 ## [3.2.2] - 2022-05-12
 
 ### Changed
-* Bump various workflow versions ([#126](https://github.com/TibiaData/tibiadata-api-go/pull/126), [#127](https://github.com/TibiaData/tibiadata-api-go/pull/127), [#129](https://github.com/TibiaData/tibiadata-api-go/pull/129), [#130](https://github.com/TibiaData/tibiadata-api-go/pull/130), [#132](https://github.com/TibiaData/tibiadata-api-go/pull/132), [#131](https://github.com/TibiaData/tibiadata-api-go/pull/131), [#128](https://github.com/TibiaData/tibiadata-api-go/pull/128) by [dependabot](https://github.com/dependabot))
+* Bump various workflow versions ([#126](https://github.com/TibiaData/tibiadata-api-go/pull/126), [#127](https://github.com/TibiaData/tibiadata-api-go/pull/127), [#128](https://github.com/TibiaData/tibiadata-api-go/pull/128), [#129](https://github.com/TibiaData/tibiadata-api-go/pull/129), [#130](https://github.com/TibiaData/tibiadata-api-go/pull/130), [#131](https://github.com/TibiaData/tibiadata-api-go/pull/131), [#132](https://github.com/TibiaData/tibiadata-api-go/pull/132) by [dependabot](https://github.com/dependabot))
 
 ### Fixed
 * Fix traded-string appearing in account characters info ([#133](https://github.com/TibiaData/tibiadata-api-go/pull/133) by [tiagomartines11](https://github.com/tiagomartines11))

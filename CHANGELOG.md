@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.2.2] - 2022-05-12
+
+### Changed
+* Bump various workflow versions ([#126](https://github.com/TibiaData/tibiadata-api-go/pull/126), [#127](https://github.com/TibiaData/tibiadata-api-go/pull/127), [#129](https://github.com/TibiaData/tibiadata-api-go/pull/129), [#130](https://github.com/TibiaData/tibiadata-api-go/pull/130), [#132](https://github.com/TibiaData/tibiadata-api-go/pull/132), [#131](https://github.com/TibiaData/tibiadata-api-go/pull/131), [#128](https://github.com/TibiaData/tibiadata-api-go/pull/128) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+* Fix traded-string appearing in account characters info ([#133](https://github.com/TibiaData/tibiadata-api-go/pull/133) by [tiagomartines11](https://github.com/tiagomartines11))
+
 ## [3.2.1] - 2022-04-26
 
 ### Changed
@@ -175,6 +183,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.2.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.2.1...v3.2.2
 [3.2.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.1.1...v3.2.0
 [3.1.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.1.0...v3.1.1

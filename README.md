@@ -7,9 +7,9 @@
 [![Docker size](https://img.shields.io/docker/image-size/tibiadata/tibiadata-api-go/latest)](https://hub.docker.com/r/tibiadata/tibiadata-api-go)
 [![GitHub license](https://img.shields.io/github/license/tibiadata/tibiadata-api-go)](https://github.com/tibiadata/tibiadata-api-go/blob/main/LICENSE)
 
-TibiaData API written in Golang and deployed in container (which contains v3)
+TibiaData API written in Golang and deployed in container (which contains v3).
 
-Current status of v3 is in beta and information like documentation can be found on [tibiadata.com](https://tibiadata.com/doc-api-v3/v3-beta/).
+Current status of v3 is released and information like documentation can be found on [docs.tibiadata.com](https://docs.tibiadata.com).
 
 ### Table of Contents
 

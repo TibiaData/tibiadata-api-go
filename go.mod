@@ -14,6 +14,7 @@ require (
 require (
 	github.com/goccy/go-json v0.9.10 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.2 // indirect
+	github.com/stretchr/objx v0.4.0 // indirect
 )
 
 require (

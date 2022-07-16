@@ -10,7 +10,6 @@ import (
 	"os/signal"
 	"strconv"
 	"strings"
-	"sync/atomic"
 	"time"
 
 	_ "github.com/mantyr/go-charset/data"
@@ -77,9 +76,7 @@ func runWebServer() {
 	// health endpoints for kubernetes
 	router.GET("/health", healthz)
 	router.GET("/healthz", healthz)
-	router.GET("/readyz", func(c *gin.Context) {
-		readyz(isReady, c)
-	})
+	router.GET("/readyz", readyz)
 
 	// TibiaData API version 3
 	v3 := router.Group("/v3")
@@ -929,7 +926,7 @@ func healthz(c *gin.Context) {
 }
 
 // readyz is a k8s readiness probe
-func readyz(isReady *atomic.Value, c *gin.Context) {
+func readyz(c *gin.Context) {
 	if isReady == nil || !isReady.Load().(bool) {
 		c.JSON(http.StatusServiceUnavailable, gin.H{"error": http.StatusText(http.StatusServiceUnavailable)})
 		return

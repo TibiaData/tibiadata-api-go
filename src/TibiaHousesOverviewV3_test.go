@@ -1,27 +1,38 @@
 package main
 
 import (
-	"os"
+	"io"
 	"strings"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAnticaThaisHousesOverview(t *testing.T) {
-	houseData, err := os.ReadFile("../testdata/houses/overview/AnticaThaisHouses.html")
+	houseFile, err := static.TestFiles.Open("testdata/houses/overview/AnticaThaisHouses.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer houseFile.Close()
+
+	houseData, err := io.ReadAll(houseFile)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	guildData, err := os.ReadFile("../testdata/houses/overview/AnticaThaisGuilds.html")
+	guildFile, err := static.TestFiles.Open("testdata/houses/overview/AnticaThaisGuilds.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer guildFile.Close()
+
+	guildData, err := io.ReadAll(guildFile)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	housesJson := TibiaHousesOverviewV3Impl(
+	housesJson, err := TibiaHousesOverviewV3Impl(
 		nil,
 		"Antica",
 		"Thais",
@@ -32,6 +43,10 @@ func TestAnticaThaisHousesOverview(t *testing.T) {
 
 			return string(houseData), nil
 		})
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("Antica", housesJson.Houses.World)
@@ -79,19 +94,29 @@ func TestAnticaThaisHousesOverview(t *testing.T) {
 }
 
 func TestPremiaFarmineHousesOverview(t *testing.T) {
-	houseData, err := os.ReadFile("../testdata/houses/overview/PremiaFarmineHouses.html")
+	houseFile, err := static.TestFiles.Open("testdata/houses/overview/PremiaFarmineHouses.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer houseFile.Close()
+
+	houseData, err := io.ReadAll(houseFile)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	guildData, err := os.ReadFile("../testdata/houses/overview/PremiaFarmineGuilds.html")
+	guildFile, err := static.TestFiles.Open("testdata/houses/overview/PremiaFarmineGuilds.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer guildFile.Close()
+
+	guildData, err := io.ReadAll(guildFile)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	housesJson := TibiaHousesOverviewV3Impl(
+	housesJson, err := TibiaHousesOverviewV3Impl(
 		nil,
 		"Premia",
 		"Farmine",
@@ -102,6 +127,10 @@ func TestPremiaFarmineHousesOverview(t *testing.T) {
 
 			return string(houseData), nil
 		})
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("Premia", housesJson.Houses.World)
@@ -122,19 +151,29 @@ func TestPremiaFarmineHousesOverview(t *testing.T) {
 }
 
 func TestPremiaEdronHousesOverview(t *testing.T) {
-	houseData, err := os.ReadFile("../testdata/houses/overview/PremiaEdronHouses.html")
+	houseFile, err := static.TestFiles.Open("testdata/houses/overview/PremiaEdronHouses.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer houseFile.Close()
+
+	houseData, err := io.ReadAll(houseFile)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	guildData, err := os.ReadFile("../testdata/houses/overview/PremiaEdronGuilds.html")
+	guildFile, err := static.TestFiles.Open("testdata/houses/overview/PremiaEdronGuilds.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer guildFile.Close()
+
+	guildData, err := io.ReadAll(guildFile)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	housesJson := TibiaHousesOverviewV3Impl(
+	housesJson, err := TibiaHousesOverviewV3Impl(
 		nil,
 		"Premia",
 		"Edron",
@@ -145,6 +184,10 @@ func TestPremiaEdronHousesOverview(t *testing.T) {
 
 			return string(houseData), nil
 		})
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("Premia", housesJson.Houses.World)

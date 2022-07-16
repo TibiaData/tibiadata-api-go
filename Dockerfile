@@ -12,14 +12,14 @@ WORKDIR /go/src/
 # copy go mod files
 COPY go.mod go.sum ./
 
+# copy all sourcecode
+COPY src/ ./src/
+
 # download go mods
 RUN go mod download
 
-# copy all sourcecode
-COPY src/ .
-
 # compile the program
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s -X 'main.TibiaDataBuildBuilder=${TibiaDataBuildBuilder}' -X 'main.TibiaDataBuildRelease=${TibiaDataBuildRelease}' -X 'main.TibiaDataBuildCommit=${TibiaDataBuildCommit}'" -o app .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s -X 'main.TibiaDataBuildBuilder=${TibiaDataBuildBuilder}' -X 'main.TibiaDataBuildRelease=${TibiaDataBuildRelease}' -X 'main.TibiaDataBuildCommit=${TibiaDataBuildCommit}'" -o app ./...
 
 
 # get latest alpine container

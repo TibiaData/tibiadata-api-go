@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"net/http"
 	"net/url"
 	"strings"
 
@@ -26,17 +27,19 @@ type NewsListResponse struct {
 	Information Information `json:"information"`
 }
 
-func TibiaNewslistV3Impl(days int, BoxContentHTML string) NewsListResponse {
+func TibiaNewslistV3Impl(days int, BoxContentHTML string) (*NewsListResponse, error) {
 	// Declaring vars for later use..
 	var NewsListData []NewsItem
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaNewslistV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
-	ReaderHTML.Find(".Odd,.Even").Each(func(index int, s *goquery.Selection) {
+	var insideError error
+
+	ReaderHTML.Find(".Odd,.Even").EachWithBreak(func(index int, s *goquery.Selection) bool {
 		var OneNews NewsItem
 
 		// getting category by image src
@@ -53,7 +56,11 @@ func TibiaNewslistV3Impl(days int, BoxContentHTML string) NewsListResponse {
 
 		// getting remaining things as URLs
 		NewsURL, _ := s.Find("a").Attr("href")
-		p, _ := url.Parse(NewsURL)
+		p, err := url.Parse(NewsURL)
+		if err != nil {
+			insideError = fmt.Errorf("[error] TibiaNewslistV3Impl failed at p, err := url.Parse(NewsURL), err: %s", err)
+			return false
+		}
 		NewsID := p.Query().Get("id")
 		NewsSplit := strings.Split(NewsURL, NewsID)
 		OneNews.ID = TibiaDataStringToIntegerV3(NewsID)
@@ -65,15 +72,24 @@ func TibiaNewslistV3Impl(days int, BoxContentHTML string) NewsListResponse {
 
 		// add to NewsListData for response
 		NewsListData = append(NewsListData, OneNews)
+
+		return true
 	})
+
+	if insideError != nil {
+		return nil, insideError
+	}
 
 	//
 	// Build the data-blob
-	return NewsListResponse{
+	return &NewsListResponse{
 		NewsListData,
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }

@@ -1,25 +1,35 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCormaya10(t *testing.T) {
-	data, err := os.ReadFile("../testdata/houses/Premia/Edron/Cormaya10.html")
+	file, err := static.TestFiles.Open("testdata/houses/Premia/Edron/Cormaya10.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	houseJson := TibiaHousesHouseV3Impl("54025", string(data))
+	houseJson, err := TibiaHousesHouseV3Impl(54025, string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal(54025, houseJson.House.Houseid)
 	assert.Equal("Premia", houseJson.House.World)
-	assert.Equal("", houseJson.House.Town) //depends on TibiaDataHousesMapResolver
+	assert.Equal("Edron", houseJson.House.Town)
 	assert.Equal("Cormaya 10", houseJson.House.Name)
 	assert.Equal("house", houseJson.House.Type)
 	assert.Equal(3, houseJson.House.Beds)
@@ -48,18 +58,27 @@ func TestCormaya10(t *testing.T) {
 }
 
 func TestCormaya11(t *testing.T) {
-	data, err := os.ReadFile("../testdata/houses/Premia/Edron/Cormaya11.html")
+	file, err := static.TestFiles.Open("testdata/houses/Premia/Edron/Cormaya11.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	houseJson := TibiaHousesHouseV3Impl("54026", string(data))
+	houseJson, err := TibiaHousesHouseV3Impl(54026, string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal(54026, houseJson.House.Houseid)
 	assert.Equal("Premia", houseJson.House.World)
-	assert.Equal("", houseJson.House.Town) //depends on TibiaDataHousesMapResolver
+	assert.Equal("Edron", houseJson.House.Town)
 	assert.Equal("Cormaya 11", houseJson.House.Name)
 	assert.Equal("house", houseJson.House.Type)
 	assert.Equal(2, houseJson.House.Beds)
@@ -85,18 +104,23 @@ func TestCormaya11(t *testing.T) {
 }
 
 func TestCormaya9c(t *testing.T) {
-	data, err := os.ReadFile("../testdata/houses/Premia/Edron/Cormaya9c.html")
+	file, err := static.TestFiles.Open("testdata/houses/Premia/Edron/Cormaya9c.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	houseJson := TibiaHousesHouseV3Impl("54023", string(data))
+	houseJson, _ := TibiaHousesHouseV3Impl(54023, string(data))
 	assert := assert.New(t)
 
 	assert.Equal(54023, houseJson.House.Houseid)
 	assert.Equal("Premia", houseJson.House.World)
-	assert.Equal("", houseJson.House.Town) //depends on TibiaDataHousesMapResolver
+	assert.Equal("Edron", houseJson.House.Town)
 	assert.Equal("Cormaya 9c", houseJson.House.Name)
 	assert.Equal("house", houseJson.House.Type)
 	assert.Equal(2, houseJson.House.Beds)
@@ -122,18 +146,27 @@ func TestCormaya9c(t *testing.T) {
 }
 
 func TestBeachHomeApartmentsFlat14(t *testing.T) {
-	data, err := os.ReadFile("../testdata/houses/Premia/Thais/BeachHomeApartmentsFlat14.html")
+	file, err := static.TestFiles.Open("testdata/houses/Premia/Thais/BeachHomeApartmentsFlat14.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	houseJson := TibiaHousesHouseV3Impl("10214", string(data))
+	houseJson, err := TibiaHousesHouseV3Impl(10214, string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal(10214, houseJson.House.Houseid)
 	assert.Equal("Premia", houseJson.House.World)
-	assert.Equal("", houseJson.House.Town) //depends on TibiaDataHousesMapResolver
+	assert.Equal("Thais", houseJson.House.Town)
 	assert.Equal("Beach Home Apartments, Flat 14", houseJson.House.Name)
 	assert.Equal("house", houseJson.House.Type)
 	assert.Equal(1, houseJson.House.Beds)
@@ -159,18 +192,27 @@ func TestBeachHomeApartmentsFlat14(t *testing.T) {
 }
 
 func TestBeachHomeApartmentsFlat15(t *testing.T) {
-	data, err := os.ReadFile("../testdata/houses/Premia/Thais/BeachHomeApartmentsFlat15.html")
+	file, err := static.TestFiles.Open("testdata/houses/Premia/Thais/BeachHomeApartmentsFlat15.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	houseJson := TibiaHousesHouseV3Impl("10215", string(data))
+	houseJson, err := TibiaHousesHouseV3Impl(10215, string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal(10215, houseJson.House.Houseid)
 	assert.Equal("Premia", houseJson.House.World)
-	assert.Equal("", houseJson.House.Town) //depends on TibiaDataHousesMapResolver
+	assert.Equal("Thais", houseJson.House.Town)
 	assert.Equal("Beach Home Apartments, Flat 15", houseJson.House.Name)
 	assert.Equal("house", houseJson.House.Type)
 	assert.Equal(1, houseJson.House.Beds)

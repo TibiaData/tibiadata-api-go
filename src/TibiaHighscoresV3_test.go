@@ -1,20 +1,31 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
+	"github.com/TibiaData/tibiadata-api-go/src/validation"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestHighscoresAll(t *testing.T) {
-	data, err := os.ReadFile("../testdata/highscores/all.html")
+	file, err := static.TestFiles.Open("testdata/highscores/all.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	highscoresJson := TibiaHighscoresV3Impl("", experience, "all", string(data))
+	highscoresJson, err := TibiaHighscoresV3Impl("", validation.HighScoreExperience, "all", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("", highscoresJson.Highscores.World)
@@ -44,13 +55,22 @@ func TestHighscoresAll(t *testing.T) {
 }
 
 func TestHighscoresLoyalty(t *testing.T) {
-	data, err := os.ReadFile("../testdata/highscores/loyalty.html")
+	file, err := static.TestFiles.Open("testdata/highscores/loyalty.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	highscoresJson := TibiaHighscoresV3Impl("Vunira", loyaltypoints, "druids", string(data))
+	highscoresJson, err := TibiaHighscoresV3Impl("Vunira", validation.HighScoreLoyaltypoints, "druids", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("Vunira", highscoresJson.Highscores.World)

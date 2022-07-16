@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -37,11 +38,11 @@ type SpellsOverviewResponse struct {
 }
 
 // TibiaSpellsOverviewV3 func
-func TibiaSpellsOverviewV3Impl(vocationName string, BoxContentHTML string) SpellsOverviewResponse {
+func TibiaSpellsOverviewV3Impl(vocationName string, BoxContentHTML string) (*SpellsOverviewResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaSpellsOverviewV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	var SpellsData []Spell
@@ -111,7 +112,7 @@ func TibiaSpellsOverviewV3Impl(vocationName string, BoxContentHTML string) Spell
 	}
 
 	// Build the data-blob
-	return SpellsOverviewResponse{
+	return &SpellsOverviewResponse{
 		Spells{
 			SpellsVocationFilter: vocationName,
 			Spells:               SpellsData,
@@ -119,6 +120,9 @@ func TibiaSpellsOverviewV3Impl(vocationName string, BoxContentHTML string) Spell
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }

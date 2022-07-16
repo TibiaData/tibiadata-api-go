@@ -1,20 +1,31 @@
 package main
 
 import (
-	"os"
+	"encoding/json"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
+	"github.com/TibiaData/tibiadata-api-go/src/validation"
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNumber1(t *testing.T) {
-	data, err := os.ReadFile("../testdata/characters/Darkside Rafa.html")
+	file, err := static.TestFiles.Open("testdata/characters/Darkside Rafa.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson := TibiaCharactersCharacterV3Impl(string(data))
+	characterJson, _ := TibiaCharactersCharacterV3Impl(string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Darkside Rafa", characterJson.Characters.Character.Name)
@@ -40,13 +51,18 @@ func TestNumber1(t *testing.T) {
 }
 
 func TestNumber2(t *testing.T) {
-	data, err := os.ReadFile("../testdata/characters/Zugspitze Housekeeper.html")
+	file, err := static.TestFiles.Open("testdata/characters/Zugspitze Housekeeper.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson := TibiaCharactersCharacterV3Impl(string(data))
+	characterJson, _ := TibiaCharactersCharacterV3Impl(string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Zugspitze Housekeeper", characterJson.Characters.Character.Name)
@@ -94,13 +110,18 @@ func TestNumber2(t *testing.T) {
 }
 
 func TestNumber3(t *testing.T) {
-	data, err := os.ReadFile("../testdata/characters/Borttagna Gubben.html")
+	file, err := static.TestFiles.Open("testdata/characters/Borttagna Gubben.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson := TibiaCharactersCharacterV3Impl(string(data))
+	characterJson, _ := TibiaCharactersCharacterV3Impl(string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Borttagna Gubben", characterJson.Characters.Character.Name)
@@ -117,13 +138,18 @@ func TestNumber3(t *testing.T) {
 }
 
 func TestNumber4(t *testing.T) {
-	data, err := os.ReadFile("../testdata/characters/Riley No Hands.html")
+	file, err := static.TestFiles.Open("testdata/characters/Riley No Hands.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson := TibiaCharactersCharacterV3Impl(string(data))
+	characterJson, _ := TibiaCharactersCharacterV3Impl(string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Riley No Hands", characterJson.Characters.Character.Name)
@@ -167,13 +193,18 @@ func TestNumber4(t *testing.T) {
 }
 
 func TestNumber5(t *testing.T) {
-	data, err := os.ReadFile("../testdata/characters/Torbjörn.html")
+	file, err := static.TestFiles.Open("testdata/characters/Torbjörn.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson := TibiaCharactersCharacterV3Impl(string(data))
+	characterJson, _ := TibiaCharactersCharacterV3Impl(string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Torbjörn", characterJson.Characters.Character.Name)
@@ -181,33 +212,129 @@ func TestNumber5(t *testing.T) {
 }
 
 func BenchmarkNumber1(b *testing.B) {
-	data, err := os.ReadFile("../testdata/characters/Darkside Rafa.html")
+	file, err := static.TestFiles.Open("testdata/characters/Darkside Rafa.html")
 	if err != nil {
-		b.Errorf("File reading error: %s", err)
-		return
+		b.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		b.Fatalf("File reading error: %s", err)
 	}
 
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		characterJson := TibiaCharactersCharacterV3Impl(string(data))
+		characterJson, _ := TibiaCharactersCharacterV3Impl(string(data))
 
 		assert.Equal(b, "Darkside Rafa", characterJson.Characters.Character.Name)
 	}
 }
 
 func BenchmarkNumber2(b *testing.B) {
-	data, err := os.ReadFile("../testdata/characters/Riley No Hands.html")
+	file, err := static.TestFiles.Open("testdata/characters/Riley No Hands.html")
 	if err != nil {
-		b.Errorf("File reading error: %s", err)
-		return
+		b.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		b.Fatalf("File reading error: %s", err)
 	}
 
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		characterJson := TibiaCharactersCharacterV3Impl(string(data))
+		characterJson, _ := TibiaCharactersCharacterV3Impl(string(data))
 
 		assert.Equal(b, "Riley No Hands", characterJson.Characters.Character.Name)
 	}
+}
+
+func TestEmptyName(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+
+	assert := assert.New(t)
+
+	c.Params = []gin.Param{
+		{
+			Key:   "name",
+			Value: "",
+		},
+	}
+
+	tibiaCharactersCharacterV3(c)
+	assert.Equal(http.StatusBadRequest, w.Code)
+
+	var jerr OutInformation
+	err := json.Unmarshal(w.Body.Bytes(), &jerr)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(jerr)
+
+	assert.EqualValues(validation.ErrorCharacterNameEmpty.Code(), jerr.Information.Status.Error)
+	assert.EqualValues(validation.ErrorCharacterNameEmpty.Error(), jerr.Information.Status.Message)
+}
+
+func TestSmallName(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+
+	assert := assert.New(t)
+
+	c.Params = []gin.Param{
+		{
+			Key:   "name",
+			Value: "o",
+		},
+	}
+
+	tibiaCharactersCharacterV3(c)
+	assert.Equal(http.StatusBadRequest, w.Code)
+
+	var jerr OutInformation
+	err := json.Unmarshal(w.Body.Bytes(), &jerr)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.EqualValues(validation.ErrorCharacterNameTooSmall.Code(), jerr.Information.Status.Error)
+	assert.EqualValues(validation.ErrorCharacterNameTooSmall.Error(), jerr.Information.Status.Message)
+}
+
+func TestInvalidName(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+
+	w := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(w)
+
+	assert := assert.New(t)
+
+	c.Params = []gin.Param{
+		{
+			Key:   "name",
+			Value: "12",
+		},
+	}
+
+	tibiaCharactersCharacterV3(c)
+	assert.Equal(http.StatusBadRequest, w.Code)
+
+	var jerr OutInformation
+	err := json.Unmarshal(w.Body.Bytes(), &jerr)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert.EqualValues(validation.ErrorCharacterNameInvalid.Code(), jerr.Information.Status.Error)
+	assert.EqualValues(validation.ErrorCharacterNameInvalid.Error(), jerr.Information.Status.Message)
 }

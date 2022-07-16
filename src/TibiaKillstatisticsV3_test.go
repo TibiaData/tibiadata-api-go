@@ -1,20 +1,30 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAntica(t *testing.T) {
-	data, err := os.ReadFile("../testdata/killstatistics/Antica.html")
+	file, err := static.TestFiles.Open("testdata/killstatistics/Antica.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	anticaJson := TibiaKillstatisticsV3Impl("Antica", string(data))
+	anticaJson, err := TibiaKillstatisticsV3Impl("Antica", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("Antica", anticaJson.KillStatistics.World)
@@ -36,10 +46,15 @@ func TestAntica(t *testing.T) {
 }
 
 func BenchmarkAntica(b *testing.B) {
-	data, err := os.ReadFile("../testdata/killstatistics/Antica.html")
+	file, err := static.TestFiles.Open("testdata/killstatistics/Antica.html")
 	if err != nil {
-		b.Errorf("File reading error: %s", err)
-		return
+		b.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		b.Fatalf("File reading error: %s", err)
 	}
 
 	b.ReportAllocs()
@@ -47,7 +62,10 @@ func BenchmarkAntica(b *testing.B) {
 	assert := assert.New(b)
 
 	for i := 0; i < b.N; i++ {
-		anticaJson := TibiaKillstatisticsV3Impl("Antica", string(data))
+		anticaJson, err := TibiaKillstatisticsV3Impl("Antica", string(data))
+		if err != nil {
+			b.Fatal(err)
+		}
 
 		assert.Equal("Antica", anticaJson.KillStatistics.World)
 	}

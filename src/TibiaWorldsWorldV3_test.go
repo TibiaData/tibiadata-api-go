@@ -1,20 +1,30 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestWorldEndebra(t *testing.T) {
-	data, err := os.ReadFile("../testdata/worlds/world/Endebra.html")
+	file, err := static.TestFiles.Open("testdata/worlds/world/Endebra.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	worldJson := TibiaWorldsWorldV3Impl("Endebra", string(data))
+	worldJson, err := TibiaWorldsWorldV3Impl("Endebra", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	world := worldJson.Worlds.World
@@ -38,13 +48,22 @@ func TestWorldEndebra(t *testing.T) {
 }
 
 func TestWorldPremia(t *testing.T) {
-	data, err := os.ReadFile("../testdata/worlds/world/Premia.html")
+	file, err := static.TestFiles.Open("testdata/worlds/world/Premia.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	worldJson := TibiaWorldsWorldV3Impl("Premia", string(data))
+	worldJson, err := TibiaWorldsWorldV3Impl("Premia", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	world := worldJson.Worlds.World
@@ -71,13 +90,22 @@ func TestWorldPremia(t *testing.T) {
 	assert.Equal(0, len(world.OnlinePlayers))
 }
 func TestWorldWintera(t *testing.T) {
-	data, err := os.ReadFile("../testdata/worlds/world/Wintera.html")
+	file, err := static.TestFiles.Open("testdata/worlds/world/Wintera.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	worldJson := TibiaWorldsWorldV3Impl("Wintera", string(data))
+	worldJson, err := TibiaWorldsWorldV3Impl("Wintera", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	world := worldJson.Worlds.World
@@ -110,13 +138,22 @@ func TestWorldWintera(t *testing.T) {
 }
 
 func TestWorldZuna(t *testing.T) {
-	data, err := os.ReadFile("../testdata/worlds/world/Zuna.html")
+	file, err := static.TestFiles.Open("testdata/worlds/world/Zuna.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	worldJson := TibiaWorldsWorldV3Impl("Zuna", string(data))
+	worldJson, err := TibiaWorldsWorldV3Impl("Zuna", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	world := worldJson.Worlds.World

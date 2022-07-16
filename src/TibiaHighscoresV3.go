@@ -1,11 +1,13 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/TibiaData/tibiadata-api-go/src/validation"
 )
 
 // Child of Highscores
@@ -41,11 +43,11 @@ var (
 	SixColumnRegex     = regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*">(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
 )
 
-func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationName string, BoxContentHTML string) HighscoresResponse {
+func TibiaHighscoresV3Impl(world string, category validation.HighscoreCategory, vocationName string, BoxContentHTML string) (*HighscoresResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaHighscoresV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Creating empty HighscoreData var
@@ -62,13 +64,15 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 		HighscoreAge = TibiaDataStringToIntegerV3(subma1[0][1])
 	}
 
-	// Running query over each div
-	ReaderHTML.Find(".TableContent tr").First().NextAll().Each(func(index int, s *goquery.Selection) {
+	var insideError error
 
+	// Running query over each div
+	ReaderHTML.Find(".TableContent tr").First().NextAll().EachWithBreak(func(index int, s *goquery.Selection) bool {
 		// Storing HTML into CreatureDivHTML
 		HighscoreDivHTML, err := s.Html()
 		if err != nil {
-			log.Fatal(err)
+			insideError = fmt.Errorf("[error] TibiaHighscoresV3Impl failed at HighscoreDivHTML, err := s.Html(), err: %s", err)
+			return false
 		}
 
 		// Regex the data table..
@@ -92,16 +96,15 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 			Sword		=>	Rank		Name	Vocation	World		Level	Skill Level
 		*/
 
-		if category == loyaltypoints {
+		if category == validation.HighScoreLoyaltypoints {
 			subma1 = SevenColumnRegex.FindAllStringSubmatch(HighscoreDivHTML, -1)
 		} else {
 			subma1 = SixColumnRegex.FindAllStringSubmatch(HighscoreDivHTML, -1)
 		}
 
 		if len(subma1) > 0 {
-
 			HighscoreDataRank++
-			if category == loyaltypoints {
+			if category == validation.HighScoreLoyaltypoints {
 				HighscoreDataTitle = subma1[0][2]
 				HighscoreDataVocation = subma1[0][3]
 				HighscoreDataWorld = subma1[0][4]
@@ -123,15 +126,20 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 				Value:    HighscoreDataValue,
 				Title:    HighscoreDataTitle,
 			})
-
 		}
+
+		return true
 	})
 
 	categoryString, _ := category.String()
 
+	if insideError != nil {
+		return nil, insideError
+	}
+
 	//
 	// Build the data-blob
-	return HighscoresResponse{
+	return &HighscoresResponse{
 		Highscores{
 			World:         strings.Title(strings.ToLower(world)),
 			Category:      categoryString,
@@ -142,6 +150,9 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, err
 }

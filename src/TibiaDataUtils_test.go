@@ -71,3 +71,90 @@ func TestTibiaDataGetNewsType(t *testing.T) {
 	assert.Equal("news", TibiaDataGetNewsType("News"))
 	assert.Equal("unknown", TibiaDataGetNewsType("TibiaData"))
 }
+
+func TestHTMLLineBreakRemover(t *testing.T) {
+	const str = "a\nb\nc\nd\ne\nf\ng\nh\n"
+
+	sanitizedStr := TibiaDataHTMLRemoveLinebreaksV3(str)
+	assert.Equal(t, sanitizedStr, "abcdefgh")
+}
+
+func TestURLsRemover(t *testing.T) {
+	const str = `<a href="https://www.tibia.com/community/?subtopic=characters&amp;name=Bobeek">Bobeek</a>`
+
+	sanitizedStr := TibiaDataRemoveURLsV3(str)
+	assert.Equal(t, sanitizedStr, "Bobeek")
+}
+
+func TestWorldFormater(t *testing.T) {
+	const str = "hEsThDIáÛõ"
+
+	sanitizedStr := TibiaDataStringWorldFormatToTitleV3(str)
+	assert.Equal(t, sanitizedStr, "Hesthdiáûõ")
+}
+
+func TestEscaper(t *testing.T) {
+	const (
+		strOne   = "god durin"
+		strTwo   = "god+durin"
+		strThree = "gód"
+	)
+
+	sanitizedStrOne := TibiaDataQueryEscapeStringV3(strOne)
+	sanitizedStrTwo := TibiaDataQueryEscapeStringV3(strTwo)
+	sanitizedStrThree := TibiaDataQueryEscapeStringV3(strThree)
+
+	assert := assert.New(t)
+	assert.Equal(sanitizedStrOne, "god+durin")
+	assert.Equal(sanitizedStrTwo, "god+durin")
+	assert.Equal(sanitizedStrThree, "g%F3d")
+}
+
+func TestDateParser(t *testing.T) {
+	const str = "Mar 09 2022"
+
+	sanitizedString := TibiaDataDateV3(str)
+	assert.Equal(t, sanitizedString, "2022-03-09")
+}
+
+func TestStringToInt(t *testing.T) {
+	const str = "1"
+
+	convertedStr := TibiaDataStringToIntegerV3(str)
+	assert.Equal(t, 1, convertedStr)
+}
+
+func TestHTMLRemover(t *testing.T) {
+	const str = `<div id="DeactivationContainer" onclick="ActivateWebsiteFrame();$('.LightBoxContentToHide').css('display', 'none');">abc</div>`
+
+	sanitizedString := RemoveHtmlTag(str)
+	assert.Equal(t, sanitizedString, "abc")
+}
+
+func TestFake(t *testing.T) {
+	assert := assert.New(t)
+	const str = "&lt;"
+
+	htmlString := TibiaDataSanitizeEscapedString(str)
+	assert.Equal(htmlString, "<")
+
+	const strTwo = `"`
+
+	doubleString := TibiaDataSanitizeDoubleQuoteString(strTwo)
+	assert.Equal(doubleString, "'")
+
+	const strThree = "\u00A0"
+
+	nbspString := TibiaDataSanitizeStrings(strThree)
+	assert.Equal(nbspString, " ")
+
+	const strFour = "\u0026#39;"
+
+	string0026 := TibiaDataSanitize0026String(strFour)
+	assert.Equal(string0026, "'")
+
+	const strFive = "1kk"
+
+	kkInt := TibiaDataConvertValuesWithK(strFive)
+	assert.Equal(kkInt, 1000000)
+}

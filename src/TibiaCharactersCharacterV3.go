@@ -1,11 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net/http"
+	"reflect"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/TibiaData/tibiadata-api-go/src/validation"
 	//"time"
 )
 
@@ -127,8 +131,7 @@ var (
 )
 
 // TibiaCharactersCharacterV3 func
-func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
-
+func TibiaCharactersCharacterV3Impl(BoxContentHTML string) (*CharacterResponse, error) {
 	var (
 		// local strings used in this function
 		localDivQueryString = ".TableContentContainer tr"
@@ -141,16 +144,24 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 		DeathsData               []Deaths
 		AccountInformationData   AccountInformation
 		OtherCharactersData      []OtherCharacters
+
+		// Errors
+		characterNotFound bool
+		insideError       error
 	)
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("TibiaCharactersCharacterV3Impl failed at  goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Running query on every .TableContainer
-	ReaderHTML.Find(".TableContainer").Each(func(index int, s *goquery.Selection) {
+	ReaderHTML.Find(".TableContainer").EachWithBreak(func(index int, s *goquery.Selection) bool {
+		if insideError != nil {
+			return false
+		}
+
 		SectionTextQuery := s.Find("div.Text")
 
 		SectionName := SectionTextQuery.Nodes[0].FirstChild.Data
@@ -159,6 +170,9 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 		CharacterDivQuery := goquery.NewDocumentFromNode(s.Nodes[0])
 
 		switch SectionName {
+		case "Could not find character":
+			characterNotFound = true
+			return false
 		case "Character Information", "Account Information":
 			// Running query over each tr in character content container
 			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
@@ -261,11 +275,12 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 			})
 		case "Account Badges":
 			// Running query over each tr in list
-			CharacterDivQuery.Find(".TableContentContainer tr td").Each(func(index int, s *goquery.Selection) {
+			CharacterDivQuery.Find(".TableContentContainer tr td").EachWithBreak(func(index int, s *goquery.Selection) bool {
 				// Storing HTML into CharacterListHTML
 				CharacterListHTML, err := s.Html()
 				if err != nil {
-					log.Fatal(err)
+					insideError = fmt.Errorf("[error] TibiaCharactersCharacterV3Impl failed at s.Html() inside Account Badges, err: %s", err)
+					return false
 				}
 
 				// Removing line breaks
@@ -273,7 +288,6 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 
 				// prevent failure of regex that parses account badges
 				if CharacterListHTML != "There are no account badges set to be displayed for this character." {
-
 					subma1 := accountBadgesRegex.FindAllStringSubmatch(CharacterListHTML, -1)
 
 					AccountBadgesData = append(AccountBadgesData, AccountBadges{
@@ -282,14 +296,17 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 						Description: subma1[0][2],
 					})
 				}
+
+				return true
 			})
 		case "Account Achievements":
 			// Running query over each tr in list
-			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
+			CharacterDivQuery.Find(localDivQueryString).EachWithBreak(func(index int, s *goquery.Selection) bool {
 				// Storing HTML into CharacterListHTML
 				CharacterListHTML, err := s.Html()
 				if err != nil {
-					log.Fatal(err)
+					insideError = fmt.Errorf("[error] TibiaCharactersCharacterV3Impl failed at s.Html() inside Account Achievements, err: %s", err)
+					return false
 				}
 
 				// Removing line breaks
@@ -309,14 +326,17 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 						Secret: strings.Contains(subma1a[0][2], "achievement-secret-symbol"),
 					})
 				}
+
+				return true
 			})
 		case "Character Deaths":
 			// Running query over each tr in list
-			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
+			CharacterDivQuery.Find(localDivQueryString).EachWithBreak(func(index int, s *goquery.Selection) bool {
 				// Storing HTML into CharacterListHTML
 				CharacterListHTML, err := s.Html()
 				if err != nil {
-					log.Fatal(err)
+					insideError = fmt.Errorf("[error] TibiaCharactersCharacterV3Impl failed at s.Html() inside Character Deaths, err: %s", err)
+					return false
 				}
 
 				// Removing line breaks
@@ -396,14 +416,17 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 						Reason:  ReasonString,
 					})
 				}
+
+				return true
 			})
 		case "Characters":
 			// Running query over each tr in character list
-			CharacterDivQuery.Find(localDivQueryString).Each(func(index int, s *goquery.Selection) {
+			CharacterDivQuery.Find(localDivQueryString).EachWithBreak(func(index int, s *goquery.Selection) bool {
 				// Storing HTML into CharacterListHTML
 				CharacterListHTML, err := s.Html()
 				if err != nil {
-					log.Fatal(err)
+					insideError = fmt.Errorf("[error] TibiaCharactersCharacterV3Impl failed at s.Html() inside Characters, err: %s", err)
+					return false
 				}
 
 				// Removing line breaks
@@ -450,26 +473,54 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 						Traded:  TmpTraded,
 					})
 				}
+
+				return true
 			})
 		}
+
+		return true
 	})
+
+	// Build the character data
+	charData := Characters{
+		CharacterInformationData,
+		AccountBadgesData,
+		AchievementsData,
+		DeathsData,
+		AccountInformationData,
+		OtherCharactersData,
+	}
+
+	// Search for errors
+	switch {
+	case characterNotFound:
+		return nil, validation.ErrorCharacterNotFound
+	case insideError != nil:
+		return nil, insideError
+	case reflect.DeepEqual(charData, Characters{}):
+		// There are some rare cases where a character name would
+		// bug out tibia.com (tíbia, for example) and then we would't
+		// receive the character not found error, for these edge cases
+		// we check if the char structure is empty, if it is, it means
+		// the character has not been found
+		//
+		// Validating those names would also be a pain because of old
+		// tibian names such as Kolskägg, which for whatever reason is valid
+		return nil, validation.ErrorCharacterNotFound
+	}
 
 	//
 	// Build the data-blob
-	return CharacterResponse{
-		Characters{
-			CharacterInformationData,
-			AccountBadgesData,
-			AchievementsData,
-			DeathsData,
-			AccountInformationData,
-			OtherCharactersData,
-		},
+	return &CharacterResponse{
+		charData,
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }
 
 // TibiaDataParseKiller func - insert a html string and get the killers back
@@ -516,7 +567,6 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 
 // containsCreaturesWithOf checks if creature is present in special creatures list
 func containsCreaturesWithOf(str string) bool {
-
 	// this list should be based on the https://assets.tibiadata.com/data.json creatures name and plural_name field (currently only singular version)
 	creaturesWithOf := []string{
 		"acolyte of the cult",

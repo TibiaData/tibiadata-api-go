@@ -1,20 +1,30 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFansites(t *testing.T) {
-	data, err := os.ReadFile("../testdata/fansites/all.html")
+	file, err := static.TestFiles.Open("testdata/fansites/all.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	fansitesJson := TibiaFansitesV3Impl(string(data))
+	fansitesJson, err := TibiaFansitesV3Impl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal(18, len(fansitesJson.Fansites.PromotedFansites))

@@ -1,22 +1,32 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewsList(t *testing.T) {
-	data, err := os.ReadFile("../testdata/news/newslist.html")
+	file, err := static.TestFiles.Open("testdata/news/newslist.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
 	TibiaDataHost = "unittest.example.com"
 
-	newsListJson := TibiaNewslistV3Impl(90, string(data))
+	newsListJson, err := TibiaNewslistV3Impl(90, string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal(50, len(newsListJson.News))

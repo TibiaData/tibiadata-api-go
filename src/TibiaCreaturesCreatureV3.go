@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/TibiaData/tibiadata-api-go/src/validation"
 )
 
 // Child of JSONData
@@ -47,20 +50,20 @@ var (
 	CreatureLootRegex         = regexp.MustCompile(`.*yield (.*) experience.*carry (.*)with them.`)
 )
 
-func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) CreatureResponse {
+func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) (*CreatureResponse, error) {
 	// local strings used in this function
 	var localDamageString = " damage"
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaCreaturesCreatureV3Imp failed at goquery.NewDocumentFromReader, error: %s", err)
 	}
 
 	// Getting data
 	InnerTableContainerTMP1, err := ReaderHTML.Find(".BoxContent div").First().NextAll().Html()
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaCreaturesCreatureV3Imp failed at ReaderHTML.Find, error: %s", err)
 	}
 
 	// Regex to get data
@@ -147,10 +150,13 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) CreatureRe
 				}
 			}
 		}
+	} else {
+		log.Printf("[warning] TibiaCreaturesCreatureV3Impl called on invalid creature")
+		return nil, validation.ErrorCreatureNotFound
 	}
 
 	// Build the data-blob
-	return CreatureResponse{
+	return &CreatureResponse{
 		Creature{
 			Name:             CreatureName,
 			Race:             race,
@@ -175,6 +181,9 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) CreatureRe
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }

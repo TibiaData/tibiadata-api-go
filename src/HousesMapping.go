@@ -59,6 +59,9 @@ func TibiaDataHousesMappingInitiator() {
 			TibiaDataHousesMapping = data
 		}
 
+		// setting readyz endpoint to true
+		isReady.Store(true)
+
 	default:
 		log.Printf("[error] TibiaData API failed to load houses mapping. %s", err)
 	}

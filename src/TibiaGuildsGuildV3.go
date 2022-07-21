@@ -74,7 +74,7 @@ type GuildResponse struct {
 
 var (
 	GuildLogoRegex                     = regexp.MustCompile(`.*img src="(.*)" width=.*`)
-	GuildWorldAndFoundationRegex       = regexp.MustCompile(`The guild was founded on (.*) on (.*).<br/>`)
+	GuildWorldAndFoundationRegex       = regexp.MustCompile(`^The guild was founded on (.*) on (.*).<br/>`)
 	GuildHomepageRegex                 = regexp.MustCompile(`<a href="(.*)" target=.*>`)
 	GuildhallRegex                     = regexp.MustCompile(` is (.*). The rent is paid until (.*).<br/>`)
 	GuildDisbaneRegex                  = regexp.MustCompile(`<b>It will be disbanded on (.*.[0-9]+.[0-9]+) (.*)\.<\/b>.*`)
@@ -144,8 +144,10 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 			if strings.Contains(line, "The guild was founded on") {
 				// Regex to get GuildWorld and GuildFounded
 				subma1b := GuildWorldAndFoundationRegex.FindAllStringSubmatch(line, -1)
-				GuildWorld = subma1b[0][1]
-				GuildFounded = TibiaDataDateV3(subma1b[0][2])
+				if len(subma1b) != 0 {
+					GuildWorld = subma1b[0][1]
+					GuildFounded = TibiaDataDateV3(subma1b[0][2])
+				}
 			}
 
 			// If to get GuildActive

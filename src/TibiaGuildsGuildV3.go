@@ -74,7 +74,7 @@ type GuildResponse struct {
 
 var (
 	GuildLogoRegex                     = regexp.MustCompile(`.*img src="(.*)" width=.*`)
-	GuildWorldAndFoundationRegex       = regexp.MustCompile(`The guild was founded on (.*) on (.*).<br/>`)
+	GuildWorldAndFoundationRegex       = regexp.MustCompile(`^The guild was founded on (.*) on (.*).<br/>`)
 	GuildHomepageRegex                 = regexp.MustCompile(`<a href="(.*)" target=.*>`)
 	GuildhallRegex                     = regexp.MustCompile(` is (.*). The rent is paid until (.*).<br/>`)
 	GuildDisbaneRegex                  = regexp.MustCompile(`<b>It will be disbanded on (.*.[0-9]+.[0-9]+) (.*)\.<\/b>.*`)
@@ -132,7 +132,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 			}
 
 		}
-		
+
 		if GuildDescriptionFinished || strings.HasPrefix(line, "The guild was founded on ") {
 			// The rest of the Guild information
 
@@ -141,32 +141,34 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 				GuildDescriptionFinished = true
 			}
 
-			if strings.Contains(line, "The guild was founded on") {
+			if strings.HasPrefix(line, "The guild was founded on") {
 				// Regex to get GuildWorld and GuildFounded
 				subma1b := GuildWorldAndFoundationRegex.FindAllStringSubmatch(line, -1)
-				GuildWorld = subma1b[0][1]
-				GuildFounded = TibiaDataDateV3(subma1b[0][2])
+				if len(subma1b) != 0 {
+					GuildWorld = subma1b[0][1]
+					GuildFounded = TibiaDataDateV3(subma1b[0][2])
+				}
 			}
 
 			// If to get GuildActive
-			if strings.Contains(line, "It is currently active") {
+			if strings.HasPrefix(line, "It is currently active") {
 				GuildActive = true
 			}
 
 			// If open for applications
-			if strings.Contains(line, "Guild is opened for applications.") {
+			if strings.HasPrefix(line, "Guild is opened for applications.") {
 				GuildApplications = true
-			} else if strings.Contains(line, "Guild is closed for applications during war.") {
+			} else if strings.HasPrefix(line, "Guild is closed for applications during war.") {
 				GuildInWar = true
 			}
 
-			if strings.Contains(line, "The official homepage is") {
+			if strings.HasPrefix(line, "The official homepage is") {
 				subma1c := GuildHomepageRegex.FindAllStringSubmatch(line, -1)
 				GuildHomepage = subma1c[0][1]
 			}
 
 			// If guildhall
-			if strings.Contains(line, "Their home on "+GuildWorld) {
+			if strings.HasPrefix(line, "Their home on "+GuildWorld) {
 				subma1b := GuildhallRegex.FindAllStringSubmatch(line, -1)
 
 				GuildGuildhallData = append(GuildGuildhallData, Guildhall{
@@ -177,7 +179,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 			}
 
 			// If disbanded
-			if strings.Contains(line, "<b>It will be disbanded on ") {
+			if strings.HasPrefix(line, "<b>It will be disbanded on ") {
 				subma1c := GuildDisbaneRegex.FindAllStringSubmatch(line, -1)
 				if len(subma1c) > 0 {
 					GuildDisbandedDate = subma1c[0][1]

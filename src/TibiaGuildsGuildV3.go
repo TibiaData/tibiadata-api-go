@@ -132,7 +132,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 			}
 
 		}
-		
+
 		if GuildDescriptionFinished || strings.HasPrefix(line, "The guild was founded on ") {
 			// The rest of the Guild information
 
@@ -141,7 +141,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 				GuildDescriptionFinished = true
 			}
 
-			if strings.Contains(line, "The guild was founded on") {
+			if strings.HasPrefix(line, "The guild was founded on") {
 				// Regex to get GuildWorld and GuildFounded
 				subma1b := GuildWorldAndFoundationRegex.FindAllStringSubmatch(line, -1)
 				if len(subma1b) != 0 {
@@ -151,24 +151,24 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 			}
 
 			// If to get GuildActive
-			if strings.Contains(line, "It is currently active") {
+			if strings.HasPrefix(line, "It is currently active") {
 				GuildActive = true
 			}
 
 			// If open for applications
-			if strings.Contains(line, "Guild is opened for applications.") {
+			if strings.HasPrefix(line, "Guild is opened for applications.") {
 				GuildApplications = true
-			} else if strings.Contains(line, "Guild is closed for applications during war.") {
+			} else if strings.HasPrefix(line, "Guild is closed for applications during war.") {
 				GuildInWar = true
 			}
 
-			if strings.Contains(line, "The official homepage is") {
+			if strings.HasPrefix(line, "The official homepage is") {
 				subma1c := GuildHomepageRegex.FindAllStringSubmatch(line, -1)
 				GuildHomepage = subma1c[0][1]
 			}
 
 			// If guildhall
-			if strings.Contains(line, "Their home on "+GuildWorld) {
+			if strings.HasPrefix(line, "Their home on "+GuildWorld) {
 				subma1b := GuildhallRegex.FindAllStringSubmatch(line, -1)
 
 				GuildGuildhallData = append(GuildGuildhallData, Guildhall{
@@ -179,7 +179,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 			}
 
 			// If disbanded
-			if strings.Contains(line, "<b>It will be disbanded on ") {
+			if strings.HasPrefix(line, "<b>It will be disbanded on ") {
 				subma1c := GuildDisbaneRegex.FindAllStringSubmatch(line, -1)
 				if len(subma1c) > 0 {
 					GuildDisbandedDate = subma1c[0][1]

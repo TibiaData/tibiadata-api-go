@@ -38,9 +38,9 @@ jobs:
           tag: ${{ github.ref }}
 
       - name: Trigger workflow in tibiadata-api-docs repo
-        run: |
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -d '{"ref":"main"}' \
-            https://api.github.com/repos/TibiaData/tibiadata-api-docs/actions/workflows/update.yml/dispatches
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: TibiaData/tibiadata-api-docs
+          event-type: tibiadata-api-go-release
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'

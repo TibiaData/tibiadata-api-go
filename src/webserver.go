@@ -83,6 +83,9 @@ func runWebServer() {
 	v3 := router.Group("/v3")
 	{
 		// Tibia characters
+		v3.GET("/boostablebosses", tibiaBoostableBossesV3)
+
+		// Tibia characters
 		v3.GET("/character/:name", tibiaCharactersCharacterV3)
 
 		// Tibia creatures
@@ -167,6 +170,29 @@ func runWebServer() {
 			log.Fatal("[error] TibiaData API server closed unexpectedly")
 		}
 	}
+}
+
+// BoostableBosses godoc
+// @Summary      List of boostable bosses
+// @Description  Show all boostable bosses listed
+// @Tags         boostable bosses
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  BoostableBossesOverviewResponse
+// @Router       /v3/boostablebosses [get]
+func tibiaBoostableBossesV3(c *gin.Context) {
+	tibiadataRequest := TibiaDataRequestStruct{
+		Method: resty.MethodGet,
+		URL:    "https://www.tibia.com/library/?subtopic=boostablebosses",
+	}
+
+	tibiaDataRequestHandler(
+		c,
+		tibiadataRequest,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaBoostableBossesOverviewV3Impl(BoxContentHTML), http.StatusOK
+		},
+		"TibiaBoostableBossesV3")
 }
 
 // Character godoc

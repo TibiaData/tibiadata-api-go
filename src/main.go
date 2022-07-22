@@ -1,8 +1,14 @@
 package main
 
-import "log"
+import (
+	"log"
+	"sync/atomic"
+)
 
 var (
+	// application readyz endpoint value for k8s
+	isReady *atomic.Value
+
 	// TibiaDataDefaultVoc - default vocation when not specified in request
 	TibiaDataDefaultVoc string = "all"
 
@@ -38,6 +44,10 @@ var (
 // @BasePath  /
 
 func main() {
+	// setup of readyness endpoint code
+	isReady = &atomic.Value{}
+	isReady.Store(false)
+
 	// logging start of TibiaData
 	log.Printf("[info] TibiaData API starting..")
 

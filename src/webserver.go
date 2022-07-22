@@ -82,6 +82,9 @@ func runWebServer() {
 	// TibiaData API version 3
 	v3 := router.Group("/v3")
 	{
+		// Tibia bazaar
+		v3.GET("/bazaar/auction/:id", tibiaBazaarAuctionV3)
+
 		// Tibia characters
 		v3.GET("/boostablebosses", tibiaBoostableBossesV3)
 
@@ -193,6 +196,33 @@ func tibiaBoostableBossesV3(c *gin.Context) {
 			return TibiaBoostableBossesOverviewV3Impl(BoxContentHTML), http.StatusOK
 		},
 		"TibiaBoostableBossesV3")
+}
+
+// Bazaar auction godoc
+// @Summary      Show one bazaar auction
+// @Description  Show all information about one bazaar auction
+// @Tags         bazaar
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "The ID of auction"
+// @Success      200  {object}  BazaarAuctionResponse
+// @Router       /v3/bazaar/auction/{id} [get]
+func tibiaBazaarAuctionV3(c *gin.Context) {
+	// getting params from URL
+	id := c.Param("id")
+
+	tibiadataRequest := TibiadataRequestStruct{
+		Method: resty.MethodGet,
+		URL:    "https://www.tibia.com/charactertrade/?page=details&auctionid=" + id,
+	}
+
+	tibiaDataRequestHandler(
+		c,
+		tibiadataRequest,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaBazaarAuctionV3Impl(BoxContentHTML), http.StatusOK
+		},
+		"TibiaBazaarAuctionV3")
 }
 
 // Character godoc

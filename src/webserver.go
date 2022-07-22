@@ -172,6 +172,29 @@ func runWebServer() {
 	}
 }
 
+// BoostableBosses godoc
+// @Summary      List of boostable bosses
+// @Description  Show all boostable bosses listed
+// @Tags         boostable bosses
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  BoostableBossesOverviewResponse
+// @Router       /v3/boostablebosses [get]
+func tibiaBoostableBossesV3(c *gin.Context) {
+	tibiadataRequest := TibiaDataRequestStruct{
+		Method: resty.MethodGet,
+		URL:    "https://www.tibia.com/library/?subtopic=boostablebosses",
+	}
+
+	tibiaDataRequestHandler(
+		c,
+		tibiadataRequest,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaBoostableBossesOverviewV3Impl(BoxContentHTML), http.StatusOK
+		},
+		"TibiaBoostableBossesV3")
+}
+
 // Character godoc
 // @Summary      Show one character
 // @Description  Show all information about one character available
@@ -220,29 +243,6 @@ func tibiaCreaturesOverviewV3(c *gin.Context) {
 			return TibiaCreaturesOverviewV3Impl(BoxContentHTML), http.StatusOK
 		},
 		"TibiaCreaturesOverviewV3")
-}
-
-// BoostableBosses godoc
-// @Summary      List of boostable bosses
-// @Description  Show all boostable bosses listed
-// @Tags         boostable bosses
-// @Accept       json
-// @Produce      json
-// @Success      200  {object}  BoostableBossesOverviewResponse
-// @Router       /v3/boostablebosses [get]
-func tibiaBoostableBossesV3(c *gin.Context) {
-	tibiadataRequest := TibiaDataRequestStruct{
-		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/library/?subtopic=boostablebosses",
-	}
-
-	tibiaDataRequestHandler(
-		c,
-		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaBoostableBossesOverviewV3Impl(BoxContentHTML), http.StatusOK
-		},
-		"TibiaBoostableBossesV3")
 }
 
 // Creature godoc

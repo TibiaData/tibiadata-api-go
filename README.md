@@ -97,6 +97,7 @@ Those are the current existing endpoints.
 
 - GET `/ping`
 - GET `/health`
+- GET `/v3/boostablebosses`
 - GET `/v3/character/:name`
 - GET `/v3/creature/:race`
 - GET `/v3/creatures`

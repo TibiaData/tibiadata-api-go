@@ -27,7 +27,7 @@ const (
 
 func (hc HighscoreCategory) String() (string, error) {
 	seasons := [...]string{"achievements", "axefighting", "charmpoints", "clubfighting", "distancefighting", "experience", "fishing", "fistfighting", "goshnarstaint", "loyaltypoints", "magiclevel", "shielding", "swordfighting", "dromescore", "bosspoints"}
-	if hc < achievements || hc > dromescore {
+	if hc < achievements || hc > bosspoints {
 		return "", errors.New("invalid HighscoreCategory value")
 	}
 	return seasons[hc-1], nil

@@ -78,6 +78,7 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 			Tibia highscore table columns
 			Achievment	=>	Rank		Name	Vocation	World		Level	Points
 			Axe 		=>	Rank		Name	Vocation	World		Level	Skill Level
+			Boss		=>	Rank		Name	Vocation	World		Level	Points
 			Charm		=>	Rank		Name	Vocation	World		Level	Points
 			Club		=>	Rank		Name	Vocation	World		Level	Skill Level
 			Distance	=>	Rank		Name	Vocation	World		Level	Skill Level

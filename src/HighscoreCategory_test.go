@@ -39,6 +39,17 @@ func TestHighscoreCategoryDromescoreString(t *testing.T) {
 	assert.Equal(HighscoreCategory(14), highscoreCategory)
 }
 
+func TestHighscoreCategoryBossPointsString(t *testing.T) {
+	assert := assert.New(t)
+
+	highscoreCategory := bosspoints
+	stringValue, err := highscoreCategory.String()
+
+	assert.Nil(err)
+	assert.Equal("bosspoints", stringValue)
+	assert.Equal(HighscoreCategory(15), highscoreCategory)
+}
+
 func TestHighscoreCategoryInvalidValueString(t *testing.T) {
 	assert := assert.New(t)
 
@@ -94,4 +105,8 @@ func TestHighscoreCategoryFromString(t *testing.T) {
 
 	assert.Equal(dromescore, HighscoreCategoryFromString("drome"))
 	assert.Equal(dromescore, HighscoreCategoryFromString("dromescore"))
+
+	assert.Equal(bosspoints, HighscoreCategoryFromString("boss"))
+	assert.Equal(bosspoints, HighscoreCategoryFromString("bosses"))
+	assert.Equal(bosspoints, HighscoreCategoryFromString("bosspoints"))
 }

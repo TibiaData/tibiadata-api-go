@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.3.0] - 2022-07-27
+
+### Added
+* Add support to new boostable bosses page ([#152](https://github.com/TibiaData/tibiadata-api-go/pull/152) by [tiagomartines11](https://github.com/tiagomartines11))
+
+### Changed
+* Removing **v** in container image tag ([#144](https://github.com/TibiaData/tibiadata-api-go/pull/144) by [tobiasehlert](https://github.com/tobiasehlert))
+* Updating `go build` step in dockerfile ([#148](https://github.com/TibiaData/tibiadata-api-go/pull/148) by [tobiasehlert](https://github.com/tobiasehlert))
+* Some go mod and workflow build updates ([#137](https://github.com/TibiaData/tibiadata-api-go/pull/137) by [tobiasehlert](https://github.com/tobiasehlert))
+* Bump github.com/gin-gonic/gin from 1.7.7 to 1.8.1 ([#136](https://github.com/TibiaData/tibiadata-api-go/pull/136), [#140](https://github.com/TibiaData/tibiadata-api-go/pull/140) by [dependabot](https://github.com/dependabot))
+* Bump golang from 1.18.1 to 1.18.4 ([#135](https://github.com/TibiaData/tibiadata-api-go/pull/135), [#138](https://github.com/TibiaData/tibiadata-api-go/pull/138), [#149](https://github.com/TibiaData/tibiadata-api-go/pull/149) by [dependabot](https://github.com/dependabot))
+* Bump github.com/stretchr/testify from 1.7.1 to 1.8.0 ([#139](https://github.com/TibiaData/tibiadata-api-go/pull/139), [#141](https://github.com/TibiaData/tibiadata-api-go/pull/141), [#142](https://github.com/TibiaData/tibiadata-api-go/pull/142), [#143](https://github.com/TibiaData/tibiadata-api-go/pull/143) by [dependabot](https://github.com/dependabot))
+* Bump github.com/gin-contrib/gzip from 0.0.5 to 0.0.6 by @dependabot in ([#145](https://github.com/TibiaData/tibiadata-api-go/pull/145) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+* Parsing issue when guild description contains founded string ([#151](https://github.com/TibiaData/tibiadata-api-go/pull/151) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [3.2.2] - 2022-05-12
 
 ### Changed
@@ -183,6 +200,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.3.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.2.2...v3.3.0
 [3.2.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.2.1...v3.2.2
 [3.2.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.1.1...v3.2.0

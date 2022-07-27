@@ -22,10 +22,11 @@ const (
 	shielding
 	swordfighting
 	dromescore
+	bosspoints
 )
 
 func (hc HighscoreCategory) String() (string, error) {
-	seasons := [...]string{"achievements", "axefighting", "charmpoints", "clubfighting", "distancefighting", "experience", "fishing", "fistfighting", "goshnarstaint", "loyaltypoints", "magiclevel", "shielding", "swordfighting", "dromescore"}
+	seasons := [...]string{"achievements", "axefighting", "charmpoints", "clubfighting", "distancefighting", "experience", "fishing", "fistfighting", "goshnarstaint", "loyaltypoints", "magiclevel", "shielding", "swordfighting", "dromescore", "bosspoints"}
 	if hc < achievements || hc > dromescore {
 		return "", errors.New("invalid HighscoreCategory value")
 	}
@@ -62,6 +63,8 @@ func HighscoreCategoryFromString(input string) HighscoreCategory {
 		return swordfighting
 	case "drome", "dromescore":
 		return dromescore
+	case "boss", "bosses", "bosspoints":
+		return bosspoints
 	default:
 		return experience
 	}

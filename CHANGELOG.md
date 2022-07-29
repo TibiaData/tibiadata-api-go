@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.3.1] - 2022-07-29
+
+### Changed
+* Added bosspoints as additional HighscoreCategory ([#153](https://github.com/TibiaData/tibiadata-api-go/pull/153) by [Tholdrim](https://github.com/Tholdrim))
+
 ## [3.3.0] - 2022-07-27
 
 ### Added
@@ -200,6 +205,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.3.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.3.0...v3.3.1
 [3.3.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.2.2...v3.3.0
 [3.2.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.2.1...v3.2.2
 [3.2.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.2.0...v3.2.1

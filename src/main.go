@@ -84,7 +84,13 @@ func TibiaDataInitializer() {
 
 	// setting TibiaDataProxyDomain
 	if isEnvExist("TIBIADATA_PROXY") {
-		TibiaDataProxyDomain = "https://" + getEnv("TIBIADATA_PROXY", "www.tibia.com") + "/"
+
+		TibiaDataProxyProtocol := "https"
+		if isEnvExist("TIBIADATA_PROXY_PROTOCOL") {
+			TibiaDataProxyProtocol = getEnv("TIBIADATA_PROXY_PROTOCOL", "https")
+		}
+
+		TibiaDataProxyDomain = TibiaDataProxyProtocol + "://" + getEnv("TIBIADATA_PROXY", "www.tibia.com") + "/"
 	}
 
 	log.Printf("[info] TibiaData API proxy: %s", TibiaDataProxyDomain)

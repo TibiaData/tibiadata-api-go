@@ -47,7 +47,7 @@ func TibiaSpellsOverviewV3Impl(vocationName string, BoxContentHTML string) Spell
 	var SpellsData []Spell
 
 	// Running query over each div
-	ReaderHTML.Find("table.TableContent ~ table tr").Each(func(index int, s *goquery.Selection) {
+	ReaderHTML.Find(".Table3 table.TableContent tr").Each(func(index int, s *goquery.Selection) {
 		//Skip header row
 		if index == 0 {
 			return

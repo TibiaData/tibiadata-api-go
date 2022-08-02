@@ -25,7 +25,7 @@
 * Bump github.com/gin-gonic/gin from 1.7.7 to 1.8.1 ([#136](https://github.com/TibiaData/tibiadata-api-go/pull/136), [#140](https://github.com/TibiaData/tibiadata-api-go/pull/140) by [dependabot](https://github.com/dependabot))
 * Bump golang from 1.18.1 to 1.18.4 ([#135](https://github.com/TibiaData/tibiadata-api-go/pull/135), [#138](https://github.com/TibiaData/tibiadata-api-go/pull/138), [#149](https://github.com/TibiaData/tibiadata-api-go/pull/149) by [dependabot](https://github.com/dependabot))
 * Bump github.com/stretchr/testify from 1.7.1 to 1.8.0 ([#139](https://github.com/TibiaData/tibiadata-api-go/pull/139), [#141](https://github.com/TibiaData/tibiadata-api-go/pull/141), [#142](https://github.com/TibiaData/tibiadata-api-go/pull/142), [#143](https://github.com/TibiaData/tibiadata-api-go/pull/143) by [dependabot](https://github.com/dependabot))
-* Bump github.com/gin-contrib/gzip from 0.0.5 to 0.0.6 by @dependabot in ([#145](https://github.com/TibiaData/tibiadata-api-go/pull/145) by [dependabot](https://github.com/dependabot))
+* Bump github.com/gin-contrib/gzip from 0.0.5 to 0.0.6 ([#145](https://github.com/TibiaData/tibiadata-api-go/pull/145) by [dependabot](https://github.com/dependabot))
 
 ### Fixed
 * Parsing issue when guild description contains founded string ([#151](https://github.com/TibiaData/tibiadata-api-go/pull/151) by [tobiasehlert](https://github.com/tobiasehlert))

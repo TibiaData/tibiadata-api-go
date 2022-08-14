@@ -1,6 +1,6 @@
 module github.com/TibiaData/tibiadata-api-go
 
-go 1.18
+go 1.19
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
@@ -12,8 +12,8 @@ require (
 )
 
 require (
-	github.com/goccy/go-json v0.9.7 // indirect
-	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
+	github.com/goccy/go-json v0.9.10 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.2 // indirect
 )
 
 require (
@@ -31,10 +31,10 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
-	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
-	golang.org/x/net v0.0.0-20220526153639-5463443f8c37 // indirect
-	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
+	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
+	golang.org/x/net v0.0.0-20220812174116-3211cb980234 // indirect
+	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

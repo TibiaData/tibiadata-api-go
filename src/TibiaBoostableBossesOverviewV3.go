@@ -103,7 +103,7 @@ func TibiaBoostableBossesOverviewV3Impl(BoxContentHTML string) BoostableBossesOv
 	return BoostableBossesOverviewResponse{
 		BoostableBossesContainer{
 			Boosted: OverviewBoostableBoss{
-				Name:     BoostedBossName,
+				Name:     TibiaDataSanitizeEscapedString(BoostedBossName),
 				ImageURL: BoostedBossImage,
 				Featured: true,
 			},

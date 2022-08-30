@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.1] - 2022-08-30
+
+### Changed
+* Bump golang from 1.18.4 to 1.19.0 ([#156](https://github.com/TibiaData/tibiadata-api-go/pull/156) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+* Fix handling of special characters in boosted boss/creature name ([#157](https://github.com/TibiaData/tibiadata-api-go/pull/157) by [tiagomartines11](https://github.com/tiagomartines11))
+
 ## [3.4.0] - 2022-08-02
 
 ### Added
@@ -213,6 +221,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.4.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.4.0...v3.4.1
 [3.4.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.3.1...v3.4.0
 [3.3.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.3.0...v3.3.1
 [3.3.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.2.2...v3.3.0

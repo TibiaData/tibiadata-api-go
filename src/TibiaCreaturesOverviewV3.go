@@ -106,7 +106,7 @@ func TibiaCreaturesOverviewV3Impl(BoxContentHTML string) CreaturesOverviewRespon
 	return CreaturesOverviewResponse{
 		CreaturesContainer{
 			Boosted: OverviewCreature{
-				Name:     BoostedCreatureName,
+				Name:     TibiaDataSanitizeEscapedString(BoostedCreatureName),
 				Race:     BoostedCreatureRace,
 				ImageURL: BoostedCreatureImage,
 				Featured: true,

@@ -17,18 +17,23 @@ func TestBoostableBossesOverview(t *testing.T) {
 	boostableBossesJson := TibiaBoostableBossesOverviewV3Impl(string(data))
 	assert := assert.New(t)
 
-	assert.Equal("The Pale Worm", boostableBossesJson.BoostableBosses.Boosted.Name)
-	assert.Equal("https://static.tibia.com/images/global/header/monsters/paleworm.gif", boostableBossesJson.BoostableBosses.Boosted.ImageURL)
+	assert.Equal("Goshnar's Malice", boostableBossesJson.BoostableBosses.Boosted.Name)
+	assert.Equal("https://static.tibia.com/images/global/header/monsters/goshnarsmalice.gif", boostableBossesJson.BoostableBosses.Boosted.ImageURL)
 
-	assert.Equal(88, len(boostableBossesJson.BoostableBosses.BoostableBosses))
+	assert.Equal(89, len(boostableBossesJson.BoostableBosses.BoostableBosses))
 
 	gnomevil := boostableBossesJson.BoostableBosses.BoostableBosses[18]
 	assert.Equal("Gnomevil", gnomevil.Name)
 	assert.Equal("https://static.tibia.com/images/library/gnomehorticulist.gif", gnomevil.ImageURL)
 	assert.False(gnomevil.Featured)
 
-	paleworm := boostableBossesJson.BoostableBosses.BoostableBosses[72]
+	goshnarsmalice := boostableBossesJson.BoostableBosses.BoostableBosses[23]
+	assert.Equal("Goshnar's Malice", goshnarsmalice.Name)
+	assert.Equal("https://static.tibia.com/images/library/goshnarsmalice.gif", goshnarsmalice.ImageURL)
+	assert.True(goshnarsmalice.Featured)
+
+	paleworm := boostableBossesJson.BoostableBosses.BoostableBosses[73]
 	assert.Equal("The Pale Worm", paleworm.Name)
 	assert.Equal("https://static.tibia.com/images/library/paleworm.gif", paleworm.ImageURL)
-	assert.True(paleworm.Featured)
+	assert.False(paleworm.Featured)
 }

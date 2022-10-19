@@ -44,7 +44,7 @@ type HighscoresResponse struct {
 
 var (
 	HighscoresAgeRegex  = regexp.MustCompile(`.*<div class="Text">Highscores.*Last Update: ([0-9]+) minutes ago.*`)
-	HighscoresPageRegex = regexp.MustCompile(`.*<b>\&raquo; Pages:\ ?(.*)<\/b>.*<b>\&raquo; Results:\ ?([0-9,]+)<\/b>.*`)
+	HighscoresPageRegex = regexp.MustCompile(`.*<b>.*Pages:\ ?(.*)<\/b>.*<b>.*Results:\ ?([0-9,]+)<\/b>.*`)
 	SevenColumnRegex    = regexp.MustCompile(`<td>(.*)<\/td><td.*">(.*)<\/a><\/td><td.*>(.*)<\/td><td.*>(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
 	SixColumnRegex      = regexp.MustCompile(`<td>(.*)<\/td><td.*">(.*)<\/a><\/td><td.*">(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
 )

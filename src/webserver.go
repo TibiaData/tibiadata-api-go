@@ -362,7 +362,7 @@ func tibiaGuildsOverviewV3(c *gin.Context) {
 // @Param        world    path string true "The world" default(all) extensions(x-example=Antica)
 // @Param        category path string true "The category" default(experience) Enums(achievements, axefighting, charmpoints, clubfighting, distancefighting, experience, fishing, fistfighting, goshnarstaint, loyaltypoints, magiclevel, shielding, swordfighting, dromescore, bosspoints) extensions(x-example=fishing)
 // @Param        vocation path string true "The vocation" default(all) Enums(all, knights, paladins, sorcerers, druids) extensions(x-example=knights)
-// @Param        page     path int    true "The current page" default(1) minimum(1) maximum(20 extensions(x-example=1)
+// @Param        page     path int    true "The current page" default(1) minimum(1) maximum(20) extensions(x-example=1)
 // @Success      200  {object}  HighscoresResponse
 // @Router       /v3/highscores/{world}/{category}/{vocation}/{page} [get]
 func tibiaHighscoresV3(c *gin.Context) {

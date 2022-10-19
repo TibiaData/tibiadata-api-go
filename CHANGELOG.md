@@ -1,9 +1,14 @@
 # Changelog
 
+## [3.5.1] - 2022-10-19
+
+### Fixed
+* Automated documentation with swaggo failed due to formatting
+
 ## [3.5.0] - 2022-10-19
 
 ### Added
-* fix highscores by implementing pagination ([#164](https://github.com/TibiaData/tibiadata-api-go/pull/164), [#165](https://github.com/TibiaData/tibiadata-api-go/pull/165) by [tobiasehlert](https://github.com/tobiasehlert))
+* Fix highscores by implementing pagination ([#164](https://github.com/TibiaData/tibiadata-api-go/pull/164), [#165](https://github.com/TibiaData/tibiadata-api-go/pull/165) by [tobiasehlert](https://github.com/tobiasehlert))
 
 ### Changed
 * Bump golang from 1.19.0 to 1.19.2 ([#158](https://github.com/TibiaData/tibiadata-api-go/pull/158), [#159](https://github.com/TibiaData/tibiadata-api-go/pull/159) by [dependabot](https://github.com/dependabot))
@@ -230,6 +235,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.5.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.4.1...v3.5.0
 [3.4.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.4.0...v3.4.1
 [3.4.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.3.1...v3.4.0

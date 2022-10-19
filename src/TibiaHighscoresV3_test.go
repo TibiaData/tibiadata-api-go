@@ -14,32 +14,36 @@ func TestHighscoresAll(t *testing.T) {
 		return
 	}
 
-	highscoresJson := TibiaHighscoresV3Impl("", experience, "all", string(data))
+	highscoresJson := TibiaHighscoresV3Impl("", experience, "all", 1, string(data))
 	assert := assert.New(t)
 
 	assert.Equal("", highscoresJson.Highscores.World)
 	assert.Equal("experience", highscoresJson.Highscores.Category)
 	assert.Equal("all", highscoresJson.Highscores.Vocation)
-	assert.Equal(30, highscoresJson.Highscores.HighscoreAge)
+	assert.Equal(12, highscoresJson.Highscores.HighscoreAge)
 
 	assert.Equal(50, len(highscoresJson.Highscores.HighscoreList))
 
+	assert.Equal(1, highscoresJson.Highscores.HighscorePage.CurrentPage)
+	assert.Equal(20, highscoresJson.Highscores.HighscorePage.TotalPages)
+	assert.Equal(1000, highscoresJson.Highscores.HighscorePage.TotalHighscores)
+
 	firstHighscore := highscoresJson.Highscores.HighscoreList[0]
 	assert.Equal(1, firstHighscore.Rank)
-	assert.Equal("Bobeek", firstHighscore.Name)
-	assert.Equal("Elder Druid", firstHighscore.Vocation)
+	assert.Equal("Goraca", firstHighscore.Name)
+	assert.Equal("Master Sorcerer", firstHighscore.Vocation)
 	assert.Equal("Bona", firstHighscore.World)
-	assert.Equal(2015, firstHighscore.Level)
-	assert.Equal(136026206904, firstHighscore.Value)
+	assert.Equal(2197, firstHighscore.Level)
+	assert.Equal(176271164607, firstHighscore.Value)
 	assert.Equal("", firstHighscore.Title)
 
 	lastHighscore := highscoresJson.Highscores.HighscoreList[49]
 	assert.Equal(50, lastHighscore.Rank)
-	assert.Equal("Kewhyx Mythus", lastHighscore.Name)
-	assert.Equal("Royal Paladin", lastHighscore.Vocation)
-	assert.Equal("Celebra", lastHighscore.World)
-	assert.Equal(1575, lastHighscore.Level)
-	assert.Equal(64869293274, lastHighscore.Value)
+	assert.Equal("Wujo Daro", lastHighscore.Name)
+	assert.Equal("Elite Knight", lastHighscore.Vocation)
+	assert.Equal("Refugia", lastHighscore.World)
+	assert.Equal(1701, lastHighscore.Level)
+	assert.Equal(81816135617, lastHighscore.Value)
 	assert.Equal("", lastHighscore.Title)
 }
 
@@ -50,14 +54,13 @@ func TestHighscoresLoyalty(t *testing.T) {
 		return
 	}
 
-	highscoresJson := TibiaHighscoresV3Impl("Vunira", loyaltypoints, "druids", string(data))
+	highscoresJson := TibiaHighscoresV3Impl("Vunira", loyaltypoints, "druids", 4, string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Vunira", highscoresJson.Highscores.World)
 	assert.Equal("loyaltypoints", highscoresJson.Highscores.Category)
 	assert.Equal("druids", highscoresJson.Highscores.Vocation)
-	assert.Equal(46, highscoresJson.Highscores.HighscoreAge)
+	assert.Equal(12, highscoresJson.Highscores.HighscoreAge)
 
-	// should be 50, but for some reason it can't get entries from the list..
-	assert.Equal(0, len(highscoresJson.Highscores.HighscoreList))
+	assert.Equal(50, len(highscoresJson.Highscores.HighscoreList))
 }

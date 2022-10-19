@@ -19,16 +19,23 @@ type Highscore struct {
 	Title    string `json:"title,omitempty"` // Title column (when category: loyalty)
 }
 
-// Child of JSONData
-type Highscores struct {
-	World         string      `json:"world"`
-	Category      string      `json:"category"`
-	Vocation      string      `json:"vocation"`
-	HighscoreAge  int         `json:"highscore_age"`
-	HighscoreList []Highscore `json:"highscore_list"`
+// Child of Highscore
+type HighscorePage struct {
+	CurrentPage     int `json:"current_page"`  // Current page
+	TotalPages      int `json:"total_pages"`   // Total page count
+	TotalHighscores int `json:"total_records"` // Total highscore records
 }
 
-//
+// Child of JSONData
+type Highscores struct {
+	World         string        `json:"world"`
+	Category      string        `json:"category"`
+	Vocation      string        `json:"vocation"`
+	HighscoreAge  int           `json:"highscore_age"`
+	HighscoreList []Highscore   `json:"highscore_list"`
+	HighscorePage HighscorePage `json:"highscore_page"`
+}
+
 // The base includes two levels: Highscores and Information
 type HighscoresResponse struct {
 	Highscores  Highscores  `json:"highscores"`
@@ -36,12 +43,13 @@ type HighscoresResponse struct {
 }
 
 var (
-	HighscoresAgeRegex = regexp.MustCompile(`.*<div class="Text">Highscores.*Last Update: ([0-9]+) minutes ago.*`)
-	SevenColumnRegex   = regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*>(.*)<\/td><td.*>(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
-	SixColumnRegex     = regexp.MustCompile(`<td>.*<\/td><td.*">(.*)<\/a><\/td><td.*">(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
+	HighscoresAgeRegex  = regexp.MustCompile(`.*<div class="Text">Highscores.*Last Update: ([0-9]+) minutes ago.*`)
+	HighscoresPageRegex = regexp.MustCompile(`.*<b>\&raquo; Pages:\ ?(.*)<\/b>.*<b>\&raquo; Results:\ ?([0-9,]+)<\/b>.*`)
+	SevenColumnRegex    = regexp.MustCompile(`<td>(.*)<\/td><td.*">(.*)<\/a><\/td><td.*>(.*)<\/td><td.*>(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
+	SixColumnRegex      = regexp.MustCompile(`<td>(.*)<\/td><td.*">(.*)<\/a><\/td><td.*">(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
 )
 
-func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationName string, BoxContentHTML string) HighscoresResponse {
+func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationName string, currentPage int, BoxContentHTML string) HighscoresResponse {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -50,16 +58,22 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 
 	// Creating empty HighscoreData var
 	var (
-		HighscoreData                                                           []Highscore
-		HighscoreDataVocation, HighscoreDataWorld, HighscoreDataTitle           string
-		HighscoreDataRank, HighscoreDataLevel, HighscoreDataValue, HighscoreAge int
+		HighscoreData                                                                                                          []Highscore
+		HighscoreDataVocation, HighscoreDataWorld, HighscoreDataTitle                                                          string
+		HighscoreDataRank, HighscoreDataLevel, HighscoreDataValue, HighscoreAge, HighscoreTotalPages, HighscoreTotalHighscores int
 	)
 
 	// getting age of data
 	subma1 := HighscoresAgeRegex.FindAllStringSubmatch(string(BoxContentHTML), 1)
-
 	if len(subma1) > 0 {
 		HighscoreAge = TibiaDataStringToIntegerV3(subma1[0][1])
+	}
+
+	// getting amount of pages
+	subma1 = HighscoresPageRegex.FindAllStringSubmatch(string(BoxContentHTML), 1)
+	if len(subma1) > 0 {
+		HighscoreTotalPages = strings.Count(subma1[0][1], "class=\"PageLink")
+		HighscoreTotalHighscores = TibiaDataStringToIntegerV3(subma1[0][2])
 	}
 
 	// Running query over each div
@@ -101,23 +115,23 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 
 		if len(subma1) > 0 {
 
-			HighscoreDataRank++
+			HighscoreDataRank = TibiaDataStringToIntegerV3(subma1[0][1])
 			if category == loyaltypoints {
-				HighscoreDataTitle = subma1[0][2]
+				HighscoreDataTitle = subma1[0][3]
+				HighscoreDataVocation = subma1[0][4]
+				HighscoreDataWorld = subma1[0][5]
+				HighscoreDataLevel = TibiaDataStringToIntegerV3(subma1[0][6])
+				HighscoreDataValue = TibiaDataStringToIntegerV3(subma1[0][7])
+			} else {
 				HighscoreDataVocation = subma1[0][3]
 				HighscoreDataWorld = subma1[0][4]
 				HighscoreDataLevel = TibiaDataStringToIntegerV3(subma1[0][5])
 				HighscoreDataValue = TibiaDataStringToIntegerV3(subma1[0][6])
-			} else {
-				HighscoreDataVocation = subma1[0][2]
-				HighscoreDataWorld = subma1[0][3]
-				HighscoreDataLevel = TibiaDataStringToIntegerV3(subma1[0][4])
-				HighscoreDataValue = TibiaDataStringToIntegerV3(subma1[0][5])
 			}
 
 			HighscoreData = append(HighscoreData, Highscore{
 				Rank:     HighscoreDataRank,
-				Name:     TibiaDataSanitizeEscapedString(subma1[0][1]),
+				Name:     TibiaDataSanitizeEscapedString(subma1[0][2]),
 				Vocation: HighscoreDataVocation,
 				World:    HighscoreDataWorld,
 				Level:    HighscoreDataLevel,
@@ -139,6 +153,11 @@ func TibiaHighscoresV3Impl(world string, category HighscoreCategory, vocationNam
 			Vocation:      vocationName,
 			HighscoreAge:  HighscoreAge,
 			HighscoreList: HighscoreData,
+			HighscorePage: HighscorePage{
+				CurrentPage:     currentPage,
+				TotalPages:      HighscoreTotalPages,
+				TotalHighscores: HighscoreTotalHighscores,
+			},
 		},
 		Information{
 			APIVersion: TibiaDataAPIversion,

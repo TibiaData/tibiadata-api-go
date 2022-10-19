@@ -103,12 +103,13 @@ func runWebServer() {
 
 		// Tibia highscores
 		v3.GET("/highscores/:world", func(c *gin.Context) {
-			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/experience/"+TibiaDataDefaultVoc)
+			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/experience/"+TibiaDataDefaultVoc+"/1")
 		})
 		v3.GET("/highscores/:world/:category", func(c *gin.Context) {
-			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/"+c.Param("category")+"/"+TibiaDataDefaultVoc)
+			c.Redirect(http.StatusMovedPermanently, v3.BasePath()+"/highscores/"+c.Param("world")+"/"+c.Param("category")+"/"+TibiaDataDefaultVoc+"/1")
 		})
 		v3.GET("/highscores/:world/:category/:vocation", tibiaHighscoresV3)
+		v3.GET("/highscores/:world/:category/:vocation/:page", tibiaHighscoresV3)
 
 		// Tibia houses
 		v3.GET("/house/:world/:house_id", tibiaHousesHouseV3)
@@ -361,13 +362,15 @@ func tibiaGuildsOverviewV3(c *gin.Context) {
 // @Param        world    path string true "The world" default(all) extensions(x-example=Antica)
 // @Param        category path string true "The category" default(experience) Enums(achievements, axefighting, charmpoints, clubfighting, distancefighting, experience, fishing, fistfighting, goshnarstaint, loyaltypoints, magiclevel, shielding, swordfighting, dromescore, bosspoints) extensions(x-example=fishing)
 // @Param        vocation path string true "The vocation" default(all) Enums(all, knights, paladins, sorcerers, druids) extensions(x-example=knights)
+// @Param        page     path int    true "The current page" default(1) minimum(1) maximum(20 extensions(x-example=1)
 // @Success      200  {object}  HighscoresResponse
-// @Router       /v3/highscores/{world}/{category}/{vocation} [get]
+// @Router       /v3/highscores/{world}/{category}/{vocation}/{page} [get]
 func tibiaHighscoresV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")
 	category := c.Param("category")
 	vocation := c.Param("vocation")
+	page := c.Param("page")
 
 	// maybe return error on faulty vocation value?!
 
@@ -383,16 +386,25 @@ func tibiaHighscoresV3(c *gin.Context) {
 	// Sanitize of vocation input
 	vocationName, vocationid := TibiaDataVocationValidator(vocation)
 
+	// checking the page provided
+	if page == "" {
+		page = "1"
+	}
+	if TibiaDataStringToIntegerV3(page) < 1 || TibiaDataStringToIntegerV3(page) > 21 {
+		TibiaDataAPIHandleResponse(c, http.StatusBadRequest, "TibiaHighscoresV3", gin.H{"error": "page needs to be from 1 to 20"})
+		return
+	}
+
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/community/?subtopic=highscores&world=" + TibiaDataQueryEscapeStringV3(world) + "&category=" + strconv.Itoa(int(highscoreCategory)) + "&profession=" + TibiaDataQueryEscapeStringV3(vocationid) + "&currentpage=400000000000000",
+		URL:    "https://www.tibia.com/community/?subtopic=highscores&world=" + TibiaDataQueryEscapeStringV3(world) + "&category=" + strconv.Itoa(int(highscoreCategory)) + "&profession=" + TibiaDataQueryEscapeStringV3(vocationid) + "&currentpage=" + TibiaDataQueryEscapeStringV3(page),
 	}
 
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaHighscoresV3Impl(world, highscoreCategory, vocationName, BoxContentHTML), http.StatusOK
+			return TibiaHighscoresV3Impl(world, highscoreCategory, vocationName, TibiaDataStringToIntegerV3(page), BoxContentHTML), http.StatusOK
 		},
 		"TibiaHighscoresV3")
 }
@@ -439,7 +451,7 @@ func tibiaHousesHouseV3(c *gin.Context) {
 // @Param        town  path string true "The town to show" extensions(x-example=Venore)
 // @Success      200  {object}  HousesOverviewResponse
 // @Router       /v3/houses/{world}/{town} [get]
-//TODO: This API needs to be refactored somehow to use tibiaDataRequestHandler
+// TODO: This API needs to be refactored somehow to use tibiaDataRequestHandler
 func tibiaHousesOverviewV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")

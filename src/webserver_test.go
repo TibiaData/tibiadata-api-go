@@ -17,6 +17,9 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 
 	assert := assert.New(t)
 
+	tibiaBoostableBossesV3(c)
+	assert.Equal(http.StatusOK, w.Code)
+
 	tibiaCharactersCharacterV3(c)
 	assert.Equal(http.StatusOK, w.Code)
 

@@ -19,7 +19,7 @@ func TestNewsById(t *testing.T) {
 
 	assert.Equal(6529, newsArticleJson.News.ID)
 	assert.Equal("2022-01-12", newsArticleJson.News.Date)
-	assert.Equal("", newsArticleJson.News.Title)
+	assert.Empty(newsArticleJson.News.Title)
 	assert.Equal("development", newsArticleJson.News.Category)
 	assert.Equal("ticker", newsArticleJson.News.Type)
 	assert.Equal("https://www.tibia.com/news/?subtopic=newsarchive&id=6529", newsArticleJson.News.TibiaURL)
@@ -39,7 +39,7 @@ func TestNews6512(t *testing.T) {
 
 	assert.Equal(6512, newsArticleJson.News.ID)
 	assert.Equal("2022-01-04", newsArticleJson.News.Date)
-	assert.Equal("", newsArticleJson.News.Title)
+	assert.Empty(newsArticleJson.News.Title)
 	assert.Equal("community", newsArticleJson.News.Category)
 	assert.Equal("ticker", newsArticleJson.News.Type)
 	assert.Equal("https://www.tibia.com/news/?subtopic=newsarchive&id=6512", newsArticleJson.News.TibiaURL)
@@ -61,7 +61,7 @@ func TestNews6481(t *testing.T) {
 	assert.Equal("2021-12-22", newsArticleJson.News.Date)
 	assert.Equal("New Mounts", newsArticleJson.News.Title)
 	assert.Equal("development", newsArticleJson.News.Category)
-	assert.Equal("", newsArticleJson.News.Type)
+	assert.Empty(newsArticleJson.News.Type)
 	assert.Equal("https://www.tibia.com/news/?subtopic=newsarchive&id=6481", newsArticleJson.News.TibiaURL)
 	assert.Equal("New mounts have been added to the Store today!\nThe origins of the Emerald Raven, Mystic Raven, and Radiant Raven are shrouded in darkness, as no written record nor tale told by even the most knowing storytellers mentions but a trace of them. Superstition surrounds them, as some see these gigantic birds as an echo of a long forgotten past, while others believe them to herald hitherto unknown events. What is clear is that they are highly intelligent beings which make great companions if they deem somebody worthy.\n\nClick on image to enlarge.\n\nOnce bought, your character can use the mount ingame anytime, no matter if you are a free account or a Premium account.\nGet yourself a corvid companion!Your Community Managers ", newsArticleJson.News.Content)
 	assert.Equal("<p>New mounts have been added to the Store today!</p>\n<p>The origins of the <strong>Emerald Raven</strong>, <strong>Mystic Raven</strong>, and <strong>Radiant Raven</strong> are shrouded in darkness, as no written record nor tale told by even the most knowing storytellers mentions but a trace of them. Superstition surrounds them, as some see these gigantic birds as an echo of a long forgotten past, while others believe them to herald hitherto unknown events. What is clear is that they are highly intelligent beings which make great companions if they deem somebody worthy.</p>\n<figure><center><img style=\"cursor: pointer;\" src=\"https://static.tibia.com/images/news/emeraldraven_small.jpg\" onclick=\"ImageInNewWindow(&#39;https://static.tibia.com/images/news/emeraldraven.jpg&#39;)\"/></center>\n<figcaption><center><em>Click on image to enlarge.</em></center></figcaption>\n</figure>\n<p>Once bought, your character can use the mount ingame anytime, no matter if you are a free account or a Premium account.</p>\n<p>Get yourself a corvid companion!<br/>Your Community Managers</p> ", newsArticleJson.News.ContentHTML)

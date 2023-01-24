@@ -17,7 +17,7 @@ func TestHighscoresAll(t *testing.T) {
 	highscoresJson := TibiaHighscoresV3Impl("", experience, "all", 1, string(data))
 	assert := assert.New(t)
 
-	assert.Equal("", highscoresJson.Highscores.World)
+	assert.Empty(highscoresJson.Highscores.World)
 	assert.Equal("experience", highscoresJson.Highscores.Category)
 	assert.Equal("all", highscoresJson.Highscores.Vocation)
 	assert.Equal(12, highscoresJson.Highscores.HighscoreAge)
@@ -35,7 +35,7 @@ func TestHighscoresAll(t *testing.T) {
 	assert.Equal("Bona", firstHighscore.World)
 	assert.Equal(2197, firstHighscore.Level)
 	assert.Equal(176271164607, firstHighscore.Value)
-	assert.Equal("", firstHighscore.Title)
+	assert.Empty(firstHighscore.Title)
 
 	lastHighscore := highscoresJson.Highscores.HighscoreList[49]
 	assert.Equal(50, lastHighscore.Rank)
@@ -44,7 +44,7 @@ func TestHighscoresAll(t *testing.T) {
 	assert.Equal("Refugia", lastHighscore.World)
 	assert.Equal(1701, lastHighscore.Level)
 	assert.Equal(81816135617, lastHighscore.Value)
-	assert.Equal("", lastHighscore.Title)
+	assert.Empty(lastHighscore.Title)
 }
 
 func TestHighscoresLoyalty(t *testing.T) {

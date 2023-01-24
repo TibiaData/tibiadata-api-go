@@ -46,3 +46,75 @@ func TestOrderofGlory(t *testing.T) {
 
 	assert.Nil(orderOfGloryJson.Guilds.Guild.Invited)
 }
+
+func TestElysium(t *testing.T) {
+	data, err := os.ReadFile("../testdata/guilds/guild/Elysium.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+
+	elysiumJson := TibiaGuildsGuildV3Impl("Elysium", string(data))
+	assert := assert.New(t)
+
+	assert.Equal("Elysium", elysiumJson.Guilds.Guild.Name)
+	assert.Equal("Vunira", elysiumJson.Guilds.Guild.World)
+	assert.Equal("https://static.tibia.com/images/guildlogos/Elysium.gif", elysiumJson.Guilds.Guild.LogoURL)
+	assert.Equal("The place you want to be...\nIt is the land of peace and harmony, the home of the immortal, the blessed, home of the passed away legends... Hail all defenders of righteousness and the old virtues which shall never be forgotten!\nIf you would like to join us, feel free to contact one of our leaders.", elysiumJson.Guilds.Guild.Description)
+	assert.NotNil(elysiumJson.Guilds.Guild.Guildhalls)
+	assert.Equal("Ab'Dendriel Clanhall", elysiumJson.Guilds.Guild.Guildhalls[0].Name)
+	assert.Equal("2023-02-18", elysiumJson.Guilds.Guild.Guildhalls[0].PaidUntil)
+	assert.Equal("Vunira", elysiumJson.Guilds.Guild.Guildhalls[0].World)
+	assert.True(elysiumJson.Guilds.Guild.Active)
+	assert.Equal("2004-05-26", elysiumJson.Guilds.Guild.Founded)
+	assert.True(elysiumJson.Guilds.Guild.Applications)
+	assert.Equal("", elysiumJson.Guilds.Guild.Homepage)
+	assert.False(elysiumJson.Guilds.Guild.InWar)
+	assert.Equal("", elysiumJson.Guilds.Guild.DisbandedDate)
+	assert.Equal("", elysiumJson.Guilds.Guild.DisbandedCondition)
+	assert.Equal(4, elysiumJson.Guilds.Guild.PlayersOnline)
+	assert.Equal(154, elysiumJson.Guilds.Guild.PlayersOffline)
+	assert.Equal(158, elysiumJson.Guilds.Guild.MembersTotal)
+	assert.Equal(1, elysiumJson.Guilds.Guild.MembersInvited)
+	assert.Equal(158, len(elysiumJson.Guilds.Guild.Members))
+
+	guildFollower := elysiumJson.Guilds.Guild.Members[101]
+	assert.Equal("Trollefar", guildFollower.Name)
+	assert.Equal("Troll Giant", guildFollower.Title)
+	assert.Equal("Follower", guildFollower.Rank)
+	assert.Equal("Elite Knight", guildFollower.Vocation)
+	assert.Equal(202, guildFollower.Level)
+	assert.Equal("2013-10-20", guildFollower.Joined)
+	assert.Equal("offline", guildFollower.Status)
+
+	assert.NotNil(elysiumJson.Guilds.Guild.Invited)
+	evelynInvite := elysiumJson.Guilds.Guild.Invited[0]
+	assert.Equal("Evelyn Earlong", evelynInvite.Name)
+	assert.Equal("2023-01-20", evelynInvite.Date)
+}
+
+func TestMercenarys(t *testing.T) {
+	data, err := os.ReadFile("../testdata/guilds/guild/Mercenarys.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+
+	mercenarysJson := TibiaGuildsGuildV3Impl("Mercenarys", string(data))
+	assert := assert.New(t)
+
+	assert.Equal("Mercenarys", mercenarysJson.Guilds.Guild.Name)
+	assert.Equal("Antica", mercenarysJson.Guilds.Guild.World)
+	assert.Equal("https://static.tibia.com/images/guildlogos/Mercenarys.gif", mercenarysJson.Guilds.Guild.LogoURL)
+	assert.NotNil(mercenarysJson.Guilds.Guild.Guildhalls)
+	assert.Equal("Mercenary Tower", mercenarysJson.Guilds.Guild.Guildhalls[0].Name)
+	assert.Equal("2023-01-28", mercenarysJson.Guilds.Guild.Guildhalls[0].PaidUntil)
+	assert.Equal("Antica", mercenarysJson.Guilds.Guild.Guildhalls[0].World)
+	assert.True(mercenarysJson.Guilds.Guild.Active)
+	assert.Equal("2002-02-18", mercenarysJson.Guilds.Guild.Founded)
+	assert.True(mercenarysJson.Guilds.Guild.Applications)
+	assert.Equal("http://www.mercenarys.net", mercenarysJson.Guilds.Guild.Homepage)
+	assert.False(mercenarysJson.Guilds.Guild.InWar)
+	assert.Equal("2023-02-07", mercenarysJson.Guilds.Guild.DisbandedDate)
+	assert.Equal("if there are still less than four vice leaders or an insufficient amount of premium accounts in the leading ranks by then", mercenarysJson.Guilds.Guild.DisbandedCondition)
+}

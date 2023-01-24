@@ -104,7 +104,6 @@ type Characters struct {
 	OtherCharacters    []OtherCharacters  `json:"other_characters,omitempty"`
 }
 
-//
 // The base includes two levels, Characters and Information
 type CharacterResponse struct {
 	Characters  Characters  `json:"characters"`
@@ -261,7 +260,7 @@ func TibiaCharactersCharacterV3Impl(BoxContentHTML string) CharacterResponse {
 			})
 		case "Account Badges":
 			// Running query over each tr in list
-			CharacterDivQuery.Find(".TableContentContainer tr td").Each(func(index int, s *goquery.Selection) {
+			CharacterDivQuery.Find(".TableContentContainer tr td span[style]").Each(func(index int, s *goquery.Selection) {
 				// Storing HTML into CharacterListHTML
 				CharacterListHTML, err := s.Html()
 				if err != nil {

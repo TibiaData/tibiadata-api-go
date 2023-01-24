@@ -93,3 +93,69 @@ func TestHeavyMagicMissileRune(t *testing.T) {
 	assert.Equal(25, hmmJson.Spells.Spell.RuneInformation.Level)
 	assert.Equal(3, hmmJson.Spells.Spell.RuneInformation.MagicLevel)
 }
+
+func TestAnnihilation(t *testing.T) {
+	data, err := os.ReadFile("../testdata/spells/spell/Annihilation.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+
+	hmmJson := TibiaSpellsSpellV3Impl("Annihilation", string(data))
+	assert := assert.New(t)
+
+	assert.Equal("", hmmJson.Spells.Spell.Description)
+	assert.Equal("Annihilation", hmmJson.Spells.Spell.Name)
+	assert.Equal("annihilation", hmmJson.Spells.Spell.Spell)
+	assert.True(hmmJson.Spells.Spell.HasSpellInformation)
+	assert.NotNil(hmmJson.Spells.Spell.SpellInformation)
+	assert.Equal("exori gran ico", hmmJson.Spells.Spell.SpellInformation.Formula)
+	assert.Equal(1, len(hmmJson.Spells.Spell.SpellInformation.Vocation))
+	assert.Equal("Knight", hmmJson.Spells.Spell.SpellInformation.Vocation[0])
+	assert.True(hmmJson.Spells.Spell.SpellInformation.GroupAttack)
+	assert.False(hmmJson.Spells.Spell.SpellInformation.GroupHealing)
+	assert.False(hmmJson.Spells.Spell.SpellInformation.GroupSupport)
+	assert.True(hmmJson.Spells.Spell.SpellInformation.TypeInstant)
+	assert.False(hmmJson.Spells.Spell.SpellInformation.TypeRune)
+	assert.Equal("var.", hmmJson.Spells.Spell.SpellInformation.DamageType) // weird one..
+	assert.Equal(30, hmmJson.Spells.Spell.SpellInformation.CooldownAlone)
+	assert.Equal(4, hmmJson.Spells.Spell.SpellInformation.CooldownGroup)
+	assert.Equal(0, hmmJson.Spells.Spell.SpellInformation.SoulPoints)
+	assert.Equal(0, hmmJson.Spells.Spell.SpellInformation.Amount)
+	assert.Equal(7, len(hmmJson.Spells.Spell.SpellInformation.City))
+	assert.True(hmmJson.Spells.Spell.SpellInformation.Premium)
+	assert.False(hmmJson.Spells.Spell.HasRuneInformation)
+}
+
+func TestBruiseBane(t *testing.T) {
+	data, err := os.ReadFile("../testdata/spells/spell/Bruise Bane.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+
+	hmmJson := TibiaSpellsSpellV3Impl("Bruise Bane", string(data))
+	assert := assert.New(t)
+
+	assert.Equal("", hmmJson.Spells.Spell.Description)
+	assert.Equal("Bruise Bane", hmmJson.Spells.Spell.Name)
+	assert.Equal("bruise bane", hmmJson.Spells.Spell.Spell)
+	assert.True(hmmJson.Spells.Spell.HasSpellInformation)
+	assert.NotNil(hmmJson.Spells.Spell.SpellInformation)
+	assert.Equal("exura infir ico", hmmJson.Spells.Spell.SpellInformation.Formula)
+	assert.Equal(1, len(hmmJson.Spells.Spell.SpellInformation.Vocation))
+	assert.False(hmmJson.Spells.Spell.SpellInformation.GroupAttack)
+	assert.True(hmmJson.Spells.Spell.SpellInformation.GroupHealing)
+	assert.False(hmmJson.Spells.Spell.SpellInformation.GroupSupport)
+	assert.True(hmmJson.Spells.Spell.SpellInformation.TypeInstant)
+	assert.False(hmmJson.Spells.Spell.SpellInformation.TypeRune)
+	assert.Equal(1, hmmJson.Spells.Spell.SpellInformation.CooldownAlone)
+	assert.Equal(1, hmmJson.Spells.Spell.SpellInformation.CooldownGroup)
+	assert.Equal(1, hmmJson.Spells.Spell.SpellInformation.Level)
+	assert.Equal(10, hmmJson.Spells.Spell.SpellInformation.Mana)
+	assert.Equal(0, hmmJson.Spells.Spell.SpellInformation.Price)
+	assert.Equal(1, len(hmmJson.Spells.Spell.SpellInformation.City))
+	assert.Equal("Dawnport", hmmJson.Spells.Spell.SpellInformation.City[0])
+	assert.False(hmmJson.Spells.Spell.SpellInformation.Premium)
+	assert.False(hmmJson.Spells.Spell.HasRuneInformation)
+}

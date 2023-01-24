@@ -101,30 +101,30 @@ func TestAnnihilation(t *testing.T) {
 		return
 	}
 
-	hmmJson := TibiaSpellsSpellV3Impl("Annihilation", string(data))
+	annihilationJson := TibiaSpellsSpellV3Impl("Annihilation", string(data))
 	assert := assert.New(t)
 
-	assert.Equal("", hmmJson.Spells.Spell.Description)
-	assert.Equal("Annihilation", hmmJson.Spells.Spell.Name)
-	assert.Equal("annihilation", hmmJson.Spells.Spell.Spell)
-	assert.True(hmmJson.Spells.Spell.HasSpellInformation)
-	assert.NotNil(hmmJson.Spells.Spell.SpellInformation)
-	assert.Equal("exori gran ico", hmmJson.Spells.Spell.SpellInformation.Formula)
-	assert.Equal(1, len(hmmJson.Spells.Spell.SpellInformation.Vocation))
-	assert.Equal("Knight", hmmJson.Spells.Spell.SpellInformation.Vocation[0])
-	assert.True(hmmJson.Spells.Spell.SpellInformation.GroupAttack)
-	assert.False(hmmJson.Spells.Spell.SpellInformation.GroupHealing)
-	assert.False(hmmJson.Spells.Spell.SpellInformation.GroupSupport)
-	assert.True(hmmJson.Spells.Spell.SpellInformation.TypeInstant)
-	assert.False(hmmJson.Spells.Spell.SpellInformation.TypeRune)
-	assert.Equal("var.", hmmJson.Spells.Spell.SpellInformation.DamageType) // weird one..
-	assert.Equal(30, hmmJson.Spells.Spell.SpellInformation.CooldownAlone)
-	assert.Equal(4, hmmJson.Spells.Spell.SpellInformation.CooldownGroup)
-	assert.Equal(0, hmmJson.Spells.Spell.SpellInformation.SoulPoints)
-	assert.Equal(0, hmmJson.Spells.Spell.SpellInformation.Amount)
-	assert.Equal(7, len(hmmJson.Spells.Spell.SpellInformation.City))
-	assert.True(hmmJson.Spells.Spell.SpellInformation.Premium)
-	assert.False(hmmJson.Spells.Spell.HasRuneInformation)
+	assert.Equal("", annihilationJson.Spells.Spell.Description)
+	assert.Equal("Annihilation", annihilationJson.Spells.Spell.Name)
+	assert.Equal("annihilation", annihilationJson.Spells.Spell.Spell)
+	assert.True(annihilationJson.Spells.Spell.HasSpellInformation)
+	assert.NotNil(annihilationJson.Spells.Spell.SpellInformation)
+	assert.Equal("exori gran ico", annihilationJson.Spells.Spell.SpellInformation.Formula)
+	assert.Equal(1, len(annihilationJson.Spells.Spell.SpellInformation.Vocation))
+	assert.Equal("Knight", annihilationJson.Spells.Spell.SpellInformation.Vocation[0])
+	assert.True(annihilationJson.Spells.Spell.SpellInformation.GroupAttack)
+	assert.False(annihilationJson.Spells.Spell.SpellInformation.GroupHealing)
+	assert.False(annihilationJson.Spells.Spell.SpellInformation.GroupSupport)
+	assert.True(annihilationJson.Spells.Spell.SpellInformation.TypeInstant)
+	assert.False(annihilationJson.Spells.Spell.SpellInformation.TypeRune)
+	assert.Equal("var.", annihilationJson.Spells.Spell.SpellInformation.DamageType) // weird one..
+	assert.Equal(30, annihilationJson.Spells.Spell.SpellInformation.CooldownAlone)
+	assert.Equal(4, annihilationJson.Spells.Spell.SpellInformation.CooldownGroup)
+	assert.Equal(0, annihilationJson.Spells.Spell.SpellInformation.SoulPoints)
+	assert.Equal(0, annihilationJson.Spells.Spell.SpellInformation.Amount)
+	assert.Equal(7, len(annihilationJson.Spells.Spell.SpellInformation.City))
+	assert.True(annihilationJson.Spells.Spell.SpellInformation.Premium)
+	assert.False(annihilationJson.Spells.Spell.HasRuneInformation)
 }
 
 func TestBruiseBane(t *testing.T) {
@@ -134,28 +134,79 @@ func TestBruiseBane(t *testing.T) {
 		return
 	}
 
-	hmmJson := TibiaSpellsSpellV3Impl("Bruise Bane", string(data))
+	bruisebaneJson := TibiaSpellsSpellV3Impl("Bruise Bane", string(data))
 	assert := assert.New(t)
 
-	assert.Equal("", hmmJson.Spells.Spell.Description)
-	assert.Equal("Bruise Bane", hmmJson.Spells.Spell.Name)
-	assert.Equal("bruise bane", hmmJson.Spells.Spell.Spell)
-	assert.True(hmmJson.Spells.Spell.HasSpellInformation)
-	assert.NotNil(hmmJson.Spells.Spell.SpellInformation)
-	assert.Equal("exura infir ico", hmmJson.Spells.Spell.SpellInformation.Formula)
-	assert.Equal(1, len(hmmJson.Spells.Spell.SpellInformation.Vocation))
-	assert.False(hmmJson.Spells.Spell.SpellInformation.GroupAttack)
-	assert.True(hmmJson.Spells.Spell.SpellInformation.GroupHealing)
-	assert.False(hmmJson.Spells.Spell.SpellInformation.GroupSupport)
-	assert.True(hmmJson.Spells.Spell.SpellInformation.TypeInstant)
-	assert.False(hmmJson.Spells.Spell.SpellInformation.TypeRune)
-	assert.Equal(1, hmmJson.Spells.Spell.SpellInformation.CooldownAlone)
-	assert.Equal(1, hmmJson.Spells.Spell.SpellInformation.CooldownGroup)
-	assert.Equal(1, hmmJson.Spells.Spell.SpellInformation.Level)
-	assert.Equal(10, hmmJson.Spells.Spell.SpellInformation.Mana)
-	assert.Equal(0, hmmJson.Spells.Spell.SpellInformation.Price)
-	assert.Equal(1, len(hmmJson.Spells.Spell.SpellInformation.City))
-	assert.Equal("Dawnport", hmmJson.Spells.Spell.SpellInformation.City[0])
-	assert.False(hmmJson.Spells.Spell.SpellInformation.Premium)
-	assert.False(hmmJson.Spells.Spell.HasRuneInformation)
+	assert.Equal("", bruisebaneJson.Spells.Spell.Description)
+	assert.Equal("Bruise Bane", bruisebaneJson.Spells.Spell.Name)
+	assert.Equal("bruise bane", bruisebaneJson.Spells.Spell.Spell)
+	assert.True(bruisebaneJson.Spells.Spell.HasSpellInformation)
+	assert.NotNil(bruisebaneJson.Spells.Spell.SpellInformation)
+	assert.Equal("exura infir ico", bruisebaneJson.Spells.Spell.SpellInformation.Formula)
+	assert.Equal(1, len(bruisebaneJson.Spells.Spell.SpellInformation.Vocation))
+	assert.False(bruisebaneJson.Spells.Spell.SpellInformation.GroupAttack)
+	assert.True(bruisebaneJson.Spells.Spell.SpellInformation.GroupHealing)
+	assert.False(bruisebaneJson.Spells.Spell.SpellInformation.GroupSupport)
+	assert.True(bruisebaneJson.Spells.Spell.SpellInformation.TypeInstant)
+	assert.False(bruisebaneJson.Spells.Spell.SpellInformation.TypeRune)
+	assert.Equal(1, bruisebaneJson.Spells.Spell.SpellInformation.CooldownAlone)
+	assert.Equal(1, bruisebaneJson.Spells.Spell.SpellInformation.CooldownGroup)
+	assert.Equal(1, bruisebaneJson.Spells.Spell.SpellInformation.Level)
+	assert.Equal(10, bruisebaneJson.Spells.Spell.SpellInformation.Mana)
+	assert.Equal(0, bruisebaneJson.Spells.Spell.SpellInformation.Price)
+	assert.Equal(1, len(bruisebaneJson.Spells.Spell.SpellInformation.City))
+	assert.Equal("Dawnport", bruisebaneJson.Spells.Spell.SpellInformation.City[0])
+	assert.False(bruisebaneJson.Spells.Spell.SpellInformation.Premium)
+	assert.False(bruisebaneJson.Spells.Spell.HasRuneInformation)
+}
+
+func TestCurePoisonRune(t *testing.T) {
+	data, err := os.ReadFile("../testdata/spells/spell/Cure Poison Rune.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+
+	curepoisonruneJson := TibiaSpellsSpellV3Impl("Cure Poison Rune", string(data))
+	assert := assert.New(t)
+
+	assert.Equal("", curepoisonruneJson.Spells.Spell.Description)
+	assert.Equal("Cure Poison Rune", curepoisonruneJson.Spells.Spell.Name)
+	assert.Equal("cure poison rune", curepoisonruneJson.Spells.Spell.Spell)
+	assert.True(curepoisonruneJson.Spells.Spell.HasSpellInformation)
+	assert.NotNil(curepoisonruneJson.Spells.Spell.SpellInformation)
+	assert.Equal("adana pox", curepoisonruneJson.Spells.Spell.SpellInformation.Formula)
+	assert.Equal(1, len(curepoisonruneJson.Spells.Spell.SpellInformation.Vocation))
+	assert.False(curepoisonruneJson.Spells.Spell.SpellInformation.GroupAttack)
+	assert.False(curepoisonruneJson.Spells.Spell.SpellInformation.GroupHealing)
+	assert.True(curepoisonruneJson.Spells.Spell.SpellInformation.GroupSupport)
+	assert.False(curepoisonruneJson.Spells.Spell.SpellInformation.TypeInstant)
+	assert.True(curepoisonruneJson.Spells.Spell.SpellInformation.TypeRune)
+	assert.False(curepoisonruneJson.Spells.Spell.SpellInformation.Premium)
+	assert.True(curepoisonruneJson.Spells.Spell.HasRuneInformation)
+	assert.False(curepoisonruneJson.Spells.Spell.RuneInformation.GroupAttack)
+	assert.True(curepoisonruneJson.Spells.Spell.RuneInformation.GroupHealing)
+	assert.False(curepoisonruneJson.Spells.Spell.RuneInformation.GroupSupport)
+}
+
+func TestConvinceCreatureRune(t *testing.T) {
+	data, err := os.ReadFile("../testdata/spells/spell/Convince Creature Rune.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+
+	convincecreatureruneJson := TibiaSpellsSpellV3Impl("Convince Creature Rune", string(data))
+	assert := assert.New(t)
+
+	assert.Equal("", convincecreatureruneJson.Spells.Spell.Description)
+	assert.Equal("Convince Creature Rune", convincecreatureruneJson.Spells.Spell.Name)
+	assert.Equal("convince creature rune", convincecreatureruneJson.Spells.Spell.Spell)
+	assert.True(convincecreatureruneJson.Spells.Spell.HasSpellInformation)
+	assert.NotNil(convincecreatureruneJson.Spells.Spell.SpellInformation)
+	assert.Equal("adeta sio", convincecreatureruneJson.Spells.Spell.SpellInformation.Formula)
+	assert.True(convincecreatureruneJson.Spells.Spell.HasRuneInformation)
+	assert.False(convincecreatureruneJson.Spells.Spell.RuneInformation.GroupAttack)
+	assert.False(convincecreatureruneJson.Spells.Spell.RuneInformation.GroupHealing)
+	assert.True(convincecreatureruneJson.Spells.Spell.RuneInformation.GroupSupport)
 }

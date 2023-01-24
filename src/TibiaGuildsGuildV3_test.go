@@ -118,3 +118,21 @@ func TestMercenarys(t *testing.T) {
 	assert.Equal("2023-02-07", mercenarysJson.Guilds.Guild.DisbandedDate)
 	assert.Equal("if there are still less than four vice leaders or an insufficient amount of premium accounts in the leading ranks by then", mercenarysJson.Guilds.Guild.DisbandedCondition)
 }
+
+func TestKotkiAntica(t *testing.T) {
+	data, err := os.ReadFile("../testdata/guilds/guild/Kotki Antica.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+
+	kotkianticaJson := TibiaGuildsGuildV3Impl("Kotki Antica", string(data))
+	assert := assert.New(t)
+
+	assert.Equal("Kotki Antica", kotkianticaJson.Guilds.Guild.Name)
+	assert.Equal("Antica", kotkianticaJson.Guilds.Guild.World)
+	assert.Empty(kotkianticaJson.Guilds.Guild.Description)
+	assert.True(kotkianticaJson.Guilds.Guild.Active)
+	assert.Equal("2021-09-22", kotkianticaJson.Guilds.Guild.Founded)
+	assert.False(kotkianticaJson.Guilds.Guild.Applications)
+}

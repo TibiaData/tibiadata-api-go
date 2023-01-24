@@ -95,3 +95,60 @@ func TestQuaraPredatorFeatured(t *testing.T) {
 
 	assert.True(quaraPredatorJson.Creature.Featured)
 }
+
+func TestCentipede(t *testing.T) {
+	data, err := os.ReadFile("../testdata/creatures/creature/centipede.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+
+	centipedeJson := TibiaCreaturesCreatureV3Impl("Centipede", string(data))
+	assert := assert.New(t)
+
+	assert.Equal("Centipedes", centipedeJson.Creature.Name)
+	assert.Equal("Centipede", centipedeJson.Creature.Race)
+
+	assert.True(centipedeJson.Creature.BeSummoned)
+	assert.Equal(335, centipedeJson.Creature.SummonMana)
+	assert.False(centipedeJson.Creature.BeConvinced)
+	assert.Equal(0, centipedeJson.Creature.ConvincedMana)
+}
+
+func TestHunter(t *testing.T) {
+	data, err := os.ReadFile("../testdata/creatures/creature/hunter.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+
+	hunterJson := TibiaCreaturesCreatureV3Impl("Hunter", string(data))
+	assert := assert.New(t)
+
+	assert.Equal("Hunters", hunterJson.Creature.Name)
+	assert.Equal("Hunter", hunterJson.Creature.Race)
+
+	assert.False(hunterJson.Creature.BeSummoned)
+	assert.Equal(0, hunterJson.Creature.SummonMana)
+	assert.True(hunterJson.Creature.BeConvinced)
+	assert.Equal(530, hunterJson.Creature.ConvincedMana)
+}
+
+func TestSkunk(t *testing.T) {
+	data, err := os.ReadFile("../testdata/creatures/creature/skunk.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+
+	skunkJson := TibiaCreaturesCreatureV3Impl("Skunk", string(data))
+	assert := assert.New(t)
+
+	assert.Equal("Skunks", skunkJson.Creature.Name)
+	assert.Equal("Skunk", skunkJson.Creature.Race)
+
+	assert.True(skunkJson.Creature.BeSummoned)
+	assert.Equal(200, skunkJson.Creature.SummonMana)
+	assert.True(skunkJson.Creature.BeConvinced)
+	assert.Equal(200, skunkJson.Creature.ConvincedMana)
+}

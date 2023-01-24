@@ -130,6 +130,9 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) CreatureRe
 				CreatureSummonedMana = TibiaDataStringToIntegerV3(subma24[0][1])
 				CreatureBeConvinced = true
 				CreatureConvincedMana = TibiaDataStringToIntegerV3(subma24[0][1])
+			} else if strings.Contains(subma2402, "summon these creatures but they cannot be") {
+				CreatureBeSummoned = true
+				CreatureSummonedMana = TibiaDataStringToIntegerV3(subma24[0][1])
 			}
 		}
 

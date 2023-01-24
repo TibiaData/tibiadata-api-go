@@ -29,5 +29,5 @@ func TestPremia(t *testing.T) {
 	secondGuildInFormation := premiaGuildsJson.Guilds.Formation[1]
 	assert.Equal("Konungen", secondGuildInFormation.Name)
 	assert.Equal("https://static.tibia.com/images/community/default_logo.gif", secondGuildInFormation.LogoURL)
-	assert.Equal("", secondGuildInFormation.Description)
+	assert.Empty(secondGuildInFormation.Description)
 }

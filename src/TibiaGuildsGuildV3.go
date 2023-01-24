@@ -65,7 +65,6 @@ type Guilds struct {
 	Guild Guild `json:"guild"`
 }
 
-//
 // The base includes two levels: Guild and Information
 type GuildResponse struct {
 	Guilds      Guilds      `json:"guilds"`
@@ -182,7 +181,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 			if strings.HasPrefix(line, "<b>It will be disbanded on ") {
 				subma1c := GuildDisbaneRegex.FindAllStringSubmatch(line, -1)
 				if len(subma1c) > 0 {
-					GuildDisbandedDate = subma1c[0][1]
+					GuildDisbandedDate = TibiaDataDateV3(subma1c[0][1])
 					GuildDisbandedCondition = subma1c[0][2]
 				}
 			}
@@ -238,7 +237,7 @@ func TibiaGuildsGuildV3Impl(guild string, BoxContentHTML string) GuildResponse {
 				MembersCountInvited++
 				InvitedData = append(InvitedData, InvitedGuildMember{
 					Name: TibiaDataSanitizeStrings(subma2[0][1]),
-					Date: subma2[0][2],
+					Date: TibiaDataDateV3(subma2[0][2]),
 				})
 			}
 		}

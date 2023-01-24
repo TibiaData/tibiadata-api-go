@@ -19,7 +19,7 @@ func TestCormaya10(t *testing.T) {
 
 	assert.Equal(54025, houseJson.House.Houseid)
 	assert.Equal("Premia", houseJson.House.World)
-	assert.Equal("", houseJson.House.Town) //depends on TibiaDataHousesMapResolver
+	assert.Empty(houseJson.House.Town) //depends on TibiaDataHousesMapResolver
 	assert.Equal("Cormaya 10", houseJson.House.Name)
 	assert.Equal("house", houseJson.House.Type)
 	assert.Equal(3, houseJson.House.Beds)
@@ -59,7 +59,7 @@ func TestCormaya11(t *testing.T) {
 
 	assert.Equal(54026, houseJson.House.Houseid)
 	assert.Equal("Premia", houseJson.House.World)
-	assert.Equal("", houseJson.House.Town) //depends on TibiaDataHousesMapResolver
+	assert.Empty(houseJson.House.Town) //depends on TibiaDataHousesMapResolver
 	assert.Equal("Cormaya 11", houseJson.House.Name)
 	assert.Equal("house", houseJson.House.Type)
 	assert.Equal(2, houseJson.House.Beds)
@@ -96,7 +96,7 @@ func TestCormaya9c(t *testing.T) {
 
 	assert.Equal(54023, houseJson.House.Houseid)
 	assert.Equal("Premia", houseJson.House.World)
-	assert.Equal("", houseJson.House.Town) //depends on TibiaDataHousesMapResolver
+	assert.Empty(houseJson.House.Town) //depends on TibiaDataHousesMapResolver
 	assert.Equal("Cormaya 9c", houseJson.House.Name)
 	assert.Equal("house", houseJson.House.Type)
 	assert.Equal(2, houseJson.House.Beds)
@@ -133,7 +133,7 @@ func TestBeachHomeApartmentsFlat14(t *testing.T) {
 
 	assert.Equal(10214, houseJson.House.Houseid)
 	assert.Equal("Premia", houseJson.House.World)
-	assert.Equal("", houseJson.House.Town) //depends on TibiaDataHousesMapResolver
+	assert.Empty(houseJson.House.Town) //depends on TibiaDataHousesMapResolver
 	assert.Equal("Beach Home Apartments, Flat 14", houseJson.House.Name)
 	assert.Equal("house", houseJson.House.Type)
 	assert.Equal(1, houseJson.House.Beds)
@@ -170,7 +170,7 @@ func TestBeachHomeApartmentsFlat15(t *testing.T) {
 
 	assert.Equal(10215, houseJson.House.Houseid)
 	assert.Equal("Premia", houseJson.House.World)
-	assert.Equal("", houseJson.House.Town) //depends on TibiaDataHousesMapResolver
+	assert.Empty(houseJson.House.Town) //depends on TibiaDataHousesMapResolver
 	assert.Equal("Beach Home Apartments, Flat 15", houseJson.House.Name)
 	assert.Equal("house", houseJson.House.Type)
 	assert.Equal(1, houseJson.House.Beds)

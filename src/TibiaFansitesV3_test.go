@@ -44,7 +44,7 @@ func TestFansites(t *testing.T) {
 	assert.Equal("Discord server.", tibiaDataFansite.Specials[1])
 	assert.Equal("GitHub participant.", tibiaDataFansite.Specials[2])
 	assert.False(tibiaDataFansite.FansiteItem)
-	assert.Equal("", tibiaDataFansite.FansiteItemURL)
+	assert.Empty(tibiaDataFansite.FansiteItemURL)
 
 	tibiaGalleryFansite := fansitesJson.Fansites.SupportedFansites[8]
 	assert.Equal("TibiaGallery.com", tibiaGalleryFansite.Name)

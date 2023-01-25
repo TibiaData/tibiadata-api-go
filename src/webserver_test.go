@@ -73,4 +73,10 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	assert.Equal(http.StatusOK, w.Code)
 
 	assert.Equal("TibiaData-API/v3 (release/unknown; build/manual; commit/-; edition/open-source; unittest.example.com)", TibiaDataUserAgentGenerator(3))
+
+	healthz(c)
+	assert.Equal(http.StatusOK, w.Code)
+
+	readyz(c)
+	assert.Equal(http.StatusOK, w.Code)
 }

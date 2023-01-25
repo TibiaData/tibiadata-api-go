@@ -73,11 +73,10 @@ func runWebServer() {
 		})
 	})
 
-	router.GET("/health", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"status": "UP",
-		})
-	})
+	// health endpoints for kubernetes
+	router.GET("/health", healthz)
+	router.GET("/healthz", healthz)
+	router.GET("/readyz", readyz)
 
 	// TibiaData API version 3
 	v3 := router.Group("/v3")
@@ -919,4 +918,19 @@ func TibiaDataRequestTraceLogger(res *resty.Response, err error) {
 		"\nRequestAttempt :", res.Request.TraceInfo().RequestAttempt,
 		"\nRemoteAddr     :", res.Request.TraceInfo().RemoteAddr.String(),
 		"\n==============================================================================")
+}
+
+// healthz is a k8s liveness probe
+func healthz(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"status": http.StatusText(http.StatusOK)})
+}
+
+// readyz is a k8s readiness probe
+func readyz(c *gin.Context) {
+	if isReady == nil || !isReady.Load().(bool) {
+		c.JSON(http.StatusServiceUnavailable, gin.H{"error": http.StatusText(http.StatusServiceUnavailable)})
+		return
+	}
+	//c.JSON(http.StatusOK, gin.H{"status": http.StatusText(http.StatusOK)})
+	TibiaDataAPIHandleResponse(c, http.StatusOK, "readyz", gin.H{"status": http.StatusText(http.StatusOK)})
 }

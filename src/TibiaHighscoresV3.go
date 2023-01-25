@@ -78,6 +78,10 @@ func TibiaHighscoresV3Impl(world string, category validation.HighscoreCategory, 
 		HighscoreTotalHighscores = TibiaDataStringToIntegerV3(subma1[0][2])
 	}
 
+	if currentPage > HighscoreTotalPages {
+		return nil, validation.ErrorHighscorePageTooBig
+	}
+
 	var insideError error
 
 	// Running query over each div

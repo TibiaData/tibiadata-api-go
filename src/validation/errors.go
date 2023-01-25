@@ -82,6 +82,14 @@ var (
 	// Code: 11006
 	ErrorTownDoesNotExist = Error{errors.New("the provided town does not exist")}
 
+	// ErrorHighscorePageInvalid will be sent if the page is not valid
+	// Code: 11007
+	ErrorHighscorePageInvalid = Error{errors.New("the provided page does not exist or is invalid")}
+
+	// ErrorHighscorePageTooBig
+	// Code: 11008
+	ErrorHighscorePageTooBig = Error{errors.New("the provided page is larger than max amount of pages")}
+
 	// ErrorCreatureNameEmpty will be sent if the request contains an empty creature name
 	// Code: 12001
 	ErrorCreatureNameEmpty = Error{errors.New("the provided creature name is an empty string")}
@@ -222,6 +230,10 @@ func (e Error) Code() int {
 		return 11005
 	case ErrorTownDoesNotExist:
 		return 11006
+	case ErrorHighscorePageInvalid:
+		return 11007
+	case ErrorHighscorePageTooBig:
+		return 11008
 	case ErrorCreatureNameEmpty:
 		return 12001
 	case ErrorCreatureNameTooSmall:

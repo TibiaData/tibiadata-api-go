@@ -7,7 +7,7 @@ import (
 
 var (
 	// validHighscoreCatregories stores all valid highscore categories
-	validHighscoreCategories = []string{"achievements", "achievement", "axe", "axefighting", "charm", "charms", "charmpoints", "charmspoints", "club", "clubfighting", "distance", "distancefighting", "fishing", "fist", "fistfighting", "goshnar", "goshnars", "goshnarstaint", "loyalty", "loyaltypoints", "magic", "mlvl", "magiclevel", "shielding", "shield", "sword", "swordfighting", "drome", "dromescore", "experience", "bosspoints"}
+	validHighscoreCategories = []string{"achievements", "achievement", "axe", "axefighting", "charm", "charms", "charmpoints", "charmspoints", "club", "clubfighting", "distance", "distancefighting", "fishing", "fist", "fistfighting", "goshnar", "goshnars", "goshnarstaint", "loyalty", "loyaltypoints", "magic", "mlvl", "magiclevel", "shielding", "shield", "sword", "swordfighting", "drome", "dromescore", "experience", "boss", "bosses", "bosspoints"}
 )
 
 // IsHighscoreCategoryValid reports wheter the provided string represents a valid highscore category
@@ -43,7 +43,7 @@ const (
 )
 
 func (hc HighscoreCategory) String() (string, error) {
-	seasons := [...]string{"achievements", "axefighting", "charmpoints", "clubfighting", "distancefighting", "experience", "fishing", "fistfighting", "goshnarstaint", "loyaltypoints", "magiclevel", "shielding", "swordfighting", "dromescore"}
+	seasons := [...]string{"achievements", "axefighting", "charmpoints", "clubfighting", "distancefighting", "experience", "fishing", "fistfighting", "goshnarstaint", "loyaltypoints", "magiclevel", "shielding", "swordfighting", "dromescore", "bosspoints"}
 	if hc < HighScoreAchievements || hc > HighScoreBosspoints {
 		return "", errors.New("invalid HighscoreCategory value")
 	}

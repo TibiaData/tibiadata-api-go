@@ -204,6 +204,9 @@ func runWebServer() {
 		}
 	}()
 
+	// setting readyz endpoint to true
+	isReady.Store(true)
+
 	log.Println("[info] TibiaData API starting webserver")
 
 	// Run the server
@@ -223,6 +226,9 @@ func runWebServer() {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  BoostableBossesOverviewResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/boostablebosses [get]
 func tibiaBoostableBossesV3(c *gin.Context) {
 	tibiadataRequest := TibiaDataRequestStruct{
@@ -516,8 +522,12 @@ func tibiaHighscoresV3(c *gin.Context) {
 	if page == "" {
 		page = "1"
 	}
-	if TibiaDataStringToIntegerV3(page) < 1 || TibiaDataStringToIntegerV3(page) > 23 {
-		TibiaDataAPIHandleResponse(c, "TibiaHighscoresV3", gin.H{"error": "page needs to be from 1 to 20 (possible until 23)"})
+	if TibiaDataStringToIntegerV3(page) < 1 {
+		TibiaDataErrorHandler(c, validation.ErrorHighscorePageInvalid, http.StatusBadRequest)
+		return
+	}
+	if TibiaDataStringToIntegerV3(page) > 30 {
+		TibiaDataErrorHandler(c, validation.ErrorHighscorePageTooBig, http.StatusBadRequest)
 		return
 	}
 
@@ -1244,6 +1254,5 @@ func readyz(c *gin.Context) {
 		c.JSON(http.StatusServiceUnavailable, gin.H{"error": http.StatusText(http.StatusServiceUnavailable)})
 		return
 	}
-	//c.JSON(http.StatusOK, gin.H{"status": http.StatusText(http.StatusOK)})
 	TibiaDataAPIHandleResponse(c, "readyz", gin.H{"status": http.StatusText(http.StatusOK)})
 }

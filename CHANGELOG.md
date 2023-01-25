@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.6.0] - 2023-01-25
+
+### Added
+* Feature: adding support for k8s health endpoints ([#147](https://github.com/TibiaData/tibiadata-api-go/pull/147) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Changed
+* Switching to assert.Empty from assert.Equal empty ([#181](https://github.com/TibiaData/tibiadata-api-go/pull/181) by [tobiasehlert](https://github.com/tobiasehlert))
+* Adjusting highscore span to support page up to 23 ([#168](https://github.com/TibiaData/tibiadata-api-go/pull/168) by [tobiasehlert](https://github.com/tobiasehlert))
+* Add more spell tests ([#179](https://github.com/TibiaData/tibiadata-api-go/pull/179) by [tobiasehlert](https://github.com/tobiasehlert))
+* Bump github.com/stretchr/testify from 1.8.0 to 1.8.1 ([#166](https://github.com/TibiaData/tibiadata-api-go/pull/166) by [dependabot](https://github.com/dependabot))
+* Bump golang.org/x/text from 0.4.0 to 0.6.0 ([#170](https://github.com/TibiaData/tibiadata-api-go/pull/170), ([#173](https://github.com/TibiaData/tibiadata-api-go/pull/173) by [dependabot](https://github.com/dependabot))
+* Bump golang from 1.19.2 to 1.19.5 ([#169](https://github.com/TibiaData/tibiadata-api-go/pull/169), [#171](https://github.com/TibiaData/tibiadata-api-go/pull/171), [#174](https://github.com/TibiaData/tibiadata-api-go/pull/174) by [dependabot](https://github.com/dependabot))
+* Bump github.com/gin-gonic/gin from 1.8.1 to 1.8.2 ([#172](https://github.com/TibiaData/tibiadata-api-go/pull/172) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+* Fix issue parsing summon mana cost ([#175](https://github.com/TibiaData/tibiadata-api-go/pull/175) by [soul4soul](https://github.com/soul4soul))
+* Fix account badge parsing ([#178](https://github.com/TibiaData/tibiadata-api-go/pull/178) by [tobiasehlert](https://github.com/tobiasehlert))
+* Fix guild date format ([#180](https://github.com/TibiaData/tibiadata-api-go/pull/180) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [3.5.1] - 2022-10-19
 
 ### Fixed
@@ -235,6 +254,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.6.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.5.1...v3.6.0
 [3.5.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.4.1...v3.5.0
 [3.4.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.4.0...v3.4.1

@@ -12,7 +12,9 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/text/cases"
 	"golang.org/x/text/encoding/charmap"
+	"golang.org/x/text/language"
 	"golang.org/x/text/unicode/norm"
 )
 
@@ -77,7 +79,7 @@ func TibiaDataRemoveURLsV3(data string) string {
 
 // TibiaDataStringWorldFormatToTitleV3 func
 func TibiaDataStringWorldFormatToTitleV3(world string) string {
-	return strings.Title(strings.ToLower(world))
+	return cases.Title(language.English).String(world)
 }
 
 // TibiaDataQueryEscapeStringV3 func - encode string to be correct formatted

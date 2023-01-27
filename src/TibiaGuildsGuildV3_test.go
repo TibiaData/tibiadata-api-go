@@ -1,20 +1,30 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestOrderofGlory(t *testing.T) {
-	data, err := os.ReadFile("../testdata/guilds/guild/Order of Glory.html")
+	file, err := static.TestFiles.Open("testdata/guilds/guild/Order of Glory.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	orderOfGloryJson := TibiaGuildsGuildV3Impl("Order of Glory", string(data))
+	orderOfGloryJson, err := TibiaGuildsGuildV3Impl("Order of Glory", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("Order of Glory", orderOfGloryJson.Guilds.Guild.Name)
@@ -48,13 +58,18 @@ func TestOrderofGlory(t *testing.T) {
 }
 
 func TestElysium(t *testing.T) {
-	data, err := os.ReadFile("../testdata/guilds/guild/Elysium.html")
+	file, err := static.TestFiles.Open("testdata/guilds/guild/Elysium.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	elysiumJson := TibiaGuildsGuildV3Impl("Elysium", string(data))
+	elysiumJson, _ := TibiaGuildsGuildV3Impl("Elysium", string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Elysium", elysiumJson.Guilds.Guild.Name)
@@ -94,13 +109,18 @@ func TestElysium(t *testing.T) {
 }
 
 func TestMercenarys(t *testing.T) {
-	data, err := os.ReadFile("../testdata/guilds/guild/Mercenarys.html")
+	file, err := static.TestFiles.Open("testdata/guilds/guild/Mercenarys.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	mercenarysJson := TibiaGuildsGuildV3Impl("Mercenarys", string(data))
+	mercenarysJson, _ := TibiaGuildsGuildV3Impl("Mercenarys", string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Mercenarys", mercenarysJson.Guilds.Guild.Name)
@@ -120,13 +140,18 @@ func TestMercenarys(t *testing.T) {
 }
 
 func TestKotkiAntica(t *testing.T) {
-	data, err := os.ReadFile("../testdata/guilds/guild/Kotki Antica.html")
+	file, err := static.TestFiles.Open("testdata/guilds/guild/Kotki Antica.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	kotkianticaJson := TibiaGuildsGuildV3Impl("Kotki Antica", string(data))
+	kotkianticaJson, _ := TibiaGuildsGuildV3Impl("Kotki Antica", string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Kotki Antica", kotkianticaJson.Guilds.Guild.Name)

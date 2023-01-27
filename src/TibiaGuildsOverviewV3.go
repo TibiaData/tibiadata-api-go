@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -28,7 +29,7 @@ type GuildsOverviewResponse struct {
 	Information Information    `json:"information"`
 }
 
-func TibiaGuildsOverviewV3Impl(world string, BoxContentHTML string) GuildsOverviewResponse {
+func TibiaGuildsOverviewV3Impl(world string, BoxContentHTML string) (*GuildsOverviewResponse, error) {
 	// Creating empty vars
 	var (
 		ActiveGuilds, FormationGuilds []OverviewGuild
@@ -38,12 +39,11 @@ func TibiaGuildsOverviewV3Impl(world string, BoxContentHTML string) GuildsOvervi
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaGuildsOverviewV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Running query over each div
 	ReaderHTML.Find(".TableContainer").Each(func(index int, s *goquery.Selection) {
-
 		// Figure out the guild category
 		s.Find(".Text").Each(func(index int, s *goquery.Selection) {
 			tableName := s.Nodes[0].FirstChild.Data
@@ -88,7 +88,7 @@ func TibiaGuildsOverviewV3Impl(world string, BoxContentHTML string) GuildsOvervi
 
 	//
 	// Build the data-blob
-	return GuildsOverviewResponse{
+	return &GuildsOverviewResponse{
 		OverviewGuilds{
 			World:     world,
 			Active:    ActiveGuilds,
@@ -97,6 +97,9 @@ func TibiaGuildsOverviewV3Impl(world string, BoxContentHTML string) GuildsOvervi
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }

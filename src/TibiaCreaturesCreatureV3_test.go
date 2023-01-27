@@ -1,20 +1,30 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDemon(t *testing.T) {
-	data, err := os.ReadFile("../testdata/creatures/creature/demon.html")
+	file, err := static.TestFiles.Open("testdata/creatures/creature/demon.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	demonJson := TibiaCreaturesCreatureV3Impl("Demon", string(data))
+	demonJson, err := TibiaCreaturesCreatureV3Impl("Demon", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("Demons", demonJson.Creature.Name)
@@ -54,13 +64,22 @@ func TestDemon(t *testing.T) {
 }
 
 func TestQuaraPredatorFeatured(t *testing.T) {
-	data, err := os.ReadFile("../testdata/creatures/creature/quara predator.html")
+	file, err := static.TestFiles.Open("testdata/creatures/creature/quara predator.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	quaraPredatorJson := TibiaCreaturesCreatureV3Impl("Quara Predator", string(data))
+	quaraPredatorJson, err := TibiaCreaturesCreatureV3Impl("Quara Predator", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Equal("Quara Predators", quaraPredatorJson.Creature.Name)
@@ -97,13 +116,18 @@ func TestQuaraPredatorFeatured(t *testing.T) {
 }
 
 func TestCentipede(t *testing.T) {
-	data, err := os.ReadFile("../testdata/creatures/creature/centipede.html")
+	file, err := static.TestFiles.Open("testdata/creatures/creature/centipede.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	centipedeJson := TibiaCreaturesCreatureV3Impl("Centipede", string(data))
+	centipedeJson, _ := TibiaCreaturesCreatureV3Impl("Centipede", string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Centipedes", centipedeJson.Creature.Name)
@@ -116,13 +140,18 @@ func TestCentipede(t *testing.T) {
 }
 
 func TestHunter(t *testing.T) {
-	data, err := os.ReadFile("../testdata/creatures/creature/hunter.html")
+	file, err := static.TestFiles.Open("testdata/creatures/creature/hunter.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	hunterJson := TibiaCreaturesCreatureV3Impl("Hunter", string(data))
+	hunterJson, _ := TibiaCreaturesCreatureV3Impl("Hunter", string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Hunters", hunterJson.Creature.Name)
@@ -135,13 +164,18 @@ func TestHunter(t *testing.T) {
 }
 
 func TestSkunk(t *testing.T) {
-	data, err := os.ReadFile("../testdata/creatures/creature/skunk.html")
+	file, err := static.TestFiles.Open("testdata/creatures/creature/skunk.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	skunkJson := TibiaCreaturesCreatureV3Impl("Skunk", string(data))
+	skunkJson, _ := TibiaCreaturesCreatureV3Impl("Skunk", string(data))
 	assert := assert.New(t)
 
 	assert.Equal("Skunks", skunkJson.Creature.Name)

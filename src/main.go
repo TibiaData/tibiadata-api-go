@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"sync/atomic"
+
+	"github.com/TibiaData/tibiadata-api-go/src/validation"
 )
 
 var (
@@ -43,6 +45,17 @@ var (
 // @host      localhost:8080
 // @BasePath  /
 
+func init() {
+	// Generating TibiaDataUserAgent with TibiaDataUserAgentGenerator function
+	TibiaDataUserAgent = TibiaDataUserAgentGenerator(TibiaDataAPIversion)
+
+	// Initiate the validator
+	err := validation.Initiate(TibiaDataUserAgent)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 	// setup of readyness endpoint code
 	isReady = &atomic.Value{}
@@ -51,48 +64,45 @@ func main() {
 	// logging start of TibiaData
 	log.Printf("[info] TibiaData API starting..")
 
-	// running the TibiaDataInitializer function
+	// Running the TibiaDataInitializer function
 	TibiaDataInitializer()
 
-	// logging build information
+	// Logging build information
 	log.Printf("[info] TibiaData API release: %s", TibiaDataBuildRelease)
 	log.Printf("[info] TibiaData API build: %s", TibiaDataBuildBuilder)
 	log.Printf("[info] TibiaData API commit: %s", TibiaDataBuildCommit)
 	log.Printf("[info] TibiaData API edition: %s", TibiaDataBuildEdition)
 
-	// setting tibiadata-application to log much less if DEBUG_MODE is false (default is false)
+	// Setting tibiadata-application to log much less if DEBUG_MODE is false (default is false)
 	if !getEnvAsBool("DEBUG_MODE", false) {
 		log.Printf("[info] TibiaData API debug-mode: disabled")
 	} else {
-		// setting debug to true for more logging
+		// Setting debug to true for more logging
 		TibiaDataDebug = true
 		log.Printf("[info] TibiaData API debug-mode: enabled")
 
-		// logging user-agent string
+		// Logging user-agent string
 		log.Printf("[debug] TIbiaData API User-Agent: %s", TibiaDataUserAgent)
 	}
 
-	// starting webserver.go stuff
+	// Starting the webserver
 	runWebServer()
 }
 
-// TibiaDataInitializer func - init things at beginning
+// TibiaDataInitializer set the background for the webserver
 func TibiaDataInitializer() {
-	// setting TibiaDataBuildEdition
+	// Setting TibiaDataBuildEdition
 	if isEnvExist("TIBIADATA_EDITION") {
 		TibiaDataBuildEdition = getEnv("TIBIADATA_EDITION", "open-source")
 	}
 
-	// adding information of host
+	// Adding information of host
 	TibiaDataHost = getEnv("TIBIADATA_HOST", "")
 	if TibiaDataHost != "" {
 		TibiaDataHost = "+https://" + TibiaDataHost
 	}
 
-	// generating TibiaDataUserAgent with TibiaDataUserAgentGenerator function
-	TibiaDataUserAgent = TibiaDataUserAgentGenerator(TibiaDataAPIversion)
-
-	// setting TibiaDataProxyDomain
+	// Setting TibiaDataProxyDomain
 	if isEnvExist("TIBIADATA_PROXY") {
 
 		TibiaDataProxyProtocol := "https"
@@ -105,10 +115,7 @@ func TibiaDataInitializer() {
 
 	log.Printf("[info] TibiaData API proxy: %s", TibiaDataProxyDomain)
 
-	// initializing houses mappings
-	TibiaDataHousesMappingInitiator()
-
-	// run some functions that are empty but required for documentation to be done
+	// Run some functions that are empty but required for documentation to be done
 	_ = tibiaNewslistArchiveV3()
 	_ = tibiaNewslistArchiveDaysV3()
 	_ = tibiaNewslistLatestV3()

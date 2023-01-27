@@ -1,20 +1,30 @@
 package main
 
 import (
-	"os"
+	"io"
 	"testing"
 
+	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFindPerson(t *testing.T) {
-	data, err := os.ReadFile("../testdata/spells/spell/Find Person.html")
+	file, err := static.TestFiles.Open("testdata/spells/spell/Find Person.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	findPersonJson := TibiaSpellsSpellV3Impl("Find Person", string(data))
+	findPersonJson, err := TibiaSpellsSpellV3Impl("Find Person", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Empty(findPersonJson.Spells.Spell.Description)
@@ -46,13 +56,22 @@ func TestFindPerson(t *testing.T) {
 }
 
 func TestHeavyMagicMissileRune(t *testing.T) {
-	data, err := os.ReadFile("../testdata/spells/spell/Heavy Magic Missile Rune.html")
+	file, err := static.TestFiles.Open("testdata/spells/spell/Heavy Magic Missile Rune.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	hmmJson := TibiaSpellsSpellV3Impl("Heavy Magic Missile Rune", string(data))
+	hmmJson, err := TibiaSpellsSpellV3Impl("Heavy Magic Missile Rune", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
 
 	assert.Empty(hmmJson.Spells.Spell.Description)
@@ -95,13 +114,18 @@ func TestHeavyMagicMissileRune(t *testing.T) {
 }
 
 func TestAnnihilation(t *testing.T) {
-	data, err := os.ReadFile("../testdata/spells/spell/Annihilation.html")
+	file, err := static.TestFiles.Open("testdata/spells/spell/Annihilation.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	annihilationJson := TibiaSpellsSpellV3Impl("Annihilation", string(data))
+	annihilationJson, _ := TibiaSpellsSpellV3Impl("Annihilation", string(data))
 	assert := assert.New(t)
 
 	assert.Empty(annihilationJson.Spells.Spell.Description)
@@ -128,13 +152,18 @@ func TestAnnihilation(t *testing.T) {
 }
 
 func TestBruiseBane(t *testing.T) {
-	data, err := os.ReadFile("../testdata/spells/spell/Bruise Bane.html")
+	file, err := static.TestFiles.Open("testdata/spells/spell/Bruise Bane.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	bruisebaneJson := TibiaSpellsSpellV3Impl("Bruise Bane", string(data))
+	bruisebaneJson, _ := TibiaSpellsSpellV3Impl("Bruise Bane", string(data))
 	assert := assert.New(t)
 
 	assert.Empty(bruisebaneJson.Spells.Spell.Description)
@@ -161,13 +190,18 @@ func TestBruiseBane(t *testing.T) {
 }
 
 func TestCurePoisonRune(t *testing.T) {
-	data, err := os.ReadFile("../testdata/spells/spell/Cure Poison Rune.html")
+	file, err := static.TestFiles.Open("testdata/spells/spell/Cure Poison Rune.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	curepoisonruneJson := TibiaSpellsSpellV3Impl("Cure Poison Rune", string(data))
+	curepoisonruneJson, _ := TibiaSpellsSpellV3Impl("Cure Poison Rune", string(data))
 	assert := assert.New(t)
 
 	assert.Empty(curepoisonruneJson.Spells.Spell.Description)
@@ -190,13 +224,18 @@ func TestCurePoisonRune(t *testing.T) {
 }
 
 func TestConvinceCreatureRune(t *testing.T) {
-	data, err := os.ReadFile("../testdata/spells/spell/Convince Creature Rune.html")
+	file, err := static.TestFiles.Open("testdata/spells/spell/Convince Creature Rune.html")
 	if err != nil {
-		t.Errorf("File reading error: %s", err)
-		return
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
 	}
 
-	convincecreatureruneJson := TibiaSpellsSpellV3Impl("Convince Creature Rune", string(data))
+	convincecreatureruneJson, _ := TibiaSpellsSpellV3Impl("Convince Creature Rune", string(data))
 	assert := assert.New(t)
 
 	assert.Empty(convincecreatureruneJson.Spells.Spell.Description)

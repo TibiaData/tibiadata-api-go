@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"net/http"
 	"regexp"
 	"strings"
 
@@ -72,13 +73,13 @@ var (
 )
 
 // TibiaSpellsSpellV3 func
-func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformationResponse {
+func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) (*SpellInformationResponse, error) {
 	//TODO: There is currently a bug with description, it always comes back empty
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaSpellsSpellV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	var (
@@ -88,15 +89,21 @@ func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformatio
 		SpellInformationSection, SpellName, SpellImageURL, SpellDescription, SpellsInfoFormula, SpellsInfoDamageType, RuneInfoDamageType                                                                                                                  string
 		SpellsInfoCooldownAlone, SpellsInfoCooldownGroup, SpellsInfoSoulPoints, SpellsInfoAmount, SpellsInfoLevel, SpellsInfoMana, SpellsInfoPrice, RuneInfoLevel, RuneInfoMagicLevel                                                                     int
 		SpellsInfoGroupAttack, SpellsInfoGroupHealing, SpellsInfoGroupSupport, SpellsInfoTypeInstant, SpellsInfoTypeRune, RuneInfoGroupAttack, RuneInfoGroupHealing, RuneInfoGroupSupport, SpellsInfoPremium, SpellsHasSpellSection, SpellsHasRuneSection bool
+
+		insideError error
 	)
 
-	ReaderHTML.Find(".BoxContent").Each(func(index int, s *goquery.Selection) {
-		NameAndImageSection, _ := s.Find("table tr").First().Html()
+	ReaderHTML.Find(".BoxContent").EachWithBreak(func(index int, s *goquery.Selection) bool {
+		NameAndImageSection, err := s.Find("table tr").First().Html()
+		if err != nil {
+			insideError = fmt.Errorf("[error] TibiaSpellsSpellV3Impl failed at NameAndImageSection, err := s.Find, err: %s", err)
+			return false
+		}
 
 		// Get the name and image
 		subma2 := SpellNameAndImageRegex.FindAllStringSubmatch(NameAndImageSection, -1)
 		if len(subma2) > 0 {
-			SpellName = subma2[0][2]
+			SpellName = TibiaDataSanitize0026String(subma2[0][2])
 			SpellImageURL = subma2[0][1]
 		}
 
@@ -113,11 +120,12 @@ func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformatio
 			}
 
 			// Running query over each div
-			s.Find("table.Table2 tbody tr").Each(func(index int, s *goquery.Selection) {
+			s.Find("table.Table2 tbody tr").EachWithBreak(func(index int, s *goquery.Selection) bool {
 				// Storing HTML into SpellDivHTML
 				SpellDivHTML, err := s.Html()
 				if err != nil {
-					log.Fatal(err)
+					insideError = fmt.Errorf("[error] TibiaSpellsSpellV3Impl failed at SpellDivHTML, err := s.Html(), err: %s", err)
+					return false
 				}
 
 				subma1 := SpellDataRowRegex.FindAllStringSubmatch(SpellDivHTML, -1)
@@ -194,7 +202,6 @@ func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformatio
 							SpellsInfoCooldownAlone = TibiaDataStringToIntegerV3(subma3[0][1])
 							SpellsInfoCooldownGroup = TibiaDataStringToIntegerV3(subma3[0][2])
 						}
-
 					}
 
 					// Soul Points
@@ -250,9 +257,17 @@ func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformatio
 						RuneInfoMagicLevel = TibiaDataStringToIntegerV3(RightColumn)
 					}
 				}
+
+				return true
 			})
 		})
+
+		return true
 	})
+
+	if insideError != nil {
+		return nil, insideError
+	}
 
 	// Getting the description
 	InnerTableContainerTMPB := ReaderHTML.Find(".BoxContent").Text()
@@ -263,7 +278,7 @@ func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformatio
 
 	//
 	// Build the data-blob
-	return SpellInformationResponse{
+	return &SpellInformationResponse{
 		SpellsContainer{
 			SpellData{
 				Name:                SpellName,
@@ -305,6 +320,9 @@ func TibiaSpellsSpellV3Impl(spell string, BoxContentHTML string) SpellInformatio
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }

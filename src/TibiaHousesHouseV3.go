@@ -1,11 +1,13 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"net/http"
 	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/TibiaData/tibiadata-api-go/src/validation"
 )
 
 // Child of Status
@@ -71,35 +73,39 @@ var (
 )
 
 // TibiaHousesHouseV3 func
-func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse {
+func TibiaHousesHouseV3Impl(houseid int, BoxContentHTML string) (*HouseResponse, error) {
 	// Creating empty vars
 	var HouseData House
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaHousesHouseV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Running query over each div
 	HouseHTML, err := ReaderHTML.Find(".BoxContent table tr").First().Html()
-
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaHousesHouseV3Impl failed at ReaderHTML.Find, err: %s", err)
 	}
 
 	// Regex to get data for house
 	subma1 := houseDataRegex.FindAllStringSubmatch(HouseHTML, -1)
 
 	if len(subma1) > 0 {
-		HouseData.Houseid = TibiaDataStringToIntegerV3(houseid)
+		HouseData.Houseid = houseid
 		HouseData.World = subma1[0][8]
 
-		HouseData.Town = TibiaDataHousesMapResolver(HouseData.Houseid)
+		rawHouse, err := validation.GetHouseRaw(HouseData.Houseid)
+		if err != nil {
+			return nil, err
+		}
+
+		HouseData.Town = rawHouse.Town
+		HouseData.Type = rawHouse.Type
 
 		HouseData.Name = TibiaDataSanitizeEscapedString(subma1[0][2])
 		HouseData.Img = subma1[0][1]
-		HouseData.Type = subma1[0][3]
 		HouseData.Beds = TibiaDataStringToIntegerV3(subma1[0][4])
 		HouseData.Size = TibiaDataStringToIntegerV3(subma1[0][5])
 		HouseData.Rent = TibiaDataConvertValuesWithK(subma1[0][6] + subma1[0][7])
@@ -109,7 +115,6 @@ func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse
 		switch {
 		case strings.Contains(HouseData.Status.Original, "has been rented by"):
 			// rented
-
 			switch {
 			case strings.Contains(HouseData.Status.Original, " pass the house to "), strings.Contains(HouseData.Status.Original, " pass the guildhall to "):
 				HouseData.Status.IsTransfering = true
@@ -143,7 +148,6 @@ func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse
 					HouseData.Status.Rental.OwnerSex = "male"
 				}
 			}
-
 		case strings.Contains(HouseData.Status.Original, "is currently being auctioned"):
 			// auctioned
 			HouseData.Status.IsAuctioned = true
@@ -162,11 +166,14 @@ func TibiaHousesHouseV3Impl(houseid string, BoxContentHTML string) HouseResponse
 	}
 
 	// Build the data-blob
-	return HouseResponse{
+	return &HouseResponse{
 		HouseData,
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }

@@ -120,9 +120,11 @@ func TibiaDataDateV3(date string) string {
 	return tmpDate.UTC().Format("2006-01-02")
 }
 
-// TibiaDataStringToIntegerV3 func
+// TibiaDataStringToIntegerV3 converts a string to an int
 func TibiaDataStringToIntegerV3(data string) int {
-	returnData, err := strconv.Atoi(strings.ReplaceAll(data, ",", ""))
+	str := strings.ReplaceAll(data, ",", "")
+
+	returnData, err := strconv.Atoi(str)
 	if err != nil {
 		log.Printf("[warning] TibiaDataStringToIntegerV3: couldn't convert string into int. error: %s", err)
 	}
@@ -177,6 +179,11 @@ func TibiaDataSanitizeStrings(data string) string {
 	data = strings.ReplaceAll(data, "\u0026", "&")
 	// returning string unescaped
 	return TibiaDataSanitizeEscapedString(data)
+}
+
+// TibiaDataSanitize0026String replaces \u0026#39; with '
+func TibiaDataSanitize0026String(data string) string {
+	return strings.ReplaceAll(data, "\u0026#39;", "'")
 }
 
 // isEnvExist func - check if environment var is set

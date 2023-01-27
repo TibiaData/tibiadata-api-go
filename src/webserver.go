@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/TibiaData/tibiadata-api-go/src/validation"
 	_ "github.com/mantyr/go-charset/data"
 
 	"github.com/PuerkitoBio/goquery"
@@ -23,24 +24,47 @@ import (
 var (
 	// TibiaData app resty vars
 	TibiaDataUserAgent, TibiaDataProxyDomain string
+
+	// ErrorNotFound will be returned if the requests ends up in a 404
+	ErrorNotFound = errors.New("page not found")
 )
 
-// Information - child of JSONData
+// DebugOutInformation wraps OutInformation with some debug info
+type DebugOutInformation struct {
+	Information Information `json:"information"`
+	Debug       Debug       `json:"debug"`
+}
+
+// OutInformation wraps Information in other for all json outputs be consistent
+type OutInformation struct {
+	Information Information `json:"information"`
+}
+
+// Information stores some API related data
 type Information struct {
 	APIVersion int    `json:"api_version"`
 	Timestamp  string `json:"timestamp"`
+	Status     Status `json:"status"`
 }
 
-// TibiaDataRequest - struct of request information
+// Status stores information about the response
+type Status struct {
+	HTTPCode int    `json:"http_code"`
+	Error    int    `json:"error,omitempty"`
+	Message  string `json:"message,omitempty"`
+}
+
+// TibiaDataRequest is the struct of request information
 type TibiaDataRequestStruct struct {
 	Method   string            `json:"method"`    // Request method (default: GET)
 	URL      string            `json:"url"`       // Request URL
 	FormData map[string]string `json:"form_data"` // Request form content (used when POST)
 }
 
-// runWebServer starts the gin server
+// RunWebServer starts the gin server
+// It blocks the code and will only finish execution on shutdown
 func runWebServer() {
-	// setting gin-application to certain mode if GIN_MODE is set to release, test or debug (default is release)
+	// Setting gin-application to certain mode if GIN_MODE is set to release, test or debug (default is release)
 	switch ginMode := getEnv("GIN_MODE", "release"); ginMode {
 	case "test":
 		gin.SetMode(gin.TestMode)
@@ -50,27 +74,42 @@ func runWebServer() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	// logging the gin.mode
+	// Logging the gin.mode
 	log.Printf("[info] TibiaData API gin-mode: %s", gin.Mode())
 
+	// Starting an Engine instance
 	router := gin.Default()
 
-	// gin middleware to enable GZIP support
+	// Gin middleware to enable GZIP support
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 
-	// set 404 not found page
+	// Set 404 not found page
 	router.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
+		TibiaDataErrorHandler(
+			c,
+			ErrorNotFound,
+			http.StatusNotFound,
+		)
 	})
 
-	// disable proxy feature of gin
+	// Disable proxy feature of gin
 	_ = router.SetTrustedProxies(nil)
 
-	// Ping-endpoint
+	// Set the ping endpoint
 	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
+		data := Information{
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+				Message:  "pong",
+			},
+		}
+
+		var output OutInformation
+		output.Information = data
+
+		c.JSON(http.StatusOK, output)
 	})
 
 	// health endpoints for kubernetes
@@ -78,7 +117,10 @@ func runWebServer() {
 	router.GET("/healthz", healthz)
 	router.GET("/readyz", readyz)
 
-	// TibiaData API version 3
+	// Set the debug endpoint
+	router.GET("/debug", debugHandler)
+
+	// TibiaData API version 3 endpoints
 	v3 := router.Group("/v3")
 	{
 		// Tibia characters
@@ -96,8 +138,8 @@ func runWebServer() {
 
 		// Tibia guilds
 		v3.GET("/guild/:name", tibiaGuildsGuildV3)
-		//v3.GET("/guild/:name/events",TibiaGuildsGuildEventsV3)
-		//v3.GET("/guild/:name/wars",TibiaGuildsGuildWarsV3)
+		// v3.GET("/guild/:name/events",TibiaGuildsGuildEventsV3)
+		// v3.GET("/guild/:name/wars",TibiaGuildsGuildWarsV3)
 		v3.GET("/guilds/:world", tibiaGuildsOverviewV3)
 
 		// Tibia highscores
@@ -133,7 +175,7 @@ func runWebServer() {
 		v3.GET("/worlds", tibiaWorldsOverviewV3)
 	}
 
-	// container version details endpoint
+	// Container version details endpoint
 	router.GET("/versions", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"release": TibiaDataBuildRelease,
@@ -143,17 +185,17 @@ func runWebServer() {
 		})
 	})
 
-	// build the http server
+	// Build the http server
 	server := &http.Server{
 		Addr:    ":8080", // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 		Handler: router,
 	}
 
-	// graceful shutdown
+	// Prepare for a graceful shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 
-	// we run a go routine that will receive the shutdown input
+	// Run a go routine that will receive the shutdown input
 	go func() {
 		<-quit
 		log.Println("[info] TibiaData API received shutdown input")
@@ -162,7 +204,12 @@ func runWebServer() {
 		}
 	}()
 
-	// run the server
+	// setting readyz endpoint to true
+	isReady.Store(true)
+
+	log.Println("[info] TibiaData API starting webserver")
+
+	// Run the server
 	if err := server.ListenAndServe(); err != nil {
 		if err == http.ErrServerClosed {
 			log.Println("[info] TibiaData API server gracefully shut down")
@@ -179,6 +226,9 @@ func runWebServer() {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  BoostableBossesOverviewResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/boostablebosses [get]
 func tibiaBoostableBossesV3(c *gin.Context) {
 	tibiadataRequest := TibiaDataRequestStruct{
@@ -189,8 +239,8 @@ func tibiaBoostableBossesV3(c *gin.Context) {
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaBoostableBossesOverviewV3Impl(BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaBoostableBossesOverviewV3Impl(BoxContentHTML)
 		},
 		"TibiaBoostableBossesV3")
 }
@@ -203,21 +253,33 @@ func tibiaBoostableBossesV3(c *gin.Context) {
 // @Produce      json
 // @Param        name path string true "The character name" extensions(x-example=Trollefar)
 // @Success      200  {object}  CharacterResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/character/{name} [get]
 func tibiaCharactersCharacterV3(c *gin.Context) {
-	// getting params from URL
+	// Getting params from URL
 	name := c.Param("name")
 
+	// Validate the name
+	err := validation.IsCharacterNameValid(name)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, http.StatusBadRequest)
+		return
+	}
+
+	// Build the request structure
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
 		URL:    "https://www.tibia.com/community/?subtopic=characters&name=" + TibiaDataQueryEscapeStringV3(name),
 	}
 
+	// Handle the request
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaCharactersCharacterV3Impl(BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaCharactersCharacterV3Impl(BoxContentHTML)
 		},
 		"TibiaCharactersCharacterV3")
 }
@@ -229,6 +291,9 @@ func tibiaCharactersCharacterV3(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  CreaturesOverviewResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/creatures [get]
 func tibiaCreaturesOverviewV3(c *gin.Context) {
 	tibiadataRequest := TibiaDataRequestStruct{
@@ -239,8 +304,8 @@ func tibiaCreaturesOverviewV3(c *gin.Context) {
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaCreaturesOverviewV3Impl(BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaCreaturesOverviewV3Impl(BoxContentHTML)
 		},
 		"TibiaCreaturesOverviewV3")
 }
@@ -253,21 +318,31 @@ func tibiaCreaturesOverviewV3(c *gin.Context) {
 // @Produce      json
 // @Param        race path string true "The race of creature" extensions(x-example=nightmare)
 // @Success      200  {object}  CreatureResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/creature/{race} [get]
 func tibiaCreaturesCreatureV3(c *gin.Context) {
 	// getting params from URL
 	race := c.Param("race")
 
+	// Validate the race
+	endpoint, err := validation.IsCreatureNameValid(race)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, 0)
+		return
+	}
+
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/library/?subtopic=creatures&race=" + TibiaDataQueryEscapeStringV3(race),
+		URL:    "https://www.tibia.com/library/?subtopic=creatures&race=" + endpoint,
 	}
 
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaCreaturesCreatureV3Impl(race, BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaCreaturesCreatureV3Impl(race, BoxContentHTML)
 		},
 		"TibiaCreaturesCreatureV3")
 }
@@ -279,6 +354,9 @@ func tibiaCreaturesCreatureV3(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  FansitesResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/fansites [get]
 func tibiaFansitesV3(c *gin.Context) {
 	tibiadataRequest := TibiaDataRequestStruct{
@@ -289,8 +367,8 @@ func tibiaFansitesV3(c *gin.Context) {
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaFansitesV3Impl(BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaFansitesV3Impl(BoxContentHTML)
 		},
 		"TibiaFansitesV3")
 }
@@ -303,10 +381,20 @@ func tibiaFansitesV3(c *gin.Context) {
 // @Produce      json
 // @Param        name path string true "The name of guild" extensions(x-example=Elysium)
 // @Success      200  {object}  GuildResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/guild/{name} [get]
 func tibiaGuildsGuildV3(c *gin.Context) {
 	// getting params from URL
 	guild := c.Param("name")
+
+	// Validate the name
+	err := validation.IsGuildNameValid(guild)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, http.StatusBadRequest)
+		return
+	}
 
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
@@ -316,8 +404,8 @@ func tibiaGuildsGuildV3(c *gin.Context) {
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaGuildsGuildV3Impl(guild, BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaGuildsGuildV3Impl(guild, BoxContentHTML)
 		},
 		"TibiaGuildsGuildV3")
 }
@@ -330,10 +418,25 @@ func tibiaGuildsGuildV3(c *gin.Context) {
 // @Produce      json
 // @Param        world path string true "The world" extensions(x-example=Antica)
 // @Success      200  {object}  GuildsOverviewResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/guilds/{world} [get]
 func tibiaGuildsOverviewV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")
+
+	// Check if world exists
+	exists, err := validation.WorldExists(world)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, 0)
+		return
+	}
+
+	if !exists {
+		TibiaDataErrorHandler(c, validation.ErrorWorldDoesNotExist, http.StatusBadRequest)
+		return
+	}
 
 	// Adding fix for First letter to be upper and rest lower
 	world = TibiaDataStringWorldFormatToTitleV3(world)
@@ -346,8 +449,8 @@ func tibiaGuildsOverviewV3(c *gin.Context) {
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaGuildsOverviewV3Impl(world, BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaGuildsOverviewV3Impl(world, BoxContentHTML)
 		},
 		"TibiaGuildsOverviewV3")
 }
@@ -363,6 +466,9 @@ func tibiaGuildsOverviewV3(c *gin.Context) {
 // @Param        vocation path string true "The vocation" default(all) Enums(all, knights, paladins, sorcerers, druids) extensions(x-example=knights)
 // @Param        page     path int    true "The current page" default(1) minimum(1) maximum(20) extensions(x-example=1)
 // @Success      200  {object}  HighscoresResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/highscores/{world}/{category}/{vocation}/{page} [get]
 func tibiaHighscoresV3(c *gin.Context) {
 	// getting params from URL
@@ -371,7 +477,12 @@ func tibiaHighscoresV3(c *gin.Context) {
 	vocation := c.Param("vocation")
 	page := c.Param("page")
 
-	// maybe return error on faulty vocation value?!
+	// Check if vocation is valid
+	err := validation.IsVocationValid(vocation)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, http.StatusBadRequest)
+		return
+	}
 
 	// Adding fix for First letter to be upper and rest lower
 	if strings.EqualFold(world, "all") {
@@ -380,7 +491,29 @@ func tibiaHighscoresV3(c *gin.Context) {
 		world = TibiaDataStringWorldFormatToTitleV3(world)
 	}
 
-	highscoreCategory := HighscoreCategoryFromString(category)
+	if world != "" {
+		// Check if world exists
+		exists, err := validation.WorldExists(world)
+		if err != nil {
+			TibiaDataErrorHandler(c, err, 0)
+			return
+		}
+
+		if !exists {
+			TibiaDataErrorHandler(c, validation.ErrorWorldDoesNotExist, http.StatusBadRequest)
+			return
+		}
+	}
+
+	if category != "" {
+		err = validation.IsHighscoreCategoryValid(category)
+		if err != nil {
+			TibiaDataErrorHandler(c, validation.ErrorHighscoreCategoryDoesNotExist, http.StatusBadRequest)
+			return
+		}
+	}
+
+	highscoreCategory := validation.HighscoreCategoryFromString(category)
 
 	// Sanitize of vocation input
 	vocationName, vocationid := TibiaDataVocationValidator(vocation)
@@ -389,8 +522,12 @@ func tibiaHighscoresV3(c *gin.Context) {
 	if page == "" {
 		page = "1"
 	}
-	if TibiaDataStringToIntegerV3(page) < 1 || TibiaDataStringToIntegerV3(page) > 23 {
-		TibiaDataAPIHandleResponse(c, http.StatusBadRequest, "TibiaHighscoresV3", gin.H{"error": "page needs to be from 1 to 20 (possible until 23)"})
+	if TibiaDataStringToIntegerV3(page) < 1 {
+		TibiaDataErrorHandler(c, validation.ErrorHighscorePageInvalid, http.StatusBadRequest)
+		return
+	}
+	if TibiaDataStringToIntegerV3(page) > 30 {
+		TibiaDataErrorHandler(c, validation.ErrorHighscorePageTooBig, http.StatusBadRequest)
 		return
 	}
 
@@ -402,8 +539,8 @@ func tibiaHighscoresV3(c *gin.Context) {
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaHighscoresV3Impl(world, highscoreCategory, vocationName, TibiaDataStringToIntegerV3(page), BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaHighscoresV3Impl(world, highscoreCategory, vocationName, TibiaDataStringToIntegerV3(page), BoxContentHTML)
 		},
 		"TibiaHighscoresV3")
 }
@@ -417,25 +554,58 @@ func tibiaHighscoresV3(c *gin.Context) {
 // @Param        world     path string true "The world to show" extensions(x-example=Antica)
 // @Param        house_id  path int    true "The ID of the house" extensions(x-example=35019)
 // @Success      200  {object}  HouseResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/house/{world}/{house_id} [get]
 func tibiaHousesHouseV3(c *gin.Context) {
 	// getting params from URL
 	world := c.Param("world")
-	houseid := c.Param("house_id")
+	houseidStr := c.Param("house_id")
+
+	houseid, err := strconv.Atoi(houseidStr)
+	if err != nil {
+		TibiaDataErrorHandler(c, validation.ErrorStringCanNotBeConvertedToInt, http.StatusBadRequest)
+		return
+	}
 
 	// Adding fix for First letter to be upper and rest lower
 	world = TibiaDataStringWorldFormatToTitleV3(world)
 
+	// Check if world exists
+	exists, err := validation.WorldExists(world)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, 0)
+		return
+	}
+
+	if !exists {
+		TibiaDataErrorHandler(c, validation.ErrorWorldDoesNotExist, http.StatusBadRequest)
+		return
+	}
+
+	// check if house exists
+	exists, err = validation.HouseExistsRaw(houseid)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, 0)
+		return
+	}
+
+	if !exists {
+		TibiaDataErrorHandler(c, validation.ErrorHouseDoesNotExist, http.StatusBadRequest)
+		return
+	}
+
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/community/?subtopic=houses&page=view&world=" + TibiaDataQueryEscapeStringV3(world) + "&houseid=" + TibiaDataQueryEscapeStringV3(houseid),
+		URL:    "https://www.tibia.com/community/?subtopic=houses&page=view&world=" + TibiaDataQueryEscapeStringV3(world) + "&houseid=" + TibiaDataQueryEscapeStringV3(houseidStr),
 	}
 
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaHousesHouseV3Impl(houseid, BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaHousesHouseV3Impl(houseid, BoxContentHTML)
 		},
 		"TibiaHousesHouseV3")
 }
@@ -449,6 +619,9 @@ func tibiaHousesHouseV3(c *gin.Context) {
 // @Param        world path string true "The world to show" extensions(x-example=Antica)
 // @Param        town  path string true "The town to show" extensions(x-example=Venore)
 // @Success      200  {object}  HousesOverviewResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/houses/{world}/{town} [get]
 // TODO: This API needs to be refactored somehow to use tibiaDataRequestHandler
 func tibiaHousesOverviewV3(c *gin.Context) {
@@ -460,10 +633,38 @@ func tibiaHousesOverviewV3(c *gin.Context) {
 	world = TibiaDataStringWorldFormatToTitleV3(world)
 	town = TibiaDataStringWorldFormatToTitleV3(town)
 
-	jsonData := TibiaHousesOverviewV3Impl(c, world, town, TibiaDataHTMLDataCollectorV3)
+	// Check if world exists
+	exists, err := validation.WorldExists(world)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, 0)
+		return
+	}
+
+	if !exists {
+		TibiaDataErrorHandler(c, validation.ErrorWorldDoesNotExist, http.StatusBadRequest)
+		return
+	}
+
+	// Check if town exists
+	exists, err = validation.TownExists(town)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, 0)
+		return
+	}
+
+	if !exists {
+		TibiaDataErrorHandler(c, validation.ErrorTownDoesNotExist, http.StatusBadRequest)
+		return
+	}
+
+	jsonData, err := TibiaHousesOverviewV3Impl(c, world, town, TibiaDataHTMLDataCollectorV3)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, 0)
+		return
+	}
 
 	// return jsonData
-	TibiaDataAPIHandleResponse(c, http.StatusOK, "TibiaHousesOverviewV3", jsonData)
+	TibiaDataAPIHandleResponse(c, "TibiaHousesOverviewV3", jsonData)
 }
 
 // Killstatistics godoc
@@ -474,6 +675,9 @@ func tibiaHousesOverviewV3(c *gin.Context) {
 // @Produce      json
 // @Param        world path string true "The world to show" extensions(x-example=Antica)
 // @Success      200  {object}  KillStatisticsResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/killstatistics/{world} [get]
 func tibiaKillstatisticsV3(c *gin.Context) {
 	// getting params from URL
@@ -481,6 +685,18 @@ func tibiaKillstatisticsV3(c *gin.Context) {
 
 	// Adding fix for First letter to be upper and rest lower
 	world = TibiaDataStringWorldFormatToTitleV3(world)
+
+	// Check if world exists
+	exists, err := validation.WorldExists(world)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, 0)
+		return
+	}
+
+	if !exists {
+		TibiaDataErrorHandler(c, validation.ErrorWorldDoesNotExist, http.StatusBadRequest)
+		return
+	}
 
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
@@ -490,8 +706,8 @@ func tibiaKillstatisticsV3(c *gin.Context) {
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaKillstatisticsV3Impl(world, BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaKillstatisticsV3Impl(world, BoxContentHTML)
 		},
 		"TibiaKillstatisticsV3")
 }
@@ -503,6 +719,9 @@ func tibiaKillstatisticsV3(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  NewsListResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/news/archive [get]
 func tibiaNewslistArchiveV3() bool {
 	// Not used function.. but required for documentation purpose
@@ -517,6 +736,9 @@ func tibiaNewslistArchiveV3() bool {
 // @Produce      json
 // @Param        days path int true "The number of days to show" default(90) minimum(1) extensions(x-example=30)
 // @Success      200  {object}  NewsListResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/news/archive/{days} [get]
 func tibiaNewslistArchiveDaysV3() bool {
 	// Not used function.. but required for documentation purpose
@@ -530,6 +752,9 @@ func tibiaNewslistArchiveDaysV3() bool {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  NewsListResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/news/latest [get]
 func tibiaNewslistLatestV3() bool {
 	// Not used function.. but required for documentation purpose
@@ -543,10 +768,28 @@ func tibiaNewslistLatestV3() bool {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  NewsListResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/news/newsticker [get]
 func tibiaNewslistV3(c *gin.Context) {
 	// getting params from URL
-	days := TibiaDataStringToIntegerV3(c.Param("days"))
+	daysStr := c.Param("days")
+
+	var (
+		days int
+		err  error
+	)
+
+	if daysStr != "" {
+		// convert param to int
+		days, err = strconv.Atoi(daysStr)
+		if err != nil {
+			TibiaDataErrorHandler(c, validation.ErrorStringCanNotBeConvertedToInt, http.StatusBadRequest)
+			return
+		}
+	}
+
 	if days == 0 {
 		days = 90 // default for recent posts
 	}
@@ -591,8 +834,8 @@ func tibiaNewslistV3(c *gin.Context) {
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaNewslistV3Impl(days, BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaNewslistV3Impl(days, BoxContentHTML)
 		},
 		"TibiaNewslistV3")
 }
@@ -605,27 +848,38 @@ func tibiaNewslistV3(c *gin.Context) {
 // @Produce      json
 // @Param        news_id path int true "The ID of news entry" extensions(x-example=6512)
 // @Success      200  {object}  NewsResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/news/id/{news_id} [get]
 func tibiaNewsV3(c *gin.Context) {
 	// getting params from URL
-	NewsID := TibiaDataStringToIntegerV3(c.Param("news_id"))
+	newsIDStr := c.Param("news_id")
+
+	// convert param to int
+	newsID, err := strconv.Atoi(newsIDStr)
+	if err != nil {
+		TibiaDataErrorHandler(c, validation.ErrorStringCanNotBeConvertedToInt, http.StatusBadRequest)
+		return
+	}
 
 	// checking the NewsID provided
-	if NewsID <= 0 {
-		TibiaDataAPIHandleResponse(c, http.StatusBadRequest, "TibiaNewsV3", gin.H{"error": "no valid news_id provided"})
+	err = validation.IsNewsIDValid(newsID)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, http.StatusBadRequest)
 		return
 	}
 
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/news/?subtopic=newsarchive&id=" + strconv.Itoa(NewsID),
+		URL:    "https://www.tibia.com/news/?subtopic=newsarchive&id=" + newsIDStr,
 	}
 
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaNewsV3Impl(NewsID, tibiadataRequest.URL, BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaNewsV3Impl(newsID, tibiadataRequest.URL, BoxContentHTML)
 		},
 		"TibiaNewsV3")
 }
@@ -637,12 +891,21 @@ func tibiaNewsV3(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  SpellsOverviewResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/spells [get]
 func tibiaSpellsOverviewV3(c *gin.Context) {
 	// getting params from URL
 	vocation := c.Param("vocation")
 	if vocation == "" {
 		vocation = TibiaDataDefaultVoc
+	}
+
+	err := validation.IsVocationValid(vocation)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, 0)
+		return
 	}
 
 	// Sanitize of vocation input
@@ -653,7 +916,7 @@ func tibiaSpellsOverviewV3(c *gin.Context) {
 		// removes the last letter (s) from the string (required for spells page)
 		vocationName = strings.TrimSuffix(vocationName, "s")
 		// setting string to first upper case
-		vocationName = strings.Title(vocationName)
+		vocationName = strings.Title(strings.ToLower(vocationName))
 	}
 
 	tibiadataRequest := TibiaDataRequestStruct{
@@ -664,8 +927,8 @@ func tibiaSpellsOverviewV3(c *gin.Context) {
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaSpellsOverviewV3Impl(vocationName, BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaSpellsOverviewV3Impl(vocationName, BoxContentHTML)
 		},
 		"TibiaSpellsOverviewV3")
 }
@@ -678,21 +941,30 @@ func tibiaSpellsOverviewV3(c *gin.Context) {
 // @Produce      json
 // @Param        spell_id path string true "The name of spell" extensions(x-example=stronghaste)
 // @Success      200  {object}  SpellInformationResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/spell/{spell_id} [get]
 func tibiaSpellsSpellV3(c *gin.Context) {
 	// getting params from URL
-	spell := c.Param("spell_id")
+	spellRaw := c.Param("spell_id")
+
+	spell, err := validation.IsSpellNameOrFormulaValid(spellRaw)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, 0)
+		return
+	}
 
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/library/?subtopic=spells&spell=" + TibiaDataQueryEscapeStringV3(spell),
+		URL:    "https://www.tibia.com/library/?subtopic=spells&spell=" + spell,
 	}
 
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaSpellsSpellV3Impl(spell, BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaSpellsSpellV3Impl(spell, BoxContentHTML)
 		},
 		"TibiaSpellsSpellV3")
 }
@@ -704,6 +976,9 @@ func tibiaSpellsSpellV3(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  WorldsOverviewResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/worlds [get]
 func tibiaWorldsOverviewV3(c *gin.Context) {
 	tibiadataRequest := TibiaDataRequestStruct{
@@ -714,8 +989,8 @@ func tibiaWorldsOverviewV3(c *gin.Context) {
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaWorldsOverviewV3Impl(BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaWorldsOverviewV3Impl(BoxContentHTML)
 		},
 		"TibiaWorldsOverviewV3")
 }
@@ -728,6 +1003,9 @@ func tibiaWorldsOverviewV3(c *gin.Context) {
 // @Produce      json
 // @Param        name path string true "The name of world" extensions(x-example=Antica)
 // @Success      200  {object}  WorldResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
 // @Router       /v3/world/{name} [get]
 func tibiaWorldsWorldV3(c *gin.Context) {
 	// getting params from URL
@@ -735,6 +1013,18 @@ func tibiaWorldsWorldV3(c *gin.Context) {
 
 	// Adding fix for First letter to be upper and rest lower
 	world = TibiaDataStringWorldFormatToTitleV3(world)
+
+	// Check if world exists
+	exists, err := validation.WorldExists(world)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, 0)
+		return
+	}
+
+	if !exists {
+		TibiaDataErrorHandler(c, validation.ErrorWorldDoesNotExist, http.StatusBadRequest)
+		return
+	}
 
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
@@ -744,33 +1034,85 @@ func tibiaWorldsWorldV3(c *gin.Context) {
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaWorldsWorldV3Impl(world, BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaWorldsWorldV3Impl(world, BoxContentHTML)
 		},
 		"TibiaWorldsWorldV3")
 }
 
-func tibiaDataRequestHandler(c *gin.Context, tibiaDataRequest TibiaDataRequestStruct, requestHandler func(string) (interface{}, int), handlerName string) {
-	BoxContentHTML, err := TibiaDataHTMLDataCollectorV3(tibiaDataRequest)
-
-	// return error (e.g. for maintenance mode)
-	if err != nil {
-		TibiaDataAPIHandleResponse(c, http.StatusBadGateway, handlerName, gin.H{"error": err.Error()})
+func TibiaDataErrorHandler(c *gin.Context, err error, httpCode int) {
+	if err == nil {
+		panic(errors.New("TibiaDataErrorHandler called with nil err"))
 	}
 
-	jsonData, httpStatusCode := requestHandler(BoxContentHTML)
+	info := Information{
+		APIVersion: TibiaDataAPIversion,
+		Timestamp:  TibiaDataDatetimeV3(""),
+		Status: Status{
+			HTTPCode: httpCode,
+		},
+	}
+
+	switch t := err.(type) {
+	case validation.Error:
+		if httpCode == 0 {
+			if t.Code() == 10 || t.Code() == 11 {
+				httpCode = http.StatusInternalServerError
+				info.Status.HTTPCode = httpCode
+			} else {
+				httpCode = http.StatusBadRequest
+				info.Status.HTTPCode = httpCode
+			}
+		}
+
+		info.Status.Error = t.Code()
+		info.Status.Message = t.Error()
+	case error:
+		if httpCode == 0 {
+			httpCode = http.StatusBadGateway
+			info.Status.HTTPCode = httpCode
+		}
+
+		info.Status.Message = err.Error()
+
+		log.Printf("[TibiaDataErrorHandler] HTTPCode: %d], Message: %s", info.Status.HTTPCode, info.Status.Message)
+	}
+
+	var output OutInformation
+	output.Information = info
+
+	c.JSON(httpCode, output)
+}
+
+func tibiaDataRequestHandler(c *gin.Context, tibiaDataRequest TibiaDataRequestStruct, requestHandler func(string) (interface{}, error), handlerName string) {
+	BoxContentHTML, err := TibiaDataHTMLDataCollectorV3(tibiaDataRequest)
+	// return error (e.g. for maintenance mode)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, http.StatusBadGateway)
+		return
+	}
+
+	jsonData, err := requestHandler(BoxContentHTML)
+	if err != nil {
+		TibiaDataErrorHandler(c, err, 0)
+		return
+	}
 
 	// return jsonData
-	TibiaDataAPIHandleResponse(c, httpStatusCode, handlerName, jsonData)
+	TibiaDataAPIHandleResponse(c, handlerName, jsonData)
 }
 
 // TibiaDataAPIHandleResponse func - handling of responses..
-func TibiaDataAPIHandleResponse(c *gin.Context, httpCode int, s string, j interface{}) {
+// This should NOT be invoked if an error occured
+func TibiaDataAPIHandleResponse(c *gin.Context, s string, j interface{}) {
 	// print to log about request
 	if gin.IsDebugging() {
 		log.Println("[debug] " + s + " - (" + c.Request.RequestURI + ") returned data:")
-		js, _ := json.Marshal(j)
+		js, err := json.Marshal(j)
 		log.Printf("[debug] %s\n", js)
+		if err != nil {
+			log.Printf("[debug] the above had an error: %s\n", err)
+		}
 	}
 
 	if TibiaDataDebug {
@@ -778,10 +1120,10 @@ func TibiaDataAPIHandleResponse(c *gin.Context, httpCode int, s string, j interf
 	}
 
 	// return successful response
-	c.JSON(httpCode, j)
+	c.JSON(http.StatusOK, j)
 }
 
-// TibiaDataUserAgentGenerator func - creates User-Agent for requests
+// TibiadataUserAgentGenerator func - creates User-Agent for requests
 func TibiaDataUserAgentGenerator(version int) string {
 	// setting product name
 	useragent := "TibiaData-API/v" + strconv.Itoa(version)
@@ -853,14 +1195,14 @@ func TibiaDataHTMLDataCollectorV3(TibiaDataRequest TibiaDataRequestStruct) (stri
 	}
 
 	if err != nil {
-		log.Printf("[error] TibiaDataHTMLDataCollectorV3 (Status: %s, URL: %s) in resp1: %s", res.Status(), TibiaDataRequest.URL, err)
+		log.Printf("[error] TibiaDataHTMLDataCollectorV3 (Status: %s, URL: %s) in resp1: %s", res.Status(), res.Request.URL, err)
 
 		switch res.StatusCode() {
 		case http.StatusForbidden:
 			// throttled request
 			LogMessage = "request throttled due to rate-limitation on tibia.com"
 			log.Printf("[warning] TibiaDataHTMLDataCollectorV3: %s!", LogMessage)
-			return "", errors.New(LogMessage)
+			return "", err
 
 		case http.StatusFound:
 			// Check if page is in maintenance mode
@@ -868,14 +1210,14 @@ func TibiaDataHTMLDataCollectorV3(TibiaDataRequest TibiaDataRequestStruct) (stri
 			if location.Host == "maintenance.tibia.com" {
 				LogMessage := "maintenance mode detected on tibia.com"
 				log.Printf("[info] TibiaDataHTMLDataCollectorV3: %s!", LogMessage)
-				return "", errors.New(LogMessage)
+				return "", err
 			}
 			fallthrough
 
 		default:
 			LogMessage = "unknown error occurred on tibia.com"
 			log.Printf("[error] TibiaDataHTMLDataCollectorV3: %s!", LogMessage)
-			return "", errors.New(LogMessage)
+			return "", err
 		}
 	}
 
@@ -888,36 +1230,17 @@ func TibiaDataHTMLDataCollectorV3(TibiaDataRequest TibiaDataRequestStruct) (stri
 	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(resIo2)
 	if err != nil {
-		log.Printf("[error] TibiaDataHTMLDataCollectorV3 (URL: %s) error: %s", TibiaDataRequest.URL, err)
+		log.Printf("[error] TibiaDataHTMLDataCollectorV3 (URL: %s) error: %s", res.Request.URL, err)
 	}
 
 	// Find of this to get div with class BoxContent
 	data, err := doc.Find(".Border_2 .Border_3").Html()
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
 	// Return of extracted html to functions..
 	return data, nil
-}
-
-// TibiaDataRequestTraceLogger func - prints out trace information to log
-func TibiaDataRequestTraceLogger(res *resty.Response, err error) {
-	log.Println("TRACE RESTY",
-		"\n~~~ TRACE INFO ~~~",
-		"\nDNSLookup      :", res.Request.TraceInfo().DNSLookup,
-		"\nConnTime       :", res.Request.TraceInfo().ConnTime,
-		"\nTCPConnTime    :", res.Request.TraceInfo().TCPConnTime,
-		"\nTLSHandshake   :", res.Request.TraceInfo().TLSHandshake,
-		"\nServerTime     :", res.Request.TraceInfo().ServerTime,
-		"\nResponseTime   :", res.Request.TraceInfo().ResponseTime,
-		"\nTotalTime      :", res.Request.TraceInfo().TotalTime,
-		"\nIsConnReused   :", res.Request.TraceInfo().IsConnReused,
-		"\nIsConnWasIdle  :", res.Request.TraceInfo().IsConnWasIdle,
-		"\nConnIdleTime   :", res.Request.TraceInfo().ConnIdleTime,
-		"\nRequestAttempt :", res.Request.TraceInfo().RequestAttempt,
-		"\nRemoteAddr     :", res.Request.TraceInfo().RemoteAddr.String(),
-		"\n==============================================================================")
 }
 
 // healthz is a k8s liveness probe
@@ -931,6 +1254,5 @@ func readyz(c *gin.Context) {
 		c.JSON(http.StatusServiceUnavailable, gin.H{"error": http.StatusText(http.StatusServiceUnavailable)})
 		return
 	}
-	//c.JSON(http.StatusOK, gin.H{"status": http.StatusText(http.StatusOK)})
-	TibiaDataAPIHandleResponse(c, http.StatusOK, "readyz", gin.H{"status": http.StatusText(http.StatusOK)})
+	TibiaDataAPIHandleResponse(c, "readyz", gin.H{"status": http.StatusText(http.StatusOK)})
 }

@@ -18,7 +18,9 @@ jobs:
 
       - name: Runing tests for coverage
         run: |
-          go test -race -coverprofile=coverage.out -covermode=atomic `go list ./... | grep -v vendor/`
+          go test -race -coverprofile=coverage.out -covermode=atomic `go list ./... | grep -v vendor/` -v
+        env:
+          TIBIADATA_PROXY: ${{ secrets.TIBIADATA_PROXY }}
 
       - name: Uploading coverage to Codecov
         uses: codecov/codecov-action@v3

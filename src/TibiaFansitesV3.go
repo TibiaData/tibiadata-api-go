@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"net/http"
 	"regexp"
 	"strings"
 
@@ -61,11 +62,11 @@ var (
 	FansiteAnchorRegex      = regexp.MustCompile(`.*src="(.*)" alt=".*`)
 )
 
-func TibiaFansitesV3Impl(BoxContentHTML string) FansitesResponse {
+func TibiaFansitesV3Impl(BoxContentHTML string) (*FansitesResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaFansitesV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Creating empty PromotedFansitesData and SupportedFansitesData var
@@ -75,127 +76,21 @@ func TibiaFansitesV3Impl(BoxContentHTML string) FansitesResponse {
 	FansiteTypes := []string{"promoted", "supported"}
 	// running over the FansiteTypes array
 	for _, FansiteType := range FansiteTypes {
+		fansites, err := makeFansiteRequest(FansiteType, ReaderHTML)
+		if err != nil {
+			return nil, fmt.Errorf("[error] TibiaFansitesV3Impl failed at makeFansiteRequest, type: %s, err: %s", FansiteType, err)
+		}
 
-		// Running query over each tr in <FansiteType>fansitesinnertable
-		ReaderHTML.Find("#" + FansiteType + "fansitesinnertable tr").First().NextAll().Each(func(index int, s *goquery.Selection) {
-			// #promotedfansitesinnertable
-			// #supportedfansitesinnertable
-
-			// Storing HTML into FansiteTrHTML
-			FansiteTrHTML, err := s.Html()
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			// Removing line breaks
-			FansiteTrHTML = TibiaDataHTMLRemoveLinebreaksV3(FansiteTrHTML)
-
-			// Regex to get data for fansites
-			subma1 := FansiteInformationRegex.FindAllStringSubmatch(FansiteTrHTML, -1)
-
-			if len(subma1) > 0 {
-
-				// ContentType
-				ContentTypeData := ContentType{}
-				imgs1 := FansiteImgTagRegex.FindAllStringSubmatch(subma1[0][5], -1)
-				out := make([]string, len(imgs1))
-				for i := range out {
-					s := imgs1[i][1]
-					switch {
-					case strings.Contains(s, "Statistics"):
-						ContentTypeData.Statistics = true
-					case strings.Contains(s, "ArticlesNews"):
-						ContentTypeData.Texts = true
-					case strings.Contains(s, "Tools"):
-						ContentTypeData.Tools = true
-					case strings.Contains(s, "Wiki"):
-						ContentTypeData.Wiki = true
-					}
-				}
-
-				// SocialMedia
-				SocialMediaData := SocialMedia{}
-				imgs2 := FansiteImgTagRegex.FindAllStringSubmatch(subma1[0][6], -1)
-				out2 := make([]string, len(imgs2))
-				for i := range out2 {
-					s := imgs2[i][1]
-					switch {
-					case strings.Contains(s, "Discord"):
-						SocialMediaData.Discord = true
-					case strings.Contains(s, "Facebook"):
-						SocialMediaData.Facebook = true
-					case strings.Contains(s, "Instagram"):
-						SocialMediaData.Instagram = true
-					case strings.Contains(s, "Reddit"):
-						SocialMediaData.Reddit = true
-					case strings.Contains(s, "Twitch"):
-						SocialMediaData.Twitch = true
-					case strings.Contains(s, "Twitter"):
-						SocialMediaData.Twitter = true
-					case strings.Contains(s, "Youtube"):
-						SocialMediaData.Youtube = true
-					}
-				}
-
-				// Languages
-				found := FansiteLanguagesRegex.FindAllString(subma1[0][7], -1)
-				FansiteLanguagesData := make([]string, len(found))
-				for i := range FansiteLanguagesData {
-					FansiteLanguagesData[i] = strings.ReplaceAll(found[i], "id=\"Language_", "")
-				}
-
-				// Specials
-				subma1[0][8] = TibiaDataSanitizeEscapedString(subma1[0][8])
-				FansiteSpecialsData := strings.Split(subma1[0][8], "</li><li>")
-
-				// FansiteItem & FansiteItemURL
-				var FansiteItemData bool
-				var FansiteItemURLData string
-				subma1item := FansiteAnchorRegex.FindAllStringSubmatch(subma1[0][9], -1)
-				if len(subma1item) > 0 {
-					FansiteItemData = true
-					FansiteItemURLData = subma1item[0][1]
-				} else {
-					FansiteItemData = false
-					FansiteItemURLData = ""
-				}
-
-				switch FansiteType {
-				case "promoted":
-					PromotedFansitesData = append(PromotedFansitesData, Fansite{
-						Name:           subma1[0][3],
-						LogoURL:        subma1[0][2],
-						Homepage:       subma1[0][1],
-						Contact:        subma1[0][4],
-						ContentType:    ContentTypeData,
-						SocialMedia:    SocialMediaData,
-						Languages:      FansiteLanguagesData,
-						Specials:       FansiteSpecialsData,
-						FansiteItem:    FansiteItemData,
-						FansiteItemURL: FansiteItemURLData,
-					})
-				case "supported":
-					SupportedFansitesData = append(SupportedFansitesData, Fansite{
-						Name:           subma1[0][3],
-						LogoURL:        subma1[0][2],
-						Homepage:       subma1[0][1],
-						Contact:        subma1[0][4],
-						ContentType:    ContentTypeData,
-						SocialMedia:    SocialMediaData,
-						Languages:      FansiteLanguagesData,
-						Specials:       FansiteSpecialsData,
-						FansiteItem:    FansiteItemData,
-						FansiteItemURL: FansiteItemURLData,
-					})
-				}
-			}
-
-		})
-
+		switch FansiteType {
+		case "promoted":
+			PromotedFansitesData = fansites
+		case "supported":
+			SupportedFansitesData = fansites
+		}
 	}
 
 	// Build the data-blob
-	return FansitesResponse{
+	return &FansitesResponse{
 		Fansites{
 			PromotedFansites:  PromotedFansitesData,
 			SupportedFansites: SupportedFansitesData,
@@ -203,6 +98,117 @@ func TibiaFansitesV3Impl(BoxContentHTML string) FansitesResponse {
 		Information{
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
+}
+
+func makeFansiteRequest(FansiteType string, ReaderHTML *goquery.Document) ([]Fansite, error) {
+	var output []Fansite
+	var insideError error
+
+	// Running query over each tr in <FansiteType>fansitesinnertable
+	ReaderHTML.Find("#" + FansiteType + "fansitesinnertable tr").First().NextAll().EachWithBreak(func(index int, s *goquery.Selection) bool {
+		// #promotedfansitesinnertable
+		// #supportedfansitesinnertable
+
+		// Storing HTML into FansiteTrHTML
+		FansiteTrHTML, err := s.Html()
+		if err != nil {
+			insideError = err
+			return false
+		}
+
+		// Removing line breaks
+		FansiteTrHTML = TibiaDataHTMLRemoveLinebreaksV3(FansiteTrHTML)
+
+		// Regex to get data for fansites
+		subma1 := FansiteInformationRegex.FindAllStringSubmatch(FansiteTrHTML, -1)
+
+		if len(subma1) > 0 {
+			// ContentType
+			ContentTypeData := ContentType{}
+			imgs1 := FansiteImgTagRegex.FindAllStringSubmatch(subma1[0][5], -1)
+			out := make([]string, len(imgs1))
+			for i := range out {
+				s := imgs1[i][1]
+				switch {
+				case strings.Contains(s, "Statistics"):
+					ContentTypeData.Statistics = true
+				case strings.Contains(s, "ArticlesNews"):
+					ContentTypeData.Texts = true
+				case strings.Contains(s, "Tools"):
+					ContentTypeData.Tools = true
+				case strings.Contains(s, "Wiki"):
+					ContentTypeData.Wiki = true
+				}
+			}
+
+			// SocialMedia
+			SocialMediaData := SocialMedia{}
+			imgs2 := FansiteImgTagRegex.FindAllStringSubmatch(subma1[0][6], -1)
+			out2 := make([]string, len(imgs2))
+			for i := range out2 {
+				s := imgs2[i][1]
+				switch {
+				case strings.Contains(s, "Discord"):
+					SocialMediaData.Discord = true
+				case strings.Contains(s, "Facebook"):
+					SocialMediaData.Facebook = true
+				case strings.Contains(s, "Instagram"):
+					SocialMediaData.Instagram = true
+				case strings.Contains(s, "Reddit"):
+					SocialMediaData.Reddit = true
+				case strings.Contains(s, "Twitch"):
+					SocialMediaData.Twitch = true
+				case strings.Contains(s, "Twitter"):
+					SocialMediaData.Twitter = true
+				case strings.Contains(s, "Youtube"):
+					SocialMediaData.Youtube = true
+				}
+			}
+
+			// Languages
+			found := FansiteLanguagesRegex.FindAllString(subma1[0][7], -1)
+			FansiteLanguagesData := make([]string, len(found))
+			for i := range FansiteLanguagesData {
+				FansiteLanguagesData[i] = strings.ReplaceAll(found[i], "id=\"Language_", "")
+			}
+
+			// Specials
+			subma1[0][8] = TibiaDataSanitizeEscapedString(subma1[0][8])
+			FansiteSpecialsData := strings.Split(subma1[0][8], "</li><li>")
+
+			// FansiteItem & FansiteItemURL
+			var FansiteItemData bool
+			var FansiteItemURLData string
+			subma1item := FansiteAnchorRegex.FindAllStringSubmatch(subma1[0][9], -1)
+			if len(subma1item) > 0 {
+				FansiteItemData = true
+				FansiteItemURLData = subma1item[0][1]
+			} else {
+				FansiteItemData = false
+				FansiteItemURLData = ""
+			}
+
+			output = append(output, Fansite{
+				Name:           subma1[0][3],
+				LogoURL:        subma1[0][2],
+				Homepage:       subma1[0][1],
+				Contact:        subma1[0][4],
+				ContentType:    ContentTypeData,
+				SocialMedia:    SocialMediaData,
+				Languages:      FansiteLanguagesData,
+				Specials:       FansiteSpecialsData,
+				FansiteItem:    FansiteItemData,
+				FansiteItemURL: FansiteItemURLData,
+			})
+		}
+
+		return true
+	})
+
+	return output, insideError
 }

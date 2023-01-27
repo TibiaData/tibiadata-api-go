@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -21,7 +21,6 @@ type BoostableBossesContainer struct {
 	BoostableBosses []OverviewBoostableBoss `json:"boostable_boss_list"`
 }
 
-//
 // The base includes two levels: BoostableBosses and Information
 type BoostableBossesOverviewResponse struct {
 	BoostableBosses BoostableBossesContainer `json:"boostable_bosses"`
@@ -34,21 +33,21 @@ var (
 	BoostableBossInformationRegex = regexp.MustCompile(`<img src="(.*)" border.*div>(.*)<\/div>`)
 )
 
-func TibiaBoostableBossesOverviewV3Impl(BoxContentHTML string) BoostableBossesOverviewResponse {
+func TibiaBoostableBossesOverviewV3Impl(BoxContentHTML string) (*BoostableBossesOverviewResponse, error) {
+	// Creating empty vars
 	var (
 		BoostedBossName, BoostedBossImage string
 	)
-
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaBoostableBossesOverviewV3Impl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Getting data from div.InnerTableContainer and then first p
 	InnerTableContainerTMPB, err := ReaderHTML.Find(".InnerTableContainer p").First().Html()
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("[error] TibiaBoostableBossesOverviewV3Impl failed at ReaderHTML.Find, error: %s", err)
 	}
 
 	// Regex to get data for name for boosted boss
@@ -70,13 +69,16 @@ func TibiaBoostableBossesOverviewV3Impl(BoxContentHTML string) BoostableBossesOv
 	// Creating empty BoostableBossesData var
 	var BoostableBossesData []OverviewBoostableBoss
 
+	var insideError error
+
 	// Running query over each div
-	ReaderHTML.Find(".BoxContent div div").Each(func(index int, s *goquery.Selection) {
+	ReaderHTML.Find(".BoxContent div div").EachWithBreak(func(index int, s *goquery.Selection) bool {
 
 		// Storing HTML into BoostableBossDivHTML
 		BoostableBossDivHTML, err := s.Html()
 		if err != nil {
-			log.Fatal(err)
+			insideError = fmt.Errorf("[error] TibiaBoostableBossesOverviewV3Impl failed at BoostableBossDivHTML, err := s.Html(), err: %s", err)
+			return false
 		}
 
 		// Regex to get data for name, race and img src param for creature
@@ -97,10 +99,16 @@ func TibiaBoostableBossesOverviewV3Impl(BoxContentHTML string) BoostableBossesOv
 				Featured: FeaturedRace,
 			})
 		}
+
+		return true
 	})
 
+	if insideError != nil {
+		return nil, insideError
+	}
+
 	// Build the data-blob
-	return BoostableBossesOverviewResponse{
+	return &BoostableBossesOverviewResponse{
 		BoostableBossesContainer{
 			Boosted: OverviewBoostableBoss{
 				Name:     TibiaDataSanitizeEscapedString(BoostedBossName),
@@ -113,5 +121,5 @@ func TibiaBoostableBossesOverviewV3Impl(BoxContentHTML string) BoostableBossesOv
 			APIVersion: TibiaDataAPIversion,
 			Timestamp:  TibiaDataDatetimeV3(""),
 		},
-	}
+	}, nil
 }

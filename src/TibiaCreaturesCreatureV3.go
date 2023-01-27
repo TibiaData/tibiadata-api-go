@@ -22,6 +22,7 @@ type Creature struct {
 	ImmuneTo         []string `json:"immune"`
 	StrongAgainst    []string `json:"strong"`
 	WeaknessAgainst  []string `json:"weakness"`
+	HealedBy         []string `json:"healed"`
 	BeParalysed      bool     `json:"be_paralysed"`
 	BeSummoned       bool     `json:"be_summoned"`
 	SummonMana       int      `json:"summoned_mana"`
@@ -46,6 +47,7 @@ var (
 	CreatureImmuneRegex       = regexp.MustCompile(`.*are immune to (.*)`)
 	CreatureStrongRegex       = regexp.MustCompile(`.*are strong against (.*)`)
 	CreatureWeakRegex         = regexp.MustCompile(`.*are weak against (.*)`)
+	CreatureHealedRegex       = regexp.MustCompile(`.*are healed when (.*) damage is used.*`)
 	CreatureManaRequiredRegex = regexp.MustCompile(`.*It takes (.*) mana to (.*)`)
 	CreatureLootRegex         = regexp.MustCompile(`.*yield (.*) experience.*carry (.*)with them.`)
 )
@@ -72,7 +74,7 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) (*Creature
 	// Preparing vars
 	var (
 		CreatureName, CreatureImageURL, CreatureDescription, CreatureBehaviour                                                    string
-		CreatureLootList, CreatureImmuneTo, CreatureStrongAgainst, CreatureWeaknessAgainst                                        []string
+		CreatureLootList, CreatureImmuneTo, CreatureStrongAgainst, CreatureWeaknessAgainst, CreatureHealedBy                      []string
 		CreatureHitpoints, CreatureSummonedMana, CreatureConvincedMana, CreatureExperiencePoints                                  int
 		CreatureBeParalysed, CreatureBeSummoned, CreatureBeConvinced, CreatureSeeInvisible, CreatureIsLootable, CreatureIsBoosted bool
 	)
@@ -122,6 +124,11 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) (*Creature
 			CreatureWeaknessAgainstTmp := strings.Split(subma23[0][1], localDamageString)
 			CreatureWeaknessAgainst = strings.Split(strings.Replace(CreatureWeaknessAgainstTmp[0], " and ", ", ", 1), ", ")
 		}
+		if strings.Contains(subma1[0][4], " are healed when ") {
+			subma23 := CreatureHealedRegex.FindAllStringSubmatch(subma1[0][4], -1)
+			CreatureHealedByTmp := strings.Split(subma23[0][1], localDamageString)
+			CreatureHealedBy = strings.Split(strings.Replace(CreatureHealedByTmp[0], " and ", ", ", 1), ", ")
+		}
 		if strings.Contains(subma1[0][4], "It takes ") && strings.Contains(subma1[0][4], " mana to ") {
 			subma24 := CreatureManaRequiredRegex.FindAllStringSubmatch(subma1[0][4], -1)
 			subma2402 := subma24[0][2]
@@ -170,6 +177,7 @@ func TibiaCreaturesCreatureV3Impl(race string, BoxContentHTML string) (*Creature
 			ImmuneTo:         CreatureImmuneTo,
 			StrongAgainst:    CreatureStrongAgainst,
 			WeaknessAgainst:  CreatureWeaknessAgainst,
+			HealedBy:         CreatureHealedBy,
 			BeParalysed:      CreatureBeParalysed,
 			BeSummoned:       CreatureBeSummoned,
 			SummonMana:       CreatureSummonedMana,

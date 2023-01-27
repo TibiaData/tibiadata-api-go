@@ -14,6 +14,8 @@ import (
 
 	"github.com/TibiaData/tibiadata-api-go/src/validation"
 	_ "github.com/mantyr/go-charset/data"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gin-contrib/gzip"
@@ -915,8 +917,7 @@ func tibiaSpellsOverviewV3(c *gin.Context) {
 	} else {
 		// removes the last letter (s) from the string (required for spells page)
 		vocationName = strings.TrimSuffix(vocationName, "s")
-		// setting string to first upper case
-		vocationName = strings.Title(strings.ToLower(vocationName))
+		vocationName = cases.Title(language.English).String(vocationName)
 	}
 
 	tibiadataRequest := TibiaDataRequestStruct{

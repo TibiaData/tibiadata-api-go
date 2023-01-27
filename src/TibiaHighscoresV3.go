@@ -8,6 +8,8 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/TibiaData/tibiadata-api-go/src/validation"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 // Child of Highscores
@@ -161,7 +163,7 @@ func TibiaHighscoresV3Impl(world string, category validation.HighscoreCategory, 
 	// Build the data-blob
 	return &HighscoresResponse{
 		Highscores{
-			World:         strings.Title(strings.ToLower(world)),
+			World:         cases.Title(language.English).String(world),
 			Category:      categoryString,
 			Vocation:      vocationName,
 			HighscoreAge:  HighscoreAge,

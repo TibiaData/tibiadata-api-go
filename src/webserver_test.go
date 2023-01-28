@@ -36,16 +36,16 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 
 	assert := assert.New(t)
 
-	tibiaBoostableBossesV3(c)
+	tibiaBoostableBosses(c)
 	assert.Equal(http.StatusOK, w.Code)
 
-	tibiaCharactersCharacterV3(c)
+	tibiaCharactersCharacter(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
 	c, _ = gin.CreateTestContext(w)
 
-	tibiaCreaturesOverviewV3(c)
+	tibiaCreaturesOverview(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -58,13 +58,13 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 		},
 	}
 
-	tibiaCreaturesCreatureV3(c)
+	tibiaCreaturesCreature(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
 	c, _ = gin.CreateTestContext(w)
 
-	tibiaFansitesV3(c)
+	tibiaFansites(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -77,7 +77,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 		},
 	}
 
-	tibiaGuildsGuildV3(c)
+	tibiaGuildsGuild(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -90,7 +90,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 		},
 	}
 
-	tibiaGuildsOverviewV3(c)
+	tibiaGuildsOverview(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -111,7 +111,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 		},
 	}
 
-	tibiaHighscoresV3(c)
+	tibiaHighscores(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -128,7 +128,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 		},
 	}
 
-	tibiaHousesHouseV3(c)
+	tibiaHousesHouse(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -145,7 +145,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 		},
 	}
 
-	tibiaHousesOverviewV3(c)
+	tibiaHousesOverview(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -158,12 +158,12 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 		},
 	}
 
-	tibiaKillstatisticsV3(c)
+	tibiaKillstatistics(c)
 	assert.Equal(http.StatusOK, w.Code)
 
-	assert.False(false, tibiaNewslistArchiveV3())
-	assert.False(false, tibiaNewslistArchiveDaysV3())
-	assert.False(false, tibiaNewslistLatestV3())
+	assert.False(false, tibiaNewslistArchive())
+	assert.False(false, tibiaNewslistArchiveDays())
+	assert.False(false, tibiaNewslistLatest())
 
 	w = httptest.NewRecorder()
 	c, _ = gin.CreateTestContext(w)
@@ -175,7 +175,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 		},
 	}
 
-	tibiaNewslistV3(c)
+	tibiaNewslist(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -188,7 +188,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 		},
 	}
 
-	tibiaNewsV3(c)
+	tibiaNews(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -201,7 +201,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 		},
 	}
 
-	tibiaSpellsOverviewV3(c)
+	tibiaSpellsOverview(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -214,13 +214,13 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 		},
 	}
 
-	tibiaSpellsSpellV3(c)
+	tibiaSpellsSpell(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
 	c, _ = gin.CreateTestContext(w)
 
-	tibiaWorldsOverviewV3(c)
+	tibiaWorldsOverview(c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -233,10 +233,10 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 		},
 	}
 
-	tibiaWorldsWorldV3(c)
+	tibiaWorldsWorld(c)
 	assert.Equal(http.StatusOK, w.Code)
 
-	assert.Equal("TibiaData-API/v3 (release/unknown; build/manual; commit/-; edition/open-source; unittest.example.com)", TibiaDataUserAgentGenerator(3))
+	assert.Equal("TibiaData-API/v4 (release/unknown; build/manual; commit/-; edition/open-source; unittest.example.com)", TibiaDataUserAgentGenerator(TibiaDataAPIversion))
 
 	healthz(c)
 	assert.Equal(http.StatusOK, w.Code)

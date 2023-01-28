@@ -18,8 +18,8 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-// TibiaDataDatetimeV3 func
-func TibiaDataDatetimeV3(date string) string {
+// TibiaDataDatetime func
+func TibiaDataDatetime(date string) string {
 	//TODO: Normalization needs to happen above this layer
 	date = norm.NFKC.String(date)
 
@@ -54,15 +54,15 @@ func TibiaDataDatetimeV3(date string) string {
 	return returnDate.UTC().Format(time.RFC3339)
 }
 
-// TibiaDataHTMLRemoveLinebreaksV3 func
-func TibiaDataHTMLRemoveLinebreaksV3(data string) string {
+// TibiaDataHTMLRemoveLinebreaks func
+func TibiaDataHTMLRemoveLinebreaks(data string) string {
 	return strings.ReplaceAll(data, "\n", "")
 }
 
 var removeUrlRegex = regexp.MustCompile(`<a.*>(.*)<\/a>`)
 
-// TibiaDataRemoveURLsV3 func
-func TibiaDataRemoveURLsV3(data string) string {
+// TibiaDataRemoveURLs func
+func TibiaDataRemoveURLs(data string) string {
 	// prepare return value
 	var returnData string
 
@@ -77,13 +77,13 @@ func TibiaDataRemoveURLsV3(data string) string {
 	return returnData
 }
 
-// TibiaDataStringWorldFormatToTitleV3 func
-func TibiaDataStringWorldFormatToTitleV3(world string) string {
+// TibiaDataStringWorldFormatToTitle func
+func TibiaDataStringWorldFormatToTitle(world string) string {
 	return cases.Title(language.English).String(world)
 }
 
-// TibiaDataQueryEscapeStringV3 func - encode string to be correct formatted
-func TibiaDataQueryEscapeStringV3(data string) string {
+// TibiaDataQueryEscapeString func - encode string to be correct formatted
+func TibiaDataQueryEscapeString(data string) string {
 	// switching "+" to " "
 	data = strings.ReplaceAll(data, "+", " ")
 
@@ -94,8 +94,8 @@ func TibiaDataQueryEscapeStringV3(data string) string {
 	return url.QueryEscape(data)
 }
 
-// TibiaDataDateV3 func
-func TibiaDataDateV3(date string) string {
+// TibiaDataDate func
+func TibiaDataDate(date string) string {
 	// removing weird spacing and comma
 	date = TibiaDataSanitizeStrings(strings.ReplaceAll(date, ",", ""))
 
@@ -122,13 +122,13 @@ func TibiaDataDateV3(date string) string {
 	return tmpDate.UTC().Format("2006-01-02")
 }
 
-// TibiaDataStringToIntegerV3 converts a string to an int
-func TibiaDataStringToIntegerV3(data string) int {
+// TibiaDataStringToInteger converts a string to an int
+func TibiaDataStringToInteger(data string) int {
 	str := strings.ReplaceAll(data, ",", "")
 
 	returnData, err := strconv.Atoi(str)
 	if err != nil {
-		log.Printf("[warning] TibiaDataStringToIntegerV3: couldn't convert string into int. error: %s", err)
+		log.Printf("[warning] TibiaDataStringToInteger: couldn't convert string into int. error: %s", err)
 	}
 
 	return returnData
@@ -235,7 +235,7 @@ func getEnvAsInt(name string, defaultVal int) int {
 
 // TibiaDataConvertValuesWithK func - convert price strings that contain k, kk or more to 3x0
 func TibiaDataConvertValuesWithK(data string) int {
-	return TibiaDataStringToIntegerV3(strings.ReplaceAll(data, "k", "") + strings.Repeat("000", strings.Count(data, "k")))
+	return TibiaDataStringToInteger(strings.ReplaceAll(data, "k", "") + strings.Repeat("000", strings.Count(data, "k")))
 }
 
 // TibiaDataVocationValidator func - return valid vocation string and vocation id

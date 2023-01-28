@@ -55,8 +55,8 @@ func TibiaDataRequestTraceLogger(res *resty.Response, err error) {
 // debugHandler returns some debug information
 func debugHandler(c *gin.Context) {
 	data := Information{
-		APIVersion: TibiaDataAPIversion,
-		Timestamp:  TibiaDataDatetimeV3(""),
+		APIDetails: TibiaDataAPIDetails,
+		Timestamp:  TibiaDataDatetime(""),
 		Status: Status{
 			HTTPCode: http.StatusOK,
 			Message:  "UP",

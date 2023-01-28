@@ -20,7 +20,7 @@ func TestFakeTest(t *testing.T) {
 }
 
 func TestInitiator(t *testing.T) {
-	mapping, err := Run("TibiaData-API/v3/testing")
+	mapping, err := Run("TibiaData-API/v4/testing")
 	if err != nil {
 		t.Fatal(err)
 	}

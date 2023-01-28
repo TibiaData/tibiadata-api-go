@@ -15,11 +15,12 @@ var (
 	TibiaDataDefaultVoc string = "all"
 
 	// TibiaData app flags for running
-	TibiaDataAPIversion int = 3
+	TibiaDataAPIversion int = 4
 	TibiaDataDebug      bool
 
 	// TibiaData app settings
-	TibiaDataHost string // set through env TIBIADATA_HOST
+	TibiaDataHost       string     // set through env TIBIADATA_HOST
+	TibiaDataAPIDetails APIDetails // containing information from build
 
 	// TibiaData app details set to release/build on GitHub
 	TibiaDataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
@@ -73,6 +74,12 @@ func main() {
 	log.Printf("[info] TibiaData API commit: %s", TibiaDataBuildCommit)
 	log.Printf("[info] TibiaData API edition: %s", TibiaDataBuildEdition)
 
+	TibiaDataAPIDetails = APIDetails{
+		Version: TibiaDataAPIversion,
+		Release: TibiaDataBuildRelease,
+		Commit:  TibiaDataBuildCommit,
+	}
+
 	// Setting tibiadata-application to log much less if DEBUG_MODE is false (default is false)
 	if !getEnvAsBool("DEBUG_MODE", false) {
 		log.Printf("[info] TibiaData API debug-mode: disabled")
@@ -116,7 +123,7 @@ func TibiaDataInitializer() {
 	log.Printf("[info] TibiaData API proxy: %s", TibiaDataProxyDomain)
 
 	// Run some functions that are empty but required for documentation to be done
-	_ = tibiaNewslistArchiveV3()
-	_ = tibiaNewslistArchiveDaysV3()
-	_ = tibiaNewslistLatestV3()
+	_ = tibiaNewslistArchive()
+	_ = tibiaNewslistArchiveDays()
+	_ = tibiaNewslistLatest()
 }

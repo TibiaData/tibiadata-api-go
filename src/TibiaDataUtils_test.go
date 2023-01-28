@@ -7,15 +7,15 @@ import (
 )
 
 func TestTibiaCETDateFormat(t *testing.T) {
-	assert.Equal(t, "2021-12-24T08:52:16Z", TibiaDataDatetimeV3("Dec 24 2021, 09:52:16 CET"))
+	assert.Equal(t, "2021-12-24T08:52:16Z", TibiaDataDatetime("Dec 24 2021, 09:52:16 CET"))
 }
 
 func TestTibiaCESTDateFormat(t *testing.T) {
-	assert.Equal(t, "2021-12-24T07:52:16Z", TibiaDataDatetimeV3("Dec 24 2021, 09:52:16 CEST"))
+	assert.Equal(t, "2021-12-24T07:52:16Z", TibiaDataDatetime("Dec 24 2021, 09:52:16 CEST"))
 }
 
 func TestTibiaUTCDateFormat(t *testing.T) {
-	assert.Equal(t, "2021-12-24T09:52:16Z", TibiaDataDatetimeV3("Dec 24 2021, 09:52:16 UTC"))
+	assert.Equal(t, "2021-12-24T09:52:16Z", TibiaDataDatetime("Dec 24 2021, 09:52:16 UTC"))
 }
 
 func TestEnvFunctions(t *testing.T) {
@@ -75,21 +75,21 @@ func TestTibiaDataGetNewsType(t *testing.T) {
 func TestHTMLLineBreakRemover(t *testing.T) {
 	const str = "a\nb\nc\nd\ne\nf\ng\nh\n"
 
-	sanitizedStr := TibiaDataHTMLRemoveLinebreaksV3(str)
+	sanitizedStr := TibiaDataHTMLRemoveLinebreaks(str)
 	assert.Equal(t, sanitizedStr, "abcdefgh")
 }
 
 func TestURLsRemover(t *testing.T) {
 	const str = `<a href="https://www.tibia.com/community/?subtopic=characters&amp;name=Bobeek">Bobeek</a>`
 
-	sanitizedStr := TibiaDataRemoveURLsV3(str)
+	sanitizedStr := TibiaDataRemoveURLs(str)
 	assert.Equal(t, sanitizedStr, "Bobeek")
 }
 
 func TestWorldFormater(t *testing.T) {
 	const str = "hEsThDIáÛõ"
 
-	sanitizedStr := TibiaDataStringWorldFormatToTitleV3(str)
+	sanitizedStr := TibiaDataStringWorldFormatToTitle(str)
 	assert.Equal(t, sanitizedStr, "Hesthdiáûõ")
 }
 
@@ -100,9 +100,9 @@ func TestEscaper(t *testing.T) {
 		strThree = "gód"
 	)
 
-	sanitizedStrOne := TibiaDataQueryEscapeStringV3(strOne)
-	sanitizedStrTwo := TibiaDataQueryEscapeStringV3(strTwo)
-	sanitizedStrThree := TibiaDataQueryEscapeStringV3(strThree)
+	sanitizedStrOne := TibiaDataQueryEscapeString(strOne)
+	sanitizedStrTwo := TibiaDataQueryEscapeString(strTwo)
+	sanitizedStrThree := TibiaDataQueryEscapeString(strThree)
 
 	assert := assert.New(t)
 	assert.Equal(sanitizedStrOne, "god+durin")
@@ -113,14 +113,14 @@ func TestEscaper(t *testing.T) {
 func TestDateParser(t *testing.T) {
 	const str = "Mar 09 2022"
 
-	sanitizedString := TibiaDataDateV3(str)
+	sanitizedString := TibiaDataDate(str)
 	assert.Equal(t, sanitizedString, "2022-03-09")
 }
 
 func TestStringToInt(t *testing.T) {
 	const str = "1"
 
-	convertedStr := TibiaDataStringToIntegerV3(str)
+	convertedStr := TibiaDataStringToInteger(str)
 	assert.Equal(t, 1, convertedStr)
 }
 

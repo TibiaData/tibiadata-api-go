@@ -126,4 +126,27 @@ func TibiaDataInitializer() {
 	_ = tibiaNewslistArchive()
 	_ = tibiaNewslistArchiveDays()
 	_ = tibiaNewslistLatest()
+
+	// Run functions for v3 documentation to work
+	_ = tibiaBoostableBossesV3()
+	_ = tibiaCharactersCharacterV3()
+	_ = tibiaCreaturesOverviewV3()
+	_ = tibiaCreaturesCreatureV3()
+	_ = tibiaFansitesV3()
+	_ = tibiaGuildsGuildV3()
+	_ = tibiaGuildsOverviewV3()
+	_ = tibiaHighscoresV3()
+	_ = tibiaHousesHouseV3()
+	_ = tibiaHousesOverviewV3()
+	_ = tibiaKillstatisticsV3()
+	_ = tibiaNewslistArchiveV3()
+	_ = tibiaNewslistArchiveDaysV3()
+	_ = tibiaNewslistLatestV3()
+	_ = tibiaNewslistV3()
+	_ = tibiaNewsV3()
+	_ = tibiaSpellsOverviewV3()
+	_ = tibiaSpellsSpellV3()
+	_ = tibiaWorldsOverviewV3()
+	_ = tibiaWorldsWorldV3()
+
 }

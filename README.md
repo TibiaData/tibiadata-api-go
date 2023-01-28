@@ -7,12 +7,13 @@
 [![Docker size](https://img.shields.io/docker/image-size/tibiadata/tibiadata-api-go/latest)](https://hub.docker.com/r/tibiadata/tibiadata-api-go)
 [![GitHub license](https://img.shields.io/github/license/tibiadata/tibiadata-api-go)](https://github.com/tibiadata/tibiadata-api-go/blob/main/LICENSE)
 
-TibiaData API written in Golang and deployed in container (which contains v3).
+TibiaData API written in Golang and deployed in container (version v3 and above).
 
-Current status of v3 is released and information like documentation can be found on [docs.tibiadata.com](https://docs.tibiadata.com).
+Documentation of API endpoints can be found on [docs.tibiadata.com](https://docs.tibiadata.com).
 
 ### Table of Contents
 
+- [API versions](#api-versions)
 - [How to use](#how-to-use)
   - [Docker](#docker)
   - [Docker-compose](#docker-compose)
@@ -21,8 +22,21 @@ Current status of v3 is released and information like documentation can be found
   - [Deployment note](#deployment-note)
 - [API documentation](#api-documentation)
   - [Available endpoints](#available-endpoints)
+  - [Deprecated endpoints](#deprecated-endpoints)
 - [General information](#general-information)
 - [Credits](#credits)
+
+## API versions
+
+Here is a summary of the TibiaData API versions
+
+> **v4** is under development\
+> **v3** is released\
+> **v2** is deprecated _(since 30rd April 2022)_\
+> **v1** is deprecated _(since 30rd April 2018)_
+
+**Note:**\
+v3 is on a separate branch due to v4 development
 
 ## How to use
 
@@ -96,7 +110,6 @@ There is a swagger-generated documentation available for download on the [GitHub
 Those are the current existing endpoints.
 
 - GET `/ping`
-- ~GET `/health`~
 - GET `/healthz`
 - GET `/readyz`
 - GET `/v3/boostablebosses`
@@ -120,6 +133,10 @@ Those are the current existing endpoints.
 - GET `/v3/world/:name`
 - GET `/v3/worlds`
 - GET `/versions`
+
+### Deprecated Endpoints
+
+- GET `/health`
 
 ## General information
 

@@ -14,7 +14,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.18
+          go-version: stable
 
       - name: Install swag by swaggo
         run: |
@@ -43,4 +43,4 @@ jobs:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           repository: TibiaData/tibiadata-api-docs
           event-type: tibiadata-api-go-release
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "tag_name": "${{ github.event.release.tag_name }}"}'

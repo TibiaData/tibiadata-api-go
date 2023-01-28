@@ -1,16 +1,6 @@
 name: build
 
 on:
-  push:
-    branches:
-      - "main"
-      - "feature-*"
-      - "bug-*"
-    paths:
-      - "src/**"
-      - "Dockerfile"
-      - "go.mod"
-      - "go.sum"
   release:
     types: [published]
 
@@ -28,9 +18,9 @@ jobs:
           images: |
             tibiadata/tibiadata-api-go
             ghcr.io/tibiadata/tibiadata-api-go
+          flavor: |
+            latest=false
           tags: |
-            type=edge
-            type=ref,event=branch,enable=${{ (github.ref != 'refs/heads/main') }}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 

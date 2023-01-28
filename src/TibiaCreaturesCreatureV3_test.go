@@ -37,6 +37,7 @@ func TestDemon(t *testing.T) {
 	assert.Equal("holy", demonJson.Creature.WeaknessAgainst[0])
 	assert.Equal("ice", demonJson.Creature.WeaknessAgainst[1])
 
+	assert.Empty(demonJson.Creature.HealedBy)
 	assert.False(demonJson.Creature.BeParalysed)
 	assert.False(demonJson.Creature.BeSummoned)
 	assert.Equal(0, demonJson.Creature.SummonMana)
@@ -151,4 +152,20 @@ func TestSkunk(t *testing.T) {
 	assert.Equal(200, skunkJson.Creature.SummonMana)
 	assert.True(skunkJson.Creature.BeConvinced)
 	assert.Equal(200, skunkJson.Creature.ConvincedMana)
+}
+
+func TestLavaLurkers(t *testing.T) {
+	file, err := os.ReadFile("../testdata/creatures/creature/lava lurkers.html")
+	if err != nil {
+		t.Errorf("File reading error: %s", err)
+		return
+	}
+	lavalurkersJson := TibiaCreaturesCreatureV3Impl("Lava Lurkers", string(file))
+	assert := assert.New(t)
+
+	assert.Equal("Lava Lurkers", lavalurkersJson.Creature.Name)
+	assert.Equal("Lava Lurkers", lavalurkersJson.Creature.Race)
+
+	assert.Equal(1, len(lavalurkersJson.Creature.HealedBy))
+	assert.Equal("fire", lavalurkersJson.Creature.HealedBy[0])
 }

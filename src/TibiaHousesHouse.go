@@ -12,46 +12,46 @@ import (
 
 // Child of Status
 type HouseRental struct {
-	Owner            string `json:"owner"`
-	OwnerSex         string `json:"owner_sex"`
-	PaidUntil        string `json:"paid_until"`
-	MovingDate       string `json:"moving_date"`
-	TransferReceiver string `json:"transfer_receiver"`
-	TransferPrice    int    `json:"transfer_price"`
-	TransferAccept   bool   `json:"transfer_accept"`
+	Owner            string `json:"owner"`             // The current owner of the house/guildhall.
+	OwnerSex         string `json:"owner_sex"`         // The owner's sex.
+	PaidUntil        string `json:"paid_until"`        // The date the last paid rent is due.
+	MovingDate       string `json:"moving_date"`       // The date when the owner will move out.
+	TransferReceiver string `json:"transfer_receiver"` // The character who will receive the house.
+	TransferPrice    int    `json:"transfer_price"`    // The price that will be paid from the current owner to the new owner for the transfer.
+	TransferAccept   bool   `json:"transfer_accept"`   // Whether the transfer is accepted or not.
 }
 
 // Child of Status
 type HouseAuction struct {
-	CurrentBid     int    `json:"current_bid"`
-	CurrentBidder  string `json:"current_bidder"`
-	AuctionOngoing bool   `json:"auction_ongoing"`
-	AuctionEnd     string `json:"auction_end"`
+	CurrentBid     int    `json:"current_bid"`     // The currently highest bid on the house/guildhall.
+	CurrentBidder  string `json:"current_bidder"`  // The character that holds the current highest bid.
+	AuctionOngoing bool   `json:"auction_ongoing"` // Whether the auction is still ongoing or not.
+	AuctionEnd     string `json:"auction_end"`     // The date when the auction will finish.
 }
 
 // Child of House
 type HouseStatus struct {
-	IsAuctioned   bool         `json:"is_auctioned"`
-	IsRented      bool         `json:"is_rented"`
-	IsMoving      bool         `json:"is_moving"`
-	IsTransfering bool         `json:"is_transfering"`
-	Auction       HouseAuction `json:"auction"`
-	Rental        HouseRental  `json:"rental"`
-	Original      string       `json:"original"`
+	IsAuctioned   bool         `json:"is_auctioned"`   // Whether the house/guildhall is being auctioned.
+	IsRented      bool         `json:"is_rented"`      // Wether the house/guildhall is being rented.
+	IsMoving      bool         `json:"is_moving"`      // Wether the owner is moving out.
+	IsTransfering bool         `json:"is_transfering"` // Wether the house/guildhall is being transfered.
+	Auction       HouseAuction `json:"auction"`        // Details about the auction.
+	Rental        HouseRental  `json:"rental"`         // Details about the transfer.
+	Original      string       `json:"original"`       // Original plain text information.
 }
 
 // Child of JSONData
 type House struct {
-	Houseid int         `json:"houseid"`
-	World   string      `json:"world"`
-	Town    string      `json:"town,omitempty"`
-	Name    string      `json:"name"`
-	Type    string      `json:"type,omitempty"`
-	Beds    int         `json:"beds"`
-	Size    int         `json:"size"`
-	Rent    int         `json:"rent"`
-	Img     string      `json:"img"`
-	Status  HouseStatus `json:"status"`
+	Houseid int         `json:"houseid"`        // The internal ID of the house/guildhall.
+	World   string      `json:"world"`          // The name of the world the house/guildhall belongs to.
+	Town    string      `json:"town,omitempty"` // The town where the house/guildhall is located.
+	Name    string      `json:"name"`           // The name of the house/guildhall.
+	Type    string      `json:"type,omitempty"` // The type of home. (house or guildhall)
+	Beds    int         `json:"beds"`           // The number of beds it has.
+	Size    int         `json:"size"`           // The number of SQM it has.
+	Rent    int         `json:"rent"`           // The monthly cost in gold coins for the house.
+	Img     string      `json:"img"`            // The URL to the house’s minimap image.
+	Status  HouseStatus `json:"status"`         // The current status of the house/guildhall.
 }
 
 // The base includes two levels: Houses and Information

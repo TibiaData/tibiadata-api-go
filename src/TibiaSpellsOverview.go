@@ -10,24 +10,24 @@ import (
 
 // Child of Spells
 type Spell struct {
-	Name         string `json:"name"`
-	Spell        string `json:"spell_id"`
-	Formula      string `json:"formula"`
-	Level        int    `json:"level"`
-	Mana         int    `json:"mana"`
-	Price        int    `json:"price"`
-	GroupAttack  bool   `json:"group_attack"`
-	GroupHealing bool   `json:"group_healing"`
-	GroupSupport bool   `json:"group_support"`
-	TypeInstant  bool   `json:"type_instant"`
-	TypeRune     bool   `json:"type_rune"`
-	PremiumOnly  bool   `json:"premium_only"`
+	Name         string `json:"name"`          // The name of the spell.
+	Spell        string `json:"spell_id"`      // The internal identifier of the spell.
+	Formula      string `json:"formula"`       // The formula to cast the spell.
+	Level        int    `json:"level"`         // The required level for casting.
+	Mana         int    `json:"mana"`          // The required mana for using.
+	Price        int    `json:"price"`         // The price in gold coins to learn it.
+	GroupAttack  bool   `json:"group_attack"`  // Whether the group is attack.
+	GroupHealing bool   `json:"group_healing"` // Whether the group is healing.
+	GroupSupport bool   `json:"group_support"` // Whether the group is support.
+	TypeInstant  bool   `json:"type_instant"`  // Whether the type is instant.
+	TypeRune     bool   `json:"type_rune"`     // Whether the type is rune.
+	PremiumOnly  bool   `json:"premium_only"`  // Whether it requires to have premium account to learn and use it.
 }
 
 // Child of JSONData
 type Spells struct {
-	SpellsVocationFilter string  `json:"spells_filter"`
-	Spells               []Spell `json:"spell_list"`
+	SpellsVocationFilter string  `json:"spells_filter"` // The applied filters on the list
+	Spells               []Spell `json:"spell_list"`    // List of spells
 }
 
 // The base includes two levels: Spells and Information

@@ -10,16 +10,16 @@ import (
 
 // Child of Guilds
 type OverviewGuild struct {
-	Name        string `json:"name"`
-	LogoURL     string `json:"logo_url"`
-	Description string `json:"description"`
+	Name        string `json:"name"`        // The name of the guild.
+	LogoURL     string `json:"logo_url"`    // The URL to the guild’s logo.
+	Description string `json:"description"` // The description of the guild.
 }
 
 // Child of JSONData
 type OverviewGuilds struct {
-	World     string          `json:"world"`
-	Active    []OverviewGuild `json:"active"`
-	Formation []OverviewGuild `json:"formation"`
+	World     string          `json:"world"`     // The world the guilds belongs to.
+	Active    []OverviewGuild `json:"active"`    // List of active guilds.
+	Formation []OverviewGuild `json:"formation"` // List of guilds under formation.
 }
 
 // The base includes two levels: Guilds and Information

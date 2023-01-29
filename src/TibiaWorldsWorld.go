@@ -11,29 +11,29 @@ import (
 
 // Child of World
 type OnlinePlayers struct {
-	Name     string `json:"name"`
-	Level    int    `json:"level"`
-	Vocation string `json:"vocation"`
+	Name     string `json:"name"`     // The name of the character.
+	Level    int    `json:"level"`    // The character’s level.
+	Vocation string `json:"vocation"` // The character’s vocation.
 }
 
 // Child of Worlds
 type World struct {
-	Name                string          `json:"name"`
-	Status              string          `json:"status"`                // Status:
-	PlayersOnline       int             `json:"players_online"`        // Players Online:
-	RecordPlayers       int             `json:"record_players"`        // Online Record:
-	RecordDate          string          `json:"record_date"`           // Online Record:
-	CreationDate        string          `json:"creation_date"`         // Creation Date: -> convert to YYYY-MM
-	Location            string          `json:"location"`              // Location:
-	PvpType             string          `json:"pvp_type"`              // PvP Type:
-	PremiumOnly         bool            `json:"premium_only"`          // Premium Type: premium = true / else: false
-	TransferType        string          `json:"transfer_type"`         // Transfer Type: regular (if not present) / locked / blocked
-	WorldsQuestTitles   []string        `json:"world_quest_titles"`    // World Quest Titles:
-	BattleyeProtected   bool            `json:"battleye_protected"`    // BattlEye Status: true if protected / false if "Not protected by BattlEye."
-	BattleyeDate        string          `json:"battleye_date"`         // BattlEye Status: null if since release / else show date?
-	GameWorldType       string          `json:"game_world_type"`       // Game World Type: regular / experimental / tournament (if Tournament World Type exists)
-	TournamentWorldType string          `json:"tournament_world_type"` // Tournament World Type: "" (default?) / regular / restricted
-	OnlinePlayers       []OnlinePlayers `json:"online_players"`
+	Name                string          `json:"name"`                  // The name of the world.
+	Status              string          `json:"status"`                // The current status of the world.
+	PlayersOnline       int             `json:"players_online"`        // The number of currently online players.
+	RecordPlayers       int             `json:"record_players"`        // The world’s online players record.
+	RecordDate          string          `json:"record_date"`           // The date when the record was achieved.
+	CreationDate        string          `json:"creation_date"`         // The year and month it was created.
+	Location            string          `json:"location"`              // The physical location of the servers.
+	PvpType             string          `json:"pvp_type"`              // The type of PvP.
+	PremiumOnly         bool            `json:"premium_only"`          // Whether only premium account players are allowed to play on it.
+	TransferType        string          `json:"transfer_type"`         // The type of transfer restrictions it has. regular (if not present) / locked / blocked
+	WorldsQuestTitles   []string        `json:"world_quest_titles"`    // List of world quest titles the server has achieved.
+	BattleyeProtected   bool            `json:"battleye_protected"`    // The type of BattlEye protection. true if protected / false if "Not protected by BattlEye."
+	BattleyeDate        string          `json:"battleye_date"`         // The date when BattlEye was added. "" if since release / else show date?
+	GameWorldType       string          `json:"game_world_type"`       // The type of world. regular / experimental / tournament (if Tournament World Type exists)
+	TournamentWorldType string          `json:"tournament_world_type"` // The type of tournament world. "" (default?) / regular / restricted
+	OnlinePlayers       []OnlinePlayers `json:"online_players"`        // List of players being currently online.
 }
 
 // Child of JSONData

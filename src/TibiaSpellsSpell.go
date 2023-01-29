@@ -11,46 +11,46 @@ import (
 
 // Child of SpellInformation
 type SpellInformation struct {
-	Formula       string   `json:"formula"`
-	Vocation      []string `json:"vocation"`
-	GroupAttack   bool     `json:"group_attack"`
-	GroupHealing  bool     `json:"group_healing"`
-	GroupSupport  bool     `json:"group_support"`
-	TypeInstant   bool     `json:"type_instant"`
-	TypeRune      bool     `json:"type_rune"`
-	DamageType    string   `json:"damage_type"`
-	CooldownAlone int      `json:"cooldown_alone"`
-	CooldownGroup int      `json:"cooldown_group"`
-	SoulPoints    int      `json:"soul_points"`
-	Amount        int      `json:"amount"`
-	Level         int      `json:"level"`
-	Mana          int      `json:"mana"`
-	Price         int      `json:"price"`
-	City          []string `json:"city"`
-	Premium       bool     `json:"premium_only"`
+	Formula       string   `json:"formula"`        // The formula to cast the spell.
+	Vocation      []string `json:"vocation"`       // The vocations that can use this spell.
+	GroupAttack   bool     `json:"group_attack"`   // Whether the group is attack.
+	GroupHealing  bool     `json:"group_healing"`  // Whether the group is healing.
+	GroupSupport  bool     `json:"group_support"`  // Whether the group is support.
+	TypeInstant   bool     `json:"type_instant"`   // Whether the type is instant.
+	TypeRune      bool     `json:"type_rune"`      // Whether the type is rune.
+	DamageType    string   `json:"damage_type"`    // The type of damage caused by it.
+	CooldownAlone int      `json:"cooldown_alone"` // The individual cooldown of this spell in seconds.
+	CooldownGroup int      `json:"cooldown_group"` // The group cooldown of this spell in seconds.
+	SoulPoints    int      `json:"soul_points"`    // The number of soul points consumed when casting.
+	Amount        int      `json:"amount"`         // The amount of objects created when casting.
+	Level         int      `json:"level"`          // The required level for casting.
+	Mana          int      `json:"mana"`           // The required mana for using.
+	Price         int      `json:"price"`          // The price in gold coins to learn it.
+	City          []string `json:"city"`           // The cities where to learn it.
+	Premium       bool     `json:"premium_only"`   // Whether it requires a premium account to learn and use it.
 }
 
 // Child of RuneInformation
 type RuneInformation struct {
-	Vocation     []string `json:"vocation"`
-	GroupAttack  bool     `json:"group_attack"`
-	GroupHealing bool     `json:"group_healing"`
-	GroupSupport bool     `json:"group_support"`
-	DamageType   string   `json:"damage_type"`
-	Level        int      `json:"level"`
-	MagicLevel   int      `json:"magic_level"`
+	Vocation     []string `json:"vocation"`      // List of vocations that can use the rune.
+	GroupAttack  bool     `json:"group_attack"`  // Whether the group is attack.
+	GroupHealing bool     `json:"group_healing"` // Whether the group is healing.
+	GroupSupport bool     `json:"group_support"` // Whether the group is support.
+	DamageType   string   `json:"damage_type"`   // The type of damage caused by it.
+	Level        int      `json:"level"`         // The required level for using.
+	MagicLevel   int      `json:"magic_level"`   // The required magic level for using.
 }
 
 // Child of Spells
 type SpellData struct {
-	Name                string           `json:"name"`
-	Spell               string           `json:"spell_id"`
-	ImageURL            string           `json:"image_url"`
-	Description         string           `json:"description"`
-	HasSpellInformation bool             `json:"has_spell_information"`
-	SpellInformation    SpellInformation `json:"spell_information"`
-	HasRuneInformation  bool             `json:"has_rune_information"`
-	RuneInformation     RuneInformation  `json:"rune_information"`
+	Name                string           `json:"name"`                  // The name of the spell.
+	Spell               string           `json:"spell_id"`              // The internal identifier of the spell.
+	ImageURL            string           `json:"image_url"`             // The URL to this spell’s image.
+	Description         string           `json:"description"`           // A description of it´s effect and history.
+	HasSpellInformation bool             `json:"has_spell_information"` // Whether the spell has information.
+	SpellInformation    SpellInformation `json:"spell_information"`     // Information about the spell.
+	HasRuneInformation  bool             `json:"has_rune_information"`  // Whether the spell has rune information.
+	RuneInformation     RuneInformation  `json:"rune_information"`      // Information about the spell´s rune.
 }
 
 // Child of JSONData

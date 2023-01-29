@@ -11,41 +11,41 @@ import (
 
 // Child of Fansite
 type ContentType struct {
-	Statistics bool `json:"statistics"`
-	Texts      bool `json:"texts"`
-	Tools      bool `json:"tools"`
-	Wiki       bool `json:"wiki"`
+	Statistics bool `json:"statistics"` // Whether the fansite content is statistics.
+	Texts      bool `json:"texts"`      // Whether the fansite content is texts.
+	Tools      bool `json:"tools"`      // Whether the fansite content is tools.
+	Wiki       bool `json:"wiki"`       // Whether the fansite content is wiki.
 }
 
 // Child of Fansite
 type SocialMedia struct {
-	Discord   bool `json:"discord"`
-	Facebook  bool `json:"facebook"`
-	Instagram bool `json:"instagram"`
-	Reddit    bool `json:"reddit"`
-	Twitch    bool `json:"twitch"`
-	Twitter   bool `json:"twitter"`
-	Youtube   bool `json:"youtube"`
+	Discord   bool `json:"discord"`   // Whether the fansite has Discord or not.
+	Facebook  bool `json:"facebook"`  // Whether the fansite has Facebook or not.
+	Instagram bool `json:"instagram"` // Whether the fansite has Instagram or not.
+	Reddit    bool `json:"reddit"`    // Whether the fansite has Reddit or not.
+	Twitch    bool `json:"twitch"`    // Whether the fansite has Twitch or not.
+	Twitter   bool `json:"twitter"`   // Whether the fansite has Twitter or not.
+	Youtube   bool `json:"youtube"`   // Whether the fansite has Youtube or not.
 }
 
 // Child of Fansites
 type Fansite struct {
-	Name           string      `json:"name"`
-	LogoURL        string      `json:"logo_url"`
-	Homepage       string      `json:"homepage"`
-	Contact        string      `json:"contact"`
-	ContentType    ContentType `json:"content_type"`
-	SocialMedia    SocialMedia `json:"social_media"`
-	Languages      []string    `json:"languages"`
-	Specials       []string    `json:"specials"`
-	FansiteItem    bool        `json:"fansite_item"`
-	FansiteItemURL string      `json:"fansite_item_url"`
+	Name           string      `json:"name"`             // The name of the fansite.
+	LogoURL        string      `json:"logo_url"`         // The URL to the fansite’s logo.
+	Homepage       string      `json:"homepage"`         // The fansite’s homepage.
+	Contact        string      `json:"contact"`          // The fansite contact person.
+	ContentType    ContentType `json:"content_type"`     // The content type of the fansite.
+	SocialMedia    SocialMedia `json:"social_media"`     // The social media presence of the fansite.
+	Languages      []string    `json:"languages"`        // The fansite´s languages.
+	Specials       []string    `json:"specials"`         // The fansite´s specials.
+	FansiteItem    bool        `json:"fansite_item"`     // The fansite´s ingame item.
+	FansiteItemURL string      `json:"fansite_item_url"` // The URL to the fansite’s ingame item.
 }
 
 // Child of JSONData
 type Fansites struct {
-	PromotedFansites  []Fansite `json:"promoted"`
-	SupportedFansites []Fansite `json:"supported"`
+	PromotedFansites  []Fansite `json:"promoted"`  // List of promoted fansites.
+	SupportedFansites []Fansite `json:"supported"` // List of supported fansites.
 }
 
 // The base includes two levels: Fansites and Information

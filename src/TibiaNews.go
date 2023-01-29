@@ -11,14 +11,14 @@ import (
 
 // Child of JSONData
 type News struct {
-	ID          int    `json:"id"`
-	Date        string `json:"date"`
-	Title       string `json:"title,omitempty"`
-	Category    string `json:"category"`
-	Type        string `json:"type,omitempty"`
-	TibiaURL    string `json:"url"`
-	Content     string `json:"content"`
-	ContentHTML string `json:"content_html"`
+	ID          int    `json:"id"`              // The internal ID of the news.
+	Date        string `json:"date"`            // The date when the news was published.
+	Title       string `json:"title,omitempty"` // The title of the news.
+	Category    string `json:"category"`        // The category of the news.
+	Type        string `json:"type,omitempty"`  // The type of news.
+	TibiaURL    string `json:"url"`             // The URL for the news with id.
+	Content     string `json:"content"`         // The news in plain text.
+	ContentHTML string `json:"content_html"`    // The news in HTML format.
 }
 
 // The base

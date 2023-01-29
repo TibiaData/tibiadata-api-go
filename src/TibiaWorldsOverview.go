@@ -11,26 +11,26 @@ import (
 
 // Child of Worlds
 type OverviewWorld struct {
-	Name                string `json:"name"`
-	Status              string `json:"status"`                // Online:
-	PlayersOnline       int    `json:"players_online"`        // Online:
-	Location            string `json:"location"`              // Location:
-	PvpType             string `json:"pvp_type"`              // PvP Type:
-	PremiumOnly         bool   `json:"premium_only"`          // Additional Information: premium = true / else: false
-	TransferType        string `json:"transfer_type"`         // Additional Information: regular (if not present) / locked / blocked
-	BattleyeProtected   bool   `json:"battleye_protected"`    // BattlEye Status: true if protected / false if "Not protected by BattlEye."
-	BattleyeDate        string `json:"battleye_date"`         // BattlEye Status: null if since release / else show date?
-	GameWorldType       string `json:"game_world_type"`       // BattlEye Status: regular / experimental / tournament (if Tournament World Type exists)
-	TournamentWorldType string `json:"tournament_world_type"` // BattlEye Status: null (default?) / regular / restricted
+	Name                string `json:"name"`                  // The name of the world.
+	Status              string `json:"status"`                // The current status of the world.
+	PlayersOnline       int    `json:"players_online"`        // The number of currently online players.
+	Location            string `json:"location"`              // The physical location of the servers.
+	PvpType             string `json:"pvp_type"`              // The type of PvP.
+	PremiumOnly         bool   `json:"premium_only"`          // Whether only premium account players are allowed to play on it.
+	TransferType        string `json:"transfer_type"`         // The type of transfer restrictions it has. regular (if not present) / locked / blocked
+	BattleyeProtected   bool   `json:"battleye_protected"`    // The type of BattlEye protection. true if protected / false if "Not protected by BattlEye."
+	BattleyeDate        string `json:"battleye_date"`         // The date when BattlEye was added. "" if since release / else show date?
+	GameWorldType       string `json:"game_world_type"`       // The type of world. regular / experimental / tournament (if Tournament World Type exists)
+	TournamentWorldType string `json:"tournament_world_type"` // The type of tournament world. "" (default?) / regular / restricted
 }
 
 // Child of JSONData
 type OverviewWorlds struct {
-	PlayersOnline    int             `json:"players_online"` // Calculated value
-	RecordPlayers    int             `json:"record_players"` // Overall Maximum:
-	RecordDate       string          `json:"record_date"`    // Overall Maximum:
-	RegularWorlds    []OverviewWorld `json:"regular_worlds"`
-	TournamentWorlds []OverviewWorld `json:"tournament_worlds"`
+	PlayersOnline    int             `json:"players_online"`    // Total players online across all worlds.
+	RecordPlayers    int             `json:"record_players"`    // The world’s online players record.
+	RecordDate       string          `json:"record_date"`       // The date when the record was achieved.
+	RegularWorlds    []OverviewWorld `json:"regular_worlds"`    // List of regular worlds.
+	TournamentWorlds []OverviewWorld `json:"tournament_worlds"` // List of tournament worlds.
 }
 
 // The base includes two levels: Worlds and Information

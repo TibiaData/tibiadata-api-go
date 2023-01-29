@@ -2,8 +2,8 @@ package main
 
 // InformationV3 stores some API related data
 type InformationV3 struct {
-	APIversion int    `json:"api_version"`
-	Timestamp  string `json:"timestamp"`
+	APIversion int    `json:"api_version"` // The API major version currently running.
+	Timestamp  string `json:"timestamp"`   // The timestamp from when the data was processed.
 }
 
 // BoostableBosses godoc

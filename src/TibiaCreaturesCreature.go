@@ -13,26 +13,26 @@ import (
 
 // Child of JSONData
 type Creature struct {
-	Name             string   `json:"name"`
-	Race             string   `json:"race"`
-	ImageURL         string   `json:"image_url"`
-	Description      string   `json:"description"`
-	Behaviour        string   `json:"behaviour"`
-	Hitpoints        int      `json:"hitpoints"`
-	ImmuneTo         []string `json:"immune"`
-	StrongAgainst    []string `json:"strong"`
-	WeaknessAgainst  []string `json:"weakness"`
-	HealedBy         []string `json:"healed"`
-	BeParalysed      bool     `json:"be_paralysed"`
-	BeSummoned       bool     `json:"be_summoned"`
-	SummonMana       int      `json:"summoned_mana"`
-	BeConvinced      bool     `json:"be_convinced"`
-	ConvincedMana    int      `json:"convinced_mana"`
-	SeeInvisible     bool     `json:"see_invisible"`
-	ExperiencePoints int      `json:"experience_points"`
-	IsLootable       bool     `json:"is_lootable"`
-	LootList         []string `json:"loot_list"`
-	Featured         bool     `json:"featured"`
+	Name             string   `json:"name"`              // The name of the creature.
+	Race             string   `json:"race"`              // The creature’s internal name.
+	ImageURL         string   `json:"image_url"`         // The URL to this creature’s image.
+	Description      string   `json:"description"`       // A description of the creature.
+	Behaviour        string   `json:"behaviour"`         // The plain description of behaviour of the creature.
+	Hitpoints        int      `json:"hitpoints"`         // The number of hitpoints the creature has.
+	ImmuneTo         []string `json:"immune"`            // The elements it is immune to.
+	StrongAgainst    []string `json:"strong"`            // The elements it is strong against.
+	WeaknessAgainst  []string `json:"weakness"`          // The elements it is weak against.
+	HealedBy         []string `json:"healed"`            // The elements it is healed when being damaged.
+	BeParalysed      bool     `json:"be_paralysed"`      // Whether it can be paralysed or not.
+	BeSummoned       bool     `json:"be_summoned"`       // Whether it can be summoned or not.
+	SummonMana       int      `json:"summoned_mana"`     // The mana neccessary to summon it.
+	BeConvinced      bool     `json:"be_convinced"`      // Whether it can be convinced or not.
+	ConvincedMana    int      `json:"convinced_mana"`    // The mana neccessary to convince it.
+	SeeInvisible     bool     `json:"see_invisible"`     // Whether it can see even when being invisible or not.
+	ExperiencePoints int      `json:"experience_points"` // The number of experience points given for killing it.
+	IsLootable       bool     `json:"is_lootable"`       // Whether it can be looted or not.
+	LootList         []string `json:"loot_list"`         // Some of the items it drops.
+	Featured         bool     `json:"featured"`          // Whether it is featured of not.
 }
 
 // The base includes two levels: Creature and Information

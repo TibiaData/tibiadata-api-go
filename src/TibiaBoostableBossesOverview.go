@@ -11,15 +11,15 @@ import (
 
 // Child of BoostableBoss (used for list of boostable bosses and boosted boss section)
 type OverviewBoostableBoss struct {
-	Name     string `json:"name"`
-	ImageURL string `json:"image_url"`
-	Featured bool   `json:"featured"`
+	Name     string `json:"name"`      // The name of the boss.
+	ImageURL string `json:"image_url"` // The URL to this boss’s image.
+	Featured bool   `json:"featured"`  // Whether it is featured of not.
 }
 
 // Child of JSONData
 type BoostableBossesContainer struct {
-	Boosted         OverviewBoostableBoss   `json:"boosted"`
-	BoostableBosses []OverviewBoostableBoss `json:"boostable_boss_list"`
+	Boosted         OverviewBoostableBoss   `json:"boosted"`             // The current boosted boss.
+	BoostableBosses []OverviewBoostableBoss `json:"boostable_boss_list"` // The list of boostable bosses.
 }
 
 // The base includes two levels: BoostableBosses and Information

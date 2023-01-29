@@ -10,26 +10,26 @@ import (
 
 // Child of KillStatistics
 type Entry struct {
-	Race                    string `json:"race"`
-	LastDayKilledPlayers    int    `json:"last_day_players_killed"`
-	LastDayKilledByPlayers  int    `json:"last_day_killed"`
-	LastWeekKilledPlayers   int    `json:"last_week_players_killed"`
-	LastWeekKilledByPlayers int    `json:"last_week_killed"`
+	Race                    string `json:"race"`                     // The name of the creature/race.
+	LastDayKilledPlayers    int    `json:"last_day_players_killed"`  // Number of players killed by this race in the last day.
+	LastDayKilledByPlayers  int    `json:"last_day_killed"`          // Number of creatures of this race killed in the last day.
+	LastWeekKilledPlayers   int    `json:"last_week_players_killed"` // Number of players killed by this race in the last week.
+	LastWeekKilledByPlayers int    `json:"last_week_killed"`         // Number of creatures of this race killed in the last week.
 }
 
 // Child of KillStatistics
 type Total struct {
-	LastDayKilledPlayers    int `json:"last_day_players_killed"`
-	LastDayKilledByPlayers  int `json:"last_day_killed"`
-	LastWeekKilledPlayers   int `json:"last_week_players_killed"`
-	LastWeekKilledByPlayers int `json:"last_week_killed"`
+	LastDayKilledPlayers    int `json:"last_day_players_killed"`  // Total number of players killed in total in the last day.
+	LastDayKilledByPlayers  int `json:"last_day_killed"`          // Total number of creatures in total killed in the last day.
+	LastWeekKilledPlayers   int `json:"last_week_players_killed"` // Total number of players killed in total in the last week.
+	LastWeekKilledByPlayers int `json:"last_week_killed"`         // Total number of creatures in total killed in the last week.
 }
 
 // Child of JSONData
 type KillStatistics struct {
-	World   string  `json:"world"`
-	Entries []Entry `json:"entries"`
-	Total   Total   `json:"total"`
+	World   string  `json:"world"`   // The world the statistics belong to.
+	Entries []Entry `json:"entries"` // List of killstatistic.
+	Total   Total   `json:"total"`   // List of total kills.
 }
 
 // The base includes two levels: KillStatistics and Information

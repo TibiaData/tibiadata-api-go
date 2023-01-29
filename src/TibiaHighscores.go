@@ -14,30 +14,30 @@ import (
 
 // Child of Highscores
 type Highscore struct {
-	Rank     int    `json:"rank"`            // Rank column
-	Name     string `json:"name"`            // Name column
-	Vocation string `json:"vocation"`        // Vocation column
-	World    string `json:"world"`           // World column
-	Level    int    `json:"level"`           // Level column
-	Value    int    `json:"value"`           // Points/SkillLevel column
-	Title    string `json:"title,omitempty"` // Title column (when category: loyalty)
+	Rank     int    `json:"rank"`            // The character’s rank/postition.
+	Name     string `json:"name"`            // The name of the character.
+	Vocation string `json:"vocation"`        // The character’s vocation.
+	World    string `json:"world"`           // The character’s world.
+	Level    int    `json:"level"`           // The character’s level.
+	Value    int    `json:"value"`           // The character’s value for the highscores or loyalty points.
+	Title    string `json:"title,omitempty"` // The character’s loyalty title. (when category: loyalty)
 }
 
 // Child of Highscore
 type HighscorePage struct {
-	CurrentPage     int `json:"current_page"`  // Current page
-	TotalPages      int `json:"total_pages"`   // Total page count
-	TotalHighscores int `json:"total_records"` // Total highscore records
+	CurrentPage     int `json:"current_page"`  // The current page being displayed.
+	TotalPages      int `json:"total_pages"`   // The total number of pages.
+	TotalHighscores int `json:"total_records"` // The total amount of highscore records.
 }
 
 // Child of JSONData
 type Highscores struct {
-	World         string        `json:"world"`
-	Category      string        `json:"category"`
-	Vocation      string        `json:"vocation"`
-	HighscoreAge  int           `json:"highscore_age"`
-	HighscoreList []Highscore   `json:"highscore_list"`
-	HighscorePage HighscorePage `json:"highscore_page"`
+	World         string        `json:"world"`          // The world the highscores belong to.
+	Category      string        `json:"category"`       // The selected category being displayed.
+	Vocation      string        `json:"vocation"`       // The selected vocation filtered on.
+	HighscoreAge  int           `json:"highscore_age"`  // The age of the highscore page in minutes.
+	HighscoreList []Highscore   `json:"highscore_list"` // List of highscore records.
+	HighscorePage HighscorePage `json:"highscore_page"` // Information of highscore pages.
 }
 
 // The base includes two levels: Highscores and Information

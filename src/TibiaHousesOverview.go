@@ -13,28 +13,28 @@ import (
 
 // Child of House
 type HousesAuction struct {
-	AuctionBid  int    `json:"current_bid"`
-	AuctionLeft string `json:"time_left"`
-	IsFinished  bool   `json:"finished"`
+	AuctionBid  int    `json:"current_bid"` // The highest bid so far.
+	AuctionLeft string `json:"time_left"`   // The number of days or hours left until the bid ends.
+	IsFinished  bool   `json:"finished"`    // Whether the auction is finished or not.
 }
 
 // Child of HousesHouses
 type HousesHouse struct {
-	Name        string        `json:"name"`
-	HouseID     int           `json:"house_id"`
-	Size        int           `json:"size"`
-	Rent        int           `json:"rent"`
-	IsRented    bool          `json:"rented"`
-	IsAuctioned bool          `json:"auctioned"`
-	Auction     HousesAuction `json:"auction"`
+	Name        string        `json:"name"`      // The name of the house/guildhall.
+	HouseID     int           `json:"house_id"`  // The internal ID of the house/guildhall.
+	Size        int           `json:"size"`      // The size in SQM.
+	Rent        int           `json:"rent"`      // The monthly cost in gold coins for the house/guildhall.
+	IsRented    bool          `json:"rented"`    // Whether the auction is rented or not.
+	IsAuctioned bool          `json:"auctioned"` // Whether the auction is auctioned or not.
+	Auction     HousesAuction `json:"auction"`   // Details about the auction.
 }
 
 // Child of JSONData
 type HousesHouses struct {
-	World         string        `json:"world"`
-	Town          string        `json:"town"`
-	HouseList     []HousesHouse `json:"house_list"`
-	GuildhallList []HousesHouse `json:"guildhall_list"`
+	World         string        `json:"world"`          // The name of the world the house/guildhall belongs to.
+	Town          string        `json:"town"`           // The town where the house/guildhall is located.
+	HouseList     []HousesHouse `json:"house_list"`     // List of all houses.
+	GuildhallList []HousesHouse `json:"guildhall_list"` // List of all guildhalls.
 }
 
 // The base includes two levels: HousesHouses and Information

@@ -44,23 +44,23 @@ type OutInformation struct {
 
 // Information stores some API related data
 type Information struct {
-	APIDetails APIDetails `json:"api"`
-	Timestamp  string     `json:"timestamp"`
-	Status     Status     `json:"status"`
+	APIDetails APIDetails `json:"api"`       // The API details.
+	Timestamp  string     `json:"timestamp"` // The timestamp from when the data was processed.
+	Status     Status     `json:"status"`    // The response status information.
 }
 
 // API details store information about this API
 type APIDetails struct {
-	Version int    `json:"version"`
-	Release string `json:"release"`
-	Commit  string `json:"commit"`
+	Version int    `json:"version"` // The API major version currently running.
+	Release string `json:"release"` // The API release currently running.
+	Commit  string `json:"commit"`  // The API GitHub commit sha.
 }
 
 // Status stores information about the response
 type Status struct {
-	HTTPCode int    `json:"http_code"`
-	Error    int    `json:"error,omitempty"`
-	Message  string `json:"message,omitempty"`
+	HTTPCode int    `json:"http_code"`         // The HTTP response code from the API.
+	Error    int    `json:"error,omitempty"`   // The error code thrown by TibiaData API for identification of issue.
+	Message  string `json:"message,omitempty"` // The error message thrown by TibiaData API for human readability.
 }
 
 // TibiaDataRequest is the struct of request information

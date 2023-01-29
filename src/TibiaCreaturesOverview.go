@@ -11,16 +11,16 @@ import (
 
 // Child of Creatures (used for list of creatures and boosted section)
 type OverviewCreature struct {
-	Name     string `json:"name"`
-	Race     string `json:"race"`
-	ImageURL string `json:"image_url"`
-	Featured bool   `json:"featured"`
+	Name     string `json:"name"`      // The name of the creature (usually in plural).
+	Race     string `json:"race"`      // The creature´s internal name.
+	ImageURL string `json:"image_url"` // The URL to this creature’s image.
+	Featured bool   `json:"featured"`  // Whether it is featured of not.
 }
 
 // Child of JSONData
 type CreaturesContainer struct {
-	Boosted   OverviewCreature   `json:"boosted"`
-	Creatures []OverviewCreature `json:"creature_list"`
+	Boosted   OverviewCreature   `json:"boosted"`       // The current boosted creature.
+	Creatures []OverviewCreature `json:"creature_list"` // The list of creatures.
 }
 
 // The base includes two levels: Creatures and Information

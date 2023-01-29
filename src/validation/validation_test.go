@@ -204,6 +204,18 @@ func TestSpellValidator(t *testing.T) {
 		"Conjure Wand of Darkness",
 		"conjurewandofdarkness",
 		"exevo gran mort",
+		"Annihilation",
+		"annihilation",
+		"exori gran ico",
+		"Bruise Bane",
+		"bruisebane",
+		"exura infir ico",
+		"Convince Creature Rune",
+		"convincecreaturerune",
+		"adeta sio",
+		"Cure Poison Rune",
+		"curepoisonrune",
+		"adana pox",
 	}
 
 	for _, n := range names {
@@ -260,6 +272,18 @@ func TestSpellValidator(t *testing.T) {
 		"Conjure Wand of Darkness": "conjurewandofdarkness",
 		"conjurewandofdarkness":    "conjurewandofdarkness",
 		"exevo gran mort":          "conjurewandofdarkness",
+		"Annihilation":             "annihilation",
+		"annihilation":             "annihilation",
+		"exori gran ico":           "annihilation",
+		"Bruise Bane":              "bruisebane",
+		"bruisebane":               "bruisebane",
+		"exura infir ico":          "bruisebane",
+		"Convince Creature Rune":   "convincecreaturerune",
+		"convincecreaturerune":     "convincecreaturerune",
+		"adeta sio":                "convincecreaturerune",
+		"Cure Poison Rune":         "curepoisonrune",
+		"curepoisonrune":           "curepoisonrune",
+		"adana pox":                "curepoisonrune",
 	}
 
 	for name, expectedEndpoint := range endpoints {
@@ -491,6 +515,12 @@ func TestErrors(t *testing.T) {
 		},
 		ErrorTownDoesNotExist: {
 			Code: 11006,
+		},
+		ErrorHighscorePageInvalid: {
+			Code: 11007,
+		},
+		ErrorHighscorePageTooBig: {
+			Code: 11008,
 		},
 		ErrorCreatureNameEmpty: {
 			Code: 12001,

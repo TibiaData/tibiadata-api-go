@@ -11,7 +11,7 @@ import (
 // Child of Guilds
 type OverviewGuild struct {
 	Name        string `json:"name"`        // The name of the guild.
-	LogoURL     string `json:"logo_url"`    // The URL to the guild’s logo.
+	LogoURL     string `json:"logo_url"`    // The URL to the guild's logo.
 	Description string `json:"description"` // The description of the guild.
 }
 

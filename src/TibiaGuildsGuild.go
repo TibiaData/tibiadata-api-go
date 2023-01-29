@@ -26,10 +26,10 @@ type Guildhall struct {
 // Child of Guild
 type GuildMember struct {
 	Name     string `json:"name"`     // The name of the guild's member.
-	Title    string `json:"title"`    // The member’s title.
+	Title    string `json:"title"`    // The member's title.
 	Rank     string `json:"rank"`     // The rank the member does belong to.
-	Vocation string `json:"vocation"` // The member’s vocation.
-	Level    int    `json:"level"`    // The member’s level.
+	Vocation string `json:"vocation"` // The member's vocation.
+	Level    int    `json:"level"`    // The member's level.
 	Joined   string `json:"joined"`   // The day when the member joined.
 	Status   string `json:"status"`   // Whether the member is online or offline.
 }
@@ -44,13 +44,13 @@ type InvitedGuildMember struct {
 type Guild struct {
 	Name               string               `json:"name"`              // The name of the guild.
 	World              string               `json:"world"`             // The world the guild belongs to.
-	LogoURL            string               `json:"logo_url"`          // The URL to the guild’s logo.
+	LogoURL            string               `json:"logo_url"`          // The URL to the guild's logo.
 	Description        string               `json:"description"`       // The description of the guild.
 	Guildhalls         []Guildhall          `json:"guildhalls"`        // The guildhall the guild has as their home.
 	Active             bool                 `json:"active"`            // Whether the guild is active or in formation.
 	Founded            string               `json:"founded"`           // The day it was founded.
 	Applications       bool                 `json:"open_applications"` // Whether applications are open or not.
-	Homepage           string               `json:"homepage"`          // The guild’s homepage.
+	Homepage           string               `json:"homepage"`          // The guild's homepage.
 	InWar              bool                 `json:"in_war"`            // Whether it is currently in war or not.
 	DisbandedDate      string               `json:"disband_date"`      // The date when the guild will be disbanded, if the condition aren't meet.
 	DisbandedCondition string               `json:"disband_condition"` // The reason why the guild will get disbanded.

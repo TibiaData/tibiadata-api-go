@@ -14,13 +14,13 @@ import (
 
 // Child of Highscores
 type Highscore struct {
-	Rank     int    `json:"rank"`            // The character’s rank/postition.
+	Rank     int    `json:"rank"`            // The character's rank/postition.
 	Name     string `json:"name"`            // The name of the character.
-	Vocation string `json:"vocation"`        // The character’s vocation.
-	World    string `json:"world"`           // The character’s world.
-	Level    int    `json:"level"`           // The character’s level.
-	Value    int    `json:"value"`           // The character’s value for the highscores or loyalty points.
-	Title    string `json:"title,omitempty"` // The character’s loyalty title. (when category: loyalty)
+	Vocation string `json:"vocation"`        // The character's vocation.
+	World    string `json:"world"`           // The character's world.
+	Level    int    `json:"level"`           // The character's level.
+	Value    int    `json:"value"`           // The character's value for the highscores or loyalty points.
+	Title    string `json:"title,omitempty"` // The character's loyalty title. (when category: loyalty)
 }
 
 // Child of Highscore

@@ -36,7 +36,7 @@ var (
 // @termsOfService  https://tibiadata.com/terms/
 
 // @contact.name   TibiaData
-// @contact.url    https://www.tibiadata.com/contact/
+// @contact.url    https://tibiadata.com/contact/
 // @contact.email  tobias@tibiadata.com
 
 // @license.name  MIT

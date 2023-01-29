@@ -12,8 +12,8 @@ import (
 // Child of Creatures (used for list of creatures and boosted section)
 type OverviewCreature struct {
 	Name     string `json:"name"`      // The name of the creature (usually in plural).
-	Race     string `json:"race"`      // The creature´s internal name.
-	ImageURL string `json:"image_url"` // The URL to this creature’s image.
+	Race     string `json:"race"`      // The creature's internal name.
+	ImageURL string `json:"image_url"` // The URL to this creature's image.
 	Featured bool   `json:"featured"`  // Whether it is featured of not.
 }
 

@@ -50,7 +50,7 @@ type House struct {
 	Beds    int         `json:"beds"`           // The number of beds it has.
 	Size    int         `json:"size"`           // The number of SQM it has.
 	Rent    int         `json:"rent"`           // The monthly cost in gold coins for the house.
-	Img     string      `json:"img"`            // The URL to the house’s minimap image.
+	Img     string      `json:"img"`            // The URL to the house's minimap image.
 	Status  HouseStatus `json:"status"`         // The current status of the house/guildhall.
 }
 

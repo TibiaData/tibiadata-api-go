@@ -45,12 +45,12 @@ type RuneInformation struct {
 type SpellData struct {
 	Name                string           `json:"name"`                  // The name of the spell.
 	Spell               string           `json:"spell_id"`              // The internal identifier of the spell.
-	ImageURL            string           `json:"image_url"`             // The URL to this spell’s image.
-	Description         string           `json:"description"`           // A description of it´s effect and history.
+	ImageURL            string           `json:"image_url"`             // The URL to this spell's image.
+	Description         string           `json:"description"`           // A description of it's effect and history.
 	HasSpellInformation bool             `json:"has_spell_information"` // Whether the spell has information.
 	SpellInformation    SpellInformation `json:"spell_information"`     // Information about the spell.
 	HasRuneInformation  bool             `json:"has_rune_information"`  // Whether the spell has rune information.
-	RuneInformation     RuneInformation  `json:"rune_information"`      // Information about the spell´s rune.
+	RuneInformation     RuneInformation  `json:"rune_information"`      // Information about the spell's rune.
 }
 
 // The base includes two levels: Spell and Information

@@ -27,7 +27,7 @@ type OverviewWorld struct {
 // Child of JSONData
 type OverviewWorlds struct {
 	PlayersOnline    int             `json:"players_online"`    // Total players online across all worlds.
-	RecordPlayers    int             `json:"record_players"`    // The world’s online players record.
+	RecordPlayers    int             `json:"record_players"`    // The world's online players record.
 	RecordDate       string          `json:"record_date"`       // The date when the record was achieved.
 	RegularWorlds    []OverviewWorld `json:"regular_worlds"`    // List of regular worlds.
 	TournamentWorlds []OverviewWorld `json:"tournament_worlds"` // List of tournament worlds.

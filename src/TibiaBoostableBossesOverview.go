@@ -12,7 +12,7 @@ import (
 // Child of BoostableBoss (used for list of boostable bosses and boosted boss section)
 type OverviewBoostableBoss struct {
 	Name     string `json:"name"`      // The name of the boss.
-	ImageURL string `json:"image_url"` // The URL to this boss’s image.
+	ImageURL string `json:"image_url"` // The URL to this boss's image.
 	Featured bool   `json:"featured"`  // Whether it is featured of not.
 }
 

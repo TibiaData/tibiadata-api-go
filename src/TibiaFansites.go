@@ -31,15 +31,15 @@ type SocialMedia struct {
 // Child of Fansites
 type Fansite struct {
 	Name           string      `json:"name"`             // The name of the fansite.
-	LogoURL        string      `json:"logo_url"`         // The URL to the fansite’s logo.
-	Homepage       string      `json:"homepage"`         // The fansite’s homepage.
+	LogoURL        string      `json:"logo_url"`         // The URL to the fansite's logo.
+	Homepage       string      `json:"homepage"`         // The fansite's homepage.
 	Contact        string      `json:"contact"`          // The fansite contact person.
 	ContentType    ContentType `json:"content_type"`     // The content type of the fansite.
 	SocialMedia    SocialMedia `json:"social_media"`     // The social media presence of the fansite.
-	Languages      []string    `json:"languages"`        // The fansite´s languages.
-	Specials       []string    `json:"specials"`         // The fansite´s specials.
-	FansiteItem    bool        `json:"fansite_item"`     // The fansite´s ingame item.
-	FansiteItemURL string      `json:"fansite_item_url"` // The URL to the fansite’s ingame item.
+	Languages      []string    `json:"languages"`        // The fansite's languages.
+	Specials       []string    `json:"specials"`         // The fansite's specials.
+	FansiteItem    bool        `json:"fansite_item"`     // The fansite's ingame item.
+	FansiteItemURL string      `json:"fansite_item_url"` // The URL to the fansite's ingame item.
 }
 
 // Child of JSONData

@@ -14,8 +14,8 @@ import (
 // Child of JSONData
 type Creature struct {
 	Name             string   `json:"name"`              // The name of the creature.
-	Race             string   `json:"race"`              // The creature’s internal name.
-	ImageURL         string   `json:"image_url"`         // The URL to this creature’s image.
+	Race             string   `json:"race"`              // The creature's internal name.
+	ImageURL         string   `json:"image_url"`         // The URL to this creature's image.
 	Description      string   `json:"description"`       // A description of the creature.
 	Behaviour        string   `json:"behaviour"`         // The plain description of behaviour of the creature.
 	Hitpoints        int      `json:"hitpoints"`         // The number of hitpoints the creature has.

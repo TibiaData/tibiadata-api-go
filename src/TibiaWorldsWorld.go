@@ -12,8 +12,8 @@ import (
 // Child of World
 type OnlinePlayers struct {
 	Name     string `json:"name"`     // The name of the character.
-	Level    int    `json:"level"`    // The character’s level.
-	Vocation string `json:"vocation"` // The character’s vocation.
+	Level    int    `json:"level"`    // The character's level.
+	Vocation string `json:"vocation"` // The character's vocation.
 }
 
 // Child of JSONData
@@ -21,7 +21,7 @@ type World struct {
 	Name                string          `json:"name"`                  // The name of the world.
 	Status              string          `json:"status"`                // The current status of the world.
 	PlayersOnline       int             `json:"players_online"`        // The number of currently online players.
-	RecordPlayers       int             `json:"record_players"`        // The world’s online players record.
+	RecordPlayers       int             `json:"record_players"`        // The world's online players record.
 	RecordDate          string          `json:"record_date"`           // The date when the record was achieved.
 	CreationDate        string          `json:"creation_date"`         // The year and month it was created.
 	Location            string          `json:"location"`              // The physical location of the servers.

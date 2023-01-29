@@ -24,7 +24,7 @@ type Houses struct {
 // Child of CharacterInfo
 type CharacterGuild struct {
 	GuildName string `json:"name,omitempty"` // The name of the guild.
-	Rank      string `json:"rank,omitempty"` // The character’s rank in the guild.
+	Rank      string `json:"rank,omitempty"` // The character's rank in the guild.
 }
 
 // Child of Character
@@ -33,28 +33,28 @@ type CharacterInfo struct {
 	FormerNames       []string       `json:"former_names,omitempty"`  // List of former names of the character.
 	Traded            bool           `json:"traded,omitempty"`        // Whether the character was traded. (last 6 months)
 	DeletionDate      string         `json:"deletion_date,omitempty"` // The date when the character will be deleted. (if scheduled for deletion)
-	Sex               string         `json:"sex"`                     // The character’s sex.
-	Title             string         `json:"title"`                   // The character’s selected title.
+	Sex               string         `json:"sex"`                     // The character's sex.
+	Title             string         `json:"title"`                   // The character's selected title.
 	UnlockedTitles    int            `json:"unlocked_titles"`         // The number of titles the character has unlocked.
-	Vocation          string         `json:"vocation"`                // The character’s vocation.
-	Level             int            `json:"level"`                   // The character’s level.
+	Vocation          string         `json:"vocation"`                // The character's vocation.
+	Level             int            `json:"level"`                   // The character's level.
 	AchievementPoints int            `json:"achievement_points"`      // The total of achievement points the character has.
-	World             string         `json:"world"`                   // The character’s current world.
+	World             string         `json:"world"`                   // The character's current world.
 	FormerWorlds      []string       `json:"former_worlds,omitempty"` // List of former worlds the character was in. (last 6 months)
-	Residence         string         `json:"residence"`               // The character’s current residence.
-	MarriedTo         string         `json:"married_to,omitempty"`    // The name of the character’s husband/spouse.
+	Residence         string         `json:"residence"`               // The character's current residence.
+	MarriedTo         string         `json:"married_to,omitempty"`    // The name of the character's husband/spouse.
 	Houses            []Houses       `json:"houses,omitempty"`        // List of houses the character owns currently.
 	Guild             CharacterGuild `json:"guild"`                   // The guild that the character is member of.
-	LastLogin         string         `json:"last_login,omitempty"`    // The character’s last logged in time.
-	Position          string         `json:"position,omitempty"`      // The character’s special position.
+	LastLogin         string         `json:"last_login,omitempty"`    // The character's last logged in time.
+	Position          string         `json:"position,omitempty"`      // The character's special position.
 	AccountStatus     string         `json:"account_status"`          // Whether account is Free or Premium.
-	Comment           string         `json:"comment,omitempty"`       // The character’s comment.
+	Comment           string         `json:"comment,omitempty"`       // The character's comment.
 }
 
 // Child of Character
 type AccountBadges struct {
 	Name        string `json:"name"`        // The name of the badge.
-	IconURL     string `json:"icon_url"`    // The URL to the badge’s icon.
+	IconURL     string `json:"icon_url"`    // The URL to the badge's icon.
 	Description string `json:"description"` // The description of the badge.
 }
 
@@ -84,9 +84,9 @@ type Deaths struct {
 
 // Child of Character
 type AccountInformation struct {
-	Position     string `json:"position,omitempty"`      // The account´s special position.
-	Created      string `json:"created,omitempty"`       // The account´s date of creation.
-	LoyaltyTitle string `json:"loyalty_title,omitempty"` // The account´s loyalty title.
+	Position     string `json:"position,omitempty"`      // The account's special position.
+	Created      string `json:"created,omitempty"`       // The account's date of creation.
+	LoyaltyTitle string `json:"loyalty_title,omitempty"` // The account's loyalty title.
 }
 
 // Child of Character
@@ -97,17 +97,17 @@ type OtherCharacters struct {
 	Deleted  bool   `json:"deleted"`            // Whether the character is scheduled for deletion or not.
 	Main     bool   `json:"main"`               // Whether this is the main character or not.
 	Traded   bool   `json:"traded"`             // Whether the character has been traded last 6 months or not.
-	Position string `json:"position,omitempty"` // // The character´s special position.
+	Position string `json:"position,omitempty"` // // The character's special position.
 }
 
 // Child of JSONData
 type Character struct {
 	CharacterInfo      CharacterInfo      `json:"character"`                     // The character's information.
-	AccountBadges      []AccountBadges    `json:"account_badges,omitempty"`      // The account´s badges.
-	Achievements       []Achievements     `json:"achievements,omitempty"`        // The character´s achievements.
-	Deaths             []Deaths           `json:"deaths,omitempty"`              // The character´s deaths.
+	AccountBadges      []AccountBadges    `json:"account_badges,omitempty"`      // The account's badges.
+	Achievements       []Achievements     `json:"achievements,omitempty"`        // The character's achievements.
+	Deaths             []Deaths           `json:"deaths,omitempty"`              // The character's deaths.
 	AccountInformation AccountInformation `json:"account_information,omitempty"` // The account information.
-	OtherCharacters    []OtherCharacters  `json:"other_characters,omitempty"`    // The account´s other characters.
+	OtherCharacters    []OtherCharacters  `json:"other_characters,omitempty"`    // The account's other characters.
 }
 
 // The base includes two levels, Characters and Information

@@ -96,6 +96,7 @@ func TestNumber2(t *testing.T) {
 	assert.Equal("Magnus Magister", character.Guild.Rank)
 	assert.Equal("Lionheart Society", character.Guild.GuildName)
 	assert.Equal("2022-01-06T21:38:44Z", character.LastLogin)
+	assert.Empty(character.Position)
 	assert.Equal("Testa de Ferro do Lejonhjartat ;)", character.Comment)
 	assert.Equal("Premium Account", character.AccountStatus)
 
@@ -106,17 +107,18 @@ func TestNumber2(t *testing.T) {
 	assert.Equal("Lejonhjartat", onlineMainCharacter.Name)
 	assert.Equal("Venebra", onlineMainCharacter.World)
 	assert.Equal("online", onlineMainCharacter.Status)
-	assert.Equal(false, onlineMainCharacter.Deleted)
-	assert.Equal(true, onlineMainCharacter.Main)
-	assert.Equal(false, onlineMainCharacter.Traded)
+	assert.False(onlineMainCharacter.Deleted)
+	assert.True(onlineMainCharacter.Main)
+	assert.False(onlineMainCharacter.Traded)
+	assert.Empty(onlineMainCharacter.Position)
 
 	offlineCharacter := characterJson.Character.OtherCharacters[5]
 	assert.Equal("Oak Knight Disruptivo", offlineCharacter.Name)
 	assert.Equal("Libertabra", offlineCharacter.World)
 	assert.Equal("offline", offlineCharacter.Status)
-	assert.Equal(false, offlineCharacter.Deleted)
-	assert.Equal(false, offlineCharacter.Main)
-	assert.Equal(false, offlineCharacter.Traded)
+	assert.False(offlineCharacter.Deleted)
+	assert.False(offlineCharacter.Main)
+	assert.False(offlineCharacter.Traded)
 }
 
 func TestNumber3(t *testing.T) {
@@ -212,6 +214,60 @@ func TestNumber4(t *testing.T) {
 	assert.True(longDeath.Assists[4].Traded)
 }
 
+func TestNumber5(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/characters/Rejana on Fera.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Rejana on Fera", character.Name)
+	assert.Nil(character.FormerNames)
+	assert.False(character.Traded)
+	assert.Empty(character.DeletionDate)
+	assert.Equal("female", character.Sex)
+	assert.Equal("None", character.Title)
+	assert.Equal(12, character.UnlockedTitles)
+	assert.Equal("Knight", character.Vocation)
+	assert.Equal(8, character.Level)
+	assert.Equal(0, character.AchievementPoints)
+	assert.Equal("Fera", character.World)
+	assert.Nil(character.FormerWorlds)
+	assert.Equal("Isle of Solitude", character.Residence)
+	assert.Empty(character.MarriedTo)
+	assert.Equal("2021-10-25T04:37:46Z", character.LastLogin)
+	assert.Equal("CipSoft Member", character.Position)
+	assert.Equal("Premium Account", character.AccountStatus)
+
+	assert.Empty(characterJson.Character.Achievements)
+	assert.Empty(characterJson.Character.AccountInformation.LoyaltyTitle)
+
+	//validate other characters
+	assert.Equal(4, len(characterJson.Character.OtherCharacters))
+
+	positionCharacter := characterJson.Character.OtherCharacters[1]
+	assert.Equal("Rejana on Fera", positionCharacter.Name)
+	assert.Equal("Fera", positionCharacter.World)
+	assert.Equal("offline", positionCharacter.Status)
+	assert.False(positionCharacter.Deleted)
+	assert.False(positionCharacter.Main)
+	assert.False(positionCharacter.Traded)
+	assert.Equal("CipSoft Member", positionCharacter.Position)
+}
+
 func TestNumber6(t *testing.T) {
 	file, err := static.TestFiles.Open("testdata/characters/Luminals.html")
 	if err != nil {
@@ -245,7 +301,7 @@ func TestNumber6(t *testing.T) {
 	assert.Equal("The account has reached at least level 100 with all four vocations.", masterClassBadge.Description)
 }
 
-func TestNumber5(t *testing.T) {
+func TestNumber7(t *testing.T) {
 	file, err := static.TestFiles.Open("testdata/characters/Torbjörn.html")
 	if err != nil {
 		t.Fatalf("file opening error: %s", err)

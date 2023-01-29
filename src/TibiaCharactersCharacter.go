@@ -46,6 +46,7 @@ type CharacterInfo struct {
 	Houses            []Houses       `json:"houses,omitempty"`        // List of houses the character owns currently.
 	Guild             CharacterGuild `json:"guild"`                   // The guild that the character is member of.
 	LastLogin         string         `json:"last_login,omitempty"`    // The character’s last logged in time.
+	Position          string         `json:"position,omitempty"`      // The character’s special position.
 	AccountStatus     string         `json:"account_status"`          // Whether account is Free or Premium.
 	Comment           string         `json:"comment,omitempty"`       // The character’s comment.
 }
@@ -90,12 +91,13 @@ type AccountInformation struct {
 
 // Child of Character
 type OtherCharacters struct {
-	Name    string `json:"name"`    // The name of the character.
-	World   string `json:"world"`   // The name of the world.
-	Status  string `json:"status"`  // The status of the character being online or offline.
-	Deleted bool   `json:"deleted"` // Whether the character is scheduled for deletion or not.
-	Main    bool   `json:"main"`    // Whether this is the main character or not.
-	Traded  bool   `json:"traded"`  // Whether the character has been traded last 6 months or not.
+	Name     string `json:"name"`               // The name of the character.
+	World    string `json:"world"`              // The name of the world.
+	Status   string `json:"status"`             // The status of the character being online or offline.
+	Deleted  bool   `json:"deleted"`            // Whether the character is scheduled for deletion or not.
+	Main     bool   `json:"main"`               // Whether this is the main character or not.
+	Traded   bool   `json:"traded"`             // Whether the character has been traded last 6 months or not.
+	Position string `json:"position,omitempty"` // // The character´s special position.
 }
 
 // Child of JSONData
@@ -267,7 +269,12 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 					AccountInformationData.Created = TibiaDataDatetime(RowData)
 				case "Position:":
 					TmpPosition := strings.Split(RowData, "<")
-					AccountInformationData.Position = strings.TrimSpace(TmpPosition[0])
+					if SectionName == "Character Information" {
+						CharacterInfoData.Position = strings.TrimSpace(TmpPosition[0])
+					} else if SectionName == "Account Information" {
+						AccountInformationData.Position = strings.TrimSpace(TmpPosition[0])
+					}
+
 				default:
 					log.Println("LEFT OVER: `" + RowName + "` = `" + RowData + "`")
 				}
@@ -462,14 +469,21 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 						TmpDeleted = true
 					}
 
+					// Is this character having a special position
+					TmpPosition := ""
+					if strings.Contains(subma1[0][3], "CipSoft Member") {
+						TmpPosition = "CipSoft Member"
+					}
+
 					// Create the character and append it to the other characters list
 					OtherCharactersData = append(OtherCharactersData, OtherCharacters{
-						Name:    TibiaDataSanitizeStrings(TmpCharacterName),
-						World:   subma1[0][2],
-						Status:  TmpStatus,
-						Deleted: TmpDeleted,
-						Main:    TmpMain,
-						Traded:  TmpTraded,
+						Name:     TibiaDataSanitizeStrings(TmpCharacterName),
+						World:    subma1[0][2],
+						Status:   TmpStatus,
+						Deleted:  TmpDeleted,
+						Main:     TmpMain,
+						Traded:   TmpTraded,
+						Position: TmpPosition,
 					})
 				}
 

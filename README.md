@@ -112,6 +112,31 @@ Those are the current existing endpoints.
 - GET `/ping`
 - GET `/healthz`
 - GET `/readyz`
+- GET `/v4/boostablebosses`
+- GET `/v4/character/:name`
+- GET `/v4/creature/:race`
+- GET `/v4/creatures`
+- GET `/v4/fansites`
+- GET `/v4/guild/:name`
+- GET `/v4/guilds/:world`
+- GET `/v4/highscores/:world/:category/:vocation/:page`
+- GET `/v4/house/:world/:house_id`
+- GET `/v4/houses/:world/:town`
+- GET `/v4/killstatistics/:world`
+- GET `/v4/news/archive`
+- GET `/v4/news/archive/:days`
+- GET `/v4/news/id/:news_id`
+- GET `/v4/news/latest`
+- GET `/v4/news/newsticker`
+- GET `/v4/spell/:spell_id`
+- GET `/v4/spells`
+- GET `/v4/world/:name`
+- GET `/v4/worlds`
+- GET `/versions`
+
+### Deprecated Endpoints
+
+- GET `/health`
 - GET `/v3/boostablebosses`
 - GET `/v3/character/:name`
 - GET `/v3/creature/:race`
@@ -132,11 +157,6 @@ Those are the current existing endpoints.
 - GET `/v3/spells`
 - GET `/v3/world/:name`
 - GET `/v3/worlds`
-- GET `/versions`
-
-### Deprecated Endpoints
-
-- GET `/health`
 
 ## General information
 

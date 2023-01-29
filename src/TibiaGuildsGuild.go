@@ -40,7 +40,7 @@ type InvitedGuildMember struct {
 	Date string `json:"date"` // The date the character was invited.
 }
 
-// Child of Guilds
+// Child of JSONData
 type Guild struct {
 	Name               string               `json:"name"`              // The name of the guild.
 	World              string               `json:"world"`             // The world the guild belongs to.
@@ -62,14 +62,9 @@ type Guild struct {
 	Invited            []InvitedGuildMember `json:"invites"`           // List of invited members.
 }
 
-// Child of JSONData
-type Guilds struct {
-	Guild Guild `json:"guild"`
-}
-
 // The base includes two levels: Guild and Information
 type GuildResponse struct {
-	Guilds      Guilds      `json:"guilds"`
+	Guild       Guild       `json:"guild"`
 	Information Information `json:"information"`
 }
 
@@ -264,27 +259,25 @@ func TibiaGuildsGuildImpl(guild string, BoxContentHTML string) (*GuildResponse, 
 	//
 	// Build the data-blob
 	return &GuildResponse{
-		Guilds{
-			Guild{
-				Name:               guildName,
-				World:              GuildWorld,
-				LogoURL:            GuildLogoURL,
-				Description:        GuildDescription,
-				Guildhalls:         GuildGuildhallData,
-				Active:             GuildActive,
-				Founded:            GuildFounded,
-				Applications:       GuildApplications,
-				Homepage:           GuildHomepage,
-				InWar:              GuildInWar,
-				DisbandedDate:      GuildDisbandedDate,
-				DisbandedCondition: GuildDisbandedCondition,
-				PlayersOnline:      MembersCountOnline,
-				PlayersOffline:     MembersCountOffline,
-				MembersTotal:       (MembersCountOnline + MembersCountOffline),
-				MembersInvited:     MembersCountInvited,
-				Members:            MembersData,
-				Invited:            InvitedData,
-			},
+		Guild{
+			Name:               guildName,
+			World:              GuildWorld,
+			LogoURL:            GuildLogoURL,
+			Description:        GuildDescription,
+			Guildhalls:         GuildGuildhallData,
+			Active:             GuildActive,
+			Founded:            GuildFounded,
+			Applications:       GuildApplications,
+			Homepage:           GuildHomepage,
+			InWar:              GuildInWar,
+			DisbandedDate:      GuildDisbandedDate,
+			DisbandedCondition: GuildDisbandedCondition,
+			PlayersOnline:      MembersCountOnline,
+			PlayersOffline:     MembersCountOffline,
+			MembersTotal:       (MembersCountOnline + MembersCountOffline),
+			MembersInvited:     MembersCountInvited,
+			Members:            MembersData,
+			Invited:            InvitedData,
 		},
 		Information{
 			APIDetails: TibiaDataAPIDetails,

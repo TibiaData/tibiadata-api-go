@@ -16,7 +16,7 @@ type OnlinePlayers struct {
 	Vocation string `json:"vocation"` // The character’s vocation.
 }
 
-// Child of Worlds
+// Child of JSONData
 type World struct {
 	Name                string          `json:"name"`                  // The name of the world.
 	Status              string          `json:"status"`                // The current status of the world.
@@ -36,14 +36,9 @@ type World struct {
 	OnlinePlayers       []OnlinePlayers `json:"online_players"`        // List of players being currently online.
 }
 
-// Child of JSONData
-type Worlds struct {
-	World World `json:"world"`
-}
-
 // The base includes two levels: World and Information
 type WorldResponse struct {
-	Worlds      Worlds      `json:"worlds"`
+	World       World       `json:"world"`
 	Information Information `json:"information"`
 }
 
@@ -211,25 +206,23 @@ func TibiaWorldsWorldImpl(world string, BoxContentHTML string) (*WorldResponse, 
 	//
 	// Build the data-blob
 	return &WorldResponse{
-		Worlds: Worlds{
-			World{
-				Name:                world,
-				Status:              WorldsStatus,
-				PlayersOnline:       WorldsPlayersOnline,
-				RecordPlayers:       WorldsRecordPlayers,
-				RecordDate:          WorldsRecordDate,
-				CreationDate:        WorldsCreationDate,
-				Location:            WorldsLocation,
-				PvpType:             WorldsPvpType,
-				PremiumOnly:         WorldsPremiumOnly,
-				TransferType:        WorldsTransferType,
-				WorldsQuestTitles:   WorldsQuestTitles,
-				BattleyeProtected:   WorldsBattleyeProtected,
-				BattleyeDate:        WorldsBattleyeDate,
-				GameWorldType:       WorldsGameWorldType,
-				TournamentWorldType: WorldsTournamentWorldType,
-				OnlinePlayers:       WorldsOnlinePlayers,
-			},
+		World: World{
+			Name:                world,
+			Status:              WorldsStatus,
+			PlayersOnline:       WorldsPlayersOnline,
+			RecordPlayers:       WorldsRecordPlayers,
+			RecordDate:          WorldsRecordDate,
+			CreationDate:        WorldsCreationDate,
+			Location:            WorldsLocation,
+			PvpType:             WorldsPvpType,
+			PremiumOnly:         WorldsPremiumOnly,
+			TransferType:        WorldsTransferType,
+			WorldsQuestTitles:   WorldsQuestTitles,
+			BattleyeProtected:   WorldsBattleyeProtected,
+			BattleyeDate:        WorldsBattleyeDate,
+			GameWorldType:       WorldsGameWorldType,
+			TournamentWorldType: WorldsTournamentWorldType,
+			OnlinePlayers:       WorldsOnlinePlayers,
 		},
 		Information: Information{
 			APIDetails: TibiaDataAPIDetails,

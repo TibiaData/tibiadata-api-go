@@ -13,7 +13,7 @@ import (
 	//"time"
 )
 
-// Child of Character
+// Child of CharacterInfo
 type Houses struct {
 	Name    string `json:"name"`    // The name of the house.
 	Town    string `json:"town"`    // The town where the house is located in.
@@ -21,14 +21,14 @@ type Houses struct {
 	HouseID int    `json:"houseid"` // The internal ID of the house.
 }
 
-// Child of Character
+// Child of CharacterInfo
 type CharacterGuild struct {
 	GuildName string `json:"name,omitempty"` // The name of the guild.
 	Rank      string `json:"rank,omitempty"` // The character’s rank in the guild.
 }
 
-// Child of Characters
-type Character struct {
+// Child of Character
+type CharacterInfo struct {
 	Name              string         `json:"name"`                    // The name of the character.
 	FormerNames       []string       `json:"former_names,omitempty"`  // List of former names of the character.
 	Traded            bool           `json:"traded,omitempty"`        // Whether the character was traded. (last 6 months)
@@ -50,14 +50,14 @@ type Character struct {
 	Comment           string         `json:"comment,omitempty"`       // The character’s comment.
 }
 
-// Child of Characters
+// Child of Character
 type AccountBadges struct {
 	Name        string `json:"name"`        // The name of the badge.
 	IconURL     string `json:"icon_url"`    // The URL to the badge’s icon.
 	Description string `json:"description"` // The description of the badge.
 }
 
-// Child of Characters
+// Child of Character
 type Achievements struct {
 	Name   string `json:"name"`   // The name of the achievement.
 	Grade  int    `json:"grade"`  // The grade/stars of the achievement.
@@ -72,7 +72,7 @@ type Killers struct {
 	Summon string `json:"summon"` // The name of the summoned creature.
 }
 
-// Child of Characters
+// Child of Character
 type Deaths struct {
 	Time    string    `json:"time"`    // The timestamp when the death occurred.
 	Level   int       `json:"level"`   // The level when the death occurred.
@@ -81,14 +81,14 @@ type Deaths struct {
 	Reason  string    `json:"reason"`  // The plain text reason of death.
 }
 
-// Child of Characters
+// Child of Character
 type AccountInformation struct {
 	Position     string `json:"position,omitempty"`      // The account´s special position.
 	Created      string `json:"created,omitempty"`       // The account´s date of creation.
 	LoyaltyTitle string `json:"loyalty_title,omitempty"` // The account´s loyalty title.
 }
 
-// Child of Characters
+// Child of Character
 type OtherCharacters struct {
 	Name    string `json:"name"`    // The name of the character.
 	World   string `json:"world"`   // The name of the world.
@@ -99,8 +99,8 @@ type OtherCharacters struct {
 }
 
 // Child of JSONData
-type Characters struct {
-	Character          Character          `json:"character"`                     // The character's information.
+type Character struct {
+	CharacterInfo      CharacterInfo      `json:"character"`                     // The character's information.
 	AccountBadges      []AccountBadges    `json:"account_badges,omitempty"`      // The account´s badges.
 	Achievements       []Achievements     `json:"achievements,omitempty"`        // The character´s achievements.
 	Deaths             []Deaths           `json:"deaths,omitempty"`              // The character´s deaths.
@@ -110,7 +110,7 @@ type Characters struct {
 
 // The base includes two levels, Characters and Information
 type CharacterResponse struct {
-	Characters  Characters  `json:"characters"`
+	Character   Character   `json:"character"`
 	Information Information `json:"information"`
 }
 
@@ -137,12 +137,12 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 		localTradedString   = " (traded)"
 
 		// Declaring vars for later use..
-		CharacterInformationData Character
-		AccountBadgesData        []AccountBadges
-		AchievementsData         []Achievements
-		DeathsData               []Deaths
-		AccountInformationData   AccountInformation
-		OtherCharactersData      []OtherCharacters
+		CharacterInfoData      CharacterInfo
+		AccountBadgesData      []AccountBadges
+		AchievementsData       []Achievements
+		DeathsData             []Deaths
+		AccountInformationData AccountInformation
+		OtherCharactersData    []OtherCharacters
 
 		// Errors
 		characterNotFound bool
@@ -183,41 +183,41 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 				switch TibiaDataSanitizeStrings(RowName) {
 				case "Name:":
 					Tmp := strings.Split(RowData, "<")
-					CharacterInformationData.Name = strings.TrimSpace(Tmp[0])
+					CharacterInfoData.Name = strings.TrimSpace(Tmp[0])
 					if strings.Contains(Tmp[0], ", will be deleted at") {
 						Tmp2 := strings.Split(Tmp[0], ", will be deleted at ")
-						CharacterInformationData.Name = Tmp2[0]
-						CharacterInformationData.DeletionDate = TibiaDataDatetime(strings.TrimSpace(Tmp2[1]))
+						CharacterInfoData.Name = Tmp2[0]
+						CharacterInfoData.DeletionDate = TibiaDataDatetime(strings.TrimSpace(Tmp2[1]))
 					}
 					if strings.Contains(RowData, localTradedString) {
-						CharacterInformationData.Traded = true
-						CharacterInformationData.Name = strings.Replace(CharacterInformationData.Name, localTradedString, "", -1)
+						CharacterInfoData.Traded = true
+						CharacterInfoData.Name = strings.Replace(CharacterInfoData.Name, localTradedString, "", -1)
 					}
 				case "Former Names:":
-					CharacterInformationData.FormerNames = strings.Split(RowData, ", ")
+					CharacterInfoData.FormerNames = strings.Split(RowData, ", ")
 				case "Sex:":
-					CharacterInformationData.Sex = RowData
+					CharacterInfoData.Sex = RowData
 				case "Title:":
 					subma1t := titleRegex.FindAllStringSubmatch(RowData, -1)
-					CharacterInformationData.Title = subma1t[0][1]
-					CharacterInformationData.UnlockedTitles = TibiaDataStringToInteger(subma1t[0][2])
+					CharacterInfoData.Title = subma1t[0][1]
+					CharacterInfoData.UnlockedTitles = TibiaDataStringToInteger(subma1t[0][2])
 				case "Vocation:":
-					CharacterInformationData.Vocation = RowData
+					CharacterInfoData.Vocation = RowData
 				case "Level:":
-					CharacterInformationData.Level = TibiaDataStringToInteger(RowData)
+					CharacterInfoData.Level = TibiaDataStringToInteger(RowData)
 				case "nobr", "Achievement Points:":
-					CharacterInformationData.AchievementPoints = TibiaDataStringToInteger(RowData)
+					CharacterInfoData.AchievementPoints = TibiaDataStringToInteger(RowData)
 				case "World:":
-					CharacterInformationData.World = RowData
+					CharacterInfoData.World = RowData
 				case "Former World:":
-					CharacterInformationData.FormerWorlds = strings.Split(RowData, ", ")
+					CharacterInfoData.FormerWorlds = strings.Split(RowData, ", ")
 				case "Residence:":
-					CharacterInformationData.Residence = RowData
+					CharacterInfoData.Residence = RowData
 				case "Account Status:":
-					CharacterInformationData.AccountStatus = RowData
+					CharacterInfoData.AccountStatus = RowData
 				case "Married To:":
 					AnchorQuery := s.Find("a")
-					CharacterInformationData.MarriedTo = AnchorQuery.Nodes[0].FirstChild.Data
+					CharacterInfoData.MarriedTo = AnchorQuery.Nodes[0].FirstChild.Data
 				case "House:":
 					AnchorQuery := s.Find("a")
 					HouseName := AnchorQuery.Nodes[0].FirstChild.Data
@@ -228,20 +228,20 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 					HouseTown := HouseRawData[strings.Index(HouseRawData, "(")+1 : strings.Index(HouseRawData, ")")]
 					HousePaidUntil := HouseRawData[strings.Index(HouseRawData, "is paid until ")+14:]
 
-					CharacterInformationData.Houses = append(CharacterInformationData.Houses, Houses{
+					CharacterInfoData.Houses = append(CharacterInfoData.Houses, Houses{
 						Name:    HouseName,
 						Town:    HouseTown,
 						Paid:    TibiaDataDate(HousePaidUntil),
 						HouseID: TibiaDataStringToInteger(HouseId),
 					})
 				case "Guild Membership:":
-					CharacterInformationData.Guild.Rank = strings.TrimSuffix(RowData, " of the ")
+					CharacterInfoData.Guild.Rank = strings.TrimSuffix(RowData, " of the ")
 
 					//TODO: I don't understand why the unicode nbsp is there...
-					CharacterInformationData.Guild.GuildName = TibiaDataSanitizeStrings(RowNameQuery.Nodes[0].NextSibling.LastChild.LastChild.Data)
+					CharacterInfoData.Guild.GuildName = TibiaDataSanitizeStrings(RowNameQuery.Nodes[0].NextSibling.LastChild.LastChild.Data)
 				case "Last Login:":
 					if RowData != "never logged in" {
-						CharacterInformationData.LastLogin = TibiaDataDatetime(RowData)
+						CharacterInfoData.LastLogin = TibiaDataDatetime(RowData)
 					}
 				case "Comment:":
 					node := RowNameQuery.Nodes[0].NextSibling.FirstChild
@@ -258,7 +258,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 						node = node.NextSibling
 					}
 
-					CharacterInformationData.Comment = stringBuilder.String()
+					CharacterInfoData.Comment = stringBuilder.String()
 				case "Loyalty Title:":
 					if RowData != "(no title)" {
 						AccountInformationData.LoyaltyTitle = RowData
@@ -481,8 +481,8 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 	})
 
 	// Build the character data
-	charData := Characters{
-		CharacterInformationData,
+	charData := Character{
+		CharacterInfoData,
 		AccountBadgesData,
 		AchievementsData,
 		DeathsData,
@@ -496,7 +496,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 		return nil, validation.ErrorCharacterNotFound
 	case insideError != nil:
 		return nil, insideError
-	case reflect.DeepEqual(charData, Characters{}):
+	case reflect.DeepEqual(charData, Character{}):
 		// There are some rare cases where a character name would
 		// bug out tibia.com (tíbia, for example) and then we would't
 		// receive the character not found error, for these edge cases

@@ -25,29 +25,34 @@ func TestNumber1(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, _ := TibiaCharactersCharacterImpl(string(data))
-	assert := assert.New(t)
+	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	assert.Equal("Darkside Rafa", characterJson.Characters.Character.Name)
-	assert.Nil(characterJson.Characters.Character.FormerNames)
-	assert.False(characterJson.Characters.Character.Traded)
-	assert.Empty(characterJson.Characters.Character.DeletionDate)
-	assert.Equal("male", characterJson.Characters.Character.Sex)
-	assert.Equal("Silencer", characterJson.Characters.Character.Title)
-	assert.Equal(18, characterJson.Characters.Character.UnlockedTitles)
-	assert.Equal("Elite Knight", characterJson.Characters.Character.Vocation)
-	assert.Equal(790, characterJson.Characters.Character.Level)
-	assert.Equal(596, characterJson.Characters.Character.AchievementPoints)
-	assert.Equal("Gladera", characterJson.Characters.Character.World)
-	assert.Nil(characterJson.Characters.Character.FormerWorlds)
-	assert.Equal("Thais", characterJson.Characters.Character.Residence)
-	assert.Empty(characterJson.Characters.Character.MarriedTo)
-	assert.Nil(characterJson.Characters.Character.Houses)
-	assert.Equal("Jokerz", characterJson.Characters.Character.Guild.GuildName)
-	assert.Equal("Trial", characterJson.Characters.Character.Guild.Rank)
-	assert.Equal("2022-01-05T21:23:32Z", characterJson.Characters.Character.LastLogin)
-	assert.Equal("Premium Account", characterJson.Characters.Character.AccountStatus)
-	assert.Empty(characterJson.Characters.Character.Comment)
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Darkside Rafa", character.Name)
+	assert.Nil(character.FormerNames)
+	assert.False(character.Traded)
+	assert.Empty(character.DeletionDate)
+	assert.Equal("male", character.Sex)
+	assert.Equal("Silencer", character.Title)
+	assert.Equal(18, character.UnlockedTitles)
+	assert.Equal("Elite Knight", character.Vocation)
+	assert.Equal(790, character.Level)
+	assert.Equal(596, character.AchievementPoints)
+	assert.Equal("Gladera", character.World)
+	assert.Nil(character.FormerWorlds)
+	assert.Equal("Thais", character.Residence)
+	assert.Empty(character.MarriedTo)
+	assert.Nil(character.Houses)
+	assert.Equal("Jokerz", character.Guild.GuildName)
+	assert.Equal("Trial", character.Guild.Rank)
+	assert.Equal("2022-01-05T21:23:32Z", character.LastLogin)
+	assert.Equal("Premium Account", character.AccountStatus)
+	assert.Empty(character.Comment)
 }
 
 func TestNumber2(t *testing.T) {
@@ -62,37 +67,42 @@ func TestNumber2(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, _ := TibiaCharactersCharacterImpl(string(data))
-	assert := assert.New(t)
+	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	assert.Equal("Zugspitze Housekeeper", characterJson.Characters.Character.Name)
-	assert.Nil(characterJson.Characters.Character.FormerNames)
-	assert.False(characterJson.Characters.Character.Traded)
-	assert.Empty(characterJson.Characters.Character.DeletionDate)
-	assert.Equal("male", characterJson.Characters.Character.Sex)
-	assert.Equal("None", characterJson.Characters.Character.Title)
-	assert.Equal(13, characterJson.Characters.Character.UnlockedTitles)
-	assert.Equal("Elite Knight", characterJson.Characters.Character.Vocation)
-	assert.Equal(79, characterJson.Characters.Character.Level)
-	assert.Equal(262, characterJson.Characters.Character.AchievementPoints)
-	assert.Equal("Venebra", characterJson.Characters.Character.World)
-	assert.Nil(characterJson.Characters.Character.FormerWorlds)
-	assert.Equal("Darashia", characterJson.Characters.Character.Residence)
-	assert.Empty(characterJson.Characters.Character.MarriedTo)
-	assert.Equal(35056, characterJson.Characters.Character.Houses[0].HouseID)
-	assert.Equal("Loot Lane 1 (Shop)", characterJson.Characters.Character.Houses[0].Name)
-	assert.Equal("Venore", characterJson.Characters.Character.Houses[0].Town)
-	assert.Equal("2022-01-16", characterJson.Characters.Character.Houses[0].Paid)
-	assert.Equal("Magnus Magister", characterJson.Characters.Character.Guild.Rank)
-	assert.Equal("Lionheart Society", characterJson.Characters.Character.Guild.GuildName)
-	assert.Equal("2022-01-06T21:38:44Z", characterJson.Characters.Character.LastLogin)
-	assert.Equal("Testa de Ferro do Lejonhjartat ;)", characterJson.Characters.Character.Comment)
-	assert.Equal("Premium Account", characterJson.Characters.Character.AccountStatus)
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Zugspitze Housekeeper", character.Name)
+	assert.Nil(character.FormerNames)
+	assert.False(character.Traded)
+	assert.Empty(character.DeletionDate)
+	assert.Equal("male", character.Sex)
+	assert.Equal("None", character.Title)
+	assert.Equal(13, character.UnlockedTitles)
+	assert.Equal("Elite Knight", character.Vocation)
+	assert.Equal(79, character.Level)
+	assert.Equal(262, character.AchievementPoints)
+	assert.Equal("Venebra", character.World)
+	assert.Nil(character.FormerWorlds)
+	assert.Equal("Darashia", character.Residence)
+	assert.Empty(character.MarriedTo)
+	assert.Equal(35056, character.Houses[0].HouseID)
+	assert.Equal("Loot Lane 1 (Shop)", character.Houses[0].Name)
+	assert.Equal("Venore", character.Houses[0].Town)
+	assert.Equal("2022-01-16", character.Houses[0].Paid)
+	assert.Equal("Magnus Magister", character.Guild.Rank)
+	assert.Equal("Lionheart Society", character.Guild.GuildName)
+	assert.Equal("2022-01-06T21:38:44Z", character.LastLogin)
+	assert.Equal("Testa de Ferro do Lejonhjartat ;)", character.Comment)
+	assert.Equal("Premium Account", character.AccountStatus)
 
 	//validate other characters
-	assert.Equal(7, len(characterJson.Characters.OtherCharacters))
+	assert.Equal(7, len(characterJson.Character.OtherCharacters))
 
-	onlineMainCharacter := characterJson.Characters.OtherCharacters[3]
+	onlineMainCharacter := characterJson.Character.OtherCharacters[3]
 	assert.Equal("Lejonhjartat", onlineMainCharacter.Name)
 	assert.Equal("Venebra", onlineMainCharacter.World)
 	assert.Equal("online", onlineMainCharacter.Status)
@@ -100,7 +110,7 @@ func TestNumber2(t *testing.T) {
 	assert.Equal(true, onlineMainCharacter.Main)
 	assert.Equal(false, onlineMainCharacter.Traded)
 
-	offlineCharacter := characterJson.Characters.OtherCharacters[5]
+	offlineCharacter := characterJson.Character.OtherCharacters[5]
 	assert.Equal("Oak Knight Disruptivo", offlineCharacter.Name)
 	assert.Equal("Libertabra", offlineCharacter.World)
 	assert.Equal("offline", offlineCharacter.Status)
@@ -121,20 +131,25 @@ func TestNumber3(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, _ := TibiaCharactersCharacterImpl(string(data))
-	assert := assert.New(t)
+	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	assert.Equal("Borttagna Gubben", characterJson.Characters.Character.Name)
-	assert.True(characterJson.Characters.Character.Traded)
-	assert.Equal(2, len(characterJson.Characters.Character.FormerWorlds))
-	assert.Equal("Zuna", characterJson.Characters.Character.FormerWorlds[0])
-	assert.Equal("Zunera", characterJson.Characters.Character.FormerWorlds[1])
-	assert.Equal("Bubble", characterJson.Characters.Character.MarriedTo)
-	assert.Equal("2022-03-08T00:09:13Z", characterJson.Characters.Character.DeletionDate)
-	assert.Empty(characterJson.Characters.Character.LastLogin)
-	assert.Equal("Free Account", characterJson.Characters.Character.AccountStatus)
-	assert.Equal("Fansite Admin", characterJson.Characters.AccountInformation.Position)
-	assert.Empty(characterJson.Characters.AccountInformation.LoyaltyTitle)
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Borttagna Gubben", character.Name)
+	assert.True(character.Traded)
+	assert.Equal(2, len(character.FormerWorlds))
+	assert.Equal("Zuna", character.FormerWorlds[0])
+	assert.Equal("Zunera", character.FormerWorlds[1])
+	assert.Equal("Bubble", character.MarriedTo)
+	assert.Equal("2022-03-08T00:09:13Z", character.DeletionDate)
+	assert.Empty(character.LastLogin)
+	assert.Equal("Free Account", character.AccountStatus)
+	assert.Equal("Fansite Admin", characterJson.Character.AccountInformation.Position)
+	assert.Empty(characterJson.Character.AccountInformation.LoyaltyTitle)
 }
 
 func TestNumber4(t *testing.T) {
@@ -149,25 +164,30 @@ func TestNumber4(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, _ := TibiaCharactersCharacterImpl(string(data))
-	assert := assert.New(t)
+	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	assert.Equal("Riley No Hands", characterJson.Characters.Character.Name)
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Riley No Hands", character.Name)
 
 	//validate former names
-	assert.Equal(4, len(characterJson.Characters.Character.FormerNames))
-	assert.Equal("Dura Malandro", characterJson.Characters.Character.FormerNames[0])
-	assert.Equal("Letsgo Brandon", characterJson.Characters.Character.FormerNames[1])
-	assert.Equal("Letsgo Brandon", characterJson.Characters.Character.FormerNames[2]) //yes, this name is listed twice
-	assert.Equal("Nataraya Soldrac", characterJson.Characters.Character.FormerNames[3])
+	assert.Equal(4, len(character.FormerNames))
+	assert.Equal("Dura Malandro", character.FormerNames[0])
+	assert.Equal("Letsgo Brandon", character.FormerNames[1])
+	assert.Equal("Letsgo Brandon", character.FormerNames[2]) //yes, this name is listed twice
+	assert.Equal("Nataraya Soldrac", character.FormerNames[3])
 
 	//validate death data
-	assert.Equal(79, len(characterJson.Characters.Deaths))
+	assert.Equal(79, len(characterJson.Character.Deaths))
 
-	firstDeath := characterJson.Characters.Deaths[0]
+	firstDeath := characterJson.Character.Deaths[0]
 	assert.Equal(28, len(firstDeath.Killers))
 
-	creatureWithOfDeath := characterJson.Characters.Deaths[16]
+	creatureWithOfDeath := characterJson.Character.Deaths[16]
 	assert.Equal(2, len(creatureWithOfDeath.Killers))
 	assert.Equal(260, creatureWithOfDeath.Level)
 	assert.Equal("an undead elite gladiator", creatureWithOfDeath.Killers[0].Name)
@@ -176,7 +196,7 @@ func TestNumber4(t *testing.T) {
 	assert.Empty(creatureWithOfDeath.Killers[0].Summon)
 	assert.Equal("a priestess of the wild sun", creatureWithOfDeath.Killers[1].Name)
 
-	tradedInDeath := characterJson.Characters.Deaths[18]
+	tradedInDeath := characterJson.Character.Deaths[18]
 	assert.Equal(3, len(tradedInDeath.Assists))
 	assert.Equal(261, tradedInDeath.Level)
 	assert.Equal("Vithrann", tradedInDeath.Assists[1].Name)
@@ -184,7 +204,7 @@ func TestNumber4(t *testing.T) {
 	assert.Equal("Adam No Hands", tradedInDeath.Assists[2].Name)
 	assert.True(tradedInDeath.Assists[2].Traded)
 
-	longDeath := characterJson.Characters.Deaths[78]
+	longDeath := characterJson.Character.Deaths[78]
 	assert.Equal(5, len(longDeath.Assists))
 	assert.Equal(231, longDeath.Level)
 	assert.Equal("Adam No Hands", longDeath.Assists[4].Name)
@@ -204,17 +224,22 @@ func TestNumber6(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, _ := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
 
-	assert.Equal("Luminals", characterJson.Characters.Character.Name)
+	assert.Equal("Luminals", character.Name)
 
-	assert.Equal(8, len(characterJson.Characters.AccountBadges))
-	globalPlayerBadge := characterJson.Characters.AccountBadges[4]
+	assert.Equal(8, len(characterJson.Character.AccountBadges))
+	globalPlayerBadge := characterJson.Character.AccountBadges[4]
 	assert.Equal("Global Player (Grade 3)", globalPlayerBadge.Name)
 	assert.Equal("https://static.tibia.com/images//badges/badge_globalplayer3.png", globalPlayerBadge.IconURL)
 	assert.Equal("Summing up the levels of all characters on the account amounts to at least 2000.", globalPlayerBadge.Description)
-	masterClassBadge := characterJson.Characters.AccountBadges[7]
+	masterClassBadge := characterJson.Character.AccountBadges[7]
 	assert.Equal("Master Class (Grade 1)", masterClassBadge.Name)
 	assert.Equal("https://static.tibia.com/images//badges/badge_masterclass1.png", masterClassBadge.IconURL)
 	assert.Equal("The account has reached at least level 100 with all four vocations.", masterClassBadge.Description)
@@ -232,11 +257,16 @@ func TestNumber5(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, _ := TibiaCharactersCharacterImpl(string(data))
-	assert := assert.New(t)
+	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	assert.Equal("Torbjörn", characterJson.Characters.Character.Name)
-	assert.Equal("___$$$$$$$$_______$$$$$$$$\n_$$$$$$$$$$$$__$$$$$$$$$$$$$$\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n_$$$$$$$$$$-Snulliz-$$$$$$$$$$$\n__$$$$$$$$$$$$$$$$$$$$$$$$$$\n____$$$$$$$$$$$$$$$$$$$$$$\n______$$$$$$$$$$$$$$$$$$\n________$$$$$$$$$$$$$$\n___________$$$$$$$$$\n____________$$$$$$\n_____________$$", characterJson.Characters.Character.Comment)
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Torbjörn", character.Name)
+	assert.Equal("___$$$$$$$$_______$$$$$$$$\n_$$$$$$$$$$$$__$$$$$$$$$$$$$$\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n_$$$$$$$$$$-Snulliz-$$$$$$$$$$$\n__$$$$$$$$$$$$$$$$$$$$$$$$$$\n____$$$$$$$$$$$$$$$$$$$$$$\n______$$$$$$$$$$$$$$$$$$\n________$$$$$$$$$$$$$$\n___________$$$$$$$$$\n____________$$$$$$\n_____________$$", character.Comment)
 }
 
 func BenchmarkNumber1(b *testing.B) {
@@ -256,7 +286,7 @@ func BenchmarkNumber1(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		characterJson, _ := TibiaCharactersCharacterImpl(string(data))
 
-		assert.Equal(b, "Darkside Rafa", characterJson.Characters.Character.Name)
+		assert.Equal(b, "Darkside Rafa", characterJson.Character.CharacterInfo.Name)
 	}
 }
 
@@ -277,7 +307,7 @@ func BenchmarkNumber2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		characterJson, _ := TibiaCharactersCharacterImpl(string(data))
 
-		assert.Equal(b, "Riley No Hands", characterJson.Characters.Character.Name)
+		assert.Equal(b, "Riley No Hands", characterJson.Character.CharacterInfo.Name)
 	}
 }
 

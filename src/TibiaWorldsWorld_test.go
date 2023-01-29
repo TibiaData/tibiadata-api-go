@@ -26,8 +26,7 @@ func TestWorldEndebra(t *testing.T) {
 	}
 
 	assert := assert.New(t)
-
-	world := worldJson.Worlds.World
+	world := worldJson.World
 
 	assert.Equal("Endebra", world.Name)
 	assert.Equal("online", world.Status)
@@ -65,8 +64,7 @@ func TestWorldPremia(t *testing.T) {
 	}
 
 	assert := assert.New(t)
-
-	world := worldJson.Worlds.World
+	world := worldJson.World
 
 	assert.Equal("Premia", world.Name)
 	assert.Equal("offline", world.Status)
@@ -107,8 +105,7 @@ func TestWorldWintera(t *testing.T) {
 	}
 
 	assert := assert.New(t)
-
-	world := worldJson.Worlds.World
+	world := worldJson.World
 
 	assert.Equal("Wintera", world.Name)
 	assert.Equal("online", world.Status)
@@ -155,8 +152,7 @@ func TestWorldZuna(t *testing.T) {
 	}
 
 	assert := assert.New(t)
-
-	world := worldJson.Worlds.World
+	world := worldJson.World
 
 	assert.Equal("Zuna", world.Name)
 	assert.Equal("online", world.Status)

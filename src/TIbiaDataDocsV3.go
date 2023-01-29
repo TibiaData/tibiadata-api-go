@@ -41,7 +41,7 @@ func tibiaCharactersCharacterV3() bool {
 }
 
 type CharacterResponseV3 struct {
-	Characters  Characters    `json:"characters"`
+	Characters  Character     `json:"characters"`
 	Information InformationV3 `json:"information"`
 }
 
@@ -119,8 +119,11 @@ func tibiaGuildsGuildV3() bool {
 }
 
 type GuildResponseV3 struct {
-	Guilds      Guilds        `json:"guilds"`
+	Guilds      GuildV3       `json:"guilds"`
 	Information InformationV3 `json:"information"`
+}
+type GuildV3 struct {
+	Guild Guild `json:"guild"`
 }
 
 // Guilds godoc
@@ -345,8 +348,11 @@ func tibiaSpellsSpellV3() bool {
 }
 
 type SpellInformationResponseV3 struct {
-	Spells      SpellsContainer `json:"spells"`
-	Information InformationV3   `json:"information"`
+	Spells      SpellV3       `json:"spells"`
+	Information InformationV3 `json:"information"`
+}
+type SpellV3 struct {
+	Spell SpellData `json:"spell"`
 }
 
 // Worlds godoc
@@ -384,6 +390,9 @@ func tibiaWorldsWorldV3() bool {
 }
 
 type WorldResponseV3 struct {
-	Worlds      Worlds        `json:"worlds"`
+	Worlds      WorldV3       `json:"worlds"`
 	Information InformationV3 `json:"information"`
+}
+type WorldV3 struct {
+	World World `json:"world"`
 }

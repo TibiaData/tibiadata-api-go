@@ -41,7 +41,7 @@ type RuneInformation struct {
 	MagicLevel   int      `json:"magic_level"`   // The required magic level for using.
 }
 
-// Child of Spells
+// Child of JSONData
 type SpellData struct {
 	Name                string           `json:"name"`                  // The name of the spell.
 	Spell               string           `json:"spell_id"`              // The internal identifier of the spell.
@@ -53,15 +53,10 @@ type SpellData struct {
 	RuneInformation     RuneInformation  `json:"rune_information"`      // Information about the spell´s rune.
 }
 
-// Child of JSONData
-type SpellsContainer struct {
-	Spell SpellData `json:"spell"`
-}
-
 // The base includes two levels: Spell and Information
 type SpellInformationResponse struct {
-	Spells      SpellsContainer `json:"spells"`
-	Information Information     `json:"information"`
+	Spell       SpellData   `json:"spell"`
+	Information Information `json:"information"`
 }
 
 var (
@@ -278,42 +273,40 @@ func TibiaSpellsSpellImpl(spell string, BoxContentHTML string) (*SpellInformatio
 	//
 	// Build the data-blob
 	return &SpellInformationResponse{
-		SpellsContainer{
-			SpellData{
-				Name:                SpellName,
-				Spell:               strings.ToLower(SpellName),
-				ImageURL:            SpellImageURL,
-				Description:         SpellDescription,
-				HasSpellInformation: SpellsHasSpellSection,
-				SpellInformation: SpellInformation{
-					Formula:       SpellsInfoFormula,
-					Vocation:      SpellsInfoVocation,
-					GroupAttack:   SpellsInfoGroupAttack,
-					GroupHealing:  SpellsInfoGroupHealing,
-					GroupSupport:  SpellsInfoGroupSupport,
-					TypeInstant:   SpellsInfoTypeInstant,
-					TypeRune:      SpellsInfoTypeRune,
-					DamageType:    SpellsInfoDamageType,
-					CooldownAlone: SpellsInfoCooldownAlone,
-					CooldownGroup: SpellsInfoCooldownGroup,
-					SoulPoints:    SpellsInfoSoulPoints,
-					Amount:        SpellsInfoAmount,
-					Level:         SpellsInfoLevel,
-					Mana:          SpellsInfoMana,
-					Price:         SpellsInfoPrice,
-					City:          SpellsInfoCity,
-					Premium:       SpellsInfoPremium,
-				},
-				HasRuneInformation: SpellsHasRuneSection,
-				RuneInformation: RuneInformation{
-					Vocation:     RuneInfoVocation,
-					GroupAttack:  RuneInfoGroupAttack,
-					GroupHealing: RuneInfoGroupHealing,
-					GroupSupport: RuneInfoGroupSupport,
-					DamageType:   RuneInfoDamageType,
-					Level:        RuneInfoLevel,
-					MagicLevel:   RuneInfoMagicLevel,
-				},
+		SpellData{
+			Name:                SpellName,
+			Spell:               strings.ToLower(SpellName),
+			ImageURL:            SpellImageURL,
+			Description:         SpellDescription,
+			HasSpellInformation: SpellsHasSpellSection,
+			SpellInformation: SpellInformation{
+				Formula:       SpellsInfoFormula,
+				Vocation:      SpellsInfoVocation,
+				GroupAttack:   SpellsInfoGroupAttack,
+				GroupHealing:  SpellsInfoGroupHealing,
+				GroupSupport:  SpellsInfoGroupSupport,
+				TypeInstant:   SpellsInfoTypeInstant,
+				TypeRune:      SpellsInfoTypeRune,
+				DamageType:    SpellsInfoDamageType,
+				CooldownAlone: SpellsInfoCooldownAlone,
+				CooldownGroup: SpellsInfoCooldownGroup,
+				SoulPoints:    SpellsInfoSoulPoints,
+				Amount:        SpellsInfoAmount,
+				Level:         SpellsInfoLevel,
+				Mana:          SpellsInfoMana,
+				Price:         SpellsInfoPrice,
+				City:          SpellsInfoCity,
+				Premium:       SpellsInfoPremium,
+			},
+			HasRuneInformation: SpellsHasRuneSection,
+			RuneInformation: RuneInformation{
+				Vocation:     RuneInfoVocation,
+				GroupAttack:  RuneInfoGroupAttack,
+				GroupHealing: RuneInfoGroupHealing,
+				GroupSupport: RuneInfoGroupSupport,
+				DamageType:   RuneInfoDamageType,
+				Level:        RuneInfoLevel,
+				MagicLevel:   RuneInfoMagicLevel,
 			},
 		},
 		Information{

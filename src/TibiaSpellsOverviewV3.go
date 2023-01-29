@@ -29,7 +29,6 @@ type Spells struct {
 	Spells               []Spell `json:"spell_list"`
 }
 
-//
 // The base includes two levels: Spells and Information
 type SpellsOverviewResponse struct {
 	Spells      Spells      `json:"spells"`
@@ -57,11 +56,12 @@ func TibiaSpellsOverviewV3Impl(vocationName string, BoxContentHTML string) Spell
 
 		s.Find("td").Each(func(index int, s2 *goquery.Selection) {
 			selectionText := s2.Text()
+			selectionHtml, _ := s2.Html()
 
 			switch index {
 			case 0:
-				spellBuilder.Name = selectionText
-				spellBuilder.Spell = selectionText[0:strings.Index(selectionText, " (")]
+				spellBuilder.Name = selectionText[0:strings.Index(selectionText, " (")]
+				spellBuilder.Spell = selectionHtml[strings.Index(selectionHtml, "amp;spell=")+10 : strings.Index(selectionHtml, "&amp;vocation")]
 				spellBuilder.Formula = selectionText[strings.Index(selectionText, " (")+2 : strings.Index(selectionText, ")")]
 			case 1:
 				switch selectionText {

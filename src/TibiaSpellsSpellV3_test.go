@@ -19,7 +19,7 @@ func TestFindPerson(t *testing.T) {
 
 	assert.Empty(findPersonJson.Spells.Spell.Description)
 	assert.Equal("Find Person", findPersonJson.Spells.Spell.Name)
-	assert.Equal("find person", findPersonJson.Spells.Spell.Spell)
+	assert.Equal("findperson", findPersonJson.Spells.Spell.Spell)
 	assert.True(findPersonJson.Spells.Spell.HasSpellInformation)
 	assert.NotNil(findPersonJson.Spells.Spell.SpellInformation)
 	assert.Equal("exiva 'name'", findPersonJson.Spells.Spell.SpellInformation.Formula)
@@ -57,7 +57,7 @@ func TestHeavyMagicMissileRune(t *testing.T) {
 
 	assert.Empty(hmmJson.Spells.Spell.Description)
 	assert.Equal("Heavy Magic Missile Rune", hmmJson.Spells.Spell.Name)
-	assert.Equal("heavy magic missile rune", hmmJson.Spells.Spell.Spell)
+	assert.Equal("heavymagicmissilerune", hmmJson.Spells.Spell.Spell)
 	assert.True(hmmJson.Spells.Spell.HasSpellInformation)
 	assert.NotNil(hmmJson.Spells.Spell.SpellInformation)
 	assert.Equal("adori vis", hmmJson.Spells.Spell.SpellInformation.Formula)
@@ -139,7 +139,7 @@ func TestBruiseBane(t *testing.T) {
 
 	assert.Empty(bruisebaneJson.Spells.Spell.Description)
 	assert.Equal("Bruise Bane", bruisebaneJson.Spells.Spell.Name)
-	assert.Equal("bruise bane", bruisebaneJson.Spells.Spell.Spell)
+	assert.Equal("bruisebane", bruisebaneJson.Spells.Spell.Spell)
 	assert.True(bruisebaneJson.Spells.Spell.HasSpellInformation)
 	assert.NotNil(bruisebaneJson.Spells.Spell.SpellInformation)
 	assert.Equal("exura infir ico", bruisebaneJson.Spells.Spell.SpellInformation.Formula)
@@ -172,7 +172,7 @@ func TestCurePoisonRune(t *testing.T) {
 
 	assert.Empty(curepoisonruneJson.Spells.Spell.Description)
 	assert.Equal("Cure Poison Rune", curepoisonruneJson.Spells.Spell.Name)
-	assert.Equal("cure poison rune", curepoisonruneJson.Spells.Spell.Spell)
+	assert.Equal("curepoisonrune", curepoisonruneJson.Spells.Spell.Spell)
 	assert.True(curepoisonruneJson.Spells.Spell.HasSpellInformation)
 	assert.NotNil(curepoisonruneJson.Spells.Spell.SpellInformation)
 	assert.Equal("adana pox", curepoisonruneJson.Spells.Spell.SpellInformation.Formula)
@@ -201,7 +201,7 @@ func TestConvinceCreatureRune(t *testing.T) {
 
 	assert.Empty(convincecreatureruneJson.Spells.Spell.Description)
 	assert.Equal("Convince Creature Rune", convincecreatureruneJson.Spells.Spell.Name)
-	assert.Equal("convince creature rune", convincecreatureruneJson.Spells.Spell.Spell)
+	assert.Equal("convincecreaturerune", convincecreatureruneJson.Spells.Spell.Spell)
 	assert.True(convincecreatureruneJson.Spells.Spell.HasSpellInformation)
 	assert.NotNil(convincecreatureruneJson.Spells.Spell.SpellInformation)
 	assert.Equal("adeta sio", convincecreatureruneJson.Spells.Spell.SpellInformation.Formula)

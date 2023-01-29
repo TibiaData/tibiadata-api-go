@@ -56,6 +56,11 @@ func TestOverviewAll(t *testing.T) {
 	assert.True(findPersonSpell.TypeInstant)
 	assert.False(findPersonSpell.TypeRune)
 	assert.False(findPersonSpell.PremiumOnly)
+
+	iceBurstSpell := spellsOverviewJson.Spells.Spells[82]
+	assert.Equal("Ice Burst", iceBurstSpell.Name)
+	assert.Equal(0, iceBurstSpell.Level)
+	assert.Equal(0, iceBurstSpell.Price)
 }
 
 func TestOverviewDruid(t *testing.T) {

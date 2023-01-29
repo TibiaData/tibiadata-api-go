@@ -81,7 +81,9 @@ func TibiaSpellsOverviewImpl(vocationName string, BoxContentHTML string) (*Spell
 					spellBuilder.TypeRune = true
 				}
 			case 3:
-				spellBuilder.Level = TibiaDataStringToInteger(selectionText)
+				if selectionText != "-" {
+					spellBuilder.Level = TibiaDataStringToInteger(selectionText)
+				}
 			case 4:
 				mana := -1
 				if selectionText != "var." {

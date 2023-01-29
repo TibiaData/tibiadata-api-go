@@ -115,7 +115,7 @@ func TibiaSpellsSpellImpl(spell string, BoxContentHTML string) (*SpellInformatio
 			}
 
 			// Running query over each div
-			s.Find("table.Table2 tbody tr").EachWithBreak(func(index int, s *goquery.Selection) bool {
+			s.Find("table.Table2 .TableContentContainer tbody tr").EachWithBreak(func(index int, s *goquery.Selection) bool {
 				// Storing HTML into SpellDivHTML
 				SpellDivHTML, err := s.Html()
 				if err != nil {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"io"
-	"log"
 	"testing"
 
 	"github.com/TibiaData/tibiadata-api-go/src/static"
@@ -28,8 +27,6 @@ func TestFindPerson(t *testing.T) {
 
 	assert := assert.New(t)
 	spell := findPersonJson.Spell
-
-	log.Print(spell)
 
 	assert.Empty(spell.Description)
 	assert.Equal("Find Person", spell.Name)

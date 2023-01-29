@@ -80,7 +80,7 @@ func TibiaSpellsSpellImpl(spell string, BoxContentHTML string) (*SpellInformatio
 		// creating empty vars for later use
 		SpellsInfoVocation, SpellsInfoCity, RuneInfoVocation []string
 		// var SpellsInfoName, RuneInfoName string
-		SpellInformationSection, SpellName, SpellImageURL, SpellDescription, SpellsInfoFormula, SpellsInfoDamageType, RuneInfoDamageType                                                                                                                  string
+		SpellInformationSection, SpellName, SpellID, SpellImageURL, SpellDescription, SpellsInfoFormula, SpellsInfoDamageType, RuneInfoDamageType                                                                                                         string
 		SpellsInfoCooldownAlone, SpellsInfoCooldownGroup, SpellsInfoSoulPoints, SpellsInfoAmount, SpellsInfoLevel, SpellsInfoMana, SpellsInfoPrice, RuneInfoLevel, RuneInfoMagicLevel                                                                     int
 		SpellsInfoGroupAttack, SpellsInfoGroupHealing, SpellsInfoGroupSupport, SpellsInfoTypeInstant, SpellsInfoTypeRune, RuneInfoGroupAttack, RuneInfoGroupHealing, RuneInfoGroupSupport, SpellsInfoPremium, SpellsHasSpellSection, SpellsHasRuneSection bool
 
@@ -94,11 +94,12 @@ func TibiaSpellsSpellImpl(spell string, BoxContentHTML string) (*SpellInformatio
 			return false
 		}
 
-		// Get the name and image
+		// Get the name, spell_id and image
 		subma2 := SpellNameAndImageRegex.FindAllStringSubmatch(NameAndImageSection, -1)
 		if len(subma2) > 0 {
 			SpellName = TibiaDataSanitize0026String(subma2[0][2])
 			SpellImageURL = subma2[0][1]
+			SpellID = SpellImageURL[strings.Index(SpellImageURL, "library/")+8 : strings.Index(SpellImageURL, ".png")]
 		}
 
 		s.Find(".TableContainer").Each(func(index int, s *goquery.Selection) {
@@ -275,7 +276,7 @@ func TibiaSpellsSpellImpl(spell string, BoxContentHTML string) (*SpellInformatio
 	return &SpellInformationResponse{
 		SpellData{
 			Name:                SpellName,
-			Spell:               strings.ToLower(SpellName),
+			Spell:               SpellID,
 			ImageURL:            SpellImageURL,
 			Description:         SpellDescription,
 			HasSpellInformation: SpellsHasSpellSection,

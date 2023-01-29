@@ -2,6 +2,7 @@ package main
 
 import (
 	"io"
+	"log"
 	"testing"
 
 	"github.com/TibiaData/tibiadata-api-go/src/static"
@@ -28,9 +29,11 @@ func TestFindPerson(t *testing.T) {
 	assert := assert.New(t)
 	spell := findPersonJson.Spell
 
+	log.Print(spell)
+
 	assert.Empty(spell.Description)
 	assert.Equal("Find Person", spell.Name)
-	assert.Equal("find person", spell.Spell)
+	assert.Equal("findperson", spell.Spell)
 	assert.True(spell.HasSpellInformation)
 	assert.NotNil(spell.SpellInformation)
 	assert.Equal("exiva 'name'", spell.SpellInformation.Formula)
@@ -78,7 +81,7 @@ func TestHeavyMagicMissileRune(t *testing.T) {
 
 	assert.Empty(spell.Description)
 	assert.Equal("Heavy Magic Missile Rune", spell.Name)
-	assert.Equal("heavy magic missile rune", spell.Spell)
+	assert.Equal("heavymagicmissilerune", spell.Spell)
 	assert.True(spell.HasSpellInformation)
 	assert.NotNil(spell.SpellInformation)
 	assert.Equal("adori vis", spell.SpellInformation.Formula)
@@ -180,7 +183,7 @@ func TestBruiseBane(t *testing.T) {
 
 	assert.Empty(spell.Description)
 	assert.Equal("Bruise Bane", spell.Name)
-	assert.Equal("bruise bane", spell.Spell)
+	assert.Equal("bruisebane", spell.Spell)
 	assert.True(spell.HasSpellInformation)
 	assert.NotNil(spell.SpellInformation)
 	assert.Equal("exura infir ico", spell.SpellInformation.Formula)
@@ -223,7 +226,7 @@ func TestCurePoisonRune(t *testing.T) {
 
 	assert.Empty(spell.Description)
 	assert.Equal("Cure Poison Rune", spell.Name)
-	assert.Equal("cure poison rune", spell.Spell)
+	assert.Equal("curepoisonrune", spell.Spell)
 	assert.True(spell.HasSpellInformation)
 	assert.NotNil(spell.SpellInformation)
 	assert.Equal("adana pox", spell.SpellInformation.Formula)
@@ -262,7 +265,7 @@ func TestConvinceCreatureRune(t *testing.T) {
 
 	assert.Empty(spell.Description)
 	assert.Equal("Convince Creature Rune", spell.Name)
-	assert.Equal("convince creature rune", spell.Spell)
+	assert.Equal("convincecreaturerune", spell.Spell)
 	assert.True(spell.HasSpellInformation)
 	assert.NotNil(spell.SpellInformation)
 	assert.Equal("adeta sio", spell.SpellInformation.Formula)

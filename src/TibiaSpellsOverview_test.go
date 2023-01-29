@@ -27,7 +27,7 @@ func TestOverviewAll(t *testing.T) {
 
 	assert := assert.New(t)
 
-	assert.Equal(142, len(spellsOverviewJson.Spells.Spells))
+	assert.Equal(152, len(spellsOverviewJson.Spells.Spells))
 
 	firstSpell := spellsOverviewJson.Spells.Spells[0]
 	assert.Equal("Animate Dead Rune", firstSpell.Name)
@@ -43,7 +43,7 @@ func TestOverviewAll(t *testing.T) {
 	assert.True(firstSpell.TypeRune)
 	assert.True(firstSpell.PremiumOnly)
 
-	findPersonSpell := spellsOverviewJson.Spells.Spells[53]
+	findPersonSpell := spellsOverviewJson.Spells.Spells[60]
 	assert.Equal("Find Person", findPersonSpell.Name)
 	assert.Equal("findperson", findPersonSpell.Spell)
 	assert.Equal("exiva \"name\"", findPersonSpell.Formula)

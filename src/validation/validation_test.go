@@ -599,7 +599,7 @@ func TestErrors(t *testing.T) {
 		},
 		ErrorMaintenanceMode: {
 			Code: 20005,
-		}
+		},
 	}
 
 	for err, values := range errs {

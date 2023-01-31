@@ -193,6 +193,10 @@ var (
 	// ErrorGuildNotFound will be sent if the requested guild does not exist
 	// Code: 20004
 	ErrorGuildNotFound = Error{errors.New("could not find guild")}
+
+	// ErrorMaintenanceMode will be sent if there is ongoing maintenance
+	// Code: 20005
+	ErrorMaintenanceMode = Error{errors.New("maintenance mode active")}
 )
 
 // Code will return the code of the error
@@ -284,6 +288,8 @@ func (e Error) Code() int {
 		return 20003
 	case ErrorGuildNotFound:
 		return 20004
+	case ErrorMaintenanceMode:
+		return 20005
 	default:
 		return 0
 	}

@@ -597,6 +597,9 @@ func TestErrors(t *testing.T) {
 		ErrorGuildNotFound: {
 			Code: 20004,
 		},
+		ErrorMaintenanceMode: {
+			Code: 20005,
+		}
 	}
 
 	for err, values := range errs {

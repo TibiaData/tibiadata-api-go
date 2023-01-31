@@ -1229,7 +1229,7 @@ func TibiaDataHTMLDataCollector(TibiaDataRequest TibiaDataRequestStruct) (string
 			if location.Host == "maintenance.tibia.com" {
 				LogMessage := "maintenance mode detected on tibia.com"
 				log.Printf("[info] TibiaDataHTMLDataCollector: %s!", LogMessage)
-				return "", err
+				return "", validation.ErrorMaintenanceMode
 			}
 			fallthrough
 

@@ -158,6 +158,7 @@ func runWebServer() {
 
 		// Tibia guilds
 		v4.GET("/guild/:name", tibiaGuildsGuild)
+		v4.GET("/guild/:name/:online", tibiaGuildsGuild)
 		// v4.GET("/guild/:name/events",TibiaGuildsGuildEvents)
 		// v4.GET("/guild/:name/wars",TibiaGuildsGuildWars)
 		v4.GET("/guilds/:world", tibiaGuildsOverview)
@@ -404,10 +405,11 @@ func tibiaFansites(c *gin.Context) {
 // @Failure      400  {object}  Information
 // @Failure      404  {object}  Information
 // @Failure      503  {object}  Information
-// @Router       /v4/guild/{name} [get]
+// @Router       /v4/guild/{name}/{online} [get]
 func tibiaGuildsGuild(c *gin.Context) {
 	// getting params from URL
 	guild := c.Param("name")
+	online := c.Param("online")
 
 	// Validate the name
 	err := validation.IsGuildNameValid(guild)
@@ -416,9 +418,18 @@ func tibiaGuildsGuild(c *gin.Context) {
 		return
 	}
 
+	// checking the online param
+	if online == "" {
+		online = "0"
+	}
+	if TibiaDataStringToInteger(online) < 0 || TibiaDataStringToInteger(online) > 1 {
+		TibiaDataErrorHandler(c, validation.ErrorGuildOnlineOutOfRange, http.StatusBadRequest)
+		return
+	}
+
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiaDataQueryEscapeString(guild),
+		URL:    "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiaDataQueryEscapeString(guild) + "&onlyshowonline=" + TibiaDataQueryEscapeString(online),
 	}
 
 	tibiaDataRequestHandler(

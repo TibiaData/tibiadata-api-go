@@ -174,6 +174,10 @@ var (
 	// Code: 14007
 	ErrorGuildWordTooSmall = Error{errors.New("the provided guild name has a word too smal")}
 
+	// ErrorGuildOnlineOutOfRange will be sent if the request contains a OnlineOnyParam > 1 or < 0
+	// Code: 14008
+	ErrorGuildOnlineOutOfRange = Error{errors.New("the online only param must be 0 or 1")}
+
 	///////////////////
 	// Tibia Errors //
 	/////////////////
@@ -280,6 +284,8 @@ func (e Error) Code() int {
 		return 14006
 	case ErrorGuildWordTooSmall:
 		return 14007
+	case ErrorGuildOnlineOutOfRange:
+		return 14008
 	case ErrorCharacterNotFound:
 		return 20001
 	case ErrorCreatureNotFound:

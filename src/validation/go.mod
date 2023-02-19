@@ -1,6 +1,6 @@
 module github.com/TibiaData/tibiadata-api-go/src/validation
 
-go 1.19
+go 1.20
 
 replace github.com/TibiaData/tibiadata-api-go/src/tibiamapping => ../tibiamapping
 

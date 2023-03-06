@@ -19,7 +19,7 @@ jobs:
             tibiadata/tibiadata-api-go
             ghcr.io/tibiadata/tibiadata-api-go
           flavor: |
-            latest=false
+            latest=true
           tags: |
             type=semver,pattern={{major}}
             type=semver,pattern={{major}}.{{minor}}

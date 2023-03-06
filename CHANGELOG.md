@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.7.0] - 2023-03-06
+
+### Added
+* Add parsing of healed by damage for creatures ([#182](https://github.com/TibiaData/tibiadata-api-go/pull/182) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Changed
+* Bump golang from 1.19.5 to 1.20.1
+* Extend special creatures list for death parsing ([#184](https://github.com/TibiaData/tibiadata-api-go/pull/184) by [tobiasehlert](https://github.com/tobiasehlert))
+* Updating workflows and go mods
+
 ## [3.6.0] - 2023-01-25
 
 ### Added
@@ -254,6 +264,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.7.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.5.1...v3.6.0
 [3.5.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.4.1...v3.5.0

@@ -101,8 +101,14 @@ func runWebServer() {
 		)
 	})
 
-	// Disable proxy feature of gin
-	_ = router.SetTrustedProxies(nil)
+	// Set proxy feature of gin
+	trustedProxies := getEnv("GIN_TRUSTED_PROXIES", "")
+	if len(trustedProxies) > 0 {
+		_ = router.SetTrustedProxies(strings.Split(trustedProxies, ","))
+		log.Print(strings.Split(trustedProxies, ","))
+	} else {
+		_ = router.SetTrustedProxies(nil)
+	}
 
 	// Set the ping endpoint
 	router.GET("/ping", func(c *gin.Context) {

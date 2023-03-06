@@ -63,8 +63,14 @@ func runWebServer() {
 		c.JSON(http.StatusNotFound, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
 	})
 
-	// disable proxy feature of gin
-	_ = router.SetTrustedProxies(nil)
+	// Set proxy feature of gin
+	trustedProxies := getEnv("GIN_TRUSTED_PROXIES", "")
+	if len(trustedProxies) > 0 {
+		_ = router.SetTrustedProxies(strings.Split(trustedProxies, ","))
+		log.Print(strings.Split(trustedProxies, ","))
+	} else {
+		_ = router.SetTrustedProxies(nil)
+	}
 
 	// Ping-endpoint
 	router.GET("/ping", func(c *gin.Context) {

@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.7.1] - 2023-03-06
+
+### Fixed
+* Removing unintended logging of trustedProxies var
+* Adding back latest tagging of builds
+
 ## [3.7.0] - 2023-03-06
 
 ### Added
@@ -264,6 +270,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.7.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.5.1...v3.6.0
 [3.5.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.5.0...v3.5.1

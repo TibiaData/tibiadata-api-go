@@ -188,10 +188,10 @@ func TibiaDataSanitize0026String(data string) string {
 	return strings.ReplaceAll(data, "\u0026#39;", "'")
 }
 
-// isEnvExist func - check if environment var is set
-func isEnvExist(key string) (ok bool) {
-	_, ok = os.LookupEnv(key)
-	return
+// isEnvExist func - check if environment var is set and not empty
+func isEnvExist(key string) bool {
+	data, ok := os.LookupEnv(key)
+	return ok && data != ""
 }
 
 // getEnv func - read an environment or return a default value

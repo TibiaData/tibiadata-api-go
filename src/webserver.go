@@ -102,8 +102,8 @@ func runWebServer() {
 	})
 
 	// Set proxy feature of gin
-	trustedProxies := getEnv("GIN_TRUSTED_PROXIES", "")
-	if len(trustedProxies) > 0 {
+	if isEnvExist("GIN_TRUSTED_PROXIES") {
+		trustedProxies := getEnv("GIN_TRUSTED_PROXIES", "")
 		_ = router.SetTrustedProxies(strings.Split(trustedProxies, ","))
 		log.Printf("[info] TibiaData API gin-trusted-proxies: %s", strings.Split(trustedProxies, ","))
 	} else {

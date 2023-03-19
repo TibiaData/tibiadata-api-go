@@ -104,23 +104,22 @@ func TibiaDataInitializer() {
 	}
 
 	// Adding information of host
-	TibiaDataHost = getEnv("TIBIADATA_HOST", "")
-	if TibiaDataHost != "" {
-		TibiaDataHost = "+https://" + TibiaDataHost
+	if isEnvExist("TIBIADATA_HOST") {
+		TibiaDataHost = "+https://" + getEnv("TIBIADATA_HOST", "")
 	}
 
 	// Setting TibiaDataProxyDomain
 	if isEnvExist("TIBIADATA_PROXY") {
 
-		TibiaDataProxyProtocol := "https"
-		if isEnvExist("TIBIADATA_PROXY_PROTOCOL") {
-			TibiaDataProxyProtocol = getEnv("TIBIADATA_PROXY_PROTOCOL", "https")
+		TibiaDataProxyProtocol := getEnv("TIBIADATA_PROXY_PROTOCOL", "https")
+		switch TibiaDataProxyProtocol {
+		case "http":
+			TibiaDataProxyProtocol = "http"
 		}
 
 		TibiaDataProxyDomain = TibiaDataProxyProtocol + "://" + getEnv("TIBIADATA_PROXY", "www.tibia.com") + "/"
+		log.Printf("[info] TibiaData API proxy: %s", TibiaDataProxyDomain)
 	}
-
-	log.Printf("[info] TibiaData API proxy: %s", TibiaDataProxyDomain)
 
 	// Run some functions that are empty but required for documentation to be done
 	_ = tibiaNewslistArchive()

@@ -394,8 +394,8 @@ func tibiaHighscoresV3(c *gin.Context) {
 	if page == "" {
 		page = "1"
 	}
-	if TibiaDataStringToIntegerV3(page) < 1 || TibiaDataStringToIntegerV3(page) > 23 {
-		TibiaDataAPIHandleResponse(c, http.StatusBadRequest, "TibiaHighscoresV3", gin.H{"error": "page needs to be from 1 to 20 (possible until 23)"})
+	if TibiaDataStringToIntegerV3(page) < 1 {
+		TibiaDataAPIHandleResponse(c, http.StatusBadRequest, "TibiaHighscoresV3", gin.H{"error": "page needs to be from 1 upwards"})
 		return
 	}
 

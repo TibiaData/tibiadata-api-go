@@ -552,10 +552,6 @@ func tibiaHighscores(c *gin.Context) {
 		TibiaDataErrorHandler(c, validation.ErrorHighscorePageInvalid, http.StatusBadRequest)
 		return
 	}
-	if TibiaDataStringToInteger(page) > 30 {
-		TibiaDataErrorHandler(c, validation.ErrorHighscorePageTooBig, http.StatusBadRequest)
-		return
-	}
 
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,

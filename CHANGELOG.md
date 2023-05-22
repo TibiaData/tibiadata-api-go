@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.7.2] - 2023-05-22
+
+### Fixed
+* Removing highscore limit of 23 pages ([#210](https://github.com/TibiaData/tibiadata-api-go/pull/210) by [phenpessoa](https://github.com/phenpessoa))
+
 ## [3.7.1] - 2023-03-06
 
 ### Fixed
@@ -136,7 +141,7 @@
 
 ### Fixed
 * Environment function logic fix ([#91](https://github.com/TibiaData/tibiadata-api-go/pull/91) by [tobiasehlert](https://github.com/tobiasehlert))
-* Stop using ioutil as it is deprecated ([#92](https://github.com/TibiaData/tibiadata-api-go/pull/92) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Stop using ioutil as it is deprecated ([#92](https://github.com/TibiaData/tibiadata-api-go/pull/92) by [phenpessoa](https://github.com/phenpessoa))
 * Adding sanitize of nbsp string in death section of players ([#99](https://github.com/TibiaData/tibiadata-api-go/pull/99) by [tobiasehlert](https://github.com/tobiasehlert))
 
 ## [3.0.0] - 2022-03-01
@@ -164,8 +169,8 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 ### Added
 * Addition of some more tests ([#76](https://github.com/TibiaData/tibiadata-api-go/pull/76) by [tobiasehlert](https://github.com/tobiasehlert))
-* Implement graceful shutdown ([#78](https://github.com/TibiaData/tibiadata-api-go/pull/78) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
-* Implement 404 page not found ([#77](https://github.com/TibiaData/tibiadata-api-go/pull/77) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Implement graceful shutdown ([#78](https://github.com/TibiaData/tibiadata-api-go/pull/78) by [phenpessoa](https://github.com/phenpessoa))
+* Implement 404 page not found ([#77](https://github.com/TibiaData/tibiadata-api-go/pull/77) by [phenpessoa](https://github.com/phenpessoa))
 
 ### Changed
 * Switching to http status codes ([#79](https://github.com/TibiaData/tibiadata-api-go/pull/79) by [tobiasehlert](https://github.com/tobiasehlert))
@@ -219,11 +224,11 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 ### Changed
 * Refactor to use pure goquery and no manual regex on guilds ([#29](https://github.com/TibiaData/tibiadata-api-go/pull/29) by [JorgeMag96](https://github.com/JorgeMag96))
 * Performing go mod tidy ([#43](https://github.com/TibiaData/tibiadata-api-go/pull/43) by [tobiasehlert](https://github.com/tobiasehlert))
-* Use new assert instead of passing t many times ([#45](https://github.com/TibiaData/tibiadata-api-go/pull/45) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Use new assert instead of passing t many times ([#45](https://github.com/TibiaData/tibiadata-api-go/pull/45) by [phenpessoa](https://github.com/phenpessoa))
 * Updating workflows ([#51](https://github.com/TibiaData/tibiadata-api-go/pull/51) by [tobiasehlert](https://github.com/tobiasehlert))
 * Bump golang from 1.17.5 to 1.17.6 ([#50](https://github.com/TibiaData/tibiadata-api-go/pull/50) by [dependabot](https://github.com/dependabot))
-* Reduce dependencies ([#44](https://github.com/TibiaData/tibiadata-api-go/pull/44) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
-* Clean up webserver.go and a few utility funcs ([#37](https://github.com/TibiaData/tibiadata-api-go/pull/37), [#52](https://github.com/TibiaData/tibiadata-api-go/pull/52) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Reduce dependencies ([#44](https://github.com/TibiaData/tibiadata-api-go/pull/44) by [phenpessoa](https://github.com/phenpessoa))
+* Clean up webserver.go and a few utility funcs ([#37](https://github.com/TibiaData/tibiadata-api-go/pull/37), [#52](https://github.com/TibiaData/tibiadata-api-go/pull/52) by [phenpessoa](https://github.com/phenpessoa))
 
 ### Fixed
 * Maintenance mode detection with error message return ([#34](https://github.com/TibiaData/tibiadata-api-go/pull/34) by [tobiasehlert](https://github.com/tobiasehlert))
@@ -237,12 +242,12 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 * Adding proxy support to replace default URL ([#25](https://github.com/TibiaData/tibiadata-api-go/pull/25) by [tobiasehlert](https://github.com/tobiasehlert))
 
 ### Changed
-* Clear lint errors ([#18](https://github.com/TibiaData/tibiadata-api-go/pull/18) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
-* Idiomatic go ([#19](https://github.com/TibiaData/tibiadata-api-go/pull/19) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Clear lint errors ([#18](https://github.com/TibiaData/tibiadata-api-go/pull/18) by [phenpessoa](https://github.com/phenpessoa))
+* Idiomatic go ([#19](https://github.com/TibiaData/tibiadata-api-go/pull/19) by [phenpessoa](https://github.com/phenpessoa))
 * Removing duplicate function ([#27](https://github.com/TibiaData/tibiadata-api-go/pull/27) by [tobiasehlert](https://github.com/tobiasehlert))
 
 ### Fixed
-* Highscores endpoints redirect ([#22](https://github.com/TibiaData/tibiadata-api-go/pull/22) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Highscores endpoints redirect ([#22](https://github.com/TibiaData/tibiadata-api-go/pull/22) by [phenpessoa](https://github.com/phenpessoa))
 
 ## [0.2.0] - 2022-01-02
 
@@ -270,6 +275,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.7.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.1...v3.7.2
 [3.7.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.5.1...v3.6.0

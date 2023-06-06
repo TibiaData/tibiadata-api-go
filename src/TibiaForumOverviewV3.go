@@ -22,7 +22,7 @@ type Board struct {
 	Description string   `json:"description"`
 	Posts       int      `json:"posts"`
 	Threads     int      `json:"threads"`
-	LastPost    LastPost `json.*:"last_post"`
+	LastPost    LastPost `json:"last_post"`
 }
 
 // The base includes two levels: Boards and Information

@@ -758,10 +758,10 @@ func tibiaWorldsWorldV3(c *gin.Context) {
 		"TibiaWorldsWorldV3")
 }
 
-// Forum boards godoc
+// Forum overview godoc
 // @Summary      List of all forum boards
 // @Description  Show all boards of Tibia Forum
-// @Tags         forum
+// @Tags         forums
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  ForumOverviewResponse

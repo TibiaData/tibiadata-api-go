@@ -33,9 +33,19 @@ func TibiaDataDatetimeV3(date string) string {
 	} else {
 		// timezone use in html: CET/CEST
 		loc, _ := time.LoadLocation("Europe/Berlin")
+		var formatting string
 
-		// format used in datetime on html: Jan 02 2007, 19:20:30 CET
-		formatting := "Jan 02 2006, 15:04:05 MST"
+		// parsing and setting format of return
+		switch dateLength := len(date); {
+		case dateLength > 19:
+			// format used in datetime on html: Jan 02 2007, 19:20:30 CET
+			formatting = "Jan 02 2006, 15:04:05 MST"
+		case dateLength == 19:
+			// format used in datetime on html: 03.06.2023 01:19:00
+			formatting = "02.01.2006 15:04:05"
+		default:
+			log.Printf("Weird format detected: %s", date)
+		}
 
 		// parsing html in time with location set in loc
 		returnDate, err = time.ParseInLocation(formatting, date, loc)
@@ -288,5 +298,21 @@ func TibiaDataGetNewsType(data string) string {
 		return "news"
 	default:
 		return "unknown"
+	}
+}
+
+// TibiaDataForumNameValidator func - return valid forum string
+func TibiaDataForumNameValidator(name string) string {
+	switch strings.ToLower(name) {
+	case "world boards", "world", "worldboards":
+		return "worldboards"
+	case "trade boards", "trade", "tradeboards":
+		return "tradeboards"
+	case "community boards", "community", "communityboards":
+		return "communityboards"
+	case "support boards", "support", "supportboards":
+		return "supportboards"
+	default:
+		return "worldboards"
 	}
 }

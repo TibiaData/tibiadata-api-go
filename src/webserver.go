@@ -136,6 +136,9 @@ func runWebServer() {
 		// Tibia worlds
 		v3.GET("/world/:name", tibiaWorldsWorldV3)
 		v3.GET("/worlds", tibiaWorldsOverviewV3)
+
+		// Tibia forums
+		v3.GET("/forums/:name", tibiaForumOverviewV3)
 	}
 
 	// container version details endpoint
@@ -753,6 +756,32 @@ func tibiaWorldsWorldV3(c *gin.Context) {
 			return TibiaWorldsWorldV3Impl(world, BoxContentHTML), http.StatusOK
 		},
 		"TibiaWorldsWorldV3")
+}
+
+// Forum boards godoc
+// @Summary      List of all forum boards
+// @Description  Show all boards of Tibia Forum
+// @Tags         forum
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  ForumOverviewResponse
+// @Router       /v3/forums/{name} [get]
+func tibiaForumOverviewV3(c *gin.Context) {
+	// getting params from URL
+	name := c.Param("name")
+
+	tibiadataRequest := TibiaDataRequestStruct{
+		Method: resty.MethodGet,
+		URL:    "https://www.tibia.com/forum/?subtopic=" + TibiaDataForumNameValidator(name),
+	}
+
+	tibiaDataRequestHandler(
+		c,
+		tibiadataRequest,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaForumOverviewV3Impl(BoxContentHTML), http.StatusOK
+		},
+		"TibiaForumOverviewV3")
 }
 
 func tibiaDataRequestHandler(c *gin.Context, tibiaDataRequest TibiaDataRequestStruct, requestHandler func(string) (interface{}, int), handlerName string) {

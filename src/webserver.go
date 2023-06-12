@@ -136,6 +136,9 @@ func runWebServer() {
 		// Tibia worlds
 		v3.GET("/world/:name", tibiaWorldsWorldV3)
 		v3.GET("/worlds", tibiaWorldsOverviewV3)
+
+		// Tibia forum
+		v3.GET("/forum/board/:board_id", tibiaForumBoardV3)
 	}
 
 	// container version details endpoint
@@ -753,6 +756,48 @@ func tibiaWorldsWorldV3(c *gin.Context) {
 			return TibiaWorldsWorldV3Impl(world, BoxContentHTML), http.StatusOK
 		},
 		"TibiaWorldsWorldV3")
+}
+
+// Board godoc
+// @Summary      List of threads in board
+// @Description  Show all threads in board
+// @Tags         forums
+// @Accept       json
+// @Produce      json
+// @Param        board_id     path int    true "ID of the board" extensions(x-example=1)
+// @Param        page     query int    true "The current page" minimum(1) default(1) extensions(x-example=1)
+// @Param        threads_age query string true "Filter when thread was created" default(lastDay) Enums(lastDay, last2Days, last5Days, last10Days, last20Days, last30Days, last45Days, last60Days, last75Days, last100Days, lastYear, all) extensions(x-example=lastDay)
+// @Success      200  {object}  ForumBoardResponse
+// @Router       /v3/forum/board/{board_id} [get]
+func tibiaForumBoardV3(c *gin.Context) {
+	// getting params from URL
+	boardId := c.Param("board_id")
+	page := c.Query("page")
+	threadsAge := c.Query("threads_age")
+
+	if page == "" {
+		page = "1"
+	}
+
+	if TibiaDataStringToIntegerV3(page) < 1 {
+		TibiaDataAPIHandleResponse(c, http.StatusBadRequest, "tibiaForumBoardV3", gin.H{"error": "page needs to be from 1 upwards"})
+		return
+	}
+
+	threadsAgeFromString := ThreadsAgeFromString(threadsAge)
+
+	tibiadataRequest := TibiaDataRequestStruct{
+		Method: resty.MethodGet,
+		URL:    "https://www.tibia.com/forum/?action=board&boardid=" + boardId + "&pagenumber=" + page + "&threadage=" + strconv.Itoa(int(threadsAgeFromString)),
+	}
+
+	tibiaDataRequestHandler(
+		c,
+		tibiadataRequest,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaForumBoardV3Impl(boardId, BoxContentHTML, TibiaDataStringToIntegerV3(page), threadsAgeFromString), http.StatusOK
+		},
+		"TibiaBoardsBoardV3")
 }
 
 func tibiaDataRequestHandler(c *gin.Context, tibiaDataRequest TibiaDataRequestStruct, requestHandler func(string) (interface{}, int), handlerName string) {

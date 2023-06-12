@@ -138,7 +138,7 @@ func runWebServer() {
 		v3.GET("/worlds", tibiaWorldsOverviewV3)
 
 		// Tibia forums
-		v3.GET("/forums/:name", tibiaForumOverviewV3)
+		v3.GET("/forum/section/:name", tibiaForumSectionV3)
 	}
 
 	// container version details endpoint
@@ -764,9 +764,9 @@ func tibiaWorldsWorldV3(c *gin.Context) {
 // @Tags         forums
 // @Accept       json
 // @Produce      json
-// @Success      200  {object}  ForumOverviewResponse
-// @Router       /v3/forums/{name} [get]
-func tibiaForumOverviewV3(c *gin.Context) {
+// @Success      200  {object}  ForumSectionResponse
+// @Router       /v3/forum/section/{name} [get]
+func tibiaForumSectionV3(c *gin.Context) {
 	// getting params from URL
 	name := c.Param("name")
 
@@ -779,7 +779,7 @@ func tibiaForumOverviewV3(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaForumOverviewV3Impl(BoxContentHTML), http.StatusOK
+			return TibiaForumSectionV3Impl(BoxContentHTML), http.StatusOK
 		},
 		"TibiaForumOverviewV3")
 }

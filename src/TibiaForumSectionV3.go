@@ -8,27 +8,24 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-// Child of Board
-type LastPost struct {
+type SectionBoardLastPost struct {
 	ID            int    `json:"id"`
 	PostedAt      string `json:"posted_at"`
 	CharacterName string `json:"character_name"`
 }
 
-// Child of ForumOverviewResponse
-type Board struct {
-	ID          int      `json:"id"`
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	Posts       int      `json:"posts"`
-	Threads     int      `json:"threads"`
-	LastPost    LastPost `json:"last_post"`
+type SectionBoard struct {
+	ID          int                  `json:"id"`
+	Name        string               `json:"name"`
+	Description string               `json:"description"`
+	Posts       int                  `json:"posts"`
+	Threads     int                  `json:"threads"`
+	LastPost    SectionBoardLastPost `json:"last_post"`
 }
 
-// The base includes two levels: Boards and Information
-type ForumOverviewResponse struct {
-	Boards      []Board     `json:"boards"`
-	Information Information `json:"information"`
+type ForumSectionResponse struct {
+	Boards      []SectionBoard `json:"boards"`
+	Information Information    `json:"information"`
 }
 
 var (
@@ -38,8 +35,8 @@ var (
 	lastPostCharacterNameRegex = regexp.MustCompile(`.*subtopic=characters&amp;name=.*\">(.*)<\/a><\/span>`)
 )
 
-// TibiaForumOverviewV3Impl func
-func TibiaForumOverviewV3Impl(BoxContentHTML string) ForumOverviewResponse {
+// TibiaForumSectionV3Impl func
+func TibiaForumSectionV3Impl(BoxContentHTML string) ForumSectionResponse {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -47,7 +44,7 @@ func TibiaForumOverviewV3Impl(BoxContentHTML string) ForumOverviewResponse {
 	}
 
 	var (
-		BoardsData                              []Board
+		BoardsData                              []SectionBoard
 		LastPostId                              int
 		LastPostPostedAt, LastPostCharacterName string
 	)
@@ -80,13 +77,13 @@ func TibiaForumOverviewV3Impl(BoxContentHTML string) ForumOverviewResponse {
 			LastPostCharacterName = TibiaDataSanitizeStrings(subma4[0][1])
 		}
 
-		BoardsData = append(BoardsData, Board{
+		BoardsData = append(BoardsData, SectionBoard{
 			ID:          TibiaDataStringToIntegerV3(subma1[0][1]),
 			Name:        subma1[0][2],
 			Description: subma1[0][3],
 			Posts:       TibiaDataStringToIntegerV3(subma1[0][4]),
 			Threads:     TibiaDataStringToIntegerV3(subma1[0][5]),
-			LastPost: LastPost{
+			LastPost: SectionBoardLastPost{
 				ID:            LastPostId,
 				PostedAt:      LastPostPostedAt,
 				CharacterName: LastPostCharacterName,
@@ -96,7 +93,7 @@ func TibiaForumOverviewV3Impl(BoxContentHTML string) ForumOverviewResponse {
 
 	//
 	// Build the data-blob
-	return ForumOverviewResponse{
+	return ForumSectionResponse{
 		Boards: BoardsData,
 		Information: Information{
 			APIVersion: TibiaDataAPIversion,

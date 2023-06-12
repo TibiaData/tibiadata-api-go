@@ -8,25 +8,25 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-type ThreadLastPost struct {
+type ForumBoardThreadLastPost struct {
 	ID            int    `json:"id"`
 	PostedAt      string `json:"posted_at"`
 	CharacterName string `json:"character_name"`
 }
 
-type Thread struct {
-	ID            int            `json:"id"`
-	Title         string         `json:"title"`
-	IsHot         bool           `json:"is_hot"`
-	IsNew         bool           `json:"is_new"`
-	IsClosed      bool           `json:"is_closed"`
-	IsSticky      bool           `json:"is_sticky"`
-	Icon          string         `json:"icon"`
-	Pages         int            `json:"pages"`
-	Replies       int            `json:"replies"`
-	Views         int            `json:"views"`
-	CharacterName string         `json:"character_name"`
-	LastPost      ThreadLastPost `json:"last_post"`
+type ForumBoardThread struct {
+	ID            int                      `json:"id"`
+	Title         string                   `json:"title"`
+	IsHot         bool                     `json:"is_hot"`
+	IsNew         bool                     `json:"is_new"`
+	IsClosed      bool                     `json:"is_closed"`
+	IsSticky      bool                     `json:"is_sticky"`
+	Icon          string                   `json:"icon"`
+	Pages         int                      `json:"pages"`
+	Replies       int                      `json:"replies"`
+	Views         int                      `json:"views"`
+	CharacterName string                   `json:"character_name"`
+	LastPost      ForumBoardThreadLastPost `json:"last_post"`
 }
 
 type ForumBoardPagination struct {
@@ -40,7 +40,7 @@ type ForumBoard struct {
 	SectionName           string               `json:"section_name"`
 	BoardName             string               `json:"board_name"`
 	ThreadsAge            string               `json:"threads_age"`
-	ThreadsList           []Thread             `json:"threads"`
+	ThreadsList           []ForumBoardThread   `json:"threads"`
 	BoardsBoardPagination ForumBoardPagination `json:"pagination"`
 }
 
@@ -70,7 +70,7 @@ func TibiaForumBoardV3Impl(BoardID string, BoxContentHTML string, currentPage in
 	}
 
 	var (
-		ThreadsData              []Thread
+		ThreadsData              []ForumBoardThread
 		totalPages, totalResults int
 		sectionName, boardName   string
 	)
@@ -102,7 +102,7 @@ func TibiaForumBoardV3Impl(BoardID string, BoxContentHTML string, currentPage in
 			return
 		}
 
-		thread := Thread{
+		thread := ForumBoardThread{
 			ID:    TibiaDataStringToIntegerV3(subma1[0][1]),
 			Title: TibiaDataSanitizeStrings(subma1[0][2]),
 		}
@@ -149,7 +149,7 @@ func TibiaForumBoardV3Impl(BoardID string, BoxContentHTML string, currentPage in
 
 		subma7 := lastPostInfoRegex.FindAllStringSubmatch(BoardDivHTML, -1)
 		if len(subma7) > 0 {
-			thread.LastPost = ThreadLastPost{
+			thread.LastPost = ForumBoardThreadLastPost{
 				ID:            TibiaDataStringToIntegerV3(subma7[0][1]),
 				PostedAt:      TibiaDataDatetimeV3(strings.Trim(TibiaDataSanitizeStrings(subma7[0][2]), " ")),
 				CharacterName: subma7[0][3],

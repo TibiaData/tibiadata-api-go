@@ -136,6 +136,9 @@ func runWebServer() {
 		// Tibia worlds
 		v3.GET("/world/:name", tibiaWorldsWorldV3)
 		v3.GET("/worlds", tibiaWorldsOverviewV3)
+
+		// Tibia forum
+		v3.GET("/forum/thread/:thread_id", tibiaForumThreadV3)
 	}
 
 	// container version details endpoint
@@ -753,6 +756,44 @@ func tibiaWorldsWorldV3(c *gin.Context) {
 			return TibiaWorldsWorldV3Impl(world, BoxContentHTML), http.StatusOK
 		},
 		"TibiaWorldsWorldV3")
+}
+
+// Board godoc
+// @Summary      List of posts in thread
+// @Description  Show all posts in thread
+// @Tags         forums
+// @Accept       json
+// @Produce      json
+// @Param        thread_id     path int    true "ID of the thread" extensions(x-example=1)
+// @Param        page     query int    true "The current page" minimum(1) default(1) extensions(x-example=1)
+// @Success      200  {object}  ForumThreadResponse
+// @Router       /v3/forum/thread/{thread_id} [get]
+func tibiaForumThreadV3(c *gin.Context) {
+	// getting params from URL
+	threadId := c.Param("thread_id")
+	page := c.Query("page")
+
+	if page == "" {
+		page = "1"
+	}
+
+	if TibiaDataStringToIntegerV3(page) < 1 {
+		TibiaDataAPIHandleResponse(c, http.StatusBadRequest, "tibiaForumThreadV3", gin.H{"error": "page needs to be from 1 upwards"})
+		return
+	}
+
+	tibiadataRequest := TibiaDataRequestStruct{
+		Method: resty.MethodGet,
+		URL:    "https://www.tibia.com/forum/?action=thread&threadid=" + threadId + "&pagenumber=" + page,
+	}
+
+	tibiaDataRequestHandler(
+		c,
+		tibiadataRequest,
+		func(BoxContentHTML string) (interface{}, int) {
+			return TibiaForumThread3Impl(threadId, BoxContentHTML, TibiaDataStringToIntegerV3(page)), http.StatusOK
+		},
+		"TibiaForumThread3Impl")
 }
 
 func tibiaDataRequestHandler(c *gin.Context, tibiaDataRequest TibiaDataRequestStruct, requestHandler func(string) (interface{}, int), handlerName string) {

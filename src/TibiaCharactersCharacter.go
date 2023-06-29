@@ -123,7 +123,6 @@ type CharacterResponse struct {
 const Br = 0x202
 
 var (
-	summonRegex        = regexp.MustCompile(`(an? .+) of ([^<]+)`)
 	characterInfoRegex = regexp.MustCompile(`<td.*<nobr>[0-9]+\..(.*)<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td><td style="width: 70%">(.*)<\/td><td.*`)
 )
 
@@ -643,10 +642,10 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 		if containsCreaturesWithOf(data) {
 			// this is not a summon, since it is a creature with a of in the middle
 		} else {
-			rs := summonRegex.FindAllStringSubmatch(data, -1)
-			if len(rs) >= 1 {
-				theSummon = rs[0][1]
-				data = rs[0][2]
+			ofIdx := strings.Index(data, "of")
+			if ofIdx != -1 {
+				theSummon = data[:ofIdx-1]
+				data = data[ofIdx+3:]
 			}
 		}
 	}

@@ -84,7 +84,7 @@ func TibiaForumSectionImpl(BoxContentHTML string) (*ForumSectionResponse, error)
 		BoardsData = append(BoardsData, SectionBoard{
 			ID:          TibiaDataStringToInteger(subma1[0][1]),
 			Name:        subma1[0][2],
-			Description: subma1[0][3],
+			Description: TibiaDataSanitizeEscapedString(subma1[0][3]),
 			Posts:       TibiaDataStringToInteger(subma1[0][4]),
 			Threads:     TibiaDataStringToInteger(subma1[0][5]),
 			LastPost: SectionBoardLastPost{

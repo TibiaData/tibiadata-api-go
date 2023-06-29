@@ -72,20 +72,20 @@ var (
 )
 
 // TibiaHousesHouse func
-func TibiaHousesHouseImpl(houseid int, BoxContentHTML string) (*HouseResponse, error) {
+func TibiaHousesHouseImpl(houseid int, BoxContentHTML string) (HouseResponse, error) {
 	// Creating empty vars
 	var HouseData House
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaHousesHouseImpl failed at goquery.NewDocumentFromReader, err: %s", err)
+		return HouseResponse{}, fmt.Errorf("[error] TibiaHousesHouseImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Running query over each div
 	HouseHTML, err := ReaderHTML.Find(".BoxContent table tr").First().Html()
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaHousesHouseImpl failed at ReaderHTML.Find, err: %s", err)
+		return HouseResponse{}, fmt.Errorf("[error] TibiaHousesHouseImpl failed at ReaderHTML.Find, err: %s", err)
 	}
 
 	// Regex to get data for house
@@ -97,7 +97,7 @@ func TibiaHousesHouseImpl(houseid int, BoxContentHTML string) (*HouseResponse, e
 
 		rawHouse, err := validation.GetHouseRaw(HouseData.Houseid)
 		if err != nil {
-			return nil, err
+			return HouseResponse{}, err
 		}
 
 		HouseData.Town = rawHouse.Town
@@ -165,7 +165,7 @@ func TibiaHousesHouseImpl(houseid int, BoxContentHTML string) (*HouseResponse, e
 	}
 
 	// Build the data-blob
-	return &HouseResponse{
+	return HouseResponse{
 		HouseData,
 		Information{
 			APIDetails: TibiaDataAPIDetails,

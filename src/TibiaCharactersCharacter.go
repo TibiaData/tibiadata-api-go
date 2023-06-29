@@ -377,47 +377,46 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 				CharacterListHTML = strings.ReplaceAll(CharacterListHTML, ".<br/>Assisted by", ". Assisted by")
 				CharacterListHTML = TibiaDataSanitizeStrings(CharacterListHTML)
 
+				dataNoTags := RemoveHtmlTag(CharacterListHTML)
+
 				// defining responses
 				DeathKillers := []Killers{}
 				DeathAssists := []Killers{}
 
 				const (
-					initIndexer    = `</td><td>`
-					timeIndexer    = `<td width="25%" valign="top">`
+					initIndexer    = `CET`
 					levelIndexer   = `at Level `
 					killersIndexer = `by `
 				)
 
 				initIdx := strings.Index(
-					CharacterListHTML, initIndexer,
+					dataNoTags, initIndexer,
 				) + len(initIndexer)
 				endInitIdx := strings.Index(
-					CharacterListHTML[initIdx:], `<`,
-				) + initIdx
+					dataNoTags[initIdx:], `by `,
+				) + initIdx + len(`by `)
 
-				reasonStart := CharacterListHTML[initIdx:endInitIdx]
-				reasonRest := RemoveHtmlTag(CharacterListHTML[endInitIdx:])
+				reasonStart := dataNoTags[initIdx:endInitIdx]
+				reasonRest := dataNoTags[endInitIdx:]
 
 				// store for reply later on.. and sanitizing string
 				reasonString := reasonStart + reasonRest
 
-				timeIdx := strings.Index(
-					CharacterListHTML, timeIndexer,
-				) + len(timeIndexer)
+				timeIdx := 0
 				endTimeIdx := strings.Index(
-					CharacterListHTML[timeIdx:], `</td><td>`,
-				) + timeIdx
+					dataNoTags[timeIdx:], `CET`,
+				) + timeIdx + len(`CET`)
 
-				time := TibiaDataDatetime(CharacterListHTML[timeIdx:endTimeIdx])
+				time := TibiaDataDatetime(dataNoTags[timeIdx:endTimeIdx])
 
 				levelIdx := strings.Index(
-					CharacterListHTML, levelIndexer,
+					dataNoTags, levelIndexer,
 				) + len(levelIndexer)
 				endLevelIdx := strings.Index(
-					CharacterListHTML[levelIdx:], " ",
+					dataNoTags[levelIdx:], " ",
 				) + levelIdx
 
-				level := TibiaDataStringToInteger(CharacterListHTML[levelIdx:endLevelIdx])
+				level := TibiaDataStringToInteger(dataNoTags[levelIdx:endLevelIdx])
 
 				killersIdx := strings.Index(
 					CharacterListHTML, killersIndexer,
@@ -429,7 +428,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 				rawListofKillers := CharacterListHTML[killersIdx:endKillersIdx]
 
 				// if kill is with assist..
-				if strings.Contains(CharacterListHTML, ". Assisted by ") {
+				if strings.Contains(dataNoTags, ". Assisted by ") {
 					TmpListOfDeath := strings.Split(CharacterListHTML, ". Assisted by ")
 					rawListofKillers = TmpListOfDeath[0][killersIdx:]
 					TmpAssist := TmpListOfDeath[1]
@@ -449,7 +448,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 					for i := range ListOfAssists {
 						name, isPlayer, isTraded, theSummon := TibiaDataParseKiller(ListOfAssists[i])
 						DeathAssists = append(DeathAssists, Killers{
-							Name:   strings.TrimSuffix(RemoveHtmlTag(name), "."),
+							Name:   strings.TrimSuffix(strings.TrimSuffix(name, ".</td>"), "."),
 							Player: isPlayer,
 							Traded: isTraded,
 							Summon: theSummon,
@@ -473,7 +472,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 				for i := range ListOfKillers {
 					name, isPlayer, isTraded, theSummon := TibiaDataParseKiller(ListOfKillers[i])
 					DeathKillers = append(DeathKillers, Killers{
-						Name:   strings.TrimSuffix(RemoveHtmlTag(name), "."),
+						Name:   strings.TrimSuffix(strings.TrimSuffix(name, ".</td>"), "."),
 						Player: isPlayer,
 						Traded: isTraded,
 						Summon: theSummon,

@@ -123,7 +123,6 @@ type CharacterResponse struct {
 const Br = 0x202
 
 var (
-	deathRegex         = regexp.MustCompile(`<td.*>(.*)<\/td><td>(.*) at Level ([0-9]+) by (.*).<\/td>`)
 	summonRegex        = regexp.MustCompile(`(an? .+) of ([^<]+)`)
 	titleRegex         = regexp.MustCompile(`(.*) \(([0-9]+).*`)
 	characterInfoRegex = regexp.MustCompile(`<td.*<nobr>[0-9]+\..(.*)<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td><td style="width: 70%">(.*)<\/td><td.*`)
@@ -376,80 +375,119 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 				// Removing line breaks
 				CharacterListHTML = TibiaDataHTMLRemoveLinebreaks(CharacterListHTML)
 				CharacterListHTML = strings.ReplaceAll(CharacterListHTML, ".<br/>Assisted by", ". Assisted by")
+				CharacterListHTML = TibiaDataSanitizeStrings(CharacterListHTML)
 
-				// Regex to get data for deaths
-				subma1 := deathRegex.FindAllStringSubmatch(CharacterListHTML, -1)
+				// defining responses
+				DeathKillers := []Killers{}
+				DeathAssists := []Killers{}
 
-				if len(subma1) > 0 {
-					// defining responses
-					DeathKillers := []Killers{}
-					DeathAssists := []Killers{}
+				const (
+					initIndexer    = `</td><td>`
+					timeIndexer    = `<td width="25%" valign="top">`
+					levelIndexer   = `at Level `
+					killersIndexer = `by `
+				)
 
-					// store for reply later on.. and sanitizing string
-					ReasonString := TibiaDataSanitizeStrings(RemoveHtmlTag(subma1[0][2] + " at Level " + subma1[0][3] + " by " + subma1[0][4] + "."))
+				initIdx := strings.Index(
+					CharacterListHTML, initIndexer,
+				) + len(initIndexer)
+				endInitIdx := strings.Index(
+					CharacterListHTML[initIdx:], `<`,
+				) + initIdx
 
-					// if kill is with assist..
-					if strings.Contains(subma1[0][4], ". Assisted by ") {
-						TmpListOfDeath := strings.Split(subma1[0][4], ". Assisted by ")
-						subma1[0][4] = TmpListOfDeath[0]
-						TmpAssist := TmpListOfDeath[1]
+				reasonStart := CharacterListHTML[initIdx:endInitIdx]
+				reasonRest := RemoveHtmlTag(CharacterListHTML[endInitIdx:])
 
-						// get a list of killers
-						ListOfAssists := strings.Split(TmpAssist, ", ")
+				// store for reply later on.. and sanitizing string
+				reasonString := reasonStart + reasonRest
 
-						// extract if "and" is in last ss1
-						ListOfAssistsTmp := strings.Split(ListOfAssists[len(ListOfAssists)-1], " and ")
+				timeIdx := strings.Index(
+					CharacterListHTML, timeIndexer,
+				) + len(timeIndexer)
+				endTimeIdx := strings.Index(
+					CharacterListHTML[timeIdx:], `</td><td>`,
+				) + timeIdx
 
-						// if there is an "and", then we split it..
-						if len(ListOfAssistsTmp) > 1 {
-							ListOfAssists[len(ListOfAssists)-1] = ListOfAssistsTmp[0]
-							ListOfAssists = append(ListOfAssists, ListOfAssistsTmp[1])
-						}
+				time := TibiaDataDatetime(CharacterListHTML[timeIdx:endTimeIdx])
 
-						// loop through all killers and append to result
-						for i := range ListOfAssists {
-							name, isPlayer, isTraded, theSummon := TibiaDataParseKiller(ListOfAssists[i])
-							DeathAssists = append(DeathAssists, Killers{
-								Name:   name,
-								Player: isPlayer,
-								Traded: isTraded,
-								Summon: theSummon,
-							})
-						}
-					}
+				levelIdx := strings.Index(
+					CharacterListHTML, levelIndexer,
+				) + len(levelIndexer)
+				endLevelIdx := strings.Index(
+					CharacterListHTML[levelIdx:], " ",
+				) + levelIdx
+
+				level := TibiaDataStringToInteger(CharacterListHTML[levelIdx:endLevelIdx])
+
+				killersIdx := strings.Index(
+					CharacterListHTML, killersIndexer,
+				) + len(killersIndexer)
+				endKillersIdx := strings.Index(
+					CharacterListHTML[killersIdx:], `.</td>`,
+				) + killersIdx
+
+				rawListofKillers := CharacterListHTML[killersIdx:endKillersIdx]
+
+				// if kill is with assist..
+				if strings.Contains(CharacterListHTML, ". Assisted by ") {
+					TmpListOfDeath := strings.Split(CharacterListHTML, ". Assisted by ")
+					rawListofKillers = TmpListOfDeath[0][killersIdx:]
+					TmpAssist := TmpListOfDeath[1]
 
 					// get a list of killers
-					ListOfKillers := strings.Split(subma1[0][4], ", ")
+					ListOfAssists := strings.Split(TmpAssist, ", ")
 
 					// extract if "and" is in last ss1
-					ListOfKillersTmp := strings.Split(ListOfKillers[len(ListOfKillers)-1], " and ")
+					ListOfAssistsTmp := strings.Split(ListOfAssists[len(ListOfAssists)-1], " and ")
 
 					// if there is an "and", then we split it..
-					if len(ListOfKillersTmp) > 1 {
-						ListOfKillers[len(ListOfKillers)-1] = ListOfKillersTmp[0]
-						ListOfKillers = append(ListOfKillers, ListOfKillersTmp[1])
+					if len(ListOfAssistsTmp) > 1 {
+						ListOfAssists[len(ListOfAssists)-1] = ListOfAssistsTmp[0]
+						ListOfAssists = append(ListOfAssists, ListOfAssistsTmp[1])
 					}
 
-					// loop through all killers and append to result
-					for i := range ListOfKillers {
-						name, isPlayer, isTraded, theSummon := TibiaDataParseKiller(ListOfKillers[i])
-						DeathKillers = append(DeathKillers, Killers{
-							Name:   name,
+					for i := range ListOfAssists {
+						name, isPlayer, isTraded, theSummon := TibiaDataParseKiller(ListOfAssists[i])
+						DeathAssists = append(DeathAssists, Killers{
+							Name:   strings.TrimSuffix(RemoveHtmlTag(name), "."),
 							Player: isPlayer,
 							Traded: isTraded,
 							Summon: theSummon,
 						})
 					}
+				}
 
-					// append deadentry to death list
-					DeathsData = append(DeathsData, Deaths{
-						Time:    TibiaDataDatetime(subma1[0][1]),
-						Level:   TibiaDataStringToInteger(subma1[0][3]),
-						Killers: DeathKillers,
-						Assists: DeathAssists,
-						Reason:  ReasonString,
+				// get a list of killers
+				ListOfKillers := strings.Split(rawListofKillers, ", ")
+
+				// extract if "and" is in last ss1
+				ListOfKillersTmp := strings.Split(ListOfKillers[len(ListOfKillers)-1], " and ")
+
+				// if there is an "and", then we split it..
+				if len(ListOfKillersTmp) > 1 {
+					ListOfKillers[len(ListOfKillers)-1] = ListOfKillersTmp[0]
+					ListOfKillers = append(ListOfKillers, ListOfKillersTmp[1])
+				}
+
+				// loop through all killers and append to result
+				for i := range ListOfKillers {
+					name, isPlayer, isTraded, theSummon := TibiaDataParseKiller(ListOfKillers[i])
+					DeathKillers = append(DeathKillers, Killers{
+						Name:   strings.TrimSuffix(RemoveHtmlTag(name), "."),
+						Player: isPlayer,
+						Traded: isTraded,
+						Summon: theSummon,
 					})
 				}
+
+				// append deadentry to death list
+				DeathsData = append(DeathsData, Deaths{
+					Time:    time,
+					Level:   level,
+					Killers: DeathKillers,
+					Assists: DeathAssists,
+					Reason:  reasonString,
+				})
 
 				return true
 			})

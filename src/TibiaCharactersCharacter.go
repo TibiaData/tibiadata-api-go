@@ -125,7 +125,6 @@ const Br = 0x202
 var (
 	deathRegex         = regexp.MustCompile(`<td.*>(.*)<\/td><td>(.*) at Level ([0-9]+) by (.*).<\/td>`)
 	summonRegex        = regexp.MustCompile(`(an? .+) of ([^<]+)`)
-	accountBadgesRegex = regexp.MustCompile(`\(this\), &#39;(.*)&#39;, &#39;(.*)&#39;,.*\).*src="(.*)" alt=.*`)
 	titleRegex         = regexp.MustCompile(`(.*) \(([0-9]+).*`)
 	characterInfoRegex = regexp.MustCompile(`<td.*<nobr>[0-9]+\..(.*)<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td><td style="width: 70%">(.*)<\/td><td.*`)
 )
@@ -293,12 +292,37 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 
 				// prevent failure of regex that parses account badges
 				if CharacterListHTML != "There are no account badges set to be displayed for this character." {
-					subma1 := accountBadgesRegex.FindAllStringSubmatch(CharacterListHTML, -1)
+					const (
+						nameIndexer = `alt="`
+						iconIndexer = `img src="`
+						descIndexer = `&#39;, &#39;`
+					)
+
+					nameIdx := strings.Index(
+						CharacterListHTML, nameIndexer,
+					) + len(nameIndexer)
+					endNameIdx := strings.Index(
+						CharacterListHTML[nameIdx:], `"`,
+					) + nameIdx
+
+					iconIdx := strings.Index(
+						CharacterListHTML, iconIndexer,
+					) + len(iconIndexer)
+					endIconIdx := strings.Index(
+						CharacterListHTML[iconIdx:], `"`,
+					) + iconIdx
+
+					descIdx := strings.Index(
+						CharacterListHTML, descIndexer,
+					) + len(descIndexer)
+					endDescIdx := strings.Index(
+						CharacterListHTML[descIdx:], descIndexer,
+					) + descIdx
 
 					AccountBadgesData = append(AccountBadgesData, AccountBadges{
-						Name:        subma1[0][1],
-						IconURL:     subma1[0][3],
-						Description: subma1[0][2],
+						Name:        CharacterListHTML[nameIdx:endNameIdx],
+						IconURL:     CharacterListHTML[iconIdx:endIconIdx],
+						Description: CharacterListHTML[descIdx:endDescIdx],
 					})
 				}
 

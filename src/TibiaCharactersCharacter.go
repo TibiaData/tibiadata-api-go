@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"reflect"
-	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -121,10 +120,6 @@ type CharacterResponse struct {
 // Instead of importing the whole lib, we thought it would be
 // best to just simply use the Br constant value.
 const Br = 0x202
-
-var (
-	characterInfoRegex = regexp.MustCompile(`<td.*<nobr>[0-9]+\..(.*)<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td><td style="width: 70%">(.*)<\/td><td.*`)
-)
 
 // TibiaCharactersCharacter func
 func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, error) {
@@ -516,52 +511,74 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 				// Removing line breaks
 				CharacterListHTML = TibiaDataHTMLRemoveLinebreaks(CharacterListHTML)
 
-				subma1 := characterInfoRegex.FindAllStringSubmatch(CharacterListHTML, -1)
+				if !strings.Contains(CharacterListHTML, "<td>Name</td><td>World</td><td>Status</td>") {
+					const (
+						nameIndexer  = `<td style="width: 20%"><nobr>`
+						worldIndexer = `<td style="width: 10%"><nobr>`
+					)
 
-				if len(subma1) > 0 {
-					TmpCharacterName := subma1[0][1]
+					nameIdx := strings.Index(
+						CharacterListHTML, nameIndexer,
+					) + len(nameIndexer)
+					nameIdx += strings.Index(
+						CharacterListHTML[nameIdx:], " ",
+					) + 1
+					endNameIdx := strings.Index(
+						CharacterListHTML[nameIdx:], `</nobr></td>`,
+					) + nameIdx
 
-					var TmpTraded bool
-					if strings.Contains(TmpCharacterName, localTradedString) {
-						TmpTraded = true
-						TmpCharacterName = strings.ReplaceAll(TmpCharacterName, localTradedString, "")
+					tmpCharName := CharacterListHTML[nameIdx:endNameIdx]
+
+					worldIdx := strings.Index(
+						CharacterListHTML, worldIndexer,
+					) + len(worldIndexer)
+					endWorldIdx := strings.Index(
+						CharacterListHTML[worldIdx:], `</nobr></td>`,
+					) + worldIdx
+
+					world := CharacterListHTML[worldIdx:endWorldIdx]
+
+					var tmpTraded bool
+					if strings.Contains(tmpCharName, localTradedString) {
+						tmpTraded = true
+						tmpCharName = strings.ReplaceAll(tmpCharName, localTradedString, "")
 					}
 
 					// If this character is the main character of the account
-					TmpMain := false
-					if strings.Contains(TmpCharacterName, "Main Character") {
-						TmpMain = true
-						Tmp := strings.Split(TmpCharacterName, "<")
-						TmpCharacterName = strings.TrimSpace(Tmp[0])
+					var tmpMain bool
+					if strings.Contains(tmpCharName, "Main Character") {
+						tmpMain = true
+						tmp := strings.Split(tmpCharName, "<")
+						tmpCharName = strings.TrimSpace(tmp[0])
 					}
 
 					// If this character is online or offline
-					TmpStatus := "offline"
-					if strings.Contains(subma1[0][3], "<b class=\"green\">online</b>") {
-						TmpStatus = "online"
+					tmpStatus := "offline"
+					if strings.Contains(CharacterListHTML, "<b class=\"green\">online</b>") {
+						tmpStatus = "online"
 					}
 
 					// Is this character is deleted
-					TmpDeleted := false
-					if strings.Contains(subma1[0][3], "deleted") {
-						TmpDeleted = true
+					var tmpDeleted bool
+					if strings.Contains(CharacterListHTML, "deleted") {
+						tmpDeleted = true
 					}
 
 					// Is this character having a special position
-					TmpPosition := ""
-					if strings.Contains(subma1[0][3], "CipSoft Member") {
-						TmpPosition = "CipSoft Member"
+					var tmpPosition string
+					if strings.Contains(CharacterListHTML, "CipSoft Member") {
+						tmpPosition = "CipSoft Member"
 					}
 
 					// Create the character and append it to the other characters list
 					OtherCharactersData = append(OtherCharactersData, OtherCharacters{
-						Name:     TibiaDataSanitizeStrings(TmpCharacterName),
-						World:    subma1[0][2],
-						Status:   TmpStatus,
-						Deleted:  TmpDeleted,
-						Main:     TmpMain,
-						Traded:   TmpTraded,
-						Position: TmpPosition,
+						Name:     TibiaDataSanitizeStrings(tmpCharName),
+						World:    world,
+						Status:   tmpStatus,
+						Deleted:  tmpDeleted,
+						Main:     tmpMain,
+						Traded:   tmpTraded,
+						Position: tmpPosition,
 					})
 				}
 

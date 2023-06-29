@@ -2754,9 +2754,21 @@ func TestNumber4(t *testing.T) {
 			"Wrong killers\nidx: %d\nwant: %#v\n\ngot: %#v",
 			idx, tc.Killers, deaths[idx].Killers,
 		)
-		assert.Equal(deaths[idx].Level, tc.Level)
-		assert.Equal(deaths[idx].Reason, tc.Reason)
-		assert.Equal(deaths[idx].Time, tc.Time)
+		assert.Equal(
+			deaths[idx].Level, tc.Level,
+			"Wrong Level\nidx: %d\nwant: %d\n\ngot: %d",
+			idx, tc.Level, deaths[idx].Level,
+		)
+		assert.Equal(
+			deaths[idx].Reason, tc.Reason,
+			"Wrong Reason\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Reason, deaths[idx].Reason,
+		)
+		assert.Equal(
+			deaths[idx].Time, tc.Time,
+			"Wrong Time\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Time, deaths[idx].Time,
+		)
 	}
 }
 

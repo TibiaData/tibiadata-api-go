@@ -28,7 +28,7 @@ type GuildsOverviewResponse struct {
 	Information Information    `json:"information"`
 }
 
-func TibiaGuildsOverviewImpl(world string, BoxContentHTML string) (*GuildsOverviewResponse, error) {
+func TibiaGuildsOverviewImpl(world string, BoxContentHTML string) (GuildsOverviewResponse, error) {
 	// Creating empty vars
 	var (
 		ActiveGuilds, FormationGuilds []OverviewGuild
@@ -38,7 +38,7 @@ func TibiaGuildsOverviewImpl(world string, BoxContentHTML string) (*GuildsOvervi
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaGuildsOverviewImpl failed at goquery.NewDocumentFromReader, err: %s", err)
+		return GuildsOverviewResponse{}, fmt.Errorf("[error] TibiaGuildsOverviewImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Running query over each div
@@ -87,7 +87,7 @@ func TibiaGuildsOverviewImpl(world string, BoxContentHTML string) (*GuildsOvervi
 
 	//
 	// Build the data-blob
-	return &GuildsOverviewResponse{
+	return GuildsOverviewResponse{
 		OverviewGuilds{
 			World:     world,
 			Active:    ActiveGuilds,

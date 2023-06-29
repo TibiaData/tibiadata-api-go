@@ -53,11 +53,11 @@ var (
 	SixColumnRegex      = regexp.MustCompile(`<td>(.*)<\/td><td.*">(.*)<\/a><\/td><td.*">(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
 )
 
-func TibiaHighscoresImpl(world string, category validation.HighscoreCategory, vocationName string, currentPage int, BoxContentHTML string) (*HighscoresResponse, error) {
+func TibiaHighscoresImpl(world string, category validation.HighscoreCategory, vocationName string, currentPage int, BoxContentHTML string) (HighscoresResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaHighscoresImpl failed at goquery.NewDocumentFromReader, err: %s", err)
+		return HighscoresResponse{}, fmt.Errorf("[error] TibiaHighscoresImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Creating empty HighscoreData var
@@ -81,7 +81,7 @@ func TibiaHighscoresImpl(world string, category validation.HighscoreCategory, vo
 	}
 
 	if currentPage > HighscoreTotalPages {
-		return nil, validation.ErrorHighscorePageTooBig
+		return HighscoresResponse{}, validation.ErrorHighscorePageTooBig
 	}
 
 	var insideError error
@@ -156,12 +156,12 @@ func TibiaHighscoresImpl(world string, category validation.HighscoreCategory, vo
 	categoryString, _ := category.String()
 
 	if insideError != nil {
-		return nil, insideError
+		return HighscoresResponse{}, insideError
 	}
 
 	//
 	// Build the data-blob
-	return &HighscoresResponse{
+	return HighscoresResponse{
 		Highscores{
 			World:         cases.Title(language.English).String(world),
 			Category:      categoryString,

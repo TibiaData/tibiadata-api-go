@@ -330,54 +330,54 @@ func GetHouses() ([]House, error) {
 // of what town the house is from
 // This function will return a nil house AND a nil error
 // if the specified ID doesn't exist
-func GetHouseRaw(houseID int) (*House, error) {
+func GetHouseRaw(houseID int) (House, error) {
 	// Check if the validator has been initiated
 	if !initiated {
-		return nil, ErrorValidatorNotInitiated
+		return House{}, ErrorValidatorNotInitiated
 	}
 
 	// Try to find the house
 	for _, h := range val.Houses {
 		if h.ID == houseID {
-			return &h, nil
+			return h, nil
 		}
 	}
 
-	return nil, nil
+	return House{}, nil
 }
 
 // HouseExistsRaw reports whether a house exits, independently
 // of what town the house is from
 func HouseExistsRaw(houseID int) (bool, error) {
 	house, err := GetHouseRaw(houseID)
-	return house != nil, err
+	return house != House{}, err
 }
 
 // GetHouseInTown returns a house by it's ID and town
 // This function will return a nil house AND a nil error
 // if the specified ID doesn't exist in the specified town
 // or if the specified town doesn't exist
-func GetHouseInTown(houseID int, town string) (*House, error) {
+func GetHouseInTown(houseID int, town string) (House, error) {
 	// We don't need to check if the validator has been initiated
 	// because TownExists will already check that for us
 	townExists, err := TownExists(town)
 	if err != nil {
-		return nil, err
+		return House{}, err
 	}
 
 	// Town doesn't exist
 	if !townExists {
-		return nil, nil
+		return House{}, nil
 	}
 
 	// Try to find the house
 	for _, h := range val.Houses {
 		if h.ID == houseID && strings.EqualFold(h.Town, town) {
-			return &h, nil
+			return h, nil
 		}
 	}
 
-	return nil, nil
+	return House{}, nil
 }
 
 // HouseExistsInTown reports whether a house exits in the specified town
@@ -385,7 +385,7 @@ func GetHouseInTown(houseID int, town string) (*House, error) {
 // doesn't exist in the specified town or if the specified town doesn't exist
 func HouseExistsInTown(houseID int, town string) (bool, error) {
 	house, err := GetHouseInTown(houseID, town)
-	return house != nil, err
+	return house != House{}, err
 }
 
 // GetCreatures returns a list of all existing creatures

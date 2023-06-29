@@ -9,7 +9,7 @@ import (
 
 var (
 	// application readyz endpoint value for k8s
-	isReady *atomic.Value
+	isReady atomic.Bool
 
 	// TibiaDataDefaultVoc - default vocation when not specified in request
 	TibiaDataDefaultVoc string = "all"
@@ -58,10 +58,6 @@ func init() {
 }
 
 func main() {
-	// setup of readyness endpoint code
-	isReady = &atomic.Value{}
-	isReady.Store(false)
-
 	// logging start of TibiaData
 	log.Printf("[info] TibiaData API starting..")
 

@@ -28,7 +28,7 @@ const (
 )
 
 // Run is used to load data from the assets JSON file
-func Run(userAgent string) (*TibiaMapping, error) {
+func Run(userAgent string) (TibiaMapping, error) {
 	// Logging the start of tibiamapping
 	log.Println("[info] Tibia Mapping is running")
 
@@ -54,40 +54,40 @@ func Run(userAgent string) (*TibiaMapping, error) {
 	// Making the GET request to the data file
 	res, err := client.R().Get(tibiaAssetsDataMinJsonURL)
 	if err != nil {
-		return nil, err
+		return TibiaMapping{}, err
 	}
 
 	// Checking if the response code was OK
 	if res.StatusCode() != http.StatusOK {
-		return nil, fmt.Errorf("res status code %d", res.StatusCode())
+		return TibiaMapping{}, fmt.Errorf("res status code %d", res.StatusCode())
 	}
 
 	// Making the GET request to the sha256 file
 	sha256, err := client.R().Get(tibiaAssetsSha256SumURL)
 	if err != nil {
-		return nil, err
+		return TibiaMapping{}, err
 	}
 
 	// Checking if the response code was OK
 	if res.StatusCode() != http.StatusOK {
-		return nil, fmt.Errorf("sha256 status code %d", res.StatusCode())
+		return TibiaMapping{}, fmt.Errorf("sha256 status code %d", res.StatusCode())
 	}
 
 	// Making the GET request to the sha512 file
 	sha512, err := client.R().Get(tibiaAssetsSha512SumURL)
 	if err != nil {
-		return nil, err
+		return TibiaMapping{}, err
 	}
 
 	// Checking if the response code was OK
 	if res.StatusCode() != http.StatusOK {
-		return nil, fmt.Errorf("sha512 status code %d", res.StatusCode())
+		return TibiaMapping{}, fmt.Errorf("sha512 status code %d", res.StatusCode())
 	}
 
 	// Log that Tibia Mapping has been successfully completed
 	log.Println("[info] Tibia Mapping completed")
 
-	return &TibiaMapping{
+	return TibiaMapping{
 		RawData:   res.Body(),
 		Sha256Sum: string(sha256.Body()),
 		Sha512Sum: string(sha512.Body()),

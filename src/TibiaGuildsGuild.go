@@ -78,7 +78,7 @@ var (
 	GuildMemberInvitesInformationRegex = regexp.MustCompile(`<td><a.*">(.*)<\/a><\/td><td>(.*)<\/td>`)
 )
 
-func TibiaGuildsGuildImpl(guild string, BoxContentHTML string) (*GuildResponse, error) {
+func TibiaGuildsGuildImpl(guild string, BoxContentHTML string) (GuildResponse, error) {
 	// Creating empty vars
 	var (
 		MembersData                                                                                                                                                    []GuildMember
@@ -92,22 +92,22 @@ func TibiaGuildsGuildImpl(guild string, BoxContentHTML string) (*GuildResponse, 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaGuildsGuildImpl failed at goquery.NewDocumentFromReader, err: %s", err)
+		return GuildResponse{}, fmt.Errorf("[error] TibiaGuildsGuildImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	guildName, err := ReaderHTML.Find("h1").First().Html()
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaGuildsGuildImpl failed at ReaderHTML.Find, err: %s", err)
+		return GuildResponse{}, fmt.Errorf("[error] TibiaGuildsGuildImpl failed at ReaderHTML.Find, err: %s", err)
 	}
 
 	if guildName == "" {
-		return nil, validation.ErrorGuildNotFound
+		return GuildResponse{}, validation.ErrorGuildNotFound
 	}
 
 	// Getting data from div.InnerTableContainer and then first p
 	InnerTableContainerTMPA, err := ReaderHTML.Find(".BoxContent table").Html()
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaGuildsGuildImpl failed at InnerTableContainerTMPA ReaderHTML.Find, err: %s", err)
+		return GuildResponse{}, fmt.Errorf("[error] TibiaGuildsGuildImpl failed at InnerTableContainerTMPA ReaderHTML.Find, err: %s", err)
 	}
 
 	subma1b := GuildLogoRegex.FindAllStringSubmatch(InnerTableContainerTMPA, -1)
@@ -119,7 +119,7 @@ func TibiaGuildsGuildImpl(guild string, BoxContentHTML string) (*GuildResponse, 
 	// Getting data from div.InnerTableContainer and then first p
 	InnerTableContainerTMPB, err := ReaderHTML.Find("#GuildInformationContainer").Html()
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaGuildsGuildImpl failed at InnerTableContainerTMPB ReaderHTML.Find, err: %s", err)
+		return GuildResponse{}, fmt.Errorf("[error] TibiaGuildsGuildImpl failed at InnerTableContainerTMPB ReaderHTML.Find, err: %s", err)
 	}
 
 	for _, line := range strings.Split(strings.TrimSuffix(InnerTableContainerTMPB, "\n"), "\n") {
@@ -253,12 +253,12 @@ func TibiaGuildsGuildImpl(guild string, BoxContentHTML string) (*GuildResponse, 
 	})
 
 	if insideError != nil {
-		return nil, insideError
+		return GuildResponse{}, insideError
 	}
 
 	//
 	// Build the data-blob
-	return &GuildResponse{
+	return GuildResponse{
 		Guild{
 			Name:               guildName,
 			World:              GuildWorld,

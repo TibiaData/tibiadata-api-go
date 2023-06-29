@@ -35,7 +35,7 @@ var (
 	CreatureInformationRegex        = regexp.MustCompile(`.*race=(.*)"><img src="(.*)" border.*div>(.*)<\/div>`)
 )
 
-func TibiaCreaturesOverviewImpl(BoxContentHTML string) (*CreaturesOverviewResponse, error) {
+func TibiaCreaturesOverviewImpl(BoxContentHTML string) (CreaturesOverviewResponse, error) {
 	var (
 		BoostedCreatureName, BoostedCreatureRace, BoostedCreatureImage string
 	)
@@ -43,13 +43,13 @@ func TibiaCreaturesOverviewImpl(BoxContentHTML string) (*CreaturesOverviewRespon
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaCreaturesOverviewImpl failed at goquery.NewDocumentFromReader, err: %s", err)
+		return CreaturesOverviewResponse{}, fmt.Errorf("[error] TibiaCreaturesOverviewImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Getting data from div.InnerTableContainer and then first p
 	InnerTableContainerTMPB, err := ReaderHTML.Find(".InnerTableContainer p").First().Html()
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaCreaturesOverviewImpl failed at ReaderHTML.Find, err: %s", err)
+		return CreaturesOverviewResponse{}, fmt.Errorf("[error] TibiaCreaturesOverviewImpl failed at ReaderHTML.Find, err: %s", err)
 	}
 
 	// Regex to get data for name and race param for boosted creature
@@ -110,11 +110,11 @@ func TibiaCreaturesOverviewImpl(BoxContentHTML string) (*CreaturesOverviewRespon
 	})
 
 	if insideError != nil {
-		return nil, insideError
+		return CreaturesOverviewResponse{}, insideError
 	}
 
 	// Build the data-blob
-	return &CreaturesOverviewResponse{
+	return CreaturesOverviewResponse{
 		CreaturesContainer{
 			Boosted: OverviewCreature{
 				Name:     TibiaDataSanitizeEscapedString(BoostedCreatureName),

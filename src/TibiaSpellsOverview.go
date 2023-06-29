@@ -37,11 +37,11 @@ type SpellsOverviewResponse struct {
 }
 
 // TibiaSpellsOverview func
-func TibiaSpellsOverviewImpl(vocationName string, BoxContentHTML string) (*SpellsOverviewResponse, error) {
+func TibiaSpellsOverviewImpl(vocationName string, BoxContentHTML string) (SpellsOverviewResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaSpellsOverviewImpl failed at goquery.NewDocumentFromReader, err: %s", err)
+		return SpellsOverviewResponse{}, fmt.Errorf("[error] TibiaSpellsOverviewImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	var SpellsData []Spell
@@ -114,7 +114,7 @@ func TibiaSpellsOverviewImpl(vocationName string, BoxContentHTML string) (*Spell
 	}
 
 	// Build the data-blob
-	return &SpellsOverviewResponse{
+	return SpellsOverviewResponse{
 		Spells{
 			SpellsVocationFilter: vocationName,
 			Spells:               SpellsData,

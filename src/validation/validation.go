@@ -70,7 +70,9 @@ func Initiate(TibiaDataUserAgent string) error {
 	}
 
 	// Check if we got a nil struct
-	if tibiaMapping == nil {
+	if len(tibiaMapping.RawData) == 0 &&
+		tibiaMapping.Sha256Sum == "" &&
+		tibiaMapping.Sha512Sum == "" {
 		return errors.New("tibia mapping struct is nil")
 	}
 

@@ -153,6 +153,8 @@ func TestNumber3(t *testing.T) {
 	assert.Equal("Free Account", character.AccountStatus)
 	assert.Equal("Fansite Admin", characterJson.Character.AccountInformation.Position)
 	assert.Empty(characterJson.Character.AccountInformation.LoyaltyTitle)
+	assert.True(characterJson.Character.OtherCharacters[0].Deleted)
+	assert.False(characterJson.Character.OtherCharacters[1].Deleted)
 }
 
 func TestNumber4(t *testing.T) {

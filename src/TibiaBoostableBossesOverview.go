@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/TibiaData/tibiadata-api-go/src/validation"
 )
 
 // Child of BoostableBoss (used for list of boostable bosses and boosted boss section)
@@ -66,10 +67,7 @@ func TibiaBoostableBossesOverviewImpl(BoxContentHTML string) (*BoostableBossesOv
 		BoostedBossImage = subma2b[0][1]
 	}
 
-	// Currently there are 91 boostable bosses on tibia.
-	// So we preallocate the slice to that amount.
-	const amountOfBoostableBosses = 91
-	BoostableBossesData := make([]OverviewBoostableBoss, 0, amountOfBoostableBosses)
+	BoostableBossesData := make([]OverviewBoostableBoss, 0, validation.AmountOfBoostableBosses)
 
 	var insideError error
 

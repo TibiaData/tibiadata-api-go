@@ -29,9 +29,8 @@ type BoostableBossesOverviewResponse struct {
 }
 
 var (
-	BoostedBossNameRegex          = regexp.MustCompile(`<b>(.*)</b>`)
-	BoostedBossImageRegex         = regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
-	BoostableBossInformationRegex = regexp.MustCompile(`<img src="(.*)" border.*div>(.*)<\/div>`)
+	BoostedBossNameRegex  = regexp.MustCompile(`<b>(.*)</b>`)
+	BoostedBossImageRegex = regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
 )
 
 func TibiaBoostableBossesOverviewImpl(BoxContentHTML string) (*BoostableBossesOverviewResponse, error) {
@@ -67,8 +66,10 @@ func TibiaBoostableBossesOverviewImpl(BoxContentHTML string) (*BoostableBossesOv
 		BoostedBossImage = subma2b[0][1]
 	}
 
-	// Creating empty BoostableBossesData var
-	var BoostableBossesData []OverviewBoostableBoss
+	// Currently there are 91 boostable bosses on tibia.
+	// So we preallocate the slice to that amount.
+	const amountOfBoostableBosses = 91
+	BoostableBossesData := make([]OverviewBoostableBoss, 0, amountOfBoostableBosses)
 
 	var insideError error
 
@@ -82,22 +83,45 @@ func TibiaBoostableBossesOverviewImpl(BoxContentHTML string) (*BoostableBossesOv
 			return false
 		}
 
-		// Regex to get data for name, race and img src param for creature
-		subma1 := BoostableBossInformationRegex.FindAllStringSubmatch(BoostableBossDivHTML, -1)
+		if strings.Count(BoostableBossDivHTML, `<img src="https://static.tibia.com/images/library/`) == 1 &&
+			strings.Count(BoostableBossDivHTML, `<div>`) == 1 &&
+			strings.Count(BoostableBossDivHTML, `</div>`) == 1 {
+			const (
+				nameIndexer    = `/> <div>`
+				endNameIndexer = `</div>`
 
-		// check if regex return length is over 0 and the match of name is over 1
-		if len(subma1) > 0 && len(subma1[0][2]) > 1 {
-			// Adding bool to indicate features in boostable_boss_list
-			FeaturedRace := false
-			if subma1[0][2] == BoostedBossName {
-				FeaturedRace = true
+				imgIndexer               = `<img src="`
+				endImgIndexer            = `.gif"`
+				endImgIndexerOverflow    = `.gif`
+				lenEndImgIndexerOverflow = len(endImgIndexerOverflow)
+			)
+
+			nameIdx := strings.Index(
+				BoostableBossDivHTML, nameIndexer,
+			) + len(nameIndexer)
+			endNameIdx := strings.Index(
+				BoostableBossDivHTML[nameIdx:], endNameIndexer,
+			) + nameIdx
+
+			name := BoostableBossDivHTML[nameIdx:endNameIdx]
+			var featured bool
+			if name == BoostedBossName {
+				featured = true
 			}
 
-			// Creating data block to return
+			imgIdx := strings.Index(
+				BoostableBossDivHTML, imgIndexer,
+			) + len(imgIndexer)
+			endImgIdx := strings.Index(
+				BoostableBossDivHTML[imgIdx:], endImgIndexer,
+			) + imgIdx + lenEndImgIndexerOverflow
+
+			image := BoostableBossDivHTML[imgIdx:endImgIdx]
+
 			BoostableBossesData = append(BoostableBossesData, OverviewBoostableBoss{
-				Name:     TibiaDataSanitizeEscapedString(subma1[0][2]),
-				ImageURL: subma1[0][1],
-				Featured: FeaturedRace,
+				Name:     TibiaDataSanitizeEscapedString(name),
+				ImageURL: image,
+				Featured: featured,
 			})
 		}
 

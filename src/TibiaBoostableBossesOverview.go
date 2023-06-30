@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 
@@ -50,9 +51,18 @@ func TibiaBoostableBossesOverviewImpl(BoxContentHTML string) (BoostableBossesOve
 	bodyIdx := strings.Index(
 		BoxContentHTML, bodyIndexer,
 	)
+
+	if bodyIdx == -1 {
+		return BoostableBossesOverviewResponse{}, errors.New("[error] body passd to TibiaBoostableBossesOverviewImpl is not valid")
+	}
+
 	endBodyIdx := strings.Index(
 		BoxContentHTML[bodyIdx:], endBodyIndexer,
 	) + bodyIdx + len(endBodyIndexer)
+
+	if endBodyIdx == -1 {
+		return BoostableBossesOverviewResponse{}, errors.New("[error] body passd to TibiaBoostableBossesOverviewImpl is not valid")
+	}
 
 	data := BoxContentHTML[bodyIdx:endBodyIdx]
 

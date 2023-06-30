@@ -30,7 +30,6 @@ type BoostableBossesOverviewResponse struct {
 
 var (
 	BoostedBossNameRegex          = regexp.MustCompile(`<b>(.*)</b>`)
-	BoostedBossImageRegex         = regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
 	BoostableBossInformationRegex = regexp.MustCompile(`<img src="(.*)" border.*div>(.*)<\/div>`)
 )
 
@@ -59,12 +58,21 @@ func TibiaBoostableBossesOverviewImpl(BoxContentHTML string) (*BoostableBossesOv
 		BoostedBossName = subma1b[0][1]
 	}
 
-	// Regex to get image of boosted boss
-	subma2b := BoostedBossImageRegex.FindAllStringSubmatch(InnerTableContainerTMPB, -1)
+	const (
+		imgIndexer    = `<img src="`
+		endImgIndexer = `"`
+	)
 
-	if len(subma2b) > 0 {
+	imgIdx := strings.Index(
+		InnerTableContainerTMPB, imgIndexer,
+	) + len(imgIndexer)
+	endImgIdx := strings.Index(
+		InnerTableContainerTMPB[imgIdx:], endImgIndexer,
+	) + imgIdx
+
+	if imgIdx != -1 && endImgIdx != -1 {
 		// Settings vars for usage in JSONData
-		BoostedBossImage = subma2b[0][1]
+		BoostedBossImage = InnerTableContainerTMPB[imgIdx:endImgIdx]
 	}
 
 	// Creating empty BoostableBossesData var

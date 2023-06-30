@@ -1,12 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
-	"regexp"
 	"strings"
 
-	"github.com/PuerkitoBio/goquery"
+	"github.com/TibiaData/tibiadata-api-go/src/validation"
 )
 
 // Child of BoostableBoss (used for list of boostable bosses and boosted boss section)
@@ -28,95 +26,119 @@ type BoostableBossesOverviewResponse struct {
 	Information     Information              `json:"information"`
 }
 
-var (
-	BoostedBossNameRegex          = regexp.MustCompile(`<b>(.*)</b>`)
-	BoostedBossImageRegex         = regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
-	BoostableBossInformationRegex = regexp.MustCompile(`<img src="(.*)" border.*div>(.*)<\/div>`)
-)
+func TibiaBoostableBossesOverviewImpl(BoxContentHTML string) (BoostableBossesOverviewResponse, error) {
+	const (
+		bodyIndexer    = `<body`
+		endBodyIndexer = `</body>`
 
-func TibiaBoostableBossesOverviewImpl(BoxContentHTML string) (*BoostableBossesOverviewResponse, error) {
-	// Creating empty vars
-	var (
-		BoostedBossName, BoostedBossImage string
+		todayChecker  = `Today's boosted boss: `
+		bossesChecker = `<div class="CaptionContainer">`
+
+		todayBossIndexer    = `title="` + todayChecker
+		endTodayBossIndexer = `" src="`
+
+		todayBossImgIndexer    = `https://static.tibia.com/images/global/header/monsters/`
+		endTodayBossImgIndexer = `" onClick="`
+
+		bossesImgIndexer    = `https://static.tibia.com/images/library/`
+		endBossesImgIndexer = `"`
+
+		bossesNameIndexer    = `border=0 /> <div>`
+		endBossesNameIndexer = `</div>`
 	)
-	// Loading HTML data into ReaderHTML for goquery with NewReader
-	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
-	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaBoostableBossesOverviewImpl failed at goquery.NewDocumentFromReader, err: %s", err)
-	}
 
-	// Getting data from div.InnerTableContainer and then first p
-	InnerTableContainerTMPB, err := ReaderHTML.Find(".InnerTableContainer p").First().Html()
-	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaBoostableBossesOverviewImpl failed at ReaderHTML.Find, error: %s", err)
-	}
+	bodyIdx := strings.Index(
+		BoxContentHTML, bodyIndexer,
+	)
+	endBodyIdx := strings.Index(
+		BoxContentHTML[bodyIdx:], endBodyIndexer,
+	) + bodyIdx + len(endBodyIndexer)
 
-	// Regex to get data for name for boosted boss
-	subma1b := BoostedBossNameRegex.FindAllStringSubmatch(InnerTableContainerTMPB, -1)
+	data := BoxContentHTML[bodyIdx:endBodyIdx]
 
-	if len(subma1b) > 0 {
-		// Settings vars for usage in JSONData
-		BoostedBossName = subma1b[0][1]
-	}
+	var (
+		started bool
+		//scanner = bufio.NewScanner(strings.NewReader(data))
 
-	// Regex to get image of boosted boss
-	subma2b := BoostedBossImageRegex.FindAllStringSubmatch(InnerTableContainerTMPB, -1)
+		boostedBossName string
+		boostedBossImg  string
 
-	if len(subma2b) > 0 {
-		// Settings vars for usage in JSONData
-		BoostedBossImage = subma2b[0][1]
-	}
+		bosses = make([]OverviewBoostableBoss, 0, validation.AmountOfBoostableBosses)
+	)
+	//for scanner.Scan() {
+	//	cur := scanner.Text()
+	split := strings.Split(data, "\n")
+	for _, cur := range split {
+		isTodaysLine := strings.Contains(cur, todayChecker) && !started
+		isBossesLine := strings.Contains(cur, bossesChecker)
 
-	// Creating empty BoostableBossesData var
-	var BoostableBossesData []OverviewBoostableBoss
-
-	var insideError error
-
-	// Running query over each div
-	ReaderHTML.Find(".BoxContent div div").EachWithBreak(func(index int, s *goquery.Selection) bool {
-
-		// Storing HTML into BoostableBossDivHTML
-		BoostableBossDivHTML, err := s.Html()
-		if err != nil {
-			insideError = fmt.Errorf("[error] TibiaBoostableBossesOverviewImpl failed at BoostableBossDivHTML, err := s.Html(), err: %s", err)
-			return false
+		if !isTodaysLine && !isBossesLine {
+			continue
 		}
 
-		// Regex to get data for name, race and img src param for creature
-		subma1 := BoostableBossInformationRegex.FindAllStringSubmatch(BoostableBossDivHTML, -1)
+		if isTodaysLine {
+			started = true
 
-		// check if regex return length is over 0 and the match of name is over 1
-		if len(subma1) > 0 && len(subma1[0][2]) > 1 {
-			// Adding bool to indicate features in boostable_boss_list
-			FeaturedRace := false
-			if subma1[0][2] == BoostedBossName {
-				FeaturedRace = true
+			todayBossIdx := strings.Index(
+				cur, todayBossIndexer,
+			) + len(todayBossIndexer)
+			endTodayBossIdx := strings.Index(
+				cur[todayBossIdx:], endTodayBossIndexer,
+			) + todayBossIdx
+
+			boostedBossName = TibiaDataSanitizeEscapedString(
+				cur[todayBossIdx:endTodayBossIdx],
+			)
+
+			todayBossImgIdx := strings.Index(
+				cur[todayBossIdx:], todayBossImgIndexer,
+			) + todayBossIdx
+			endTodayBossImgIdx := strings.Index(
+				cur[todayBossImgIdx:], endTodayBossImgIndexer,
+			) + todayBossImgIdx
+
+			boostedBossImg = cur[todayBossImgIdx:endTodayBossImgIdx]
+		}
+
+		if isBossesLine {
+			for idx := strings.Index(cur, bossesImgIndexer); idx != -1; idx = strings.Index(cur, bossesImgIndexer) {
+				imgIdx := strings.Index(
+					cur, bossesImgIndexer,
+				)
+				endImgIdx := strings.Index(
+					cur[imgIdx:], endBossesImgIndexer,
+				) + imgIdx
+				img := cur[imgIdx:endImgIdx]
+
+				nameIdx := strings.Index(
+					cur, bossesNameIndexer,
+				) + len(bossesNameIndexer)
+				endNameIdx := strings.Index(
+					cur[nameIdx:], endBossesNameIndexer,
+				) + nameIdx
+				name := TibiaDataSanitizeEscapedString(cur[nameIdx:endNameIdx])
+
+				bosses = append(bosses, OverviewBoostableBoss{
+					Name:     name,
+					ImageURL: img,
+					Featured: name == boostedBossName,
+				})
+
+				cur = cur[endNameIdx-1:]
 			}
 
-			// Creating data block to return
-			BoostableBossesData = append(BoostableBossesData, OverviewBoostableBoss{
-				Name:     TibiaDataSanitizeEscapedString(subma1[0][2]),
-				ImageURL: subma1[0][1],
-				Featured: FeaturedRace,
-			})
+			break
 		}
-
-		return true
-	})
-
-	if insideError != nil {
-		return nil, insideError
 	}
 
-	// Build the data-blob
-	return &BoostableBossesOverviewResponse{
+	return BoostableBossesOverviewResponse{
 		BoostableBossesContainer{
 			Boosted: OverviewBoostableBoss{
-				Name:     TibiaDataSanitizeEscapedString(BoostedBossName),
-				ImageURL: BoostedBossImage,
+				Name:     boostedBossName,
+				ImageURL: boostedBossImg,
 				Featured: true,
 			},
-			BoostableBosses: BoostableBossesData,
+			BoostableBosses: bosses,
 		},
 		Information{
 			APIDetails: TibiaDataAPIDetails,

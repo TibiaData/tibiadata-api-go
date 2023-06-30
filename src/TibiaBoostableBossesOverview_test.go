@@ -82,7 +82,7 @@ func TestBoostableBossesOverview(t *testing.T) {
 	}
 }
 
-var bossSink *BoostableBossesOverviewResponse
+var bossSink BoostableBossesOverviewResponse
 
 func BenchmarkTibiaBoostableBossesOverviewImpl(b *testing.B) {
 	file, err := static.TestFiles.Open("testdata/boostablebosses/boostablebosses.html")

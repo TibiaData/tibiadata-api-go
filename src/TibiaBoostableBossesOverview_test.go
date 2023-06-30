@@ -81,3 +81,26 @@ func TestBoostableBossesOverview(t *testing.T) {
 		)
 	}
 }
+
+var bossSink *BoostableBossesOverviewResponse
+
+func BenchmarkTibiaBoostableBossesOverviewImpl(b *testing.B) {
+	file, err := static.TestFiles.Open("testdata/boostablebosses/boostablebosses.html")
+	if err != nil {
+		b.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	rawData, err := io.ReadAll(file)
+	if err != nil {
+		b.Fatalf("File reading error: %s", err)
+	}
+	data := string(rawData)
+
+	b.ReportAllocs()
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		bossSink, _ = TibiaBoostableBossesOverviewImpl(data)
+	}
+}

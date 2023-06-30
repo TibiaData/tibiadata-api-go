@@ -68,6 +68,7 @@ type TibiaDataRequestStruct struct {
 	Method   string            `json:"method"`    // Request method (default: GET)
 	URL      string            `json:"url"`       // Request URL
 	FormData map[string]string `json:"form_data"` // Request form content (used when POST)
+	RawBody  bool              `json:"raw_body"`  // If set to true the whole content from tibia.com will be passed down
 }
 
 // RunWebServer starts the gin server
@@ -258,8 +259,9 @@ func runWebServer() {
 // @Router       /v4/boostablebosses [get]
 func tibiaBoostableBosses(c *gin.Context) {
 	tibiadataRequest := TibiaDataRequestStruct{
-		Method: resty.MethodGet,
-		URL:    "https://www.tibia.com/library/?subtopic=boostablebosses",
+		Method:  resty.MethodGet,
+		URL:     "https://www.tibia.com/library/?subtopic=boostablebosses",
+		RawBody: true,
 	}
 
 	tibiaDataRequestHandler(
@@ -1242,6 +1244,10 @@ func TibiaDataHTMLDataCollector(TibiaDataRequest TibiaDataRequestStruct) (string
 		}
 	}
 
+	if TibiaDataRequest.RawBody {
+		return string(res.Body()), nil
+	}
+
 	// Convert body to io.Reader
 	resIo := bytes.NewReader(res.Body())
 
@@ -1254,7 +1260,6 @@ func TibiaDataHTMLDataCollector(TibiaDataRequest TibiaDataRequestStruct) (string
 		log.Printf("[error] TibiaDataHTMLDataCollector (URL: %s) error: %s", res.Request.URL, err)
 	}
 
-	// Find of this to get div with class BoxContent
 	data, err := doc.Find(".Border_2 .Border_3").Html()
 	if err != nil {
 		return "", err

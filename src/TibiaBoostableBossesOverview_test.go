@@ -22,24 +22,62 @@ func TestBoostableBossesOverview(t *testing.T) {
 
 	boostableBossesJson, _ := TibiaBoostableBossesOverviewImpl(string(data))
 	assert := assert.New(t)
+	boosted := boostableBossesJson.BoostableBosses.Boosted
+	bosses := boostableBossesJson.BoostableBosses.BoostableBosses
 
-	assert.Equal("Goshnar's Malice", boostableBossesJson.BoostableBosses.Boosted.Name)
-	assert.Equal("https://static.tibia.com/images/global/header/monsters/goshnarsmalice.gif", boostableBossesJson.BoostableBosses.Boosted.ImageURL)
+	assert.Equal(91, len(bosses))
+	assert.Equal("Sharpclaw", boosted.Name)
+	assert.Equal(
+		"https://static.tibia.com/images/global/header/monsters/sharpclaw.gif",
+		boosted.ImageURL,
+	)
 
-	assert.Equal(89, len(boostableBossesJson.BoostableBosses.BoostableBosses))
-
-	gnomevil := boostableBossesJson.BoostableBosses.BoostableBosses[18]
-	assert.Equal("Gnomevil", gnomevil.Name)
-	assert.Equal("https://static.tibia.com/images/library/gnomehorticulist.gif", gnomevil.ImageURL)
-	assert.False(gnomevil.Featured)
-
-	goshnarsmalice := boostableBossesJson.BoostableBosses.BoostableBosses[23]
-	assert.Equal("Goshnar's Malice", goshnarsmalice.Name)
-	assert.Equal("https://static.tibia.com/images/library/goshnarsmalice.gif", goshnarsmalice.ImageURL)
-	assert.True(goshnarsmalice.Featured)
-
-	paleworm := boostableBossesJson.BoostableBosses.BoostableBosses[73]
-	assert.Equal("The Pale Worm", paleworm.Name)
-	assert.Equal("https://static.tibia.com/images/library/paleworm.gif", paleworm.ImageURL)
-	assert.False(paleworm.Featured)
+	for _, tc := range []struct {
+		idx      int
+		name     string
+		featured bool
+		imageURL string
+	}{
+		{
+			idx:      19,
+			name:     "Gnomevil",
+			featured: false,
+			imageURL: "https://static.tibia.com/images/library/gnomehorticulist.gif",
+		},
+		{
+			idx:      24,
+			name:     "Goshnar's Malice",
+			featured: false,
+			imageURL: "https://static.tibia.com/images/library/goshnarsmalice.gif",
+		},
+		{
+			idx:      52,
+			name:     "Sharpclaw",
+			featured: true,
+			imageURL: "https://static.tibia.com/images/library/sharpclaw.gif",
+		},
+		{
+			idx:      75,
+			name:     "The Pale Worm",
+			featured: false,
+			imageURL: "https://static.tibia.com/images/library/paleworm.gif",
+		},
+	} {
+		boss := bosses[tc.idx]
+		assert.Equal(
+			tc.name, boss.Name,
+			"Wrong name\nidx: %d (%s)\nwant: %s\ngot: %s",
+			tc.idx, tc.name, tc.name, boss.Name,
+		)
+		assert.Equal(
+			tc.featured, boss.Featured,
+			"Wrong featured status\nidx: %d (%s)\nwant: %v\ngot: %v",
+			tc.idx, tc.name, tc.featured, boss.Featured,
+		)
+		assert.Equal(
+			tc.imageURL, boss.ImageURL,
+			"Wrong image URL\nidx: %d (%s)\nwant: %s\ngot: %s",
+			tc.idx, tc.name, tc.imageURL, boss.ImageURL,
+		)
+	}
 }

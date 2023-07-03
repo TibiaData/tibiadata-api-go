@@ -68,15 +68,13 @@ func TibiaBoostableBossesOverviewImpl(BoxContentHTML string) (BoostableBossesOve
 
 	var (
 		started bool
-		//scanner = bufio.NewScanner(strings.NewReader(data))
 
 		boostedBossName string
 		boostedBossImg  string
 
 		bosses = make([]OverviewBoostableBoss, 0, validation.AmountOfBoostableBosses)
 	)
-	//for scanner.Scan() {
-	//	cur := scanner.Text()
+
 	split := strings.Split(data, "\n")
 	for _, cur := range split {
 		isTodaysLine := strings.Contains(cur, todayChecker) && !started

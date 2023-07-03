@@ -580,9 +580,11 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 
 // containsCreaturesWithOf checks if creature is present in special creatures list
 func containsCreaturesWithOf(str string) bool {
-	// this list should be based on the https://assets.tibiadata.com/data.json creatures name and plural_name field (currently only singular version)
-	creaturesWithOf := []string{
-		"acolyte of darkness",
+	// trim away "an " and "a "
+	str = strings.TrimPrefix(strings.TrimPrefix(str, "an "), "a ")
+
+	switch str {
+	case "acolyte of darkness",
 		"acolyte of the cult",
 		"adept of the cult",
 		"ancient spawn of morgathla",
@@ -712,16 +714,9 @@ func containsCreaturesWithOf(str string) bool {
 		"wildness of urmahlullu",
 		"wisdom of urmahlullu",
 		"wrath of the emperor",
-		"zarcorix of yalahar",
+		"zarcorix of yalahar":
+		return true
+	default:
+		return false
 	}
-
-	// trim away "an " and "a "
-	str = strings.TrimPrefix(strings.TrimPrefix(str, "an "), "a ")
-
-	for _, v := range creaturesWithOf {
-		if v == str {
-			return true
-		}
-	}
-	return false
 }

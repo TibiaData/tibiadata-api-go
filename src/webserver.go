@@ -200,6 +200,9 @@ func runWebServer() {
 		// Tibia worlds
 		v4.GET("/world/:name", tibiaWorldsWorld)
 		v4.GET("/worlds", tibiaWorldsOverview)
+
+		// Tibia forums
+		v4.GET("/forum/section/:name", tibiaForumSection)
 	}
 
 	// Container version details endpoint
@@ -1061,6 +1064,36 @@ func tibiaWorldsWorld(c *gin.Context) {
 			return TibiaWorldsWorldImpl(world, BoxContentHTML)
 		},
 		"TibiaWorldsWorld")
+}
+
+// Forum godoc
+// @Summary      Show one section
+// @Description  Show all information about one section
+// @Tags         forums
+// @Accept       json
+// @Produce      json
+// @Param        name path string true "The name of section" extensions(x-example=worldboards)
+// @Success      200  {object}  ForumSectionResponse
+// @Failure      400  {object}  Information
+// @Failure      404  {object}  Information
+// @Failure      503  {object}  Information
+// @Router       /v4/forum/section/{name} [get]
+func tibiaForumSection(c *gin.Context) {
+	// getting params from URL
+	name := c.Param("name")
+
+	tibiadataRequest := TibiaDataRequestStruct{
+		Method: resty.MethodGet,
+		URL:    "https://www.tibia.com/forum/?subtopic=" + TibiaDataForumNameValidator(name),
+	}
+
+	tibiaDataRequestHandler(
+		c,
+		tibiadataRequest,
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaForumSectionImpl(BoxContentHTML)
+		},
+		"TibiaForumSectionImpl")
 }
 
 func TibiaDataErrorHandler(c *gin.Context, err error, httpCode int) {

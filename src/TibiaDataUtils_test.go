@@ -18,6 +18,10 @@ func TestTibiaUTCDateFormat(t *testing.T) {
 	assert.Equal(t, "2021-12-24T09:52:16Z", TibiaDataDatetime("Dec 24 2021, 09:52:16 UTC"))
 }
 
+func TestTibiaForumDateFormat(t *testing.T) {
+	assert.Equal(t, "2023-06-20T13:55:36Z", TibiaDataDatetime("20.06.2023 15:55:36"))
+}
+
 func TestEnvFunctions(t *testing.T) {
 	assert := assert.New(t)
 
@@ -70,6 +74,28 @@ func TestTibiaDataGetNewsType(t *testing.T) {
 	assert.Equal("article", TibiaDataGetNewsType("Featured Article"))
 	assert.Equal("news", TibiaDataGetNewsType("News"))
 	assert.Equal("unknown", TibiaDataGetNewsType("TibiaData"))
+}
+
+func TestTibiaDataForumNameValidator(t *testing.T) {
+	assert := assert.New(t)
+
+	assert.Equal("worldboards", TibiaDataForumNameValidator("world boards"))
+	assert.Equal("worldboards", TibiaDataForumNameValidator("world"))
+	assert.Equal("worldboards", TibiaDataForumNameValidator("worldboards"))
+
+	assert.Equal("tradeboards", TibiaDataForumNameValidator("trade boards"))
+	assert.Equal("tradeboards", TibiaDataForumNameValidator("trade"))
+	assert.Equal("tradeboards", TibiaDataForumNameValidator("tradeboards"))
+
+	assert.Equal("communityboards", TibiaDataForumNameValidator("community boards"))
+	assert.Equal("communityboards", TibiaDataForumNameValidator("community"))
+	assert.Equal("communityboards", TibiaDataForumNameValidator("communityboards"))
+
+	assert.Equal("supportboards", TibiaDataForumNameValidator("support boards"))
+	assert.Equal("supportboards", TibiaDataForumNameValidator("support"))
+	assert.Equal("supportboards", TibiaDataForumNameValidator("supportboards"))
+
+	assert.Equal("worldboards", TibiaDataForumNameValidator("def"))
 }
 
 func TestHTMLLineBreakRemover(t *testing.T) {

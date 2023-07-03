@@ -153,6 +153,8 @@ func TestNumber3(t *testing.T) {
 	assert.Equal("Free Account", character.AccountStatus)
 	assert.Equal("Fansite Admin", characterJson.Character.AccountInformation.Position)
 	assert.Empty(characterJson.Character.AccountInformation.LoyaltyTitle)
+	assert.True(characterJson.Character.OtherCharacters[0].Deleted)
+	assert.False(characterJson.Character.OtherCharacters[1].Deleted)
 }
 
 func TestNumber4(t *testing.T) {
@@ -2901,8 +2903,8 @@ func TestNumber7(t *testing.T) {
 	assert.Equal("___$$$$$$$$_______$$$$$$$$\n_$$$$$$$$$$$$__$$$$$$$$$$$$$$\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n_$$$$$$$$$$-Snulliz-$$$$$$$$$$$\n__$$$$$$$$$$$$$$$$$$$$$$$$$$\n____$$$$$$$$$$$$$$$$$$$$$$\n______$$$$$$$$$$$$$$$$$$\n________$$$$$$$$$$$$$$\n___________$$$$$$$$$\n____________$$$$$$\n_____________$$", character.Comment)
 }
 
-func TestNumber8(t *testing.T) {
-	file, err := static.TestFiles.Open("testdata/characters/Jowjow Invencivel.html")
+func TestNumber9(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/characters/Akura Aleus.html")
 	if err != nil {
 		t.Fatalf("file opening error: %s", err)
 	}
@@ -2919,24 +2921,88 @@ func TestNumber8(t *testing.T) {
 	}
 
 	assert := assert.New(t)
-
 	character := characterJson.Character
-	assert.Len(character.Achievements, 5)
-	assert.Equal(character.Achievements[0].Name, "Alumni")
-	assert.Equal(character.Achievements[0].Grade, 2)
-	assert.Equal(character.Achievements[0].Secret, false)
-	assert.Equal(character.Achievements[1].Name, "Bad Timing")
-	assert.Equal(character.Achievements[1].Grade, 1)
-	assert.Equal(character.Achievements[1].Secret, true)
-	assert.Equal(character.Achievements[2].Name, "Cake Conqueror")
-	assert.Equal(character.Achievements[2].Grade, 1)
-	assert.Equal(character.Achievements[2].Secret, true)
-	assert.Equal(character.Achievements[3].Name, "Hat Hunter")
-	assert.Equal(character.Achievements[3].Grade, 2)
-	assert.Equal(character.Achievements[3].Secret, false)
-	assert.Equal(character.Achievements[4].Name, "Number of the Beast")
-	assert.Equal(character.Achievements[4].Grade, 1)
-	assert.Equal(character.Achievements[4].Secret, false)
+
+	assert.Len(character.OtherCharacters, 10)
+	assert.Equal(character.OtherCharacters[0].Deleted, false)
+	assert.Equal(character.OtherCharacters[0].Main, false)
+	assert.Equal(character.OtherCharacters[0].Name, "Akura Aleus")
+	assert.Equal(character.OtherCharacters[0].Position, "")
+	assert.Equal(character.OtherCharacters[0].Status, "offline")
+	assert.Equal(character.OtherCharacters[0].Traded, false)
+	assert.Equal(character.OtherCharacters[0].World, "Lobera")
+
+	assert.Equal(character.OtherCharacters[1].Deleted, false)
+	assert.Equal(character.OtherCharacters[1].Main, false)
+	assert.Equal(character.OtherCharacters[1].Name, "Armnox")
+	assert.Equal(character.OtherCharacters[1].Position, "")
+	assert.Equal(character.OtherCharacters[1].Status, "offline")
+	assert.Equal(character.OtherCharacters[1].Traded, false)
+	assert.Equal(character.OtherCharacters[1].World, "Ferobra")
+
+	assert.Equal(character.OtherCharacters[2].Deleted, false)
+	assert.Equal(character.OtherCharacters[2].Main, false)
+	assert.Equal(character.OtherCharacters[2].Name, "Cheradon")
+	assert.Equal(character.OtherCharacters[2].Position, "")
+	assert.Equal(character.OtherCharacters[2].Status, "offline")
+	assert.Equal(character.OtherCharacters[2].Traded, false)
+	assert.Equal(character.OtherCharacters[2].World, "Serdebra")
+
+	assert.Equal(character.OtherCharacters[3].Deleted, false)
+	assert.Equal(character.OtherCharacters[3].Main, false)
+	assert.Equal(character.OtherCharacters[3].Name, "Dollar Driver")
+	assert.Equal(character.OtherCharacters[3].Position, "")
+	assert.Equal(character.OtherCharacters[3].Status, "offline")
+	assert.Equal(character.OtherCharacters[3].Traded, false)
+	assert.Equal(character.OtherCharacters[3].World, "Ousabra")
+
+	assert.Equal(character.OtherCharacters[4].Deleted, false)
+	assert.Equal(character.OtherCharacters[4].Main, false)
+	assert.Equal(character.OtherCharacters[4].Name, "Goth angel sinner")
+	assert.Equal(character.OtherCharacters[4].Position, "")
+	assert.Equal(character.OtherCharacters[4].Status, "offline")
+	assert.Equal(character.OtherCharacters[4].Traded, true)
+	assert.Equal(character.OtherCharacters[4].World, "Ousabra")
+
+	assert.Equal(character.OtherCharacters[5].Deleted, false)
+	assert.Equal(character.OtherCharacters[5].Main, false)
+	assert.Equal(character.OtherCharacters[5].Name, "Halodrol")
+	assert.Equal(character.OtherCharacters[5].Position, "")
+	assert.Equal(character.OtherCharacters[5].Status, "offline")
+	assert.Equal(character.OtherCharacters[5].Traded, false)
+	assert.Equal(character.OtherCharacters[5].World, "Vunira")
+
+	assert.Equal(character.OtherCharacters[6].Deleted, false)
+	assert.Equal(character.OtherCharacters[6].Main, false)
+	assert.Equal(character.OtherCharacters[6].Name, "Halodrow")
+	assert.Equal(character.OtherCharacters[6].Position, "")
+	assert.Equal(character.OtherCharacters[6].Status, "offline")
+	assert.Equal(character.OtherCharacters[6].Traded, false)
+	assert.Equal(character.OtherCharacters[6].World, "Lobera")
+
+	assert.Equal(character.OtherCharacters[7].Deleted, false)
+	assert.Equal(character.OtherCharacters[7].Main, false)
+	assert.Equal(character.OtherCharacters[7].Name, "Incoggnita")
+	assert.Equal(character.OtherCharacters[7].Position, "")
+	assert.Equal(character.OtherCharacters[7].Status, "offline")
+	assert.Equal(character.OtherCharacters[7].Traded, false)
+	assert.Equal(character.OtherCharacters[7].World, "Ferobra")
+
+	assert.Equal(character.OtherCharacters[8].Deleted, false)
+	assert.Equal(character.OtherCharacters[8].Main, false)
+	assert.Equal(character.OtherCharacters[8].Name, "Lord Kabum")
+	assert.Equal(character.OtherCharacters[8].Position, "")
+	assert.Equal(character.OtherCharacters[8].Status, "offline")
+	assert.Equal(character.OtherCharacters[8].Traded, false)
+	assert.Equal(character.OtherCharacters[8].World, "Solidera")
+
+	assert.Equal(character.OtherCharacters[9].Deleted, false)
+	assert.Equal(character.OtherCharacters[9].Main, true)
+	assert.Equal(character.OtherCharacters[9].Name, "Lord Succubu")
+	assert.Equal(character.OtherCharacters[9].Position, "")
+	assert.Equal(character.OtherCharacters[9].Status, "offline")
+	assert.Equal(character.OtherCharacters[9].Traded, false)
+	assert.Equal(character.OtherCharacters[9].World, "Ferobra")
 }
 
 func BenchmarkNumber1(b *testing.B) {

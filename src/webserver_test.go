@@ -109,6 +109,10 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 			Key:   "vocation",
 			Value: "sorcerer",
 		},
+		{
+			Key:   "page",
+			Value: "4",
+		},
 	}
 
 	tibiaHighscores(c)

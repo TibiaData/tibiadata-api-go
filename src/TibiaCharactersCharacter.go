@@ -123,12 +123,11 @@ type CharacterResponse struct {
 const Br = 0x202
 
 var (
-	deathRegex               = regexp.MustCompile(`<td.*>(.*)<\/td><td>(.*) at Level ([0-9]+) by (.*).<\/td>`)
-	summonRegex              = regexp.MustCompile(`(an? .+) of ([^<]+)`)
-	accountBadgesRegex       = regexp.MustCompile(`\(this\), &#39;(.*)&#39;, &#39;(.*)&#39;,.*\).*src="(.*)" alt=.*`)
-	accountAchievementsRegex = regexp.MustCompile(`<td class="[a-zA-Z0-9_.-]+">(.*)<\/td><td>(.*)?<?.*<\/td>`)
-	titleRegex               = regexp.MustCompile(`(.*) \(([0-9]+).*`)
-	characterInfoRegex       = regexp.MustCompile(`<td.*<nobr>[0-9]+\..(.*)<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td><td style="width: 70%">(.*)<\/td><td.*`)
+	deathRegex         = regexp.MustCompile(`<td.*>(.*)<\/td><td>(.*) at Level ([0-9]+) by (.*).<\/td>`)
+	summonRegex        = regexp.MustCompile(`(an? .+) of ([^<]+)`)
+	accountBadgesRegex = regexp.MustCompile(`\(this\), &#39;(.*)&#39;, &#39;(.*)&#39;,.*\).*src="(.*)" alt=.*`)
+	titleRegex         = regexp.MustCompile(`(.*) \(([0-9]+).*`)
+	characterInfoRegex = regexp.MustCompile(`<td.*<nobr>[0-9]+\..(.*)<\/nobr><\/td><td.*><nobr>(.*)<\/nobr><\/td><td style="width: 70%">(.*)<\/td><td.*`)
 )
 
 // TibiaCharactersCharacter func
@@ -318,18 +317,23 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 				// Removing line breaks
 				CharacterListHTML = TibiaDataHTMLRemoveLinebreaks(CharacterListHTML)
 
-				subma1a := accountAchievementsRegex.FindAllStringSubmatch(CharacterListHTML, -1)
-				if len(subma1a) > 0 {
-					// fixing encoding for achievement name
-					subma1a[0][2] = TibiaDataSanitizeEscapedString(subma1a[0][2])
+				if !strings.Contains(CharacterListHTML, "There are no achievements set to be displayed for this character.") {
+					const (
+						nameIndexer = `alt="Tibia Achievement"/></td><td>`
+					)
 
 					// get the name of the achievement (and ignore the secret image on the right)
-					Name := strings.Split(subma1a[0][2], "<img")
+					nameIdx := strings.Index(
+						CharacterListHTML, nameIndexer,
+					) + len(nameIndexer)
+					endNameIdx := strings.Index(
+						CharacterListHTML[nameIdx:], `<`,
+					) + nameIdx
 
 					AchievementsData = append(AchievementsData, Achievements{
-						Name:   Name[0],
-						Grade:  strings.Count(subma1a[0][1], "achievement-grade-symbol"),
-						Secret: strings.Contains(subma1a[0][2], "achievement-secret-symbol"),
+						Name:   CharacterListHTML[nameIdx:endNameIdx],
+						Grade:  strings.Count(CharacterListHTML, "achievement-grade-symbol"),
+						Secret: strings.Contains(CharacterListHTML, "achievement-secret-symbol"),
 					})
 				}
 

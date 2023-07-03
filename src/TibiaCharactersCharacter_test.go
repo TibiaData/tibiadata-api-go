@@ -299,6 +299,23 @@ func TestNumber6(t *testing.T) {
 	assert.Equal("Master Class (Grade 1)", masterClassBadge.Name)
 	assert.Equal("https://static.tibia.com/images//badges/badge_masterclass1.png", masterClassBadge.IconURL)
 	assert.Equal("The account has reached at least level 100 with all four vocations.", masterClassBadge.Description)
+
+	assert.Len(characterJson.Character.Achievements, 5)
+	assert.Equal(characterJson.Character.Achievements[0].Name, "Alumni")
+	assert.Equal(characterJson.Character.Achievements[0].Grade, 2)
+	assert.Equal(characterJson.Character.Achievements[0].Secret, false)
+	assert.Equal(characterJson.Character.Achievements[1].Name, "Forbidden Fruit")
+	assert.Equal(characterJson.Character.Achievements[1].Grade, 1)
+	assert.Equal(characterJson.Character.Achievements[1].Secret, true)
+	assert.Equal(characterJson.Character.Achievements[2].Name, "Goldhunter")
+	assert.Equal(characterJson.Character.Achievements[2].Grade, 1)
+	assert.Equal(characterJson.Character.Achievements[2].Secret, true)
+	assert.Equal(characterJson.Character.Achievements[3].Name, "Pyromaniac")
+	assert.Equal(characterJson.Character.Achievements[3].Grade, 2)
+	assert.Equal(characterJson.Character.Achievements[3].Secret, true)
+	assert.Equal(characterJson.Character.Achievements[4].Name, "Razing!")
+	assert.Equal(characterJson.Character.Achievements[4].Grade, 3)
+	assert.Equal(characterJson.Character.Achievements[4].Secret, true)
 }
 
 func TestNumber7(t *testing.T) {
@@ -321,8 +338,47 @@ func TestNumber7(t *testing.T) {
 	assert := assert.New(t)
 	character := characterJson.Character.CharacterInfo
 
+	assert.Len(characterJson.Character.Achievements, 0)
 	assert.Equal("Torbjörn", character.Name)
 	assert.Equal("___$$$$$$$$_______$$$$$$$$\n_$$$$$$$$$$$$__$$$$$$$$$$$$$$\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n_$$$$$$$$$$-Snulliz-$$$$$$$$$$$\n__$$$$$$$$$$$$$$$$$$$$$$$$$$\n____$$$$$$$$$$$$$$$$$$$$$$\n______$$$$$$$$$$$$$$$$$$\n________$$$$$$$$$$$$$$\n___________$$$$$$$$$\n____________$$$$$$\n_____________$$", character.Comment)
+}
+
+func TestNumber8(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/characters/Jowjow Invencivel.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+
+	character := characterJson.Character
+	assert.Len(character.Achievements, 5)
+	assert.Equal(character.Achievements[0].Name, "Alumni")
+	assert.Equal(character.Achievements[0].Grade, 2)
+	assert.Equal(character.Achievements[0].Secret, false)
+	assert.Equal(character.Achievements[1].Name, "Bad Timing")
+	assert.Equal(character.Achievements[1].Grade, 1)
+	assert.Equal(character.Achievements[1].Secret, true)
+	assert.Equal(character.Achievements[2].Name, "Cake Conqueror")
+	assert.Equal(character.Achievements[2].Grade, 1)
+	assert.Equal(character.Achievements[2].Secret, true)
+	assert.Equal(character.Achievements[3].Name, "Hat Hunter")
+	assert.Equal(character.Achievements[3].Grade, 2)
+	assert.Equal(character.Achievements[3].Secret, false)
+	assert.Equal(character.Achievements[4].Name, "Number of the Beast")
+	assert.Equal(character.Achievements[4].Grade, 1)
+	assert.Equal(character.Achievements[4].Secret, false)
 }
 
 func BenchmarkNumber1(b *testing.B) {

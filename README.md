@@ -15,6 +15,7 @@ Documentation of API endpoints can be found on [docs.tibiadata.com](https://docs
 
 - [API versions](#api-versions)
 - [How to use](#how-to-use)
+  - [Helm](#helm)
   - [Docker](#docker)
   - [Docker-compose](#docker-compose)
   - [Local development](#local-development)
@@ -43,6 +44,24 @@ v3 is on a separate branch due to v4 development
 You can either use it in a Docker container or go download the code and deploy it yourself on any server.
 
 Keep in mind that there are restrictions on tibia.com that might impact the usage of the application being hosted yourself.
+
+### Helm
+
+We have a Helm chart available for you to use to deploy your application to Kubernetes.
+
+All our charts are available through [charts.tibiadata.com](https://charts.tibiadata.com).
+
+Add the repository
+```console
+helm repo add tibiadata https://charts.tibiadata.com
+```
+
+Search for the chart
+```console
+helm repo search tibiadata
+```
+
+The charts-repository is located in [tibiadata-helm-charts](https://github.com/TibiaData/tibiadata-helm-charts).
 
 ### Docker
 

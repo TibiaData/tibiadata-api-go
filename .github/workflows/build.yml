@@ -31,9 +31,9 @@ jobs:
           tags: |
             type=edge
             type=ref,event=branch,enable=${{ (github.ref != 'refs/heads/main') }}
+            type=semver,pattern={{version}}
             type=semver,pattern={{major}}
             type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}.{{minor}}.{{patch}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -79,3 +79,12 @@ jobs:
             TibiaDataBuildBuilder=github
             TibiaDataBuildRelease=${{ fromJSON(steps.docker_meta.outputs.json).labels['org.opencontainers.image.version'] }}
             TibiaDataBuildCommit=${{ fromJSON(steps.docker_meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+
+      - name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: peterevans/dockerhub-description
+          short-description: ${{ github.event.repository.description }}

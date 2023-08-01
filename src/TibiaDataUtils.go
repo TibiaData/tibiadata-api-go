@@ -99,22 +99,28 @@ func TibiaDataDateV3(date string) string {
 
 	// var time parser
 	var tmpDate time.Time
+	var err error
 
-	// parsing and setting format of return
-	switch dateLength := len(date); {
-	case dateLength == 5:
-		// date that contains special formatting only used in date a world was created
-		tmpDate, _ = time.Parse("01/06", date)
-		// we need to return earlier as well, since we don't have the day
-		return tmpDate.UTC().Format("2006-01")
-	case dateLength == 11:
-		// dates that contain first 3 letters in month
-		tmpDate, _ = time.Parse("Jan 02 2006", date)
-	case dateLength > 11:
-		// dates that contain month fully written
-		tmpDate, _ = time.Parse("January 2 2006", date)
-	default:
-		log.Printf("Weird format detected: %s", date)
+	// date formats to parse
+	dateFormats := map[string][]string{
+		"YearMonthDay": {"January 2 2006", "Jan 02 2006"},
+		"YearMonth":    {"January 2006", "Jan 2006", "2006-01", "01/06"},
+	}
+
+	for _, layout := range dateFormats["YearMonthDay"] {
+		tmpDate, err = time.Parse(layout, date)
+		if err == nil {
+			// If the parse succeeds, format the date as "2006-01-02"
+			return tmpDate.UTC().Format("2006-01-02")
+		}
+	}
+
+	for _, layout := range dateFormats["YearMonth"] {
+		tmpDate, err = time.Parse(layout, date)
+		if err == nil {
+			// If the parse succeeds, format the date as "2006-01"
+			return tmpDate.Format("2006-01")
+		}
 	}
 
 	return tmpDate.UTC().Format("2006-01-02")

@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.7.3] - 2023-08-01
+
+### Fixed
+* Rewrite TibiaDataDateV3 function ([#241](https://github.com/TibiaData/tibiadata-api-go/pull/241) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [3.7.2] - 2023-05-22
 
 ### Fixed
@@ -275,6 +280,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.7.3]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.2...v3.7.3
 [3.7.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.1...v3.7.2
 [3.7.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.6.0...v3.7.0

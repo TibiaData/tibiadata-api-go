@@ -1,6 +1,6 @@
 module github.com/TibiaData/tibiadata-api-go
 
-go 1.20
+go 1.21
 
 replace github.com/TibiaData/tibiadata-api-go/src/tibiamapping => ./src/tibiamapping
 

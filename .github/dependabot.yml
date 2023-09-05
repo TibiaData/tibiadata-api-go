@@ -10,6 +10,21 @@ updates:
     schedule:
       interval: "daily"
 
+  - package-ecosystem: "gomod"
+    directory: "/src/static/"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "gomod"
+    directory: "/src/tibiamapping/"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "gomod"
+    directory: "/src/validation/"
+    schedule:
+      interval: "daily"
+
   - package-ecosystem: "docker"
     directory: "/"
     schedule:

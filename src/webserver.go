@@ -1230,7 +1230,7 @@ func TibiaDataHTMLDataCollector(TibiaDataRequest TibiaDataRequestStruct) (string
 		case http.StatusFound:
 			// Check if page is in maintenance mode
 			location, _ := res.RawResponse.Location()
-			if location.Host == "maintenance.tibia.com" {
+			if location != nil && location.Host == "maintenance.tibia.com" {
 				LogMessage := "maintenance mode detected on tibia.com"
 				log.Printf("[info] TibiaDataHTMLDataCollector: %s!", LogMessage)
 				return "", validation.ErrorMaintenanceMode
@@ -1258,6 +1258,7 @@ func TibiaDataHTMLDataCollector(TibiaDataRequest TibiaDataRequestStruct) (string
 	doc, err := goquery.NewDocumentFromReader(resIo2)
 	if err != nil {
 		log.Printf("[error] TibiaDataHTMLDataCollector (URL: %s) error: %s", res.Request.URL, err)
+		return "", err
 	}
 
 	data, err := doc.Find(".Border_2 .Border_3").Html()

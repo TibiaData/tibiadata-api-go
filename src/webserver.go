@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -464,6 +465,10 @@ func tibiaHousesOverviewV3(c *gin.Context) {
 	town = TibiaDataStringWorldFormatToTitleV3(town)
 
 	jsonData := TibiaHousesOverviewV3Impl(c, world, town, TibiaDataHTMLDataCollectorV3)
+	// An error occured, prevent sending an invalid json
+	if reflect.DeepEqual(jsonData, HousesOverviewResponse{}) {
+		return
+	}
 
 	// return jsonData
 	TibiaDataAPIHandleResponse(c, http.StatusOK, "TibiaHousesOverviewV3", jsonData)
@@ -868,7 +873,7 @@ func TibiaDataHTMLDataCollectorV3(TibiaDataRequest TibiaDataRequestStruct) (stri
 		case http.StatusFound:
 			// Check if page is in maintenance mode
 			location, _ := res.RawResponse.Location()
-			if location != nil && location.Host == "maintenance.tibia.com" {
+			if location.Host == "maintenance.tibia.com" {
 				LogMessage := "maintenance mode detected on tibia.com"
 				log.Printf("[info] TibiaDataHTMLDataCollectorV3: %s!", LogMessage)
 				return "", errors.New(LogMessage)
@@ -892,7 +897,6 @@ func TibiaDataHTMLDataCollectorV3(TibiaDataRequest TibiaDataRequestStruct) (stri
 	doc, err := goquery.NewDocumentFromReader(resIo2)
 	if err != nil {
 		log.Printf("[error] TibiaDataHTMLDataCollectorV3 (URL: %s) error: %s", TibiaDataRequest.URL, err)
-		return "", err
 	}
 
 	// Find of this to get div with class BoxContent

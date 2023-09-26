@@ -20,10 +20,8 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-var (
-	// TibiaData app resty vars
-	TibiaDataUserAgent, TibiaDataProxyDomain string
-)
+// TibiaData app resty vars
+var TibiaDataUserAgent, TibiaDataProxyDomain string
 
 // Information - child of JSONData
 type Information struct {
@@ -101,8 +99,8 @@ func runWebServer() {
 
 		// Tibia guilds
 		v3.GET("/guild/:name", tibiaGuildsGuildV3)
-		//v3.GET("/guild/:name/events",TibiaGuildsGuildEventsV3)
-		//v3.GET("/guild/:name/wars",TibiaGuildsGuildWarsV3)
+		// v3.GET("/guild/:name/events",TibiaGuildsGuildEventsV3)
+		// v3.GET("/guild/:name/wars",TibiaGuildsGuildWarsV3)
 		v3.GET("/guilds/:world", tibiaGuildsOverviewV3)
 
 		// Tibia highscores
@@ -757,10 +755,10 @@ func tibiaWorldsWorldV3(c *gin.Context) {
 
 func tibiaDataRequestHandler(c *gin.Context, tibiaDataRequest TibiaDataRequestStruct, requestHandler func(string) (interface{}, int), handlerName string) {
 	BoxContentHTML, err := TibiaDataHTMLDataCollectorV3(tibiaDataRequest)
-
 	// return error (e.g. for maintenance mode)
 	if err != nil {
 		TibiaDataAPIHandleResponse(c, http.StatusBadGateway, handlerName, gin.H{"error": err.Error()})
+		return
 	}
 
 	jsonData, httpStatusCode := requestHandler(BoxContentHTML)
@@ -870,7 +868,7 @@ func TibiaDataHTMLDataCollectorV3(TibiaDataRequest TibiaDataRequestStruct) (stri
 		case http.StatusFound:
 			// Check if page is in maintenance mode
 			location, _ := res.RawResponse.Location()
-			if location.Host == "maintenance.tibia.com" {
+			if location != nil && location.Host == "maintenance.tibia.com" {
 				LogMessage := "maintenance mode detected on tibia.com"
 				log.Printf("[info] TibiaDataHTMLDataCollectorV3: %s!", LogMessage)
 				return "", errors.New(LogMessage)
@@ -894,6 +892,7 @@ func TibiaDataHTMLDataCollectorV3(TibiaDataRequest TibiaDataRequestStruct) (stri
 	doc, err := goquery.NewDocumentFromReader(resIo2)
 	if err != nil {
 		log.Printf("[error] TibiaDataHTMLDataCollectorV3 (URL: %s) error: %s", TibiaDataRequest.URL, err)
+		return "", err
 	}
 
 	// Find of this to get div with class BoxContent
@@ -936,6 +935,6 @@ func readyz(c *gin.Context) {
 		c.JSON(http.StatusServiceUnavailable, gin.H{"error": http.StatusText(http.StatusServiceUnavailable)})
 		return
 	}
-	//c.JSON(http.StatusOK, gin.H{"status": http.StatusText(http.StatusOK)})
+	// c.JSON(http.StatusOK, gin.H{"status": http.StatusText(http.StatusOK)})
 	TibiaDataAPIHandleResponse(c, http.StatusOK, "readyz", gin.H{"status": http.StatusText(http.StatusOK)})
 }

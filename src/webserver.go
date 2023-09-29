@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -20,10 +21,8 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
-var (
-	// TibiaData app resty vars
-	TibiaDataUserAgent, TibiaDataProxyDomain string
-)
+// TibiaData app resty vars
+var TibiaDataUserAgent, TibiaDataProxyDomain string
 
 // Information - child of JSONData
 type Information struct {
@@ -101,8 +100,8 @@ func runWebServer() {
 
 		// Tibia guilds
 		v3.GET("/guild/:name", tibiaGuildsGuildV3)
-		//v3.GET("/guild/:name/events",TibiaGuildsGuildEventsV3)
-		//v3.GET("/guild/:name/wars",TibiaGuildsGuildWarsV3)
+		// v3.GET("/guild/:name/events",TibiaGuildsGuildEventsV3)
+		// v3.GET("/guild/:name/wars",TibiaGuildsGuildWarsV3)
 		v3.GET("/guilds/:world", tibiaGuildsOverviewV3)
 
 		// Tibia highscores
@@ -466,6 +465,10 @@ func tibiaHousesOverviewV3(c *gin.Context) {
 	town = TibiaDataStringWorldFormatToTitleV3(town)
 
 	jsonData := TibiaHousesOverviewV3Impl(c, world, town, TibiaDataHTMLDataCollectorV3)
+	// An error occured, prevent sending an invalid json
+	if reflect.DeepEqual(jsonData, HousesOverviewResponse{}) {
+		return
+	}
 
 	// return jsonData
 	TibiaDataAPIHandleResponse(c, http.StatusOK, "TibiaHousesOverviewV3", jsonData)
@@ -757,10 +760,10 @@ func tibiaWorldsWorldV3(c *gin.Context) {
 
 func tibiaDataRequestHandler(c *gin.Context, tibiaDataRequest TibiaDataRequestStruct, requestHandler func(string) (interface{}, int), handlerName string) {
 	BoxContentHTML, err := TibiaDataHTMLDataCollectorV3(tibiaDataRequest)
-
 	// return error (e.g. for maintenance mode)
 	if err != nil {
 		TibiaDataAPIHandleResponse(c, http.StatusBadGateway, handlerName, gin.H{"error": err.Error()})
+		return
 	}
 
 	jsonData, httpStatusCode := requestHandler(BoxContentHTML)
@@ -936,6 +939,6 @@ func readyz(c *gin.Context) {
 		c.JSON(http.StatusServiceUnavailable, gin.H{"error": http.StatusText(http.StatusServiceUnavailable)})
 		return
 	}
-	//c.JSON(http.StatusOK, gin.H{"status": http.StatusText(http.StatusOK)})
+	// c.JSON(http.StatusOK, gin.H{"status": http.StatusText(http.StatusOK)})
 	TibiaDataAPIHandleResponse(c, http.StatusOK, "readyz", gin.H{"status": http.StatusText(http.StatusOK)})
 }

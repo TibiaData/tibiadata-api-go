@@ -392,10 +392,20 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 				DeathAssists := []Killers{}
 
 				const (
-					initIndexer    = `CET`
-					levelIndexer   = `at Level `
-					killersIndexer = `by `
+					initCetIndexer  = `CET`
+					initCestIndexer = `CEST`
+					levelIndexer    = `at Level `
+					killersIndexer  = `by `
 				)
+
+				var initIndexer string
+				timeZoneIdentifiers := []string{initCetIndexer, initCestIndexer}
+				for _, tz := range timeZoneIdentifiers {
+					if strings.Contains(dataNoTags, tz) {
+						initIndexer = tz
+						break
+					}
+				}
 
 				initIdx := strings.Index(
 					dataNoTags, initIndexer,
@@ -412,8 +422,8 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 
 				timeIdx := 0
 				endTimeIdx := strings.Index(
-					dataNoTags[timeIdx:], `CET`,
-				) + timeIdx + len(`CET`)
+					dataNoTags[timeIdx:], initIndexer,
+				) + timeIdx + len(initIndexer)
 
 				time := TibiaDataDatetime(dataNoTags[timeIdx:endTimeIdx])
 

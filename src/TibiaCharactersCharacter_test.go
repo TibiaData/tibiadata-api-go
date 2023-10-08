@@ -3005,6 +3005,35 @@ func TestNumber9(t *testing.T) {
 	assert.Equal(character.OtherCharacters[9].World, "Ferobra")
 }
 
+func TestNumber10(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/characters/Nocna Furia.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Nocna Furia", character.Name)
+	assert.Nil(character.FormerNames)
+	assert.False(character.Traded)
+	assert.Empty(character.DeletionDate)
+	assert.Equal("male", character.Sex)
+	assert.Equal("Tibia's Topmodel (Grade 1)", character.Title)
+	assert.Equal(6, character.UnlockedTitles)
+}
+
 func BenchmarkNumber1(b *testing.B) {
 	file, err := static.TestFiles.Open("testdata/characters/Darkside Rafa.html")
 	if err != nil {

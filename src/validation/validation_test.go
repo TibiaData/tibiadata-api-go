@@ -400,7 +400,7 @@ func TestValidationFuncs(t *testing.T) {
 	}
 
 	house, err := GetHouseRaw(59052)
-	if err != nil || house == nil {
+	if err != nil || house == (House{}) {
 		t.Fatalf("GetHouseRaw error with house 59052: %s", err)
 	}
 
@@ -419,7 +419,7 @@ func TestValidationFuncs(t *testing.T) {
 	}
 
 	house, err = GetHouseInTown(59054, "Ankrahmun")
-	if err != nil || house == nil {
+	if err != nil || house == (House{}) {
 		t.Fatalf("GetHouseInTown error with house 59054 in Ankrahmun: %s", err)
 	}
 

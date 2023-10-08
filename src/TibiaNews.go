@@ -31,7 +31,7 @@ var (
 	martelRegex = regexp.MustCompile(`<img src=\"https:\/\/static\.tibia\.com\/images\/global\/letters\/letter_martel_(.)\.gif\" ([^\/>]+..)`)
 )
 
-func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (*NewsResponse, error) {
+func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (NewsResponse, error) {
 	// Declaring vars for later use..
 	var (
 		NewsData    News
@@ -43,7 +43,7 @@ func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (*NewsRespo
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaNewsImpl failed at goquery.NewDocumentFromReader, err: %s", err)
+		return NewsResponse{}, fmt.Errorf("[error] TibiaNewsImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	NewsData.ID = NewsID
@@ -82,7 +82,7 @@ func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (*NewsRespo
 	})
 
 	if insideError != nil {
-		return nil, insideError
+		return NewsResponse{}, insideError
 	}
 
 	ReaderHTML.Find(".NewsTableContainer").EachWithBreak(func(index int, s *goquery.Selection) bool {
@@ -125,12 +125,12 @@ func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (*NewsRespo
 	})
 
 	if insideError != nil {
-		return nil, insideError
+		return NewsResponse{}, insideError
 	}
 
 	//
 	// Build the data-blob
-	return &NewsResponse{
+	return NewsResponse{
 		NewsData,
 		Information{
 			APIDetails: TibiaDataAPIDetails,

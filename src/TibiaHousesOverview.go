@@ -49,7 +49,7 @@ var (
 )
 
 // TibiaHousesOverview func
-func TibiaHousesOverviewImpl(c *gin.Context, world string, town string, htmlDataCollector func(TibiaDataRequestStruct) (string, error)) (*HousesOverviewResponse, error) {
+func TibiaHousesOverviewImpl(c *gin.Context, world string, town string, htmlDataCollector func(TibiaDataRequestStruct) (string, error)) (HousesOverviewResponse, error) {
 	var (
 		// Creating empty vars
 		HouseData, GuildhallData []HousesHouse
@@ -62,7 +62,7 @@ func TibiaHousesOverviewImpl(c *gin.Context, world string, town string, htmlData
 	for _, HouseType := range HouseTypes {
 		houses, err := makeHouseRequest(HouseType, world, town, htmlDataCollector)
 		if err != nil {
-			return nil, fmt.Errorf("[error] TibiaHousesOverviewImpl failed at makeHouseRequest, type: %s, err: %s", HouseType, err)
+			return HousesOverviewResponse{}, fmt.Errorf("[error] TibiaHousesOverviewImpl failed at makeHouseRequest, type: %s, err: %s", HouseType, err)
 		}
 
 		switch HouseType {
@@ -74,7 +74,7 @@ func TibiaHousesOverviewImpl(c *gin.Context, world string, town string, htmlData
 	}
 
 	// Build the data-blob
-	return &HousesOverviewResponse{
+	return HousesOverviewResponse{
 		HousesHouses{
 			World:         world,
 			Town:          town,

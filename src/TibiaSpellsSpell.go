@@ -67,13 +67,13 @@ var (
 )
 
 // TibiaSpellsSpell func
-func TibiaSpellsSpellImpl(spell string, BoxContentHTML string) (*SpellInformationResponse, error) {
+func TibiaSpellsSpellImpl(spell string, BoxContentHTML string) (SpellInformationResponse, error) {
 	//TODO: There is currently a bug with description, it always comes back empty
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaSpellsSpellImpl failed at goquery.NewDocumentFromReader, err: %s", err)
+		return SpellInformationResponse{}, fmt.Errorf("[error] TibiaSpellsSpellImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	var (
@@ -261,7 +261,7 @@ func TibiaSpellsSpellImpl(spell string, BoxContentHTML string) (*SpellInformatio
 	})
 
 	if insideError != nil {
-		return nil, insideError
+		return SpellInformationResponse{}, insideError
 	}
 
 	// Getting the description
@@ -273,7 +273,7 @@ func TibiaSpellsSpellImpl(spell string, BoxContentHTML string) (*SpellInformatio
 
 	//
 	// Build the data-blob
-	return &SpellInformationResponse{
+	return SpellInformationResponse{
 		SpellData{
 			Name:                SpellName,
 			Spell:               SpellID,

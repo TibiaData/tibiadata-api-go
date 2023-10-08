@@ -52,20 +52,20 @@ var (
 	CreatureLootRegex         = regexp.MustCompile(`.*yield (.*) experience.*carry (.*)with them.`)
 )
 
-func TibiaCreaturesCreatureImpl(race string, BoxContentHTML string) (*CreatureResponse, error) {
+func TibiaCreaturesCreatureImpl(race string, BoxContentHTML string) (CreatureResponse, error) {
 	// local strings used in this function
 	var localDamageString = " damage"
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaCreaturesCreatureImp failed at goquery.NewDocumentFromReader, error: %s", err)
+		return CreatureResponse{}, fmt.Errorf("[error] TibiaCreaturesCreatureImp failed at goquery.NewDocumentFromReader, error: %s", err)
 	}
 
 	// Getting data
 	InnerTableContainerTMP1, err := ReaderHTML.Find(".BoxContent div").First().NextAll().Html()
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaCreaturesCreatureImp failed at ReaderHTML.Find, error: %s", err)
+		return CreatureResponse{}, fmt.Errorf("[error] TibiaCreaturesCreatureImp failed at ReaderHTML.Find, error: %s", err)
 	}
 
 	// Regex to get data
@@ -162,11 +162,11 @@ func TibiaCreaturesCreatureImpl(race string, BoxContentHTML string) (*CreatureRe
 		}
 	} else {
 		log.Printf("[warning] TibiaCreaturesCreatureImpl called on invalid creature")
-		return nil, validation.ErrorCreatureNotFound
+		return CreatureResponse{}, validation.ErrorCreatureNotFound
 	}
 
 	// Build the data-blob
-	return &CreatureResponse{
+	return CreatureResponse{
 		Creature{
 			Name:             CreatureName,
 			Race:             race,

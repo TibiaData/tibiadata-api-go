@@ -122,7 +122,7 @@ type CharacterResponse struct {
 const Br = 0x202
 
 // TibiaCharactersCharacter func
-func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, error) {
+func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, error) {
 	var (
 		// local strings used in this function
 		localDivQueryString = ".TableContentContainer tr"
@@ -144,7 +144,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("TibiaCharactersCharacterImpl failed at  goquery.NewDocumentFromReader, err: %s", err)
+		return CharacterResponse{}, fmt.Errorf("TibiaCharactersCharacterImpl failed at  goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Running query on every .TableContainer
@@ -612,9 +612,9 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 	// Search for errors
 	switch {
 	case characterNotFound:
-		return nil, validation.ErrorCharacterNotFound
+		return CharacterResponse{}, validation.ErrorCharacterNotFound
 	case insideError != nil:
-		return nil, insideError
+		return CharacterResponse{}, insideError
 	case reflect.DeepEqual(charData, Character{}):
 		// There are some rare cases where a character name would
 		// bug out tibia.com (tíbia, for example) and then we would't
@@ -624,12 +624,12 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 		//
 		// Validating those names would also be a pain because of old
 		// tibian names such as Kolskägg, which for whatever reason is valid
-		return nil, validation.ErrorCharacterNotFound
+		return CharacterResponse{}, validation.ErrorCharacterNotFound
 	}
 
 	//
 	// Build the data-blob
-	return &CharacterResponse{
+	return CharacterResponse{
 		charData,
 		Information{
 			APIDetails: TibiaDataAPIDetails,

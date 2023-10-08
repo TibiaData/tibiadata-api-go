@@ -50,13 +50,13 @@ var (
 )
 
 // TibiaWorldsWorld func
-func TibiaWorldsWorldImpl(world string, BoxContentHTML string) (*WorldResponse, error) {
+func TibiaWorldsWorldImpl(world string, BoxContentHTML string) (WorldResponse, error) {
 	//TODO: We need to read the world name from the response rather than pass it into this func
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaWorldsWorldImpl failed at goquery.NewDocumentFromReader, err: %s", err)
+		return WorldResponse{}, fmt.Errorf("[error] TibiaWorldsWorldImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Creating empty vars
@@ -174,7 +174,7 @@ func TibiaWorldsWorldImpl(world string, BoxContentHTML string) (*WorldResponse, 
 	})
 
 	if insideError != nil {
-		return nil, insideError
+		return WorldResponse{}, insideError
 	}
 
 	// Running query over each div
@@ -200,12 +200,12 @@ func TibiaWorldsWorldImpl(world string, BoxContentHTML string) (*WorldResponse, 
 	})
 
 	if insideError != nil {
-		return nil, insideError
+		return WorldResponse{}, insideError
 	}
 
 	//
 	// Build the data-blob
-	return &WorldResponse{
+	return WorldResponse{
 		World: World{
 			Name:                world,
 			Status:              WorldsStatus,

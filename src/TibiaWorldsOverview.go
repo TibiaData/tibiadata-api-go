@@ -46,11 +46,11 @@ var (
 )
 
 // TibiaWorldsOverview func
-func TibiaWorldsOverviewImpl(BoxContentHTML string) (*WorldsOverviewResponse, error) {
+func TibiaWorldsOverviewImpl(BoxContentHTML string) (WorldsOverviewResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaWorldsOverviewImpl failed at goquery.NewDocumentFromReader, err: %s", err)
+		return WorldsOverviewResponse{}, fmt.Errorf("[error] TibiaWorldsOverviewImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Creating empty vars
@@ -190,12 +190,12 @@ func TibiaWorldsOverviewImpl(BoxContentHTML string) (*WorldsOverviewResponse, er
 	})
 
 	if insideError != nil {
-		return nil, insideError
+		return WorldsOverviewResponse{}, insideError
 	}
 
 	//
 	// Build the data-blob
-	return &WorldsOverviewResponse{
+	return WorldsOverviewResponse{
 		OverviewWorlds{
 			PlayersOnline:    WorldsAllOnlinePlayers,
 			RecordPlayers:    WorldsRecordPlayers,

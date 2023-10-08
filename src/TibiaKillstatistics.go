@@ -38,11 +38,11 @@ type KillStatisticsResponse struct {
 	Information    Information    `json:"information"`
 }
 
-func TibiaKillstatisticsImpl(world string, BoxContentHTML string) (*KillStatisticsResponse, error) {
+func TibiaKillstatisticsImpl(world string, BoxContentHTML string) (KillStatisticsResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaKillstatisticsImpl failed at goquery.NewDocumentFromReader, err: %s", err)
+		return KillStatisticsResponse{}, fmt.Errorf("[error] TibiaKillstatisticsImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	// Creating empty KillStatisticsData var
@@ -76,7 +76,7 @@ func TibiaKillstatisticsImpl(world string, BoxContentHTML string) (*KillStatisti
 
 	//
 	// Build the data-blob
-	return &KillStatisticsResponse{
+	return KillStatisticsResponse{
 		KillStatistics{
 			World:   world,
 			Entries: KillStatisticsData,

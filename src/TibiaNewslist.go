@@ -26,14 +26,14 @@ type NewsListResponse struct {
 	Information Information `json:"information"`
 }
 
-func TibiaNewslistImpl(days int, BoxContentHTML string) (*NewsListResponse, error) {
+func TibiaNewslistImpl(days int, BoxContentHTML string) (NewsListResponse, error) {
 	// Declaring vars for later use..
 	var NewsListData []NewsItem
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, fmt.Errorf("[error] TibiaNewslistImpl failed at goquery.NewDocumentFromReader, err: %s", err)
+		return NewsListResponse{}, fmt.Errorf("[error] TibiaNewslistImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}
 
 	var insideError error
@@ -76,12 +76,12 @@ func TibiaNewslistImpl(days int, BoxContentHTML string) (*NewsListResponse, erro
 	})
 
 	if insideError != nil {
-		return nil, insideError
+		return NewsListResponse{}, insideError
 	}
 
 	//
 	// Build the data-blob
-	return &NewsListResponse{
+	return NewsListResponse{
 		NewsListData,
 		Information{
 			APIDetails: TibiaDataAPIDetails,

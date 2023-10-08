@@ -1277,7 +1277,7 @@ func healthz(c *gin.Context) {
 
 // readyz is a k8s readiness probe
 func readyz(c *gin.Context) {
-	if isReady == nil || !isReady.Load().(bool) {
+	if !isReady.Load() {
 		c.JSON(http.StatusServiceUnavailable, gin.H{"error": http.StatusText(http.StatusServiceUnavailable)})
 		return
 	}

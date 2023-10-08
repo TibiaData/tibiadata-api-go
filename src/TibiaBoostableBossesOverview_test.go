@@ -39,16 +39,16 @@ func TestBoostableBossesOverview(t *testing.T) {
 		imageURL string
 	}{
 		{
-			idx:      19,
-			name:     "Ghulosh",
+			idx:      20,
+			name:     "Gnomevil",
 			featured: false,
-			imageURL: "https://static.tibia.com/images/library/ghulosh.gif",
+			imageURL: "https://static.tibia.com/images/library/gnomehorticulist.gif",
 		},
 		{
-			idx:      24,
-			name:     "Goshnar's Hatred",
+			idx:      25,
+			name:     "Goshnar's Malice",
 			featured: false,
-			imageURL: "https://static.tibia.com/images/library/goshnarshatred.gif",
+			imageURL: "https://static.tibia.com/images/library/goshnarsmalice.gif",
 		},
 		{
 			idx:      47,
@@ -57,16 +57,16 @@ func TestBoostableBossesOverview(t *testing.T) {
 			imageURL: "https://static.tibia.com/images/library/ragiaz.gif",
 		},
 		{
-			idx:      52,
-			name:     "Rupture",
+			idx:      55,
+			name:     "Sharpclaw",
 			featured: false,
-			imageURL: "https://static.tibia.com/images/library/rupture.gif",
+			imageURL: "https://static.tibia.com/images/library/sharpclaw.gif",
 		},
 		{
-			idx:      75,
-			name:     "The Monster",
+			idx:      78,
+			name:     "The Pale Worm",
 			featured: false,
-			imageURL: "https://static.tibia.com/images/library/themonster.gif",
+			imageURL: "https://static.tibia.com/images/library/paleworm.gif",
 		},
 	} {
 		boss := bosses[tc.idx]

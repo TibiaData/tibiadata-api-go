@@ -25,10 +25,10 @@ func TestBoostableBossesOverview(t *testing.T) {
 	boosted := boostableBossesJson.BoostableBosses.Boosted
 	bosses := boostableBossesJson.BoostableBosses.BoostableBosses
 
-	assert.Equal(91, len(bosses))
-	assert.Equal("Sharpclaw", boosted.Name)
+	assert.Equal(95, len(bosses))
+	assert.Equal("Ragiaz", boosted.Name)
 	assert.Equal(
-		"https://static.tibia.com/images/global/header/monsters/sharpclaw.gif",
+		"https://static.tibia.com/images/global/header/monsters/ragiaz.gif",
 		boosted.ImageURL,
 	)
 
@@ -40,27 +40,33 @@ func TestBoostableBossesOverview(t *testing.T) {
 	}{
 		{
 			idx:      19,
-			name:     "Gnomevil",
+			name:     "Ghulosh",
 			featured: false,
-			imageURL: "https://static.tibia.com/images/library/gnomehorticulist.gif",
+			imageURL: "https://static.tibia.com/images/library/ghulosh.gif",
 		},
 		{
 			idx:      24,
-			name:     "Goshnar's Malice",
+			name:     "Goshnar's Hatred",
 			featured: false,
-			imageURL: "https://static.tibia.com/images/library/goshnarsmalice.gif",
+			imageURL: "https://static.tibia.com/images/library/goshnarshatred.gif",
+		},
+		{
+			idx:      47,
+			name:     "Ragiaz",
+			featured: true,
+			imageURL: "https://static.tibia.com/images/library/ragiaz.gif",
 		},
 		{
 			idx:      52,
-			name:     "Sharpclaw",
-			featured: true,
-			imageURL: "https://static.tibia.com/images/library/sharpclaw.gif",
+			name:     "Rupture",
+			featured: false,
+			imageURL: "https://static.tibia.com/images/library/rupture.gif",
 		},
 		{
 			idx:      75,
-			name:     "The Pale Worm",
+			name:     "The Monster",
 			featured: false,
-			imageURL: "https://static.tibia.com/images/library/paleworm.gif",
+			imageURL: "https://static.tibia.com/images/library/themonster.gif",
 		},
 	} {
 		boss := bosses[tc.idx]

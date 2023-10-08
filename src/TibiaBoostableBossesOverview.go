@@ -44,7 +44,7 @@ func TibiaBoostableBossesOverviewImpl(BoxContentHTML string) (BoostableBossesOve
 		bossesImgIndexer    = `https://static.tibia.com/images/library/`
 		endBossesImgIndexer = `"`
 
-		bossesNameIndexer    = `border=0 /> <div>`
+		bossesNameIndexer    = `border="0" /> <div>`
 		endBossesNameIndexer = `</div>`
 	)
 

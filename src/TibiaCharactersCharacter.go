@@ -190,7 +190,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (*CharacterResponse, er
 				case "Sex:":
 					CharacterInfoData.Sex = RowData
 				case "Title:":
-					leftParenIdx := strings.Index(RowData, "(")
+					leftParenIdx := strings.LastIndex(RowData, "(")
 					if leftParenIdx == -1 {
 						return
 					}

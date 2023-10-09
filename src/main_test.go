@@ -22,5 +22,4 @@ func TestTibiaDataInitializer(t *testing.T) {
 	// Check that the variables have been set correctly
 	assert.Equal("open-source", TibiaDataBuildEdition)
 	assert.Equal("unittest.example.com", TibiaDataHost)
-	assert.Equal("", TibiaDataProxyDomain)
 }

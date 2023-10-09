@@ -60,7 +60,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	}
 
 	tibiaCreaturesCreature(c)
-	fmt.Println("tibiaCreaturesCreature", c)
+	fmt.Println("tibiaCreaturesCreature", w)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -80,7 +80,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	}
 
 	tibiaGuildsGuild(c)
-	fmt.Println("tibiaGuildsGuild", c)
+	fmt.Println("tibiaGuildsGuild", w)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -119,7 +119,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	}
 
 	tibiaHighscores(c)
-	fmt.Println("tibiaHighscores", c)
+	fmt.Println("tibiaHighscores", w)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()

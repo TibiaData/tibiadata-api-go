@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,14 +19,51 @@ func TestTibiaUTCDateFormat(t *testing.T) {
 	assert.Equal(t, "2021-12-24T09:52:16Z", TibiaDataDatetime("Dec 24 2021, 09:52:16 UTC"))
 }
 
-func TestEnvFunctions(t *testing.T) {
+func TestIsEnvExist(t *testing.T) {
 	assert := assert.New(t)
 
-	assert.False(false, isEnvExist("test"))
+	// Test when environment variable exists and is not empty
+	os.Setenv("TIBIADATA_ENV", "production")
+	assert.True(isEnvExist("TIBIADATA_ENV"))
 
-	assert.Equal("default", getEnv("TIBIADATA_ENV", "default"))
+	// Test when environment variable exists and is empty
+	os.Setenv("TIBIADATA_ENV", "")
+	assert.False(isEnvExist("TIBIADATA_ENV"))
 
+	// Test when environment variable does not exist
+	os.Unsetenv("TIBIADATA_ENV")
+	assert.False(isEnvExist("TIBIADATA_ENV"))
+}
+
+func TestGetEnv(t *testing.T) {
+	assert := assert.New(t)
+
+	os.Setenv("TIBIADATA_ENV", "production")
+	defer os.Unsetenv("TIBIADATA_ENV")
+
+	// Test when environment variable is set
+	assert.Equal("production", getEnv("TIBIADATA_ENV", "default"))
+
+	// Test when environment variable is not set
+	assert.Equal("default", getEnv("NON_EXISTENT_ENV", "default"))
+}
+
+func TestGetEnvAsBool(t *testing.T) {
+	assert := assert.New(t)
+
+	// Test when environment variable is not set
+	assert.True(true, getEnvAsBool("TIBIADATA_ENV", true))
+	assert.False(false, getEnvAsBool("TIBIADATA_ENV", false))
+
+	// Test when environment variable is set to true
+	os.Setenv("TIBIADATA_ENV", "true")
+	assert.True(true, getEnvAsBool("TIBIADATA_ENV", false))
+
+	// Test when environment variable is set to false
+	os.Setenv("TIBIADATA_ENV", "false")
 	assert.False(false, getEnvAsBool("TIBIADATA_ENV", true))
+
+	os.Unsetenv("TIBIADATA_ENV")
 }
 
 func TestTibiaDataVocationValidator(t *testing.T) {
@@ -50,6 +88,9 @@ func TestTibiaDataVocationValidator(t *testing.T) {
 	x, y = TibiaDataVocationValidator("druid")
 	assert.Equal(x, "druids")
 	assert.Equal(y, "5")
+	x, y = TibiaDataVocationValidator("")
+	assert.Equal(x, "all")
+	assert.Equal(y, "0")
 }
 
 func TestTibiaDataGetNewsCategory(t *testing.T) {
@@ -80,10 +121,18 @@ func TestHTMLLineBreakRemover(t *testing.T) {
 }
 
 func TestURLsRemover(t *testing.T) {
-	const str = `<a href="https://www.tibia.com/community/?subtopic=characters&amp;name=Bobeek">Bobeek</a>`
+	const (
+		strOne = `<a href="https://www.tibia.com/community/?subtopic=characters&amp;name=Bobeek">Bobeek</a>`
+		strTwo = `<div>Bobeek</div>`
+	)
 
-	sanitizedStr := TibiaDataRemoveURLs(str)
+	// Test when input contains a URL
+	sanitizedStr := TibiaDataRemoveURLs(strOne)
 	assert.Equal(t, sanitizedStr, "Bobeek")
+
+	// Test when input does not contain a URL
+	sanitizedStr = TibiaDataRemoveURLs(strTwo)
+	assert.Equal(t, sanitizedStr, "")
 }
 
 func TestWorldFormater(t *testing.T) {
@@ -111,17 +160,41 @@ func TestEscaper(t *testing.T) {
 }
 
 func TestDateParser(t *testing.T) {
-	const str = "Mar 09 2022"
+	const (
+		strYearMonthDay = "2022-03-09"
+		strYearMonth    = "2022-03"
+	)
 
-	sanitizedString := TibiaDataDate(str)
-	assert.Equal(t, sanitizedString, "2022-03-09")
+	assert := assert.New(t)
+	assert.Equal("0001-01-01", TibiaDataDate(""))
+
+	// YearMonthDay
+	assert.Equal(strYearMonthDay, TibiaDataDate("March 9 2022"))
+	assert.Equal(strYearMonthDay, TibiaDataDate("Mar 09 2022"))
+
+	// YearMonth
+	assert.Equal(strYearMonth, TibiaDataDate("March 2022"))
+	assert.Equal(strYearMonth, TibiaDataDate("Mar 2022"))
+	assert.Equal(strYearMonth, TibiaDataDate("2022-03"))
+	assert.Equal(strYearMonth, TibiaDataDate("03/22"))
 }
 
 func TestStringToInt(t *testing.T) {
-	const str = "1"
+	const (
+		isInt = 123
+		noInt = 0
+	)
 
-	convertedStr := TibiaDataStringToInteger(str)
-	assert.Equal(t, 1, convertedStr)
+	assert := assert.New(t)
+
+	// Test when input is a valid integer
+	assert.Equal(isInt, TibiaDataStringToInteger("123"))
+
+	// Test when input contains commas
+	assert.Equal(isInt, TibiaDataStringToInteger("1,2,3"))
+
+	// Test when input is not a valid integer
+	assert.Equal(noInt, TibiaDataStringToInteger("not an integer"))
 }
 
 func TestHTMLRemover(t *testing.T) {

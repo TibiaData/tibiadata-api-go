@@ -47,7 +47,6 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	c, _ = gin.CreateTestContext(w)
 
 	tibiaCreaturesOverview(c)
-	fmt.Println("tibiaCreaturesOverview", c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -56,7 +55,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	c.Params = []gin.Param{
 		{
 			Key:   "race",
-			Value: "demon",
+			Value: "Demon",
 		},
 	}
 
@@ -76,7 +75,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	c.Params = []gin.Param{
 		{
 			Key:   "name",
-			Value: "pax",
+			Value: "Pax",
 		},
 	}
 
@@ -103,7 +102,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	c.Params = []gin.Param{
 		{
 			Key:   "world",
-			Value: "antica",
+			Value: "Antica",
 		},
 		{
 			Key:   "category",

@@ -836,7 +836,7 @@ func TestFake(t *testing.T) {
 
 	assert.Equal(29, MaxRunesAllowedInACharacterName)
 	assert.Equal(2, MinRunesAllowedInACharacterName)
-	assert.Equal(16, MaxRunesAllowedInACharacterNameWord)
+	assert.Equal(20, MaxRunesAllowedInACharacterNameWord)
 	assert.Equal(2, MinRunesAllowedInACharacterNameWord)
 
 	assert.Equal(29, MaxRunesAllowedInAGuildName)

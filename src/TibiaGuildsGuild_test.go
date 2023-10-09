@@ -177,3 +177,32 @@ func TestKotkiAntica(t *testing.T) {
 	assert.Equal("2021-09-22", guild.Founded)
 	assert.False(guild.Applications)
 }
+
+func TestNightsWatch(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/guilds/guild/Nights Watch.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	nightswatchJson, err := TibiaGuildsGuildImpl("Nights Watch", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	guild := nightswatchJson.Guild
+
+	assert.Equal("Nights Watch", guild.Name)
+	assert.Equal("Luminera", guild.World)
+	assert.Empty(guild.Description)
+	assert.True(guild.Active)
+	assert.True(guild.InWar)
+	assert.Equal("2022-09-25", guild.Founded)
+	assert.False(guild.Applications)
+}

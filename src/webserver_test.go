@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -46,6 +47,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	c, _ = gin.CreateTestContext(w)
 
 	tibiaCreaturesOverview(c)
+	fmt.Println("tibiaCreaturesOverview", c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -59,6 +61,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	}
 
 	tibiaCreaturesCreature(c)
+	fmt.Println("tibiaCreaturesCreature", c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -78,6 +81,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	}
 
 	tibiaGuildsGuild(c)
+	fmt.Println("tibiaGuildsGuild", c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()
@@ -116,6 +120,7 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	}
 
 	tibiaHighscores(c)
+	fmt.Println("tibiaHighscores", c)
 	assert.Equal(http.StatusOK, w.Code)
 
 	w = httptest.NewRecorder()

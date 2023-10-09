@@ -387,6 +387,10 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 
 				dataNoTags := RemoveHtmlTag(CharacterListHTML)
 
+				if strings.HasPrefix(dataNoTags, "There happened more character deaths in the last 30 days than we can display here.") {
+					return false
+				}
+
 				// defining responses
 				DeathKillers := []Killers{}
 				DeathAssists := []Killers{}

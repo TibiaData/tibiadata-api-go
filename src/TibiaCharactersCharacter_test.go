@@ -3115,6 +3115,30 @@ func TestNumber11(t *testing.T) {
 
 }
 
+func TestNumber12(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/characters/Stalone Matador.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Stalone Matador", character.Name)
+	assert.Equal(55, len(characterJson.Character.Deaths))
+}
+
 func BenchmarkNumber1(b *testing.B) {
 	file, err := static.TestFiles.Open("testdata/characters/Darkside Rafa.html")
 	if err != nil {

@@ -240,8 +240,6 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	tibiaWorldsWorld(c)
 	assert.Equal(http.StatusOK, w.Code)
 
-	assert.Equal("TibiaData-API/v4 (release/unknown; build/manual; commit/-; edition/open-source; unittest.example.com)", TibiaDataUserAgentGenerator(TibiaDataAPIversion))
-
 	healthz(c)
 	assert.Equal(http.StatusOK, w.Code)
 

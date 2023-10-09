@@ -249,26 +249,6 @@ func getEnvAsBool(name string, defaultVal bool) bool {
 	return defaultVal
 }
 
-/*
-// getEnvAsFloat func - read an environment variable into a float64 or return default value
-func getEnvAsFloat(name string, defaultVal float64) float64 {
-	valStr := getEnv(name, "")
-	if val, err := strconv.ParseFloat(valStr, 64); err == nil {
-		return val
-	}
-	return defaultVal
-}
-
-// getEnvAsInt func - read an environment variable into integer or return a default value
-func getEnvAsInt(name string, defaultVal int) int {
-	valueStr := getEnv(name, "")
-	if value, err := strconv.Atoi(valueStr); err == nil {
-		return value
-	}
-	return defaultVal
-}
-*/
-
 // TibiaDataConvertValuesWithK func - convert price strings that contain k, kk or more to 3x0
 func TibiaDataConvertValuesWithK(data string) int {
 	return TibiaDataStringToInteger(strings.ReplaceAll(data, "k", "") + strings.Repeat("000", strings.Count(data, "k")))

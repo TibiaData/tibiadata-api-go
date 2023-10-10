@@ -101,7 +101,7 @@ func TestNumber2(t *testing.T) {
 	assert.Equal("Testa de Ferro do Lejonhjartat ;)", character.Comment)
 	assert.Equal("Premium Account", character.AccountStatus)
 
-	//validate other characters
+	// validate other characters
 	assert.Equal(7, len(characterJson.Character.OtherCharacters))
 
 	onlineMainCharacter := characterJson.Character.OtherCharacters[3]
@@ -179,14 +179,14 @@ func TestNumber4(t *testing.T) {
 
 	assert.Equal("Riley No Hands", character.Name)
 
-	//validate former names
+	// validate former names
 	assert.Equal(4, len(character.FormerNames))
 	assert.Equal("Dura Malandro", character.FormerNames[0])
 	assert.Equal("Letsgo Brandon", character.FormerNames[1])
-	assert.Equal("Letsgo Brandon", character.FormerNames[2]) //yes, this name is listed twice
+	assert.Equal("Letsgo Brandon", character.FormerNames[2]) // yes, this name is listed twice
 	assert.Equal("Nataraya Soldrac", character.FormerNames[3])
 
-	//validate death data
+	// validate death data
 	assert.Equal(79, len(characterJson.Character.Deaths))
 
 	firstDeath := characterJson.Character.Deaths[0]
@@ -327,7 +327,6 @@ func TestNumber4(t *testing.T) {
 				{Name: "Suprldo", Player: true, Traded: false, Summon: ""},
 			},
 			Killers: []Killers{
-
 				{Name: "Jupa Infinity", Player: true, Traded: false, Summon: ""},
 				{Name: "Okiba Kay", Player: true, Traded: false, Summon: ""},
 				{Name: "Jahziel Hardcori", Player: true, Traded: false, Summon: ""},
@@ -364,7 +363,6 @@ func TestNumber4(t *testing.T) {
 		},
 		{
 			Assists: []Killers{
-
 				{Name: "May Thirtieth", Player: true, Traded: false, Summon: ""},
 				{Name: "Guichin Killzejk Boom", Player: true, Traded: false, Summon: ""},
 				{Name: "Kanabionoia", Player: true, Traded: false, Summon: ""},
@@ -2815,7 +2813,7 @@ func TestNumber5(t *testing.T) {
 	assert.Empty(characterJson.Character.Achievements)
 	assert.Empty(characterJson.Character.AccountInformation.LoyaltyTitle)
 
-	//validate other characters
+	// validate other characters
 	assert.Equal(4, len(characterJson.Character.OtherCharacters))
 
 	positionCharacter := characterJson.Character.OtherCharacters[1]
@@ -3055,8 +3053,9 @@ func TestNumber11(t *testing.T) {
 	character := characterJson.Character.CharacterInfo
 
 	assert.Equal("Orca Kaoksh", character.Name)
+	assert.False(characterJson.Character.DeathsTruncated)
 
-	//validate death data
+	// validate death data
 	assert.Equal(2, len(characterJson.Character.Deaths))
 	deaths := characterJson.Character.Deaths
 
@@ -3112,7 +3111,6 @@ func TestNumber11(t *testing.T) {
 			idx, tc.Time, deaths[idx].Time,
 		)
 	}
-
 }
 
 func TestNumber12(t *testing.T) {
@@ -3136,6 +3134,7 @@ func TestNumber12(t *testing.T) {
 	character := characterJson.Character.CharacterInfo
 
 	assert.Equal("Stalone Matador", character.Name)
+	assert.True(characterJson.Character.DeathsTruncated)
 	assert.Equal(55, len(characterJson.Character.Deaths))
 }
 

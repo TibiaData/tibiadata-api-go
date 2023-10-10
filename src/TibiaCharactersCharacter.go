@@ -105,6 +105,7 @@ type Character struct {
 	AccountBadges      []AccountBadges    `json:"account_badges,omitempty"`      // The account's badges.
 	Achievements       []Achievements     `json:"achievements,omitempty"`        // The character's achievements.
 	Deaths             []Deaths           `json:"deaths,omitempty"`              // The character's deaths.
+	DeathsTruncated    bool               `json:"deaths_truncated"`              // Whether the character's deaths were truncated or not.
 	AccountInformation AccountInformation `json:"account_information,omitempty"` // The account information.
 	OtherCharacters    []OtherCharacters  `json:"other_characters,omitempty"`    // The account's other characters.
 }
@@ -135,6 +136,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 		DeathsData             []Deaths
 		AccountInformationData AccountInformation
 		OtherCharactersData    []OtherCharacters
+		DeathsTruncated        bool
 
 		// Errors
 		characterNotFound bool
@@ -229,7 +231,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 					AnchorQuery := s.Find("a")
 					HouseName := AnchorQuery.Nodes[0].FirstChild.Data
 					HouseHref := AnchorQuery.Nodes[0].Attr[0].Val
-					//substring from houseid= to &character in the href for the house
+					// substring from houseid= to &character in the href for the house
 					HouseId := HouseHref[strings.Index(HouseHref, "houseid")+8 : strings.Index(HouseHref, "&character")]
 					HouseRawData := RowNameQuery.Nodes[0].NextSibling.LastChild.Data
 					HouseTown := HouseRawData[strings.Index(HouseRawData, "(")+1 : strings.Index(HouseRawData, ")")]
@@ -244,7 +246,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 				case "Guild Membership:":
 					CharacterInfoData.Guild.Rank = strings.TrimSuffix(RowData, " of the ")
 
-					//TODO: I don't understand why the unicode nbsp is there...
+					// TODO: I don't understand why the unicode nbsp is there...
 					CharacterInfoData.Guild.GuildName = TibiaDataSanitizeStrings(RowNameQuery.Nodes[0].NextSibling.LastChild.LastChild.Data)
 				case "Last Login:":
 					if RowData != "never logged in" {
@@ -256,8 +258,8 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 					stringBuilder := strings.Builder{}
 					for node != nil {
 						if node.DataAtom == Br {
-							//It appears we can ignore br because either the encoding or goquery adds an \n for us
-							//stringBuilder.WriteString("\n")
+							// It appears we can ignore br because either the encoding or goquery adds an \n for us
+							// stringBuilder.WriteString("\n")
 						} else {
 							stringBuilder.WriteString(node.Data)
 						}
@@ -388,6 +390,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 				dataNoTags := RemoveHtmlTag(CharacterListHTML)
 
 				if strings.HasPrefix(dataNoTags, "There happened more character deaths in the last 30 days than we can display here.") {
+					DeathsTruncated = true
 					return false
 				}
 
@@ -609,6 +612,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 		AccountBadgesData,
 		AchievementsData,
 		DeathsData,
+		DeathsTruncated,
 		AccountInformationData,
 		OtherCharactersData,
 	}

@@ -40,8 +40,16 @@ func tibiaCharactersCharacterV3() bool {
 	return false
 }
 
+type CharacterV3 struct {
+	CharacterInfo      CharacterInfo      `json:"character"`                     // The character's information.
+	AccountBadges      []AccountBadges    `json:"account_badges,omitempty"`      // The account's badges.
+	Achievements       []Achievements     `json:"achievements,omitempty"`        // The character's achievements.
+	Deaths             []Deaths           `json:"deaths,omitempty"`              // The character's deaths.
+	AccountInformation AccountInformation `json:"account_information,omitempty"` // The account information.
+	OtherCharacters    []OtherCharacters  `json:"other_characters,omitempty"`    // The account's other characters.
+}
 type CharacterResponseV3 struct {
-	Characters  Character     `json:"characters"`
+	Characters  CharacterV3   `json:"characters"`
 	Information InformationV3 `json:"information"`
 }
 

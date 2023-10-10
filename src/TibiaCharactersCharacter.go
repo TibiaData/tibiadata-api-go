@@ -105,7 +105,7 @@ type Character struct {
 	AccountBadges      []AccountBadges    `json:"account_badges,omitempty"`      // The account's badges.
 	Achievements       []Achievements     `json:"achievements,omitempty"`        // The character's achievements.
 	Deaths             []Deaths           `json:"deaths,omitempty"`              // The character's deaths.
-	AreDeathsTruncated bool               `json:"are_deaths_truncated"`          // Whether the character's deaths were truncated or not.
+	DeathsTruncated    bool               `json:"deaths_truncated"`              // Whether the character's deaths were truncated or not.
 	AccountInformation AccountInformation `json:"account_information,omitempty"` // The account information.
 	OtherCharacters    []OtherCharacters  `json:"other_characters,omitempty"`    // The account's other characters.
 }
@@ -136,7 +136,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 		DeathsData             []Deaths
 		AccountInformationData AccountInformation
 		OtherCharactersData    []OtherCharacters
-		AreDeathsTruncated     bool
+		DeathsTruncated        bool
 
 		// Errors
 		characterNotFound bool
@@ -390,7 +390,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 				dataNoTags := RemoveHtmlTag(CharacterListHTML)
 
 				if strings.HasPrefix(dataNoTags, "There happened more character deaths in the last 30 days than we can display here.") {
-					AreDeathsTruncated = true
+					DeathsTruncated = true
 					return false
 				}
 
@@ -612,7 +612,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 		AccountBadgesData,
 		AchievementsData,
 		DeathsData,
-		AreDeathsTruncated,
+		DeathsTruncated,
 		AccountInformationData,
 		OtherCharactersData,
 	}

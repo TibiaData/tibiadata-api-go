@@ -3053,7 +3053,7 @@ func TestNumber11(t *testing.T) {
 	character := characterJson.Character.CharacterInfo
 
 	assert.Equal("Orca Kaoksh", character.Name)
-	assert.False(characterJson.Character.AreDeathsTruncated)
+	assert.False(characterJson.Character.DeathsTruncated)
 
 	// validate death data
 	assert.Equal(2, len(characterJson.Character.Deaths))
@@ -3134,7 +3134,7 @@ func TestNumber12(t *testing.T) {
 	character := characterJson.Character.CharacterInfo
 
 	assert.Equal("Stalone Matador", character.Name)
-	assert.True(characterJson.Character.AreDeathsTruncated)
+	assert.True(characterJson.Character.DeathsTruncated)
 	assert.Equal(55, len(characterJson.Character.Deaths))
 }
 

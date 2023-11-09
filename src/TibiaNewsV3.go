@@ -20,16 +20,13 @@ type News struct {
 	ContentHTML string `json:"content_html"`
 }
 
-//
 // The base
 type NewsResponse struct {
 	News        News        `json:"news"`
 	Information Information `json:"information"`
 }
 
-var (
-	martelRegex = regexp.MustCompile(`<img src=\"https:\/\/static\.tibia\.com\/images\/global\/letters\/letter_martel_(.)\.gif\" ([^\/>]+..)`)
-)
+var martelRegex = regexp.MustCompile(`<img src=\"https:\/\/static\.tibia\.com\/images\/global\/letters\/letter_martel_(.)\.gif\" ([^\/>]+..)`)
 
 func TibiaNewsV3Impl(NewsID int, rawUrl string, BoxContentHTML string) NewsResponse {
 	// Declaring vars for later use..
@@ -49,7 +46,6 @@ func TibiaNewsV3Impl(NewsID int, rawUrl string, BoxContentHTML string) NewsRespo
 	NewsData.TibiaURL = rawUrl
 
 	ReaderHTML.Find(".NewsHeadline").Each(func(index int, s *goquery.Selection) {
-
 		// getting category by image src
 		CategoryImg, _ := s.Find("img").Attr("src")
 		NewsData.Category = TibiaDataGetNewsCategory(CategoryImg)
@@ -70,12 +66,16 @@ func TibiaNewsV3Impl(NewsID int, rawUrl string, BoxContentHTML string) NewsRespo
 	})
 
 	ReaderHTML.Find(".NewsTableContainer").Each(func(index int, s *goquery.Selection) {
-
 		// checking if its a ticker..
 		if NewsData.Type == "ticker" {
 			tmp1 = s.Find("p")
-			NewsData.Content = tmp1.Text()
-			NewsData.ContentHTML, _ = tmp1.Html()
+			if tmp1.Text() == "" {
+				NewsData.Content = s.Text()
+				NewsData.ContentHTML, _ = s.Html()
+			} else {
+				NewsData.Content = tmp1.Text()
+				NewsData.ContentHTML, _ = tmp1.Html()
+			}
 		} else {
 			// getting html
 			tmp2, _ = s.First().Html()

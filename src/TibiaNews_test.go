@@ -66,6 +66,35 @@ func TestNews6512(t *testing.T) {
 	assert.Equal("<a href=\"https://tibiadata.com\" target=\"_blank\" rel=\"noopener noreferrer\" rel=\"noopener\">TibiaData.com</a> has some news to share! First of all, they invite you to participate in their <a href=\"https://tibiadata.com/2021/07/join-tibiadata-on-discord/\" target=\"_blank\" rel=\"noopener noreferrer\" rel=\"noopener\">Discord Server</a>. Further, they are now present on <a href=\"https://tibiadata.com/2021/12/tibiadata-has-gone-open-source/\" target=\"_blank\" rel=\"noopener noreferrer\" rel=\"noopener\">GitHub</a>. They are working on their <a href=\"https://tibiadata.com/doc-api-v3/v3-beta/\" target=\"_blank\" rel=\"noopener noreferrer\" rel=\"noopener\">v3</a>, which is still in beta. If you are interested in such things, head on over there to see what is cooking.", newsArticleJson.News.ContentHTML)
 }
 
+func TestNews504(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/news/archive/504.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	newsArticleJson, err := TibiaNewsImpl(504, "https://www.tibia.com/news/?subtopic=newsarchive&id=504", string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+
+	assert.Equal(504, newsArticleJson.News.ID)
+	assert.Equal("2007-04-27", newsArticleJson.News.Date)
+	assert.Empty(newsArticleJson.News.Title)
+	assert.Equal("community", newsArticleJson.News.Category)
+	assert.Equal("ticker", newsArticleJson.News.Type)
+	assert.Equal("https://www.tibia.com/news/?subtopic=newsarchive&id=504", newsArticleJson.News.TibiaURL)
+	assert.Equal("A new feedback form has been released today. Help us to find out which websites and magazines are popular in your country by filling out the new questionnaire. In our current poll we are curious about your occupation.", newsArticleJson.News.Content)
+	assert.Equal("<br/>A new feedback form has been released today. Help us to find out which websites and magazines are popular in your country by filling out the new questionnaire. In our current poll we are curious about your occupation.", newsArticleJson.News.ContentHTML)
+}
+
 func TestNews6481(t *testing.T) {
 	file, err := static.TestFiles.Open("testdata/news/archive/6481.html")
 	if err != nil {

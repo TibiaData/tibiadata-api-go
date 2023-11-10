@@ -27,9 +27,7 @@ type NewsResponse struct {
 	Information Information `json:"information"`
 }
 
-var (
-	martelRegex = regexp.MustCompile(`<img src=\"https:\/\/static\.tibia\.com\/images\/global\/letters\/letter_martel_(.)\.gif\" ([^\/>]+..)`)
-)
+var martelRegex = regexp.MustCompile(`<img src=\"https:\/\/static\.tibia\.com\/images\/global\/letters\/letter_martel_(.)\.gif\" ([^\/>]+..)`)
 
 func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (NewsResponse, error) {
 	// Declaring vars for later use..
@@ -89,11 +87,20 @@ func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (NewsRespon
 		// checking if its a ticker..
 		if NewsData.Type == "ticker" {
 			tmp1 = s.Find("p")
-			NewsData.Content = tmp1.Text()
-			NewsData.ContentHTML, err = tmp1.Html()
-			if err != nil {
-				insideError = fmt.Errorf("[error] TibiaNewsImpl failed at NewsData.ContentHTML, err = tmp1.Html(), err: %s", err)
-				return false
+			if tmp1.Text() == "" {
+				NewsData.Content = s.Text()
+				NewsData.ContentHTML, err = s.Html()
+				if err != nil {
+					insideError = fmt.Errorf("[error] TibiaNewsImpl failed at NewsData.ContentHTML, err = s.Html(), err: %s", err)
+					return false
+				}
+			} else {
+				NewsData.Content = tmp1.Text()
+				NewsData.ContentHTML, err = tmp1.Html()
+				if err != nil {
+					insideError = fmt.Errorf("[error] TibiaNewsImpl failed at NewsData.ContentHTML, err = tmp1.Html(), err: %s", err)
+					return false
+				}
 			}
 		} else {
 			// getting html

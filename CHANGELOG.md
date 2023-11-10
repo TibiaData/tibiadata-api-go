@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.7.5] - 2023-11-10
+
+### Fixed
+* Fix not parsing all news ticker properly ([#292](https://github.com/TibiaData/tibiadata-api-go/pull/292) by [phenpessoa](https://github.com/phenpessoa))
+
 ## [3.7.4] - 2023-09-29
 
 ### Fixed
@@ -285,6 +290,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[3.7.5]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.4...v3.7.5
 [3.7.4]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.3...v3.7.4
 [3.7.3]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.2...v3.7.3
 [3.7.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.1...v3.7.2

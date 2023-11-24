@@ -306,6 +306,7 @@ func TownExists(town string) (bool, error) {
 		return false, ErrorValidatorNotInitiated
 	}
 
+	// Replace + with spaces in the town name
 	town = strings.ReplaceAll(town, "+", " ")
 
 	// Try to find the town

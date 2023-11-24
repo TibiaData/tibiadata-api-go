@@ -655,7 +655,7 @@ func tibiaHousesOverview(c *gin.Context) {
 
 	// Adding fix for First letter to be upper and rest lower
 	world = TibiaDataStringWorldFormatToTitle(world)
-	town = TibiaDataStringWorldFormatToTitle(town)
+	town = strings.ReplaceAll(TibiaDataStringWorldFormatToTitle(town), "+", " ")
 
 	// Check if world exists
 	exists, err := validation.WorldExists(world)

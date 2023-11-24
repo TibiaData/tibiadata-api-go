@@ -306,6 +306,8 @@ func TownExists(town string) (bool, error) {
 		return false, ErrorValidatorNotInitiated
 	}
 
+	town = strings.ReplaceAll(town, "+", " ")
+
 	// Try to find the town
 	for _, t := range val.Towns {
 		if strings.EqualFold(t, town) {

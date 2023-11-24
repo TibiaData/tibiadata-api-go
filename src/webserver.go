@@ -681,6 +681,12 @@ func tibiaHousesOverview(c *gin.Context) {
 		return
 	}
 
+	// Ab'Dendriel gets formatted as Ab'dendriel by TibiaDataStringWorldFormatToTitle
+	// which makes tibia.com not recognize it and return an empty response.
+	if strings.EqualFold(town, "ab'dendriel") {
+		town = "Ab'Dendriel"
+	}
+
 	jsonData, err := TibiaHousesOverviewImpl(c, world, town, TibiaDataHTMLDataCollector)
 	if err != nil {
 		TibiaDataErrorHandler(c, err, 0)

@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.0.0] - 2023-12-01
+
+### The release of API v4
+
+Larger rewrite of application with implementation of new error handling, changed data structures and more.
+
+Head over to [tibiadata.com](https://tibiadata.com/2023/12/tibiadata-api-v4-released/) for more information.
+
+_More detailed changelist to be published soon._
+
 ## [3.7.5] - 2023-11-10
 
 ### Fixed
@@ -165,7 +175,7 @@
 
 Bumping version to *v3.0.0* so that GitHub releases match API version.
 
-Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-released-v3-0-0/) for more information.
+Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-released/) for more information.
 
 ## [0.6.2] - 2022-02-28
 
@@ -290,6 +300,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.0.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.5...v4.0.0
 [3.7.5]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.4...v3.7.5
 [3.7.4]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.3...v3.7.4
 [3.7.3]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.2...v3.7.3

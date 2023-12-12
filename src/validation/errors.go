@@ -208,6 +208,10 @@ var (
 	// ErrorMaintenanceMode.
 	// Code: 20007
 	ErrStatusFound = Error{errors.New("got status found from tibia.com")}
+
+	// ErrStatusUnknown will be sent a HTTP request we are not expecting.
+	// Code: 20008
+	ErrStatusUnknown = Error{errors.New("got unknown status from tibia.com")}
 )
 
 // Code will return the code of the error
@@ -305,6 +309,8 @@ func (e Error) Code() int {
 		return 20006
 	case ErrStatusFound:
 		return 20007
+	case ErrStatusUnknown:
+		return 20008
 	default:
 		return 0
 	}

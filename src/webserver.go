@@ -1230,6 +1230,8 @@ func TibiaDataHTMLDataCollector(TibiaDataRequest TibiaDataRequestStruct) (string
 	}
 
 	switch res.StatusCode() {
+	case http.StatusOK:
+		// ok request, nothing to be done
 	case http.StatusForbidden:
 		// throttled request
 		LogMessage = "request throttled due to rate-limitation on tibia.com"
@@ -1245,11 +1247,18 @@ func TibiaDataHTMLDataCollector(TibiaDataRequest TibiaDataRequestStruct) (string
 		}
 
 		LogMessage = fmt.Sprintf(
-			"unknown error occurred on tibia.com (Status: %d, Location: %s, RequestURL: %s)",
-			http.StatusFound, location.String(), res.Request.URL,
+			"unknown error occurred on tibia.com (Status: %d, RequestURL: %s)",
+			http.StatusFound, res.Request.URL,
 		)
 		log.Printf("[error] TibiaDataHTMLDataCollector: %s!", LogMessage)
 		return "", validation.ErrStatusFound
+	default:
+		LogMessage = fmt.Sprintf(
+			"unknown error and status occurred on tibia.com (Status: %d, RequestURL: %s)",
+			res.StatusCode(), res.Request.URL,
+		)
+		log.Printf("[error] TibiaDataHTMLDataCollector: %s!", LogMessage)
+		return "", validation.ErrStatusUnknown
 	}
 
 	if TibiaDataRequest.RawBody {

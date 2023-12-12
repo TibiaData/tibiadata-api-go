@@ -197,6 +197,10 @@ var (
 	// ErrorMaintenanceMode will be sent if there is ongoing maintenance
 	// Code: 20005
 	ErrorMaintenanceMode = Error{errors.New("maintenance mode active")}
+
+	// ErrorRequestThrottled will be sent if the request has been throttled
+	// Code: 20005
+	ErrorRequestThrottled = Error{errors.New("request has been throttled")}
 )
 
 // Code will return the code of the error

@@ -1223,7 +1223,7 @@ func TibiaDataHTMLDataCollector(TibiaDataRequest TibiaDataRequestStruct) (string
 		TibiaDataRequestTraceLogger(res, err)
 	}
 
-	if err != nil {
+	if err != nil || res.StatusCode() != http.StatusOK {
 		log.Printf("[error] TibiaDataHTMLDataCollector (Status: %s, URL: %s) in resp1: %s", res.Status(), res.Request.URL, err)
 
 		switch res.StatusCode() {
@@ -1231,7 +1231,7 @@ func TibiaDataHTMLDataCollector(TibiaDataRequest TibiaDataRequestStruct) (string
 			// throttled request
 			LogMessage = "request throttled due to rate-limitation on tibia.com"
 			log.Printf("[warning] TibiaDataHTMLDataCollector: %s!", LogMessage)
-			return "", err
+			return "", validation.ErrorRequestThrottled
 
 		case http.StatusFound:
 			// Check if page is in maintenance mode

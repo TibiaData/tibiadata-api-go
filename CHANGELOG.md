@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.0.1] - 2023-12-12
+
+### Changed
+* Bump golang from 1.21.4 to 1.21.5 ([#299](https://github.com/TibiaData/tibiadata-api-go/pull/299) by [dependabot](https://github.com/dependabot))
+* Bump actions/setup-go from 4 to 5 ([#298](https://github.com/TibiaData/tibiadata-api-go/pull/298) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+* Webserver/validation: improve error handling on non OK status codes ([#301](https://github.com/TibiaData/tibiadata-api-go/pull/301) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+
 ## [4.0.0] - 2023-12-01
 
 ### The release of API v4
@@ -300,6 +309,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.0.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.5...v4.0.0
 [3.7.5]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.4...v3.7.5
 [3.7.4]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.3...v3.7.4

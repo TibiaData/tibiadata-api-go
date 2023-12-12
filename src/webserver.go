@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -1087,13 +1088,17 @@ func TibiaDataErrorHandler(c *gin.Context, err error, httpCode int) {
 		if httpCode == 0 {
 			if t.Code() == 10 || t.Code() == 11 {
 				httpCode = http.StatusInternalServerError
-				info.Status.HTTPCode = httpCode
 			} else {
 				httpCode = http.StatusBadRequest
-				info.Status.HTTPCode = httpCode
 			}
 		}
 
+		// An error occurred at tibia.com
+		if t.Code() > 20000 {
+			httpCode = http.StatusBadGateway
+		}
+
+		info.Status.HTTPCode = httpCode
 		info.Status.Error = t.Code()
 		info.Status.Message = t.Error()
 	case error:
@@ -1225,29 +1230,39 @@ func TibiaDataHTMLDataCollector(TibiaDataRequest TibiaDataRequestStruct) (string
 
 	if err != nil {
 		log.Printf("[error] TibiaDataHTMLDataCollector (Status: %s, URL: %s) in resp1: %s", res.Status(), res.Request.URL, err)
+		return "", err
+	}
 
-		switch res.StatusCode() {
-		case http.StatusForbidden:
-			// throttled request
-			LogMessage = "request throttled due to rate-limitation on tibia.com"
-			log.Printf("[warning] TibiaDataHTMLDataCollector: %s!", LogMessage)
-			return "", err
-
-		case http.StatusFound:
-			// Check if page is in maintenance mode
-			location, _ := res.RawResponse.Location()
-			if location != nil && location.Host == "maintenance.tibia.com" {
-				LogMessage := "maintenance mode detected on tibia.com"
-				log.Printf("[info] TibiaDataHTMLDataCollector: %s!", LogMessage)
-				return "", validation.ErrorMaintenanceMode
-			}
-			fallthrough
-
-		default:
-			LogMessage = "unknown error occurred on tibia.com"
-			log.Printf("[error] TibiaDataHTMLDataCollector: %s!", LogMessage)
-			return "", err
+	switch res.StatusCode() {
+	case http.StatusOK:
+		// ok request, nothing to be done
+	case http.StatusForbidden:
+		// throttled request
+		LogMessage = "request throttled due to rate-limitation on tibia.com"
+		log.Printf("[warning] TibiaDataHTMLDataCollector: %s!", LogMessage)
+		return "", validation.ErrStatusForbidden
+	case http.StatusFound:
+		// Check if page is in maintenance mode
+		location, _ := res.RawResponse.Location()
+		if location != nil && location.Host == "maintenance.tibia.com" {
+			LogMessage := "maintenance mode detected on tibia.com"
+			log.Printf("[info] TibiaDataHTMLDataCollector: %s!", LogMessage)
+			return "", validation.ErrorMaintenanceMode
 		}
+
+		LogMessage = fmt.Sprintf(
+			"unknown error occurred on tibia.com (Status: %d, RequestURL: %s)",
+			http.StatusFound, res.Request.URL,
+		)
+		log.Printf("[error] TibiaDataHTMLDataCollector: %s!", LogMessage)
+		return "", validation.ErrStatusFound
+	default:
+		LogMessage = fmt.Sprintf(
+			"unknown error and status occurred on tibia.com (Status: %d, RequestURL: %s)",
+			res.StatusCode(), res.Request.URL,
+		)
+		log.Printf("[error] TibiaDataHTMLDataCollector: %s!", LogMessage)
+		return "", validation.ErrStatusUnknown
 	}
 
 	if TibiaDataRequest.RawBody {

@@ -197,6 +197,17 @@ var (
 	// ErrorMaintenanceMode will be sent if there is ongoing maintenance
 	// Code: 20005
 	ErrorMaintenanceMode = Error{errors.New("maintenance mode active")}
+
+	// ErrStatusForbidden will be sent if tibia sent us a 403 response.
+	// This usually happens when we are rate limited.
+	// Code: 20006
+	ErrStatusForbidden = Error{errors.New("got status forbidden from tibia.com")}
+
+	// ErrStatusForbidden will be sent if tibia sent us a 302 response, but it
+	// is not in MaintenanceMode. Because if it were, we would throw a
+	// ErrorMaintenanceMode.
+	// Code: 20007
+	ErrStatusFound = Error{errors.New("got status found from tibia.com")}
 )
 
 // Code will return the code of the error
@@ -290,6 +301,10 @@ func (e Error) Code() int {
 		return 20004
 	case ErrorMaintenanceMode:
 		return 20005
+	case ErrStatusForbidden:
+		return 20006
+	case ErrStatusFound:
+		return 20007
 	default:
 		return 0
 	}

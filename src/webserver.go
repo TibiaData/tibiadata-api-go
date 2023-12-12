@@ -1093,7 +1093,7 @@ func TibiaDataErrorHandler(c *gin.Context, err error, httpCode int) {
 			}
 		}
 
-		// A error occurred at tibia.com
+		// An error occurred at tibia.com
 		if t.Code() > 20000 {
 			httpCode = http.StatusBadGateway
 		}

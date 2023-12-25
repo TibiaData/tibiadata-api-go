@@ -17,7 +17,60 @@ Larger rewrite of application with implementation of new error handling, changed
 
 Head over to [tibiadata.com](https://tibiadata.com/2023/12/tibiadata-api-v4-released/) for more information.
 
-_More detailed changelist to be published soon._
+### Added
+* Add error handling and some more ([#119](https://github.com/TibiaData/tibiadata-api-go/pull/119) by [tobiasehlert](https://github.com/tobiasehlert))
+* Add new error ErrorMaintenanceMode ([#186](https://github.com/TibiaData/tibiadata-api-go/pull/186) by [tobiasehlert](https://github.com/tobiasehlert))
+* Add parsing of healed by damage for creatures ([#182](https://github.com/TibiaData/tibiadata-api-go/pull/182) by [tobiasehlert](https://github.com/tobiasehlert))
+* Add possibility to set trusted proxies in gin by env ([#200](https://github.com/TibiaData/tibiadata-api-go/pull/200) by [tobiasehlert](https://github.com/tobiasehlert))
+* Add test for guild at war ([#266](https://github.com/TibiaData/tibiadata-api-go/pull/266) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Changed
+* Extend special creatures list for death parsing ([#184](https://github.com/TibiaData/tibiadata-api-go/pull/184) by [tobiasehlert](https://github.com/tobiasehlert))
+* Extending test for tibiadata utils ([#267](https://github.com/TibiaData/tibiadata-api-go/pull/267) by [tobiasehlert](https://github.com/tobiasehlert))
+* Reduce heap allocations ([#221](https://github.com/TibiaData/tibiadata-api-go/pull/221) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Replacing strings.Title with cases.Title ([#183](https://github.com/TibiaData/tibiadata-api-go/pull/183) by [tobiasehlert](https://github.com/tobiasehlert))
+* Rewrite boostable bosses parser ([#233](https://github.com/TibiaData/tibiadata-api-go/pull/233) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Rewrite TibiaDataDate function ([#240](https://github.com/TibiaData/tibiadata-api-go/pull/240) by [tobiasehlert](https://github.com/tobiasehlert))
+* Rewrite TibiaCharactersCharacter by removing various regex ([#228](https://github.com/TibiaData/tibiadata-api-go/pull/228), [#227](https://github.com/TibiaData/tibiadata-api-go/pull/227), [#226](https://github.com/TibiaData/tibiadata-api-go/pull/226), [#225](https://github.com/TibiaData/tibiadata-api-go/pull/225), [#224](https://github.com/TibiaData/tibiadata-api-go/pull/224), [#223](https://github.com/TibiaData/tibiadata-api-go/pull/223), [#229](https://github.com/TibiaData/tibiadata-api-go/pull/229) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Update boostable bosses parsers to latest tibia's html ([#261](https://github.com/TibiaData/tibiadata-api-go/pull/261) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Update of isEnvExist to return false if empty ([#205](https://github.com/TibiaData/tibiadata-api-go/pull/205) by [tobiasehlert](https://github.com/tobiasehlert))
+* Update of test for webserver and main ([#269](https://github.com/TibiaData/tibiadata-api-go/pull/269) by [tobiasehlert](https://github.com/tobiasehlert))
+* Workflow setup go version by go.mod ([#281](https://github.com/TibiaData/tibiadata-api-go/pull/281) by [tobiasehlert](https://github.com/tobiasehlert))
+* Bump docker/build-push-action from 3 to 5 ([#185](https://github.com/TibiaData/tibiadata-api-go/pull/185), [#250](https://github.com/TibiaData/tibiadata-api-go/pull/250) by [dependabot](https://github.com/dependabot))
+* Bump golang.org/x/text from 0.4.0 to 0.6.0 ([#170](https://github.com/TibiaData/tibiadata-api-go/pull/170), ([#173](https://github.com/TibiaData/tibiadata-api-go/pull/173) by [dependabot](https://github.com/dependabot))
+* Bump actions/checkout from 3 to 4 ([#248](https://github.com/TibiaData/tibiadata-api-go/pull/248) by [dependabot](https://github.com/dependabot))
+* Bump actions/setup-go from 3 to 4 ([#204](https://github.com/TibiaData/tibiadata-api-go/pull/204) by [dependabot](https://github.com/dependabot))
+* Bump docker/login-action from 2 to 3 ([#251](https://github.com/TibiaData/tibiadata-api-go/pull/251) by [dependabot](https://github.com/dependabot))
+* Bump docker/metadata-action from 4 to 5 ([#252](https://github.com/TibiaData/tibiadata-api-go/pull/252) by [dependabot](https://github.com/dependabot))
+* Bump docker/setup-buildx-action from 2 to 3 ([#253](https://github.com/TibiaData/tibiadata-api-go/pull/253) by [dependabot](https://github.com/dependabot))
+* Bump docker/setup-qemu-action from 2 to 3 ([#254](https://github.com/TibiaData/tibiadata-api-go/pull/254) by [dependabot](https://github.com/dependabot))
+* Bump github.com/gin-gonic/gin from 1.8.2 to 1.9.1 ([#197](https://github.com/TibiaData/tibiadata-api-go/pull/197), [#214](https://github.com/TibiaData/tibiadata-api-go/pull/214) by [dependabot](https://github.com/dependabot))
+* Bump github.com/go-resty/resty/v2 from 2.7.0 to 2.10.0 ([#256](https://github.com/TibiaData/tibiadata-api-go/pull/256), [#260](https://github.com/TibiaData/tibiadata-api-go/pull/260), [#282](https://github.com/TibiaData/tibiadata-api-go/pull/282) by [dependabot](https://github.com/dependabot))
+* Bump github.com/go-resty/resty/v2 from 2.7.0 to 2.10.0 in /src/tibiamapping ([#255](https://github.com/TibiaData/tibiadata-api-go/pull/255), [#259](https://github.com/TibiaData/tibiadata-api-go/pull/259), [#284](https://github.com/TibiaData/tibiadata-api-go/pull/284) by [dependabot](https://github.com/dependabot))
+* Bump github.com/stretchr/testify from 1.8.1 to 1.8.4 ([#199](https://github.com/TibiaData/tibiadata-api-go/pull/199), [#211](https://github.com/TibiaData/tibiadata-api-go/pull/211), [#213](https://github.com/TibiaData/tibiadata-api-go/pull/213) by [dependabot](https://github.com/dependabot))
+* Bump github.com/stretchr/testify from 1.8.1 to 1.8.4 in /src/validation ([#247](https://github.com/TibiaData/tibiadata-api-go/pull/247) by [dependabot](https://github.com/dependabot))
+* Bump golang from 1.19.5 to 1.21.4 ([#187](https://github.com/TibiaData/tibiadata-api-go/pull/187), [#196](https://github.com/TibiaData/tibiadata-api-go/pull/196), [#202](https://github.com/TibiaData/tibiadata-api-go/pull/202), [#207](https://github.com/TibiaData/tibiadata-api-go/pull/207), [#208](https://github.com/TibiaData/tibiadata-api-go/pull/208), [#216](https://github.com/TibiaData/tibiadata-api-go/pull/216), [#238](https://github.com/TibiaData/tibiadata-api-go/pull/238), [#243](https://github.com/TibiaData/tibiadata-api-go/pull/243), [#245](https://github.com/TibiaData/tibiadata-api-go/pull/245), [#249](https://github.com/TibiaData/tibiadata-api-go/pull/249), [#283](https://github.com/TibiaData/tibiadata-api-go/pull/283), [#293](https://github.com/TibiaData/tibiadata-api-go/pull/293) by [dependabot](https://github.com/dependabot))
+* Bump golang.org/x/text from 0.7.0 to 0.14.0 ([#201](https://github.com/TibiaData/tibiadata-api-go/pull/201), [#206](https://github.com/TibiaData/tibiadata-api-go/pull/206), [#218](https://github.com/TibiaData/tibiadata-api-go/pull/218), [#237](https://github.com/TibiaData/tibiadata-api-go/pull/237), [#242](https://github.com/TibiaData/tibiadata-api-go/pull/242), [#246](https://github.com/TibiaData/tibiadata-api-go/pull/246), [#289](https://github.com/TibiaData/tibiadata-api-go/pull/289) by [dependabot](https://github.com/dependabot))
+* Bump golang.org/x/net from 0.16.0 to 0.17.0 ([#279](https://github.com/TibiaData/tibiadata-api-go/pull/279) by [dependabot](https://github.com/dependabot))
+* Bump golang.org/x/net from 0.16.0 to 0.17.0 in /src/tibiamapping ([#278](https://github.com/TibiaData/tibiadata-api-go/pull/278) by [dependabot](https://github.com/dependabot))
+* Bump golang.org/x/net from 0.16.0 to 0.17.0 in /src/validation ([#280](https://github.com/TibiaData/tibiadata-api-go/pull/280) by [dependabot](https://github.com/dependabot))
+* Bump reproducible-containers/buildkit-cache-dance from 2.1.2 to 2.1.3 ([#286](https://github.com/TibiaData/tibiadata-api-go/pull/286) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+* Fix character deaths where timestamp contains CEST ([#265](https://github.com/TibiaData/tibiadata-api-go/pull/265) by [tobiasehlert](https://github.com/tobiasehlert))
+* Fix character name max length ([#194](https://github.com/TibiaData/tibiadata-api-go/pull/194) by [tobiasehlert](https://github.com/tobiasehlert))
+* Fix character title that contains Grade ([#264](https://github.com/TibiaData/tibiadata-api-go/pull/264) by [tobiasehlert](https://github.com/tobiasehlert))
+* Fix characters with too many deaths cause crash ([#272](https://github.com/TibiaData/tibiadata-api-go/pull/272) by [tobiasehlert](https://github.com/tobiasehlert))
+* Fix highscores pages bug ([#210](https://github.com/TibiaData/tibiadata-api-go/pull/210) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Fix max length of character name ([#275](https://github.com/TibiaData/tibiadata-api-go/pull/275) by [tobiasehlert](https://github.com/tobiasehlert))
+* Fix not parsing all news ticker properly ([#291](https://github.com/TibiaData/tibiadata-api-go/pull/291) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Fix shorter character names ([#288](https://github.com/TibiaData/tibiadata-api-go/pull/288) by [tobiasehlert](https://github.com/tobiasehlert))
+* Fix test for tibiaHighscores with page param ([#235](https://github.com/TibiaData/tibiadata-api-go/pull/235) by [tobiasehlert](https://github.com/tobiasehlert))
+* Fix TibiaHousesOverview: format Ab'Dendriel properly ([#297](https://github.com/TibiaData/tibiadata-api-go/pull/297) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Fix truncated deaths ([#276](https://github.com/TibiaData/tibiadata-api-go/pull/276) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Fix validation: replace '+' with ' ' in TownExists ([#295](https://github.com/TibiaData/tibiadata-api-go/pull/295) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Fix webserver: pass normalized creature race to TibiaCreaturesCreatureIm… ([#236](https://github.com/TibiaData/tibiadata-api-go/pull/236) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+* Fix webserver: return on error and check if location is not nil ([#257](https://github.com/TibiaData/tibiadata-api-go/pull/257) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
 
 ## [3.7.5] - 2023-11-10
 
@@ -296,13 +349,13 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 ## [0.1.1] - 2021-12-31
 
 ### Changed
-- Bump actions/cache from 2.1.6 to 2.1.7 ([#2](https://github.com/TibiaData/tibiadata-api-go/pull/2) by [dependabot](https://github.com/dependabot))
-- Bump docker/metadata-action from 3.6.0 to 3.6.2 ([#1](https://github.com/TibiaData/tibiadata-api-go/pull/1) by [dependabot](https://github.com/dependabot))
-- Update README.md ([#3](https://github.com/TibiaData/tibiadata-api-go/pull/3), [#5](https://github.com/TibiaData/tibiadata-api-go/pull/5) by [tobiasehlert](https://github.com/tobiasehlert))
-- Implementation of response handler ([#4](https://github.com/TibiaData/tibiadata-api-go/pull/4) by [tobiasehlert](https://github.com/tobiasehlert))
-- Changing building and releasing ([#6](https://github.com/TibiaData/tibiadata-api-go/pull/6), [#7](https://github.com/TibiaData/tibiadata-api-go/pull/7) by [tobiasehlert](https://github.com/tobiasehlert))
-- Shrink of TibiaFansitesV3 ([#8](https://github.com/TibiaData/tibiadata-api-go/pull/8) by [tobiasehlert](https://github.com/tobiasehlert))
-- Updating build workflow with enhancements ([#11](https://github.com/TibiaData/tibiadata-api-go/pull/11) by [tobiasehlert](https://github.com/tobiasehlert))
+* Bump actions/cache from 2.1.6 to 2.1.7 ([#2](https://github.com/TibiaData/tibiadata-api-go/pull/2) by [dependabot](https://github.com/dependabot))
+* Bump docker/metadata-action from 3.6.0 to 3.6.2 ([#1](https://github.com/TibiaData/tibiadata-api-go/pull/1) by [dependabot](https://github.com/dependabot))
+* Update README.md ([#3](https://github.com/TibiaData/tibiadata-api-go/pull/3), [#5](https://github.com/TibiaData/tibiadata-api-go/pull/5) by [tobiasehlert](https://github.com/tobiasehlert))
+* Implementation of response handler ([#4](https://github.com/TibiaData/tibiadata-api-go/pull/4) by [tobiasehlert](https://github.com/tobiasehlert))
+* Changing building and releasing ([#6](https://github.com/TibiaData/tibiadata-api-go/pull/6), [#7](https://github.com/TibiaData/tibiadata-api-go/pull/7) by [tobiasehlert](https://github.com/tobiasehlert))
+* Shrink of TibiaFansitesV3 ([#8](https://github.com/TibiaData/tibiadata-api-go/pull/8) by [tobiasehlert](https://github.com/tobiasehlert))
+* Updating build workflow with enhancements ([#11](https://github.com/TibiaData/tibiadata-api-go/pull/11) by [tobiasehlert](https://github.com/tobiasehlert))
 
 
 ## [0.1.0] - 2021-12-23

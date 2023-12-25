@@ -47,6 +47,12 @@ func TestNameValidator(t *testing.T) {
 		"Näurin", "Hälge",
 		"Li-Ho Crue",
 		"Obi-Bok",
+		"Jamil Ondeta Temconfusao",
+		"Traicionaron Al Mikee",
+		"Jamil+Ondeta+Temconfusao",
+		"Traicionaron+Al+Mikee",
+		"Antorchita'cachibengala",
+		"Leonardinha-princesinha",
 	}
 
 	for _, n := range names {
@@ -62,6 +68,7 @@ func TestNameValidator(t *testing.T) {
 		"A",
 		"a",
 		"T2wo",
+		"JamilOndetaTemconfusao",
 	}
 
 	for _, n := range invalidNames {
@@ -75,7 +82,7 @@ func TestNameValidator(t *testing.T) {
 		ErrorCharacterNameEmpty:            "",
 		ErrorCharacterNameTooSmall:         "o",
 		ErrorCharacterNameTooBig:           "abcabcabcabcabcabcabcabcabcabc",
-		ErrorCharacterWordTooBig:           "abcabcabcabcabcab hello",
+		ErrorCharacterWordTooBig:           "JamilOndetaTemconfusao hello",
 		ErrorCharacterNameIsOnlyWhiteSpace: "     ",
 		ErrorCharacterNameInvalid:          "12",
 	}

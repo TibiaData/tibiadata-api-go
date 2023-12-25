@@ -3,6 +3,7 @@ package validation
 import (
 	"regexp"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -65,7 +66,7 @@ func IsCharacterNameValid(name string) error {
 	}
 
 	// Check if any word in the name has a length > 14
-	strs := strings.Fields(name)
+	strs := strings.FieldsFunc(name, isValidCharacterNameSeparator)
 	for _, str := range strs {
 		if utf8.RuneCountInString(str) > MaxRunesAllowedInACharacterNameWord {
 			return ErrorCharacterWordTooBig
@@ -83,6 +84,14 @@ func IsCharacterNameValid(name string) error {
 	}
 
 	return nil
+}
+
+func isValidCharacterNameSeparator(r rune) bool {
+	switch r {
+	case '+', '-', '\'':
+		return true
+	}
+	return unicode.IsSpace(r)
 }
 
 // IsGuildNameValid reports wheter the provided string represents a valid guild name

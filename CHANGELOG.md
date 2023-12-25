@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.0.2] - 2023-12-25
+
+### Changed
+* Bump github/codeql-action from 2 to 3 ([#302](https://github.com/TibiaData/tibiadata-api-go/pull/302) by [dependabot](https://github.com/dependabot))
+* Bump golang.org/x/crypto from 0.14.0 to 0.17.0 ([#304](https://github.com/TibiaData/tibiadata-api-go/pull/304) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+* Validation: consider +, - and ' as a valid separators for character name words ([#306](https://github.com/TibiaData/tibiadata-api-go/pull/306) by [Pedro-Pessoa](https://github.com/Pedro-Pessoa))
+
 ## [4.0.1] - 2023-12-12
 
 ### Changed
@@ -362,6 +371,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.0.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.5...v4.0.0
 [3.7.5]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.4...v3.7.5

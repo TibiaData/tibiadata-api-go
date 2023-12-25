@@ -51,6 +51,8 @@ func TestNameValidator(t *testing.T) {
 		"Traicionaron Al Mikee",
 		"Jamil+Ondeta+Temconfusao",
 		"Traicionaron+Al+Mikee",
+		"Antorchita'cachibengala",
+		"Leonardinha-princesinha",
 	}
 
 	for _, n := range names {

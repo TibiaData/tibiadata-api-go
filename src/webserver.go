@@ -1085,20 +1085,7 @@ func TibiaDataErrorHandler(c *gin.Context, err error, httpCode int) {
 
 	switch t := err.(type) {
 	case validation.Error:
-		if httpCode == 0 {
-			if t.Code() == 10 || t.Code() == 11 {
-				httpCode = http.StatusInternalServerError
-			} else {
-				httpCode = http.StatusBadRequest
-			}
-		}
-
-		// An error occurred at tibia.com
-		if t.Code() > 20000 {
-			httpCode = http.StatusBadGateway
-		}
-
-		info.Status.HTTPCode = httpCode
+		info.Status.HTTPCode = t.HTTPCode()
 		info.Status.Error = t.Code()
 		info.Status.Message = t.Error()
 	case error:

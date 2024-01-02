@@ -2,6 +2,7 @@ package validation
 
 import (
 	"errors"
+	"net/http"
 )
 
 // Error represents a validation error
@@ -311,6 +312,109 @@ func (e Error) Code() int {
 		return 20007
 	case ErrStatusUnknown:
 		return 20008
+	default:
+		return 0
+	}
+}
+
+// HTTPCode will return the http status code that should be returned when the
+// specified error occurred.
+func (e Error) HTTPCode() int {
+	switch e {
+	case ErrorAlreadyRunning:
+		return http.StatusInternalServerError
+	case ErrorValidatorNotInitiated:
+		return http.StatusInternalServerError
+	case ErrorStringCanNotBeConvertedToInt:
+		return http.StatusBadRequest
+	case ErrorCharacterNameEmpty:
+		return http.StatusBadRequest
+	case ErrorCharacterNameTooSmall:
+		return http.StatusBadRequest
+	case ErrorCharacterNameInvalid:
+		return http.StatusBadRequest
+	case ErrorCharacterNameIsOnlyWhiteSpace:
+		return http.StatusBadRequest
+	case ErrorCharacterNameTooBig:
+		return http.StatusBadRequest
+	case ErrorCharacterWordTooBig:
+		return http.StatusBadRequest
+	case ErrorCharacterWordTooSmall:
+		return http.StatusBadRequest
+	case ErrorInvalidNewsID:
+		return http.StatusBadRequest
+	case ErrorWorldDoesNotExist:
+		return http.StatusNotFound
+	case ErrorVocationDoesNotExist:
+		return http.StatusNotFound
+	case ErrorHighscoreCategoryDoesNotExist:
+		return http.StatusNotFound
+	case ErrorHouseDoesNotExist:
+		return http.StatusNotFound
+	case ErrorTownDoesNotExist:
+		return http.StatusNotFound
+	case ErrorHighscorePageInvalid:
+		return http.StatusBadRequest
+	case ErrorHighscorePageTooBig:
+		return http.StatusBadRequest
+	case ErrorCreatureNameEmpty:
+		return http.StatusBadRequest
+	case ErrorCreatureNameTooSmall:
+		return http.StatusBadRequest
+	case ErrorCreatureNameInvalid:
+		return http.StatusBadRequest
+	case ErrorCreatureNameIsOnlyWhiteSpace:
+		return http.StatusBadRequest
+	case ErrorCreatureNameTooBig:
+		return http.StatusBadRequest
+	case ErrorCreatureWordTooBig:
+		return http.StatusBadRequest
+	case ErrorCreatureWordTooSmall:
+		return http.StatusBadRequest
+	case ErrorSpellNameEmpty:
+		return http.StatusBadRequest
+	case ErrorSpellNameTooSmall:
+		return http.StatusBadRequest
+	case ErrorSpellNameInvalid:
+		return http.StatusBadRequest
+	case ErrorSpellNameIsOnlyWhiteSpace:
+		return http.StatusBadRequest
+	case ErrorSpellNameTooBig:
+		return http.StatusBadRequest
+	case ErrorSpellWordTooBig:
+		return http.StatusBadRequest
+	case ErrorSpellWordTooSmall:
+		return http.StatusBadRequest
+	case ErrorGuildNameEmpty:
+		return http.StatusBadRequest
+	case ErrorGuildNameTooSmall:
+		return http.StatusBadRequest
+	case ErrorGuildNameInvalid:
+		return http.StatusBadRequest
+	case ErrorGuildNameIsOnlyWhiteSpace:
+		return http.StatusBadRequest
+	case ErrorGuildNameTooBig:
+		return http.StatusBadRequest
+	case ErrorGuildWordTooBig:
+		return http.StatusBadRequest
+	case ErrorGuildWordTooSmall:
+		return http.StatusBadRequest
+	case ErrorCharacterNotFound:
+		return http.StatusNotFound
+	case ErrorCreatureNotFound:
+		return http.StatusNotFound
+	case ErrorSpellNotFound:
+		return http.StatusNotFound
+	case ErrorGuildNotFound:
+		return http.StatusNotFound
+	case ErrorMaintenanceMode:
+		return http.StatusBadGateway
+	case ErrStatusForbidden:
+		return http.StatusBadGateway
+	case ErrStatusFound:
+		return http.StatusBadGateway
+	case ErrStatusUnknown:
+		return http.StatusBadGateway
 	default:
 		return 0
 	}

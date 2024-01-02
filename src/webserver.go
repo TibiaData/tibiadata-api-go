@@ -1085,7 +1085,8 @@ func TibiaDataErrorHandler(c *gin.Context, err error, httpCode int) {
 
 	switch t := err.(type) {
 	case validation.Error:
-		info.Status.HTTPCode = t.HTTPCode()
+		httpCode = t.HTTPCode()
+		info.Status.HTTPCode = httpCode
 		info.Status.Error = t.Code()
 		info.Status.Message = t.Error()
 	case error:

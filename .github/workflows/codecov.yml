@@ -23,4 +23,4 @@ jobs:
           TIBIADATA_PROXY: ${{ secrets.TIBIADATA_PROXY }}
 
       - name: Uploading coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4

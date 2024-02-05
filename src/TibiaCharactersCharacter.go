@@ -249,7 +249,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 					// TODO: I don't understand why the unicode nbsp is there...
 					CharacterInfoData.Guild.GuildName = TibiaDataSanitizeStrings(RowNameQuery.Nodes[0].NextSibling.LastChild.LastChild.Data)
 				case "Last Login:":
-					if RowData != "never logged in" {
+					if strings.ToLower(RowData) != "never logged in" {
 						CharacterInfoData.LastLogin = TibiaDataDatetime(RowData)
 					}
 				case "Comment:":

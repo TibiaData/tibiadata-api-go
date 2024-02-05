@@ -4,7 +4,7 @@ import "testing"
 
 func TestTownExists(t *testing.T) {
 	if !initiated {
-		err := Initiate("TibiaData-API-Testing")
+		err := Initiate(TIBIADATA_API_TESTING)
 		if err != nil {
 			t.Fatal(err)
 		}

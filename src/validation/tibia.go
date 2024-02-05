@@ -7,6 +7,11 @@ import (
 	"unicode/utf8"
 )
 
+const (
+	TIBIADATA_API_TESTING = "TibiaData-API-Testing"
+	TIBIADATA_JSON_ERROR  = "Wanted json error: %s, got %s instead"
+)
+
 var (
 	// characterNameRegex is used to check if the character name provided is valid
 	// nowadays Tibia only accepts a-zA-Z, but we have to consider old names

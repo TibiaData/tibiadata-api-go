@@ -10,7 +10,7 @@ import (
 
 func TestRaceCondition(t *testing.T) {
 	if !initiated {
-		err := Initiate("TibiaData-API-Testing")
+		err := Initiate(TIBIADATA_API_TESTING)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -90,14 +90,14 @@ func TestNameValidator(t *testing.T) {
 	for expectedErr, name := range jsonErrorNames {
 		actualErr := IsCharacterNameValid(name)
 		if expectedErr != actualErr {
-			t.Fatalf("Wanted json error: %s, got %s instead", expectedErr, actualErr)
+			t.Fatalf(TIBIADATA_JSON_ERROR, expectedErr, actualErr)
 		}
 	}
 }
 
 func TestCreatureValidator(t *testing.T) {
 	if !initiated {
-		err := Initiate("TibiaData-API-Testing")
+		err := Initiate(TIBIADATA_API_TESTING)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -161,7 +161,7 @@ func TestCreatureValidator(t *testing.T) {
 	for expectedErr, name := range jsonErrorNames {
 		_, actualErr := IsCreatureNameValid(name)
 		if expectedErr != actualErr {
-			t.Fatalf("Wanted json error: %s, got %s instead", expectedErr, actualErr)
+			t.Fatalf(TIBIADATA_JSON_ERROR, expectedErr, actualErr)
 		}
 	}
 
@@ -196,7 +196,7 @@ func TestCreatureValidator(t *testing.T) {
 
 func TestSpellValidator(t *testing.T) {
 	if !initiated {
-		err := Initiate("TibiaData-API-Testing")
+		err := Initiate(TIBIADATA_API_TESTING)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -266,7 +266,7 @@ func TestSpellValidator(t *testing.T) {
 	for expectedErr, name := range jsonErrorNames {
 		_, actualErr := IsSpellNameOrFormulaValid(name)
 		if expectedErr != actualErr {
-			t.Fatalf("Wanted json error: %s, got %s instead", expectedErr, actualErr)
+			t.Fatalf(TIBIADATA_JSON_ERROR, expectedErr, actualErr)
 		}
 	}
 
@@ -350,14 +350,14 @@ func TestGuildValidator(t *testing.T) {
 	for expectedErr, name := range jsonErrorNames {
 		actualErr := IsGuildNameValid(name)
 		if expectedErr != actualErr {
-			t.Fatalf("Wanted json error: %s, got %s instead", expectedErr, actualErr)
+			t.Fatalf(TIBIADATA_JSON_ERROR, expectedErr, actualErr)
 		}
 	}
 }
 
 func TestValidationFuncs(t *testing.T) {
 	if !initiated {
-		err := Initiate("TibiaData-API-Testing")
+		err := Initiate(TIBIADATA_API_TESTING)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -618,7 +618,7 @@ func TestErrors(t *testing.T) {
 
 func TestUtils(t *testing.T) {
 	if !initiated {
-		err := Initiate("TibiaData-API-Testing")
+		err := Initiate(TIBIADATA_API_TESTING)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -833,7 +833,7 @@ func TestUtils(t *testing.T) {
 
 func TestFake(t *testing.T) {
 	if !initiated {
-		err := Initiate("TibiaData-API-Testing")
+		err := Initiate(TIBIADATA_API_TESTING)
 		if err != nil {
 			t.Fatal(err)
 		}

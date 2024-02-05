@@ -2901,6 +2901,166 @@ func TestNumber7(t *testing.T) {
 	assert.Equal("___$$$$$$$$_______$$$$$$$$\n_$$$$$$$$$$$$__$$$$$$$$$$$$$$\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n_$$$$$$$$$$-Snulliz-$$$$$$$$$$$\n__$$$$$$$$$$$$$$$$$$$$$$$$$$\n____$$$$$$$$$$$$$$$$$$$$$$\n______$$$$$$$$$$$$$$$$$$\n________$$$$$$$$$$$$$$\n___________$$$$$$$$$\n____________$$$$$$\n_____________$$", character.Comment)
 }
 
+func TestNumber8(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/characters/Mieluffy.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Len(characterJson.Character.Achievements, 0)
+	assert.Equal("Mieluffy", character.Name)
+	assert.False(characterJson.Character.DeathsTruncated)
+
+	// validate death data
+	assert.Equal(4, len(characterJson.Character.Deaths))
+	deaths := characterJson.Character.Deaths
+
+	for idx, tc := range []struct {
+		Assists []Killers
+		Killers []Killers
+		Level   int
+		Reason  string
+		Time    string
+	}{
+		{
+			Assists: []Killers{
+				{Name: "Merlinxd", Player: true, Traded: false, Summon: ""},
+				{Name: "Paletero Kriminal", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{
+				{Name: "Pecas Creator", Player: true, Traded: false, Summon: ""},
+				{Name: "El Unico", Player: true, Traded: false, Summon: ""},
+				{Name: "Supperiore", Player: true, Traded: false, Summon: ""},
+				{Name: "Flaco El Pobre", Player: true, Traded: false, Summon: ""},
+				{Name: "Rii Rox", Player: true, Traded: false, Summon: ""},
+				{Name: "Tiz to", Player: true, Traded: false, Summon: ""},
+				{Name: "True Merlinus Druid", Player: true, Traded: false, Summon: ""},
+				{Name: "Antii Druida", Player: true, Traded: false, Summon: ""},
+				{Name: "El Inestable", Player: true, Traded: false, Summon: ""},
+				{Name: "Ga to Relaxsz", Player: true, Traded: false, Summon: ""},
+				{Name: "Frodin la Maquina", Player: true, Traded: false, Summon: ""},
+				{Name: "Mich Jogadorcaro", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  508,
+			Reason: "Crushed at Level 508 by Pecas Creator, El Unico, Supperiore, Flaco El Pobre, Rii Rox, Tiz to, True Merlinus Druid, Antii Druida, El Inestable, Ga to Relaxsz, Frodin la Maquina and Mich Jogadorcaro. Assisted by Merlinxd and Paletero Kriminal.",
+			Time:   "2024-02-01T06:20:46Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "El Unico", Player: true, Traded: false, Summon: ""},
+				{Name: "Naireth Sorcerer", Player: true, Traded: false, Summon: ""},
+				{Name: "Pedritox Soulfire", Player: true, Traded: false, Summon: ""},
+				{Name: "Pepiisho", Player: true, Traded: false, Summon: ""},
+				{Name: "Egon Leme", Player: true, Traded: false, Summon: ""},
+				{Name: "Queen Marii", Player: true, Traded: false, Summon: ""},
+				{Name: "Jicuri Guardian", Player: true, Traded: false, Summon: ""},
+				{Name: "Athob Senian", Player: true, Traded: false, Summon: ""},
+				{Name: "Noo Friends", Player: true, Traded: false, Summon: ""},
+				{Name: "Dhanielz Unstoppable", Player: true, Traded: false, Summon: ""},
+				{Name: "Ilysz Sin Tales", Player: true, Traded: false, Summon: ""},
+				{Name: "Spy Crusitho Sauvage", Player: true, Traded: false, Summon: ""},
+				{Name: "Tiz to", Player: true, Traded: false, Summon: ""},
+				{Name: "King Asmiito", Player: true, Traded: false, Summon: ""},
+				{Name: "Bolchecoqe", Player: true, Traded: false, Summon: ""},
+				{Name: "Jobi", Player: true, Traded: false, Summon: ""},
+				{Name: "El Inestable", Player: true, Traded: false, Summon: ""},
+				{Name: "Bloomzs", Player: true, Traded: false, Summon: ""},
+				{Name: "Natalie Bearskin", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  508,
+			Reason: "Eliminated at Level 508 by El Unico, Naireth Sorcerer, Pedritox Soulfire, Pepiisho, Egon Leme, Queen Marii, Jicuri Guardian, Athob Senian, Noo Friends, Dhanielz Unstoppable, Ilysz Sin Tales, Spy Crusitho Sauvage, Tiz to, King Asmiito, Bolchecoqe, Jobi, El Inestable, Bloomzs and Natalie Bearskin.",
+			Time:   "2024-02-01T04:53:23Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Swiifti", Player: true, Traded: false, Summon: ""},
+				{Name: "Duende blanco", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{
+				{Name: "Shantty", Player: true, Traded: false, Summon: ""},
+				{Name: "Sin Primalbazzar", Player: true, Traded: false, Summon: ""},
+				{Name: "Supperiore", Player: true, Traded: false, Summon: ""},
+				{Name: "Righo", Player: true, Traded: false, Summon: ""},
+				{Name: "Beltran Tzawayak", Player: true, Traded: false, Summon: ""},
+				{Name: "Ilysz Sin Tales", Player: true, Traded: false, Summon: ""},
+				{Name: "Flaco El Pobre", Player: true, Traded: false, Summon: ""},
+				{Name: "Pecaas", Player: true, Traded: false, Summon: ""},
+				{Name: "Knightsitaz", Player: true, Traded: false, Summon: ""},
+				{Name: "Dhanielz Acorazado", Player: true, Traded: false, Summon: ""},
+				{Name: "Jobi", Player: true, Traded: false, Summon: ""},
+				{Name: "Aeronabic", Player: true, Traded: false, Summon: ""},
+				{Name: "Side Effectss", Player: true, Traded: false, Summon: ""},
+				{Name: "Ekizdd", Player: true, Traded: false, Summon: ""},
+				{Name: "Baby Mikoh", Player: true, Traded: false, Summon: ""},
+				{Name: "Sneki", Player: true, Traded: false, Summon: ""},
+				{Name: "Love and Death", Player: true, Traded: true, Summon: ""},
+				{Name: "Next Generation", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  508,
+			Reason: "Eliminated at Level 508 by Shantty, Sin Primalbazzar, Supperiore, Righo, Beltran Tzawayak, Ilysz Sin Tales, Flaco El Pobre, Pecaas, Knightsitaz, Dhanielz Acorazado, Jobi, Aeronabic, Side Effectss, Ekizdd, Baby Mikoh, Sneki, Love and Death (traded) and Next Generation. Assisted by Swiifti and Duende blanco.",
+			Time:   "2024-01-12T19:38:09Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Sir Alpha", Player: true, Traded: false, Summon: ""},
+				{Name: "Chic Unixzion", Player: true, Traded: false, Summon: ""},
+				{Name: "Cadiwax", Player: true, Traded: false, Summon: ""},
+				{Name: "Pecaas", Player: true, Traded: false, Summon: ""},
+				{Name: "Eveo Zeff", Player: true, Traded: false, Summon: ""},
+				{Name: "Monkey Flash", Player: true, Traded: false, Summon: ""},
+				{Name: "Flaco Maldito", Player: true, Traded: false, Summon: ""},
+				{Name: "Mieluffy", Player: true, Traded: false, Summon: ""},
+				{Name: "Geass Evangelion", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  508,
+			Reason: "Slain at Level 508 by Sir Alpha, Chic Unixzion, Cadiwax, Pecaas, Eveo Zeff, Monkey Flash, Flaco Maldito, Mieluffy and Geass Evangelion.",
+			Time:   "2024-01-10T21:31:52Z",
+		},
+	} {
+		assert.True(
+			reflect.DeepEqual(deaths[idx].Assists, tc.Assists),
+			"Wrong assists\nidx: %d\nwant: %#v\n\ngot: %#v",
+			idx, tc.Assists, deaths[idx].Assists,
+		)
+		assert.True(
+			reflect.DeepEqual(deaths[idx].Killers, tc.Killers),
+			"Wrong killers\nidx: %d\nwant: %#v\n\ngot: %#v",
+			idx, tc.Killers, deaths[idx].Killers,
+		)
+		assert.Equal(
+			deaths[idx].Level, tc.Level,
+			"Wrong Level\nidx: %d\nwant: %d\n\ngot: %d",
+			idx, tc.Level, deaths[idx].Level,
+		)
+		assert.Equal(
+			deaths[idx].Reason, tc.Reason,
+			"Wrong Reason\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Reason, deaths[idx].Reason,
+		)
+		assert.Equal(
+			deaths[idx].Time, tc.Time,
+			"Wrong Time\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Time, deaths[idx].Time,
+		)
+	}
+}
+
 func TestNumber9(t *testing.T) {
 	file, err := static.TestFiles.Open("testdata/characters/Akura Aleus.html")
 	if err != nil {

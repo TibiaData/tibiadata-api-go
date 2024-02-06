@@ -484,13 +484,13 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 				// get a list of killers
 				ListOfKillers := strings.Split(rawListofKillers, ", ")
 
-				// extract if "and" is in last ss1
-				ListOfKillersTmp := strings.Split(ListOfKillers[len(ListOfKillers)-1], " and ")
+				const andStr = " and "
+				lastItem := ListOfKillers[len(ListOfKillers)-1]
+				lastAndIdx := strings.LastIndex(lastItem, andStr)
 
-				// if there is an "and", then we split it..
-				if len(ListOfKillersTmp) > 1 {
-					ListOfKillers[len(ListOfKillers)-1] = ListOfKillersTmp[0]
-					ListOfKillers = append(ListOfKillers, ListOfKillersTmp[1])
+				if lastAndIdx > -1 {
+					ListOfKillers[len(ListOfKillers)-1] = lastItem[:lastAndIdx]
+					ListOfKillers = append(ListOfKillers, lastItem[lastAndIdx+len(andStr):])
 				}
 
 				// loop through all killers and append to result

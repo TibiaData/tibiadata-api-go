@@ -6,7 +6,7 @@ replace github.com/TibiaData/tibiadata-api-go/src/tibiamapping => ../tibiamappin
 
 require (
 	github.com/TibiaData/tibiadata-api-go/src/tibiamapping v0.0.0-20231225183430-d0b5d51a7a92
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 )
 
 require (

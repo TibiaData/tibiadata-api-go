@@ -1052,7 +1052,7 @@ func tibiaWorldsWorld(c *gin.Context) {
 	}
 
 	if !exists {
-		TibiaDataErrorHandler(c, validation.ErrorWorldDoesNotExist, http.StatusBadRequest)
+		TibiaDataErrorHandler(c, validation.ErrorWorldDoesNotExist, http.StatusNotFound)
 		return
 	}
 
@@ -1093,10 +1093,7 @@ func TibiaDataErrorHandler(c *gin.Context, err error, httpCode int) {
 			}
 		}
 
-		// An error occurred at tibia.com
-		if t.Code() > 20000 {
-			httpCode = http.StatusBadGateway
-		}
+		httpCode = t.StatusCode(httpCode)
 
 		info.Status.HTTPCode = httpCode
 		info.Status.Error = t.Code()
@@ -1120,6 +1117,7 @@ func TibiaDataErrorHandler(c *gin.Context, err error, httpCode int) {
 
 func tibiaDataRequestHandler(c *gin.Context, tibiaDataRequest TibiaDataRequestStruct, requestHandler func(string) (interface{}, error), handlerName string) {
 	BoxContentHTML, err := TibiaDataHTMLDataCollector(tibiaDataRequest)
+
 	// return error (e.g. for maintenance mode)
 	if err != nil {
 		TibiaDataErrorHandler(c, err, http.StatusBadGateway)

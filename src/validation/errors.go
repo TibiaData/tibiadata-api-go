@@ -2,6 +2,7 @@ package validation
 
 import (
 	"errors"
+	"net/http"
 )
 
 // Error represents a validation error
@@ -213,6 +214,44 @@ var (
 	// Code: 20008
 	ErrStatusUnknown = Error{errors.New("got unknown status from tibia.com")}
 )
+
+func (e Error) StatusCode(httpCode int) int {
+	switch e {
+	case ErrorWorldDoesNotExist:
+		return http.StatusNotFound
+	case ErrorVocationDoesNotExist:
+		return http.StatusNotFound
+	case ErrorHouseDoesNotExist:
+		return http.StatusNotFound
+	case ErrorTownDoesNotExist:
+		return http.StatusNotFound
+	case ErrorHighscoreCategoryDoesNotExist:
+		return http.StatusNotFound
+
+	case ErrorCharacterNotFound:
+		return http.StatusNotFound
+	case ErrorCreatureNotFound:
+		return http.StatusNotFound
+	case ErrorSpellNotFound:
+		return http.StatusNotFound
+	case ErrorGuildNotFound:
+		return http.StatusNotFound
+	case ErrorMaintenanceMode:
+		// An error occurred at tibia.com
+		return http.StatusBadGateway
+	case ErrStatusForbidden:
+		// An error occurred at tibia.com
+		return http.StatusBadGateway
+	case ErrStatusFound:
+		// An error occurred at tibia.com
+		return http.StatusBadGateway
+	case ErrStatusUnknown:
+		// An error occurred at tibia.com
+		return http.StatusBadGateway
+	default:
+		return httpCode
+	}
+}
 
 // Code will return the code of the error
 func (e Error) Code() int {

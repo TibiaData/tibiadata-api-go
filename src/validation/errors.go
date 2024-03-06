@@ -227,7 +227,6 @@ func (e Error) StatusCode(httpCode int) int {
 		return http.StatusNotFound
 	case ErrorHighscoreCategoryDoesNotExist:
 		return http.StatusNotFound
-
 	case ErrorCharacterNotFound:
 		return http.StatusNotFound
 	case ErrorCreatureNotFound:
@@ -249,6 +248,14 @@ func (e Error) StatusCode(httpCode int) int {
 		// An error occurred at tibia.com
 		return http.StatusBadGateway
 	default:
+		if httpCode == 0 {
+			if e.Code() == 10 || e.Code() == 11 {
+				httpCode = http.StatusInternalServerError
+			} else {
+				httpCode = http.StatusBadRequest
+			}
+		}
+		
 		return httpCode
 	}
 }

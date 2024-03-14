@@ -1,5 +1,28 @@
 # Changelog
 
+## [4.1.0] - 2024-03-14
+
+### Changed
+
+- Update Dockerfile to specific version and use of nonroot user ([#322](https://github.com/TibiaData/tibiadata-api-go/pull/322) by [tobiasehlert](https://github.com/tobiasehlert))
+- Update go mods ([#332](https://github.com/TibiaData/tibiadata-api-go/pull/332) by [tobiasehlert](https://github.com/tobiasehlert))
+- Using constant instead of reusing similar strings ([#321](https://github.com/TibiaData/tibiadata-api-go/pull/321) by [tobiasehlert](https://github.com/tobiasehlert))
+- Bump actions/cache from 3 to 4 ([#313](https://github.com/TibiaData/tibiadata-api-go/pull/313) by [dependabot](https://github.com/dependabot))
+- Bump codecov/codecov-action from 3 to 4 ([#317](https://github.com/TibiaData/tibiadata-api-go/pull/317) by [dependabot](https://github.com/dependabot))
+- Bump github.com/go-resty/resty/v2 from 2.10.0 to 2.11.0 ([#308](https://github.com/TibiaData/tibiadata-api-go/pull/308), [#307](https://github.com/TibiaData/tibiadata-api-go/pull/307), [#310](https://github.com/TibiaData/tibiadata-api-go/pull/310) by [dependabot](https://github.com/dependabot))
+- Bump github.com/PuerkitoBio/goquery from 1.8.1 to 1.9.1 ([#326](https://github.com/TibiaData/tibiadata-api-go/pull/326) by [dependabot](https://github.com/dependabot))
+- Bump github.com/stretchr/testify from 1.8.4 to 1.9.0 ([#327](https://github.com/TibiaData/tibiadata-api-go/pull/327), [#328](https://github.com/TibiaData/tibiadata-api-go/pull/328) by [dependabot](https://github.com/dependabot))
+- Bump golang from 1.21.5 to 1.22.1 ([#312](https://github.com/TibiaData/tibiadata-api-go/pull/312), [#324](https://github.com/TibiaData/tibiadata-api-go/pull/324), [#330](https://github.com/TibiaData/tibiadata-api-go/pull/330) by [dependabot](https://github.com/dependabot))
+- Bump google.golang.org/protobuf from 1.32.0 to 1.33.0 ([#331](https://github.com/TibiaData/tibiadata-api-go/pull/331) by [dependabot](https://github.com/dependabot))
+- Bump peter-evans/dockerhub-description from 3 to 4 ([#316](https://github.com/TibiaData/tibiadata-api-go/pull/316) by [dependabot](https://github.com/dependabot))
+- Bump peter-evans/repository-dispatch from 2 to 3 ([#315](https://github.com/TibiaData/tibiadata-api-go/pull/315) by [dependabot](https://github.com/dependabot))
+- Bump reproducible-containers/buildkit-cache-dance from 2.1.3 to 2.1.4 ([#314](https://github.com/TibiaData/tibiadata-api-go/pull/314) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+
+- Never logged in parsing on characters endpoint ([#320](https://github.com/TibiaData/tibiadata-api-go/pull/320) by [tobiasehlert](https://github.com/tobiasehlert))
+- Properly parse players with 'and' in their names ([#323](https://github.com/TibiaData/tibiadata-api-go/pull/323) by [phenpessoa](https://github.com/phenpessoa))
+
 ## [4.0.2] - 2023-12-25
 
 ### Changed
@@ -425,6 +448,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.1.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.0.2...v4.1.0
 [4.0.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v3.7.5...v4.0.0

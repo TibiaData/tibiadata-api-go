@@ -32,12 +32,9 @@ Documentation of API endpoints can be found on [docs.tibiadata.com](https://docs
 Here is a summary of the TibiaData API versions
 
 > **v4** is under development\
-> **v3** is released\
+> **v3** is deprecated _(since 31rd January 2024)_\
 > **v2** is deprecated _(since 30rd April 2022)_\
 > **v1** is deprecated _(since 30rd April 2018)_
-
-**Note:**\
-v3 is on a separate branch due to v4 development
 
 ## How to use
 
@@ -52,11 +49,14 @@ We have a Helm chart available for you to use to deploy your application to Kube
 All our charts are available through [charts.tibiadata.com](https://charts.tibiadata.com).
 
 Add the repository
+
 ```console
 helm repo add tibiadata https://charts.tibiadata.com
+helm repo update
 ```
 
 Search for the chart
+
 ```console
 helm repo search tibiadata
 ```
@@ -73,6 +73,7 @@ This is how to pull and run the _latest_ release of TibiaData from [GHCR](https:
 docker pull ghcr.io/tibiadata/tibiadata-api-go:latest
 docker run -p 127.0.0.1:80:8080/tcp --rm -it ghcr.io/tibiadata/tibiadata-api-go:latest
 ```
+
 You can also use [Docker Hub](https://hub.docker.com/r/tibiadata/tibiadata-api-go) to pull your images from.
 
 If you want to run the latest code you can switch from _latest_ to _edge_.

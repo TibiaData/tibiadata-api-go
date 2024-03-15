@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.1.1] - 2024-03-15
+
+### Fixed
+
+- Fix permission issues with Dockerfile nonroot implementation ([#333](https://github.com/TibiaData/tibiadata-api-go/pull/333) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [4.1.0] - 2024-03-14
 
 ### Changed
@@ -448,6 +454,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.1.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.0.2...v4.1.0
 [4.0.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.0.0...v4.0.1

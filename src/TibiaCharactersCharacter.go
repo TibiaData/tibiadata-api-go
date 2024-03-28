@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net/http"
@@ -489,8 +490,90 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 				lastAndIdx := strings.LastIndex(lastItem, andStr)
 
 				if lastAndIdx > -1 {
-					ListOfKillers[len(ListOfKillers)-1] = lastItem[:lastAndIdx]
-					ListOfKillers = append(ListOfKillers, lastItem[lastAndIdx+len(andStr):])
+					if !strings.Contains(lastItem, "<a href=") {
+						ListOfKillers[len(ListOfKillers)-1] = lastItem[:lastAndIdx]
+						ListOfKillers = append(ListOfKillers, lastItem[lastAndIdx+len(andStr):])
+					} else {
+						ListOfKillers = ListOfKillers[:len(ListOfKillers)-1]
+
+						const (
+							nonTag        = iota // outside of a tag
+							openAnchorTag        // inside a <a>
+							closeAchorTag        // inside a </a>
+						)
+
+						var (
+							buffer bytes.Buffer
+							state  = nonTag
+						)
+						buffer.Grow(200) // arbitrary number to avoid allocations
+
+						for i := range lastItem {
+							cur := lastItem[i]
+							switch state {
+							case nonTag:
+								if cur == '<' {
+									switch lastItem[i+1] {
+									case '/':
+										state = closeAchorTag
+									default:
+										state = openAnchorTag
+										if buffer.Len() > 0 {
+											str := buffer.String()
+
+											str = strings.TrimPrefix(str, " and ")
+											str = strings.TrimSuffix(str, " and ")
+
+											if str == "" {
+												buffer.Reset()
+												buffer.WriteByte(cur)
+												continue
+											}
+
+											if strings.Contains(str, "of") && !containsCreaturesWithOf(str) {
+												// this is a summon
+												buffer.WriteByte(cur)
+												continue
+											}
+
+											buffer.Reset()
+											ListOfKillers = append(ListOfKillers, str)
+										}
+									}
+								}
+								buffer.WriteByte(cur)
+							case openAnchorTag:
+								if cur == '>' {
+									state = nonTag
+								}
+								buffer.WriteByte(cur)
+							case closeAchorTag:
+								buffer.WriteByte(cur)
+								if cur == '>' {
+									str := buffer.String()
+
+									str = strings.TrimPrefix(str, " and ")
+									str = strings.TrimSuffix(str, " and ")
+
+									ListOfKillers = append(ListOfKillers, str)
+									buffer.Reset()
+									state = nonTag
+								}
+							}
+						}
+
+						if buffer.Len() > 0 {
+							str := buffer.String()
+							buffer.Reset()
+
+							str = strings.TrimPrefix(str, " and ")
+							str = strings.TrimSuffix(str, " and ")
+
+							if str != "" {
+								ListOfKillers = append(ListOfKillers, str)
+							}
+						}
+					}
 				}
 
 				// loop through all killers and append to result

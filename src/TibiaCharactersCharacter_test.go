@@ -3298,6 +3298,94 @@ func TestNumber12(t *testing.T) {
 	assert.Equal(55, len(characterJson.Character.Deaths))
 }
 
+func TestNumber13(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/characters/Ninth Dimension.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Ninth Dimension", character.Name)
+	assert.False(characterJson.Character.DeathsTruncated)
+
+	// validate death data
+	assert.Equal(1, len(characterJson.Character.Deaths))
+	deaths := characterJson.Character.Deaths
+
+	for idx, tc := range []struct {
+		Assists []Killers
+		Killers []Killers
+		Level   int
+		Reason  string
+		Time    string
+	}{
+		{
+			Assists: []Killers{
+				{Name: "Dark Assa", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{
+				{Name: "Pess Joeru", Player: true, Traded: false, Summon: ""},
+				{Name: "Curly Da Goonx", Player: true, Traded: false, Summon: ""},
+				{Name: "Setarehh", Player: true, Traded: false, Summon: ""},
+				{Name: "Skkrimz", Player: true, Traded: false, Summon: ""},
+				{Name: "Luna Mors", Player: true, Traded: false, Summon: ""},
+				{Name: "Micklo", Player: true, Traded: false, Summon: ""},
+				{Name: "Kate Morningstar", Player: true, Traded: false, Summon: ""},
+				{Name: "Avatar Avatar", Player: true, Traded: false, Summon: ""},
+				{Name: "San Bernardino Hoodrat", Player: true, Traded: false, Summon: ""},
+				{Name: "Mighty Nitro", Player: true, Traded: false, Summon: ""},
+				{Name: "Aiakosz", Player: true, Traded: false, Summon: ""},
+				{Name: "Sithaadoz", Player: true, Traded: false, Summon: ""},
+				{Name: "Compa Ache", Player: true, Traded: false, Summon: ""},
+				{Name: "Cave Stormer", Player: true, Traded: false, Summon: ""},
+				{Name: "Doppler and Bankrupt", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  544,
+			Reason: "Eliminated at Level 544 by Pess Joeru, Curly Da Goonx, Setarehh, Skkrimz, Luna Mors, Micklo, Kate Morningstar, Avatar Avatar, San Bernardino Hoodrat, Mighty Nitro, Aiakosz, Sithaadoz, Compa Ache, Cave Stormer and Doppler and Bankrupt. Assisted by Dark Assa.",
+			Time:   "2024-03-12T21:02:33Z",
+		},
+	} {
+		assert.True(
+			reflect.DeepEqual(deaths[idx].Assists, tc.Assists),
+			"Wrong assists\nidx: %d\nwant: %#v\n\ngot: %#v",
+			idx, tc.Assists, deaths[idx].Assists,
+		)
+		assert.True(
+			reflect.DeepEqual(deaths[idx].Killers, tc.Killers),
+			"Wrong killers\nidx: %d\nwant: %#v\n\ngot: %#v",
+			idx, tc.Killers, deaths[idx].Killers,
+		)
+		assert.Equal(
+			deaths[idx].Level, tc.Level,
+			"Wrong Level\nidx: %d\nwant: %d\n\ngot: %d",
+			idx, tc.Level, deaths[idx].Level,
+		)
+		assert.Equal(
+			deaths[idx].Reason, tc.Reason,
+			"Wrong Reason\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Reason, deaths[idx].Reason,
+		)
+		assert.Equal(
+			tc.Time, deaths[idx].Time,
+			"Wrong Time\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Time, deaths[idx].Time,
+		)
+	}
+}
+
 func BenchmarkNumber1(b *testing.B) {
 	file, err := static.TestFiles.Open("testdata/characters/Darkside Rafa.html")
 	if err != nil {

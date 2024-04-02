@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.1.2] - 2024-04-02
+
+### Changed
+
+- Bump github.com/go-resty/resty/v2 from 2.11.0 to 2.12.0 ([#334](https://github.com/TibiaData/tibiadata-api-go/pull/334), [#335](https://github.com/TibiaData/tibiadata-api-go/pull/335) by [dependabot](https://github.com/dependabot))
+- Bump github.com/gin-contrib/gzip from 0.0.6 to 1.0.0 ([#336](https://github.com/TibiaData/tibiadata-api-go/pull/336) by [dependabot](https://github.com/dependabot))
+- ci: switch from custom proxy to tailscale vpn ([#339](https://github.com/TibiaData/tibiadata-api-go/pull/339) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Fixed
+
+- character killer parser by rewrite of death parsing logic ([#338](https://github.com/TibiaData/tibiadata-api-go/pull/338) by [phenpessoa](https://github.com/phenpessoa))
+
 ## [4.1.1] - 2024-03-15
 
 ### Fixed
@@ -454,6 +466,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.1.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.0.2...v4.1.0
 [4.0.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.0.1...v4.0.2

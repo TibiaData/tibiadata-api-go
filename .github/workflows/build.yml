@@ -61,17 +61,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Go Build Cache for Docker layers
-        uses: actions/cache@v4
-        with:
-          path: go-build-cache
-          key: ${{ runner.os }}-go-build-cache-${{ hashFiles('**/go.sum') }}
-
-      - name: Inject go-build-cache into docker
-        uses: reproducible-containers/buildkit-cache-dance@v2.1.4
-        with:
-          cache-source: go-build-cache
-
       - name: Build and push
         uses: docker/build-push-action@v5
         with:

@@ -14,6 +14,11 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest

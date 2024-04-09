@@ -195,11 +195,11 @@ func TestNumber4(t *testing.T) {
 	creatureWithOfDeath := characterJson.Character.Deaths[16]
 	assert.Equal(2, len(creatureWithOfDeath.Killers))
 	assert.Equal(260, creatureWithOfDeath.Level)
-	assert.Equal("an undead elite gladiator", creatureWithOfDeath.Killers[0].Name)
+	assert.Equal("undead elite gladiator", creatureWithOfDeath.Killers[0].Name)
 	assert.False(creatureWithOfDeath.Killers[0].Player)
 	assert.False(creatureWithOfDeath.Killers[0].Traded)
 	assert.Empty(creatureWithOfDeath.Killers[0].Summon)
-	assert.Equal("a priestess of the wild sun", creatureWithOfDeath.Killers[1].Name)
+	assert.Equal("priestess of the wild sun", creatureWithOfDeath.Killers[1].Name)
 
 	tradedInDeath := characterJson.Character.Deaths[18]
 	assert.Equal(3, len(tradedInDeath.Assists))
@@ -213,7 +213,7 @@ func TestNumber4(t *testing.T) {
 	assert.Equal(5, len(longDeath.Assists))
 	assert.Equal(231, longDeath.Level)
 	assert.Equal("Adam No Hands", longDeath.Assists[4].Name)
-	assert.Equal("a paladin familiar", longDeath.Assists[4].Summon)
+	assert.Equal("paladin familiar", longDeath.Assists[4].Summon)
 	assert.True(longDeath.Assists[4].Traded)
 
 	deaths := characterJson.Character.Deaths
@@ -316,10 +316,10 @@ func TestNumber4(t *testing.T) {
 		{
 			Assists: []Killers{},
 			Killers: []Killers{
-				{Name: "an ice golem", Player: false, Traded: false, Summon: ""},
+				{Name: "ice golem", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  266,
-			Reason: "Died at Level 266 by an ice golem.",
+			Reason: "Died at Level 266 by ice golem.",
 			Time:   "2022-01-05T04:42:21Z",
 		},
 		{
@@ -399,10 +399,10 @@ func TestNumber4(t *testing.T) {
 		{
 			Assists: []Killers{},
 			Killers: []Killers{
-				{Name: "a gazer spectre", Player: false, Traded: false, Summon: ""},
+				{Name: "gazer spectre", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  264,
-			Reason: "Died at Level 264 by a gazer spectre.",
+			Reason: "Died at Level 264 by gazer spectre.",
 			Time:   "2022-01-04T00:25:34Z",
 		},
 		{
@@ -554,10 +554,10 @@ func TestNumber4(t *testing.T) {
 				{Name: "Kanj iro", Player: true, Traded: false, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "an unstable spark", Player: false, Traded: false, Summon: ""},
+				{Name: "unstable spark", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  267,
-			Reason: "Died at Level 267 by an unstable spark. Assisted by Jack Kevorkian, Mapius Akuno and Kanj iro.",
+			Reason: "Died at Level 267 by unstable spark. Assisted by Jack Kevorkian, Mapius Akuno and Kanj iro.",
 			Time:   "2021-12-30T18:39:30Z",
 		},
 		{
@@ -566,10 +566,10 @@ func TestNumber4(t *testing.T) {
 				{Name: "Niki Salamanca", Player: true, Traded: false, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "a dawnfire asura", Player: false, Traded: false, Summon: ""},
+				{Name: "dawnfire asura", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  261,
-			Reason: "Died at Level 261 by a dawnfire asura. Assisted by Samorbum and Niki Salamanca.",
+			Reason: "Died at Level 261 by dawnfire asura. Assisted by Samorbum and Niki Salamanca.",
 			Time:   "2021-12-30T01:13:18Z",
 		},
 		{
@@ -640,11 +640,11 @@ func TestNumber4(t *testing.T) {
 		{
 			Assists: []Killers{},
 			Killers: []Killers{
-				{Name: "an undead elite gladiator", Player: false, Traded: false, Summon: ""},
-				{Name: "a priestess of the wild sun", Player: false, Traded: false, Summon: ""},
+				{Name: "undead elite gladiator", Player: false, Traded: false, Summon: ""},
+				{Name: "priestess of the wild sun", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  260,
-			Reason: "Died at Level 260 by an undead elite gladiator and a priestess of the wild sun.",
+			Reason: "Died at Level 260 by undead elite gladiator and priestess of the wild sun.",
 			Time:   "2021-12-28T22:31:46Z",
 		},
 		{
@@ -683,10 +683,10 @@ func TestNumber4(t *testing.T) {
 				{Name: "Adam No Hands", Player: true, Traded: true, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "a midnight asura", Player: false, Traded: false, Summon: ""},
+				{Name: "midnight asura", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  261,
-			Reason: "Died at Level 261 by a midnight asura. Assisted by Peninsula Boi, Vithrann and Adam No Hands (traded).",
+			Reason: "Died at Level 261 by midnight asura. Assisted by Peninsula Boi, Vithrann and Adam No Hands (traded).",
 			Time:   "2021-12-28T02:15:39Z",
 		},
 		{
@@ -695,10 +695,10 @@ func TestNumber4(t *testing.T) {
 				{Name: "Adam No Hands", Player: true, Traded: true, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "a midnight asura", Player: false, Traded: false, Summon: ""},
+				{Name: "midnight asura", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  262,
-			Reason: "Died at Level 262 by a midnight asura. Assisted by Peninsula Boi and Adam No Hands (traded).",
+			Reason: "Died at Level 262 by midnight asura. Assisted by Peninsula Boi and Adam No Hands (traded).",
 			Time:   "2021-12-28T02:02:19Z",
 		},
 		{
@@ -817,10 +817,10 @@ func TestNumber4(t *testing.T) {
 				{Name: "Utanii Herh", Player: true, Traded: false, Summon: ""},
 				{Name: "King Peruvian", Player: true, Traded: false, Summon: ""},
 				{Name: "Raven Kyle", Player: true, Traded: false, Summon: ""},
-				{Name: "a true dawnfire asura", Player: false, Traded: false, Summon: ""},
+				{Name: "true dawnfire asura", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  262,
-			Reason: "Killed at Level 262 by Utanii Herh, King Peruvian, Raven Kyle and a true dawnfire asura.",
+			Reason: "Killed at Level 262 by Utanii Herh, King Peruvian, Raven Kyle and true dawnfire asura.",
 			Time:   "2021-12-27T01:40:37Z",
 		},
 		{
@@ -1812,10 +1812,10 @@ func TestNumber4(t *testing.T) {
 				{Name: "Psycovzky", Player: true, Traded: false, Summon: ""},
 				{Name: "Tacos Ardera", Player: true, Traded: false, Summon: ""},
 				{Name: "Street Runner", Player: true, Traded: false, Summon: ""},
-				{Name: "Slobansky", Player: true, Traded: false, Summon: "a sorcerer familiar"},
+				{Name: "Slobansky", Player: true, Traded: false, Summon: "sorcerer familiar"},
 			},
 			Level:  237,
-			Reason: "Slain at Level 237 by Nevin kyle, Dont Kill Marta, Rein is Here, Arthur Heartless, Psycovzky, Tacos Ardera, Street Runner and a sorcerer familiar of Slobansky.",
+			Reason: "Slain at Level 237 by Nevin kyle, Dont Kill Marta, Rein is Here, Arthur Heartless, Psycovzky, Tacos Ardera, Street Runner and sorcerer familiar of Slobansky.",
 			Time:   "2021-12-18T02:53:53Z",
 		},
 		{
@@ -2267,10 +2267,10 @@ func TestNumber4(t *testing.T) {
 				{Name: "Spyt Ponzi", Player: true, Traded: false, Summon: ""},
 				{Name: "Contatinho Ekbomba", Player: true, Traded: false, Summon: ""},
 				{Name: "Rondero Miguel", Player: true, Traded: false, Summon: ""},
-				{Name: "an adult goanna", Player: false, Traded: false, Summon: ""},
+				{Name: "adult goanna", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  225,
-			Reason: "Slain at Level 225 by Nevin kyle, Jungle Rubi Dominante, Negaum ardera defender, Chapo Kyle, Rondero Zaka (traded), Spyt Ponzi, Contatinho Ekbomba, Rondero Miguel and an adult goanna. Assisted by Schalama Rei Delas, Samorbum and Ell Rugalzawer.",
+			Reason: "Slain at Level 225 by Nevin kyle, Jungle Rubi Dominante, Negaum ardera defender, Chapo Kyle, Rondero Zaka (traded), Spyt Ponzi, Contatinho Ekbomba, Rondero Miguel and adult goanna. Assisted by Schalama Rei Delas, Samorbum and Ell Rugalzawer.",
 			Time:   "2021-12-15T21:00:57Z",
 		},
 		{
@@ -2336,10 +2336,10 @@ func TestNumber4(t *testing.T) {
 			Assists: []Killers{},
 			Killers: []Killers{
 				{Name: "Kaelsia Menardord", Player: true, Traded: false, Summon: ""},
-				{Name: "a skeleton elite warrior", Player: false, Traded: false, Summon: ""},
+				{Name: "skeleton elite warrior", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  228,
-			Reason: "Killed at Level 228 by Kaelsia Menardord and a skeleton elite warrior.",
+			Reason: "Killed at Level 228 by Kaelsia Menardord and skeleton elite warrior.",
 			Time:   "2021-12-15T20:45:50Z",
 		},
 		{
@@ -2349,10 +2349,10 @@ func TestNumber4(t *testing.T) {
 				{Name: "Netozawer", Player: true, Traded: false, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "a priestess of the wild sun", Player: false, Traded: false, Summon: ""},
+				{Name: "priestess of the wild sun", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  229,
-			Reason: "Died at Level 229 by a priestess of the wild sun. Assisted by Mma Axel Mendoza, Caladan Bane and Netozawer.",
+			Reason: "Died at Level 229 by priestess of the wild sun. Assisted by Mma Axel Mendoza, Caladan Bane and Netozawer.",
 			Time:   "2021-12-15T20:40:47Z",
 		},
 		{
@@ -2709,7 +2709,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Mapius Akuno", Player: true, Traded: false, Summon: ""},
 				{Name: "Don Ballusse", Player: true, Traded: false, Summon: ""},
 				{Name: "Netozawer", Player: true, Traded: false, Summon: ""},
-				{Name: "Adam No Hands", Player: true, Traded: true, Summon: "a paladin familiar"},
+				{Name: "Adam No Hands", Player: true, Traded: true, Summon: "paladin familiar"},
 			},
 			Killers: []Killers{
 				{Name: "Nevin kyle", Player: true, Traded: false, Summon: ""},
@@ -2740,7 +2740,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Robadob Wallstreet", Player: true, Traded: false, Summon: ""},
 			},
 			Level:  231,
-			Reason: "Annihilated at Level 231 by Nevin kyle, Astaroth Kyle, Marchane kee (traded), Wizard of Awz (traded), Dont Kill Joustick, Mnnuuuuczzhh, Shady Is Back, Contatinho Millonario, Be Nicee, Viictoryck, Hiisa, King Peruvian, Touchy Dominante, Monochrome Edowez, Elchico Billonario, Arthur Heartless, Psycovzky, Retro Jupa, Chapo Kyle, Beowulf Kyle, Keimithx, Bello Abreu, Raven Kyle, Mnuczhhx, Pit Retro and Robadob Wallstreet. Assisted by Anthony No Hands, Mapius Akuno, Don Ballusse, Netozawer and a paladin familiar of Adam No Hands (traded).",
+			Reason: "Annihilated at Level 231 by Nevin kyle, Astaroth Kyle, Marchane kee (traded), Wizard of Awz (traded), Dont Kill Joustick, Mnnuuuuczzhh, Shady Is Back, Contatinho Millonario, Be Nicee, Viictoryck, Hiisa, King Peruvian, Touchy Dominante, Monochrome Edowez, Elchico Billonario, Arthur Heartless, Psycovzky, Retro Jupa, Chapo Kyle, Beowulf Kyle, Keimithx, Bello Abreu, Raven Kyle, Mnuczhhx, Pit Retro and Robadob Wallstreet. Assisted by Anthony No Hands, Mapius Akuno, Don Ballusse, Netozawer and paladin familiar of Adam No Hands (traded).",
 			Time:   "2021-12-11T02:08:02Z",
 		},
 	} {

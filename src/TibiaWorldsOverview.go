@@ -17,7 +17,7 @@ type OverviewWorld struct {
 	Location            string `json:"location"`              // The physical location of the servers.
 	PvpType             string `json:"pvp_type"`              // The type of PvP.
 	PremiumOnly         bool   `json:"premium_only"`          // Whether only premium account players are allowed to play on it.
-	TransferType        string `json:"transfer_type"`         // The type of transfer restrictions it has. regular (if not present) / locked / blocked
+	TransferType        string `json:"transfer_type"`         // The type of transfer restrictions it has. regular / locked / blocked
 	BattleyeProtected   bool   `json:"battleye_protected"`    // The type of BattlEye protection. true if protected / false if "Not protected by BattlEye."
 	BattleyeDate        string `json:"battleye_date"`         // The date when BattlEye was added. "" if since release / else show date?
 	GameWorldType       string `json:"game_world_type"`       // The type of world. regular / experimental / tournament (if Tournament World Type exists)

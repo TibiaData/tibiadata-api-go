@@ -27,7 +27,7 @@ type World struct {
 	Location            string          `json:"location"`              // The physical location of the servers.
 	PvpType             string          `json:"pvp_type"`              // The type of PvP.
 	PremiumOnly         bool            `json:"premium_only"`          // Whether only premium account players are allowed to play on it.
-	TransferType        string          `json:"transfer_type"`         // The type of transfer restrictions it has. regular (if not present) / locked / blocked
+	TransferType        string          `json:"transfer_type"`         // The type of transfer restrictions it has. regular / locked / blocked
 	WorldsQuestTitles   []string        `json:"world_quest_titles"`    // List of world quest titles the server has achieved.
 	BattleyeProtected   bool            `json:"battleye_protected"`    // The type of BattlEye protection. true if protected / false if "Not protected by BattlEye."
 	BattleyeDate        string          `json:"battleye_date"`         // The date when BattlEye was added. "" if since release / else show date?
@@ -69,6 +69,9 @@ func TibiaWorldsWorldImpl(world string, BoxContentHTML string) (WorldResponse, e
 
 		insideError error
 	)
+
+	// set default values
+	WorldsTransferType = "regular"
 
 	// Running query over each div
 	ReaderHTML.Find(".Table1 .InnerTableContainer table tr").EachWithBreak(func(index int, s *goquery.Selection) bool {

@@ -22,7 +22,7 @@ type World struct {
 	Status              string          `json:"status"`                // The current status of the world.
 	PlayersOnline       int             `json:"players_online"`        // The number of currently online players.
 	RecordPlayers       int             `json:"record_players"`        // The world's online players record.
-	RecordDate          string          `json:"record_date"`           // The date when the record was achieved.
+	RecordDate          string          `json:"record_date,omitempty"` // The date when the record was achieved.
 	CreationDate        string          `json:"creation_date"`         // The year and month it was created.
 	Location            string          `json:"location"`              // The physical location of the servers.
 	PvpType             string          `json:"pvp_type"`              // The type of PvP.

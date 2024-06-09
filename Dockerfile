@@ -23,7 +23,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s -X '
 
 
 # get alpine container
-FROM alpine:3.19.1 AS app
+FROM alpine:3.20.0 AS app
 
 # create workdir
 WORKDIR /opt/app

@@ -1,5 +1,29 @@
 # Changelog
 
+## [4.2.0] - 2024-07-11
+
+### Added
+
+- add restriction mode ([#370](https://github.com/TibiaData/tibiadata-api-go/pull/370) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Changed
+
+- ci: rewrite GitHub action workflows ([#346](https://github.com/TibiaData/tibiadata-api-go/pull/346) by [tobiasehlert](https://github.com/tobiasehlert))
+- Bump alpine from 3.19.1 to 3.20.1 ([#363](https://github.com/TibiaData/tibiadata-api-go/pull/363), [#367](https://github.com/TibiaData/tibiadata-api-go/pull/367) by [dependabot](https://github.com/dependabot))
+- Bump docker/build-push-action from 5 to 6 ([#366](https://github.com/TibiaData/tibiadata-api-go/pull/366) by [dependabot](https://github.com/dependabot))
+- Bump github.com/gin-contrib/gzip from 1.0.0 to 1.0.1 ([#355](https://github.com/TibiaData/tibiadata-api-go/pull/355) by [dependabot](https://github.com/dependabot))
+- Bump github.com/gin-gonic/gin from 1.9.1 to 1.10.0 ([#357](https://github.com/TibiaData/tibiadata-api-go/pull/357) by [dependabot](https://github.com/dependabot))
+- Bump github.com/go-resty/resty/v2 from 2.12.0 to 2.13.1 ([#358](https://github.com/TibiaData/tibiadata-api-go/pull/358), [#359](https://github.com/TibiaData/tibiadata-api-go/pull/359), [#362](https://github.com/TibiaData/tibiadata-api-go/pull/362), [#360](https://github.com/TibiaData/tibiadata-api-go/pull/360) by [dependabot](https://github.com/dependabot))
+- Bump github.com/PuerkitoBio/goquery from 1.9.1 to 1.9.2 ([#354](https://github.com/TibiaData/tibiadata-api-go/pull/354) by [dependabot](https://github.com/dependabot))
+- Bump golang from 1.22.1 to 1.22.5 ([#342](https://github.com/TibiaData/tibiadata-api-go/pull/342), [#361](https://github.com/TibiaData/tibiadata-api-go/pull/361), [#365](https://github.com/TibiaData/tibiadata-api-go/pull/365), [#368](https://github.com/TibiaData/tibiadata-api-go/pull/368) by [dependabot](https://github.com/dependabot))
+- Bump golang.org/x/net from 0.22.0 to 0.23.0 ([#353](https://github.com/TibiaData/tibiadata-api-go/pull/353), [#351](https://github.com/TibiaData/tibiadata-api-go/pull/351), [#352](https://github.com/TibiaData/tibiadata-api-go/pull/352) by [dependabot](https://github.com/dependabot))
+- Bump golang.org/x/text from 0.14.0 to 0.16.0 ([#356](https://github.com/TibiaData/tibiadata-api-go/pull/356), [#364](https://github.com/TibiaData/tibiadata-api-go/pull/364) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+
+- align world endpoint transfer_type to regular by default ([#348](https://github.com/TibiaData/tibiadata-api-go/pull/348) by [tobiasehlert](https://github.com/tobiasehlert))
+- new world record_date field omit if empty ([#350](https://github.com/TibiaData/tibiadata-api-go/pull/350) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [4.1.2] - 2024-04-02
 
 ### Changed
@@ -466,6 +490,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.2.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.1.2...v4.2.0
 [4.1.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.1.1...v4.1.2
 [4.1.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.0.2...v4.1.0

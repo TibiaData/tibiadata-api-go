@@ -24,6 +24,7 @@ Documentation of API endpoints can be found on [docs.tibiadata.com](https://docs
 - [API documentation](#api-documentation)
   - [Available endpoints](#available-endpoints)
   - [Deprecated endpoints](#deprecated-endpoints)
+  - [Restricted endpoints](#restricted-endpoints)
 - [General information](#general-information)
 - [Credits](#credits)
 
@@ -156,27 +157,15 @@ Those are the current existing endpoints.
 
 ### Deprecated Endpoints
 
-- GET `/health`
-- GET `/v3/boostablebosses`
-- GET `/v3/character/:name`
-- GET `/v3/creature/:race`
-- GET `/v3/creatures`
-- GET `/v3/fansites`
-- GET `/v3/guild/:name`
-- GET `/v3/guilds/:world`
-- GET `/v3/highscores/:world/:category/:vocation/:page`
-- GET `/v3/house/:world/:house_id`
-- GET `/v3/houses/:world/:town`
-- GET `/v3/killstatistics/:world`
-- GET `/v3/news/archive`
-- GET `/v3/news/archive/:days`
-- GET `/v3/news/id/:news_id`
-- GET `/v3/news/latest`
-- GET `/v3/news/newsticker`
-- GET `/v3/spell/:spell_id`
-- GET `/v3/spells`
-- GET `/v3/world/:name`
-- GET `/v3/worlds`
+In addition to the deprecated API versions like v1, v2 and v3, there are also some endpoints that are deprecated. As of now, those are:
+
+- GET `/healthz`
+
+### Restricted endpoints
+
+There are some endpoints that can be deviant between the container documentation and the hosted version. This is due to restricted mode that restrict certain API actions due to high load on the tibia.com servers.
+
+- `/v4/highscores`-filtering on vocation is removed, only the `all` category is valid.
 
 ## General information
 

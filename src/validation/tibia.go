@@ -27,6 +27,16 @@ var (
 	validVocations = []string{"none", "knight", "knights", "paladin", "paladins", "sorcerer", "sorcerers", "druid", "druids", "all"}
 )
 
+// IsRestrictionMode reports whether the restriction mode is enabled
+// Check if error == nil to see whether the restriction mode is enabled or not
+func IsRestrictionMode(mode bool) error {
+	if mode {
+		return ErrorRestrictionMode
+	}
+
+	return nil
+}
+
 // IsNewsIDValid reports wheter the provided int represents a valid news ID
 // Check if error == nil to see whether the ID is valid or not
 func IsNewsIDValid(ID int) error {

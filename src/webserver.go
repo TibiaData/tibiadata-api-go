@@ -112,6 +112,10 @@ func runWebServer() {
 		_ = router.SetTrustedProxies(nil)
 	}
 
+	// Set the TibiaData restriction mode
+	TibiaDataRestrictionMode = getEnvAsBool("TIBIADATA_RESTRICTION_MODE", false)
+	log.Printf("[info] TibiaData API restriction-mode: %t", TibiaDataRestrictionMode)
+
 	// Set the ping endpoint
 	router.GET("/ping", func(c *gin.Context) {
 		data := Information{
@@ -487,12 +491,13 @@ func tibiaGuildsOverview(c *gin.Context) {
 // Highscores godoc
 // @Summary      Highscores of tibia
 // @Description  Show all highscores of tibia
+// @Description  In restriction mode, the valid vocation option is all.
 // @Tags         highscores
 // @Accept       json
 // @Produce      json
 // @Param        world    path string true "The world" default(all) extensions(x-example=Antica)
 // @Param        category path string true "The category" default(experience) Enums(achievements, axefighting, charmpoints, clubfighting, distancefighting, experience, fishing, fistfighting, goshnarstaint, loyaltypoints, magiclevel, shielding, swordfighting, dromescore, bosspoints) extensions(x-example=fishing)
-// @Param        vocation path string true "The vocation" default(all) Enums(all, knights, paladins, sorcerers, druids) extensions(x-example=knights)
+// @Param        vocation path string true "The vocation" default(all) Enums(all, knights, paladins, sorcerers, druids) extensions(x-example=all)
 // @Param        page     path int    true "The current page" default(1) minimum(1) extensions(x-example=1)
 // @Success      200  {object}  HighscoresResponse
 // @Failure      400  {object}  Information
@@ -546,6 +551,12 @@ func tibiaHighscores(c *gin.Context) {
 
 	// Sanitize of vocation input
 	vocationName, vocationid := TibiaDataVocationValidator(vocation)
+
+	// Check if restriction mode is enabled
+	if TibiaDataRestrictionMode && vocationName != "all" {
+		TibiaDataErrorHandler(c, validation.ErrorRestrictionMode, http.StatusBadRequest)
+		return
+	}
 
 	// checking the page provided
 	if page == "" {

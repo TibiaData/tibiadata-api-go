@@ -30,6 +30,10 @@ var (
 	// Code: 9001
 	ErrorStringCanNotBeConvertedToInt = Error{errors.New("the provided string can not be converted to an integer")}
 
+	// ErrorRestrictionMode will be sent if the request contains a page that is not available due to restriction mode
+	// Code: 9002
+	ErrorRestrictionMode = Error{errors.New("the provided page is not available due to restriction mode")}
+
 	// ErrorCharacterNameEmpty will be sent if the request contains an empty character name
 	// Code: 10001
 	ErrorCharacterNameEmpty = Error{errors.New("the provided character name is an empty string")}
@@ -223,6 +227,8 @@ func (e Error) Code() int {
 		return 11
 	case ErrorStringCanNotBeConvertedToInt:
 		return 9001
+	case ErrorRestrictionMode:
+		return 9002
 	case ErrorCharacterNameEmpty:
 		return 10001
 	case ErrorCharacterNameTooSmall:

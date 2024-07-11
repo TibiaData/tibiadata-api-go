@@ -484,6 +484,9 @@ func TestErrors(t *testing.T) {
 		ErrorStringCanNotBeConvertedToInt: {
 			Code: 9001,
 		},
+		ErrorRestrictionMode: {
+			Code: 9002,
+		},
 		ErrorCharacterNameEmpty: {
 			Code: 10001,
 		},
@@ -854,6 +857,18 @@ func TestFake(t *testing.T) {
 	setVars()
 	setCreaturesVars()
 	setSpellsVars()
+}
+
+func TestRestrictionMode(t *testing.T) {
+	err := IsRestrictionMode(true)
+	if err == nil {
+		t.Fatal("Restriction mode is enabled but IsRestrictionMode is returning an error")
+	}
+
+	err = IsRestrictionMode(false)
+	if err != nil {
+		t.Fatalf("Restriction mode is disabled but IsRestrictionMode is returning an error: %s", err)
+	}
 }
 
 func TestNewsIDValidator(t *testing.T) {

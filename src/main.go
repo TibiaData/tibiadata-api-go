@@ -15,8 +15,9 @@ var (
 	TibiaDataDefaultVoc string = "all"
 
 	// TibiaData app flags for running
-	TibiaDataAPIversion int = 4
-	TibiaDataDebug      bool
+	TibiaDataAPIversion      int = 4
+	TibiaDataDebug           bool
+	TibiaDataRestrictionMode bool
 
 	// TibiaData app settings
 	TibiaDataHost       string     // set through env TIBIADATA_HOST

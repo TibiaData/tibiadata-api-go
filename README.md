@@ -32,7 +32,7 @@ Documentation of API endpoints can be found on [docs.tibiadata.com](https://docs
 
 Here is a summary of the TibiaData API versions
 
-> **v4** is under development\
+> **v4** is released _(since 1st December 2024 )_\
 > **v3** is deprecated _(since 31rd January 2024)_\
 > **v2** is deprecated _(since 30rd April 2022)_\
 > **v1** is deprecated _(since 30rd April 2018)_

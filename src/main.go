@@ -78,16 +78,14 @@ func main() {
 	}
 
 	// Setting tibiadata-application to log much less if DEBUG_MODE is false (default is false)
-	if !getEnvAsBool("DEBUG_MODE", false) {
-		log.Printf("[info] TibiaData API debug-mode: disabled")
-	} else {
+	if getEnvAsBool("DEBUG_MODE", false) {
 		// Setting debug to true for more logging
 		TibiaDataDebug = true
-		log.Printf("[info] TibiaData API debug-mode: enabled")
 
 		// Logging user-agent string
-		log.Printf("[debug] TIbiaData API User-Agent: %s", TibiaDataUserAgent)
+		log.Printf("[debug] TibiaData API User-Agent: %s", TibiaDataUserAgent)
 	}
+	log.Printf("[info] TibiaData API debug-mode: %t", TibiaDataDebug)
 
 	// Starting the webserver
 	runWebServer()

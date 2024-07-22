@@ -27,21 +27,27 @@ func TestOverview(t *testing.T) {
 
 	assert := assert.New(t)
 
-	assert.Equal("Quara Predator", creaturesJson.Creatures.Boosted.Name)
-	assert.Equal("quarapredator", creaturesJson.Creatures.Boosted.Race)
-	assert.Equal("https://static.tibia.com/images/global/header/monsters/quarapredator.gif", creaturesJson.Creatures.Boosted.ImageURL)
+	assert.Equal("Acid Blobs", creaturesJson.Creatures.Boosted.Name)
+	assert.Equal("acidblob", creaturesJson.Creatures.Boosted.Race)
+	assert.Equal("https://static.tibia.com/images/global/header/monsters/acidblob.gif", creaturesJson.Creatures.Boosted.ImageURL)
 
-	assert.Equal(553, len(creaturesJson.Creatures.Creatures))
+	assert.Equal(638, len(creaturesJson.Creatures.Creatures))
 
-	slimes := creaturesJson.Creatures.Creatures[444]
+	acidblob := creaturesJson.Creatures.Creatures[0]
+	assert.Equal("Acid Blobs", acidblob.Name)
+	assert.Equal("acidblob", acidblob.Race)
+	assert.Equal("https://static.tibia.com/images/library/acidblob.gif", acidblob.ImageURL)
+	assert.True(acidblob.Featured)
+
+	quarapredator := creaturesJson.Creatures.Creatures[465]
+	assert.Equal("Quara Predators", quarapredator.Name)
+	assert.Equal("quarapredator", quarapredator.Race)
+	assert.Equal("https://static.tibia.com/images/library/quarapredator.gif", quarapredator.ImageURL)
+	assert.False(quarapredator.Featured)
+
+	slimes := creaturesJson.Creatures.Creatures[510]
 	assert.Equal("Slimes", slimes.Name)
 	assert.Equal("slime", slimes.Race)
 	assert.Equal("https://static.tibia.com/images/library/slime.gif", slimes.ImageURL)
 	assert.False(slimes.Featured)
-
-	quarapredator := creaturesJson.Creatures.Creatures[407]
-	assert.Equal("Quara Predators", quarapredator.Name)
-	assert.Equal("quarapredator", quarapredator.Race)
-	assert.Equal("https://static.tibia.com/images/library/quarapredator.gif", quarapredator.ImageURL)
-	assert.True(quarapredator.Featured)
 }

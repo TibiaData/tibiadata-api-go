@@ -204,6 +204,20 @@ func TestHTMLRemover(t *testing.T) {
 	assert.Equal(t, sanitizedString, "abc")
 }
 
+func TestTibiaDataVerifyBoostedCreatureImage(t *testing.T) {
+	assert := assert.New(t)
+
+	// Test when the filenames are the same
+	link1 := "https://static.tibia.com/images/global/header/monsters/acidblob.gif"
+	link2 := "https://static.tibia.com/images/library/acidblob.gif"
+	assert.True(TibiaDataVerifyBoostedCreatureImage(link1, link2))
+
+	// Test when the filenames are different
+	link3 := "https://static.tibia.com/images/global/header/monsters/acidblob.gif"
+	link4 := "https://static.tibia.com/images/library/cultacolyte.gif"
+	assert.False(TibiaDataVerifyBoostedCreatureImage(link3, link4))
+}
+
 func TestFake(t *testing.T) {
 	assert := assert.New(t)
 	const str = "&lt;"

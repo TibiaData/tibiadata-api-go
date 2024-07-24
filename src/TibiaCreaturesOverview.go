@@ -30,8 +30,9 @@ type CreaturesOverviewResponse struct {
 }
 
 var (
-	BoostedCreatureImageRegex = regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
-	CreatureInformationRegex  = regexp.MustCompile(`.*race=(.*)"><img src="(.*)" border.*div>(.*)<\/div>`)
+	BoostedCreatureNameAndRaceRegex = regexp.MustCompile(`<a.*race=(.*)".*?>(.*)</a>`)
+	BoostedCreatureImageRegex       = regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
+	CreatureInformationRegex        = regexp.MustCompile(`.*race=(.*)"><img src="(.*)" border.*div>(.*)<\/div>`)
 )
 
 func TibiaCreaturesOverviewImpl(BoxContentHTML string) (CreaturesOverviewResponse, error) {
@@ -49,6 +50,15 @@ func TibiaCreaturesOverviewImpl(BoxContentHTML string) (CreaturesOverviewRespons
 	InnerTableContainerTMPB, err := ReaderHTML.Find(".InnerTableContainer p").First().Html()
 	if err != nil {
 		return CreaturesOverviewResponse{}, fmt.Errorf("[error] TibiaCreaturesOverviewImpl failed at ReaderHTML.Find, err: %s", err)
+	}
+
+	// Regex to get data for name and race param for boosted creature
+	subma1b := BoostedCreatureNameAndRaceRegex.FindAllStringSubmatch(InnerTableContainerTMPB, -1)
+
+	if len(subma1b) > 0 {
+		// Settings vars for usage in JSONData
+		BoostedCreatureName = subma1b[0][2]
+		BoostedCreatureRace = subma1b[0][1]
 	}
 
 	// Regex to get image of boosted creature
@@ -83,9 +93,7 @@ func TibiaCreaturesOverviewImpl(BoxContentHTML string) (CreaturesOverviewRespons
 		if len(subma1) > 0 && len(subma1[0][3]) > 1 {
 			// Adding bool to indicate features in creature_list
 			FeaturedRace := false
-			if TibiaDataVerifyBoostedCreatureImage(subma1[0][2], BoostedCreatureImage) {
-				BoostedCreatureName = TibiaDataSanitizeEscapedString(subma1[0][3])
-				BoostedCreatureRace = subma1[0][1]
+			if subma1[0][1] == BoostedCreatureRace {
 				FeaturedRace = true
 			}
 

@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/url"
 	"os"
-	"path"
 	"regexp"
 	"strconv"
 	"strings"
@@ -315,17 +314,4 @@ func TibiaDataGetNewsType(data string) string {
 	default:
 		return "unknown"
 	}
-}
-
-// TibiaDataVerifyBoostedCreatureImage compares two creature-image URLs and returns true if the filenames are the same, otherwise false.
-func TibiaDataVerifyBoostedCreatureImage(link1, link2 string) bool {
-	getFilename := func(link string) string {
-		parsedURL, err := url.Parse(link)
-		if err != nil {
-			return ""
-		}
-		return path.Base(parsedURL.Path)
-	}
-
-	return getFilename(link1) == getFilename(link2)
 }

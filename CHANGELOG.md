@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.2.2] - 2024-07-24
+
+### Fixed
+
+- boosted creature parsing on overview page ([#374](https://github.com/TibiaData/tibiadata-api-go/pull/374) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [4.2.1] - 2024-07-22
 
 ### Fixed
@@ -496,6 +502,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.2.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.1...v4.2.2
 [4.2.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.1.2...v4.2.0
 [4.1.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.1.1...v4.1.2

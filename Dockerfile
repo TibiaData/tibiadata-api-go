@@ -15,11 +15,14 @@ COPY go.mod go.sum ./
 # copy all sourcecode
 COPY src/ ./src/
 
-# download go mods
-RUN go mod download
-
-# compile the program
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s -X 'main.TibiaDataBuildBuilder=${TibiaDataBuildBuilder}' -X 'main.TibiaDataBuildRelease=${TibiaDataBuildRelease}' -X 'main.TibiaDataBuildCommit=${TibiaDataBuildCommit}'" -o app ./...
+# download go mods and compile the program
+RUN go mod download && \
+  CGO_ENABLED=0 GOOS=linux go build \
+  -a -installsuffix cgo -ldflags="-w -s \
+  -X 'main.TibiaDataBuildBuilder=${TibiaDataBuildBuilder}' \
+  -X 'main.TibiaDataBuildRelease=${TibiaDataBuildRelease}' \
+  -X 'main.TibiaDataBuildCommit=${TibiaDataBuildCommit}' \
+  " -o app ./...
 
 
 # get alpine container
@@ -28,11 +31,9 @@ FROM alpine:3.20.2 AS app
 # create workdir
 WORKDIR /opt/app
 
-# add ca-certificates and tzdata
-RUN apk --no-cache add ca-certificates tzdata
-
-# create nonroot user and group
-RUN addgroup -S nonroot && \
+# add packages, create nonroot user and group
+RUN apk --no-cache add ca-certificates tzdata && \
+  addgroup -S nonroot && \
   adduser -S nonroot -G nonroot && \
   chown -R nonroot:nonroot .
 

@@ -9,10 +9,8 @@ ARG TibiaDataBuildCommit=-
 # create and set workingfolder
 WORKDIR /go/src/
 
-# copy go mod files
+# copy go mod files and sourcecode
 COPY go.mod go.sum ./
-
-# copy all sourcecode
 COPY src/ ./src/
 
 # download go mods and compile the program

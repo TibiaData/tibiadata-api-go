@@ -54,7 +54,7 @@ var (
 
 func TibiaCreaturesCreatureImpl(race string, BoxContentHTML string) (CreatureResponse, error) {
 	// local strings used in this function
-	var localDamageString = " damage"
+	localDamageString := " damage"
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -79,7 +79,7 @@ func TibiaCreaturesCreatureImpl(race string, BoxContentHTML string) (CreatureRes
 		CreatureBeParalysed, CreatureBeSummoned, CreatureBeConvinced, CreatureSeeInvisible, CreatureIsLootable, CreatureIsBoosted bool
 	)
 
-	//Find boosted creature
+	// Find boosted creature
 	boostedMonsterTitle, boostedCreatureFound := ReaderHTML.Find("#Monster").First().Attr("title")
 
 	if boostedCreatureFound {
@@ -192,6 +192,7 @@ func TibiaCreaturesCreatureImpl(race string, BoxContentHTML string) (CreatureRes
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			Link:       "https://www.tibia.com/library/?subtopic=creatures",
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

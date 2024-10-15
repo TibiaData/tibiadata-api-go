@@ -26,7 +26,9 @@ func TestDemon(t *testing.T) {
 	}
 
 	assert := assert.New(t)
+	information := demonJson.Information
 
+	assert.Equal("https://www.tibia.com/library/?subtopic=creatures", information.Link)
 	assert.Equal("Demons", demonJson.Creature.Name)
 	assert.Equal("Demon", demonJson.Creature.Race)
 	assert.Equal("https://static.tibia.com/images/library/demon.gif", demonJson.Creature.ImageURL)

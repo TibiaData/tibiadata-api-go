@@ -27,6 +27,7 @@ func TestOrderofGlory(t *testing.T) {
 
 	assert := assert.New(t)
 	guild := orderOfGloryJson.Guild
+	information := orderOfGloryJson.Information
 
 	assert.Equal("Order of Glory", guild.Name)
 	assert.Equal("Premia", guild.World)
@@ -56,6 +57,8 @@ func TestOrderofGlory(t *testing.T) {
 	assert.Equal("online", guildLeader.Status)
 
 	assert.Nil(guild.Invited)
+
+	// assert.Equal("Order of Glory")
 }
 
 func TestElysium(t *testing.T) {

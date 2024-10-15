@@ -27,6 +27,9 @@ func TestFindPerson(t *testing.T) {
 
 	assert := assert.New(t)
 	spell := findPersonJson.Spell
+	information := findPersonJson.Information
+
+	assert.Equal("https://www.tibia.com/library/?subtopic=spells&spell=findperson", information.Link)
 
 	assert.Empty(spell.Description)
 	assert.Equal("Find Person", spell.Name)

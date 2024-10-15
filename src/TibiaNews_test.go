@@ -26,6 +26,9 @@ func TestNewsById(t *testing.T) {
 	}
 
 	assert := assert.New(t)
+	information := newsArticleJson.Information
+
+	assert.Equal("https://www.tibia.com/news/?subtopic=newsarchive&id=6529", information.Link)
 
 	assert.Equal(6529, newsArticleJson.News.ID)
 	assert.Equal("2022-01-12", newsArticleJson.News.Date)

@@ -48,7 +48,7 @@ func TibiaSpellsOverviewImpl(vocationName string, BoxContentHTML string) (Spells
 
 	// Running query over each div
 	ReaderHTML.Find(".Table3 table.TableContent tr").Each(func(index int, s *goquery.Selection) {
-		//Skip header row
+		// Skip header row
 		if index == 0 {
 			return
 		}
@@ -122,6 +122,7 @@ func TibiaSpellsOverviewImpl(vocationName string, BoxContentHTML string) (Spells
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			Link:       "https://www.tibia.com/library/?subtopic=spells",
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

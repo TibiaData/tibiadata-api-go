@@ -90,6 +90,7 @@ func TibiaKillstatisticsImpl(world string, BoxContentHTML string) (KillStatistic
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			Link:       "https://www.tibia.com/community/?subtopic=killstatistics&world=" + TibiaDataQueryEscapeString(world),
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

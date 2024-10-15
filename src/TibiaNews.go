@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -51,7 +52,6 @@ func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (NewsRespon
 		// getting category by image src
 		CategoryImg, _ := s.Find("img").Attr("src")
 		NewsData.Category = TibiaDataGetNewsCategory(CategoryImg)
-
 		// getting date from headline
 		tmp1 = s.Find(".NewsHeadlineDate")
 		tmp2, err = tmp1.Html()
@@ -142,6 +142,7 @@ func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (NewsRespon
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			Link:       "https://www.tibia.com/news/?subtopic=newsarchive&id=" + strconv.Itoa(NewsID),
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

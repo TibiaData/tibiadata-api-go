@@ -27,7 +27,6 @@ func TestOrderofGlory(t *testing.T) {
 
 	assert := assert.New(t)
 	guild := orderOfGloryJson.Guild
-	information := orderOfGloryJson.Information
 
 	assert.Equal("Order of Glory", guild.Name)
 	assert.Equal("Premia", guild.World)
@@ -57,8 +56,6 @@ func TestOrderofGlory(t *testing.T) {
 	assert.Equal("online", guildLeader.Status)
 
 	assert.Nil(guild.Invited)
-
-	assert.Equal("https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=Order+of+Glory", information.Link)
 }
 
 func TestElysium(t *testing.T) {
@@ -151,6 +148,9 @@ func TestMercenarys(t *testing.T) {
 	assert.False(guild.InWar)
 	assert.Equal("2023-02-07", guild.DisbandedDate)
 	assert.Equal("if there are still less than four vice leaders or an insufficient amount of premium accounts in the leading ranks by then", guild.DisbandedCondition)
+
+	information := mercenarysJson.Information
+	assert.Equal("https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=Mercenarys", information.Link)
 }
 
 func TestKotkiAntica(t *testing.T) {

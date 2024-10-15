@@ -28,6 +28,9 @@ func TestNewsList(t *testing.T) {
 	}
 
 	assert := assert.New(t)
+	information := newsListJson.Information
+
+	assert.Equal("https://www.tibia.com/news/?subtopic=newsarchive", information.Link)
 
 	assert.Equal(50, len(newsListJson.News))
 

@@ -27,6 +27,8 @@ func TestPremia(t *testing.T) {
 
 	assert := assert.New(t)
 
+	information := premiaGuildsJson.Information
+
 	assert.Equal("Premia", premiaGuildsJson.Guilds.World)
 	assert.Equal(38, len(premiaGuildsJson.Guilds.Active))
 	assert.Equal(3, len(premiaGuildsJson.Guilds.Formation))
@@ -40,4 +42,6 @@ func TestPremia(t *testing.T) {
 	assert.Equal("Konungen", secondGuildInFormation.Name)
 	assert.Equal("https://static.tibia.com/images/community/default_logo.gif", secondGuildInFormation.LogoURL)
 	assert.Empty(secondGuildInFormation.Description)
+
+	assert.Equal("https://www.tibia.com/community/?subtopic=guilds&world=Premia", information.Link)
 }

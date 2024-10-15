@@ -58,7 +58,7 @@ func TestOrderofGlory(t *testing.T) {
 
 	assert.Nil(guild.Invited)
 
-	// assert.Equal("Order of Glory")
+	assert.Equal("https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=Order+of+Glory", information.Link)
 }
 
 func TestElysium(t *testing.T) {

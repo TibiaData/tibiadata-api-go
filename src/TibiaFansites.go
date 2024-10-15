@@ -97,6 +97,7 @@ func TibiaFansitesImpl(BoxContentHTML string) (FansitesResponse, error) {
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			Link:       "https://www.tibia.com/community/?subtopic=fansites",
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

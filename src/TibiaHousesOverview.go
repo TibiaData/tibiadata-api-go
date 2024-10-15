@@ -50,10 +50,9 @@ var (
 
 // TibiaHousesOverview func
 func TibiaHousesOverviewImpl(c *gin.Context, world string, town string, htmlDataCollector func(TibiaDataRequestStruct) (string, error)) (HousesOverviewResponse, error) {
-	var (
-		// Creating empty vars
-		HouseData, GuildhallData []HousesHouse
-	)
+
+	// Creating empty vars
+	var HouseData, GuildhallData []HousesHouse
 
 	// list of different fansite types
 	HouseTypes := []string{"houses", "guildhalls"}
@@ -84,6 +83,7 @@ func TibiaHousesOverviewImpl(c *gin.Context, world string, town string, htmlData
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			Link:       "https://www.tibia.com/community/?subtopic=houses&world=" + TibiaDataQueryEscapeString(world) + "&town=" + TibiaDataQueryEscapeString(town),
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

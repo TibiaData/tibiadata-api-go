@@ -48,6 +48,9 @@ func TestAnticaThaisHousesOverview(t *testing.T) {
 	}
 
 	assert := assert.New(t)
+	information := housesJson.Information
+
+	assert.Equal("https://www.tibia.com/community/?subtopic=houses&world=Antica&town=Thais", information.Link)
 
 	assert.Equal("Antica", housesJson.Houses.World)
 	assert.Equal("Thais", housesJson.Houses.Town)

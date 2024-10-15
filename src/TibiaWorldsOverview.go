@@ -206,6 +206,7 @@ func TibiaWorldsOverviewImpl(BoxContentHTML string) (WorldsOverviewResponse, err
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			Link:       "https://www.tibia.com/community/?subtopic=worlds",
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

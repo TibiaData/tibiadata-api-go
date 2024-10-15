@@ -27,6 +27,9 @@ func TestWorldEndebra(t *testing.T) {
 
 	assert := assert.New(t)
 	world := worldJson.World
+	information := worldJson.Information
+
+	assert.Equal("https://www.tibia.com/community/?subtopic=worlds&world=Endebra", information.Link)
 
 	assert.Equal("Endebra", world.Name)
 	assert.Equal("online", world.Status)
@@ -87,6 +90,7 @@ func TestWorldPremia(t *testing.T) {
 	assert.Empty(world.TournamentWorldType)
 	assert.Equal(0, len(world.OnlinePlayers))
 }
+
 func TestWorldWintera(t *testing.T) {
 	file, err := static.TestFiles.Open("testdata/worlds/world/Wintera.html")
 	if err != nil {

@@ -1,22 +1,34 @@
 # Changelog
 
+## [4.2.3] - 2024-10-15
+
+### Changed
+
+- Bump alpine from 3.20.1 to 3.20.3 ([#375](https://github.com/TibiaData/tibiadata-api-go/pull/375), [#386](https://github.com/TibiaData/tibiadata-api-go/pull/386) by [dependabot](https://github.com/dependabot))
+- Bump github.com/go-resty/resty/v2 from 2.13.1 to 2.15.3 ([#376](https://github.com/TibiaData/tibiadata-api-go/pull/376), [#377](https://github.com/TibiaData/tibiadata-api-go/pull/377), [#388](https://github.com/TibiaData/tibiadata-api-go/pull/388), [#389](https://github.com/TibiaData/tibiadata-api-go/pull/389), [#390](https://github.com/TibiaData/tibiadata-api-go/pull/390), [#391](https://github.com/TibiaData/tibiadata-api-go/pull/391), [#393](https://github.com/TibiaData/tibiadata-api-go/pull/393), [#392](https://github.com/TibiaData/tibiadata-api-go/pull/392), [#394](https://github.com/TibiaData/tibiadata-api-go/pull/394), [#395](https://github.com/TibiaData/tibiadata-api-go/pull/395) by [dependabot](https://github.com/dependabot))
+- Bump github.com/PuerkitoBio/goquery from 1.9.2 to 1.10.0 ([#384](https://github.com/TibiaData/tibiadata-api-go/pull/384) by [dependabot](https://github.com/dependabot))
+- Bump golang from 1.22.5 to 1.23.2 ([#379](https://github.com/TibiaData/tibiadata-api-go/pull/379), [#382](https://github.com/TibiaData/tibiadata-api-go/pull/382), [#385](https://github.com/TibiaData/tibiadata-api-go/pull/385), [#396](https://github.com/TibiaData/tibiadata-api-go/pull/396) by [dependabot](https://github.com/dependabot))
+- Bump golang.org/x/text from 0.16.0 to 0.19.0 ([#378](https://github.com/TibiaData/tibiadata-api-go/pull/378), [#383](https://github.com/TibiaData/tibiadata-api-go/pull/383), [#397](https://github.com/TibiaData/tibiadata-api-go/pull/397) by [dependabot](https://github.com/dependabot))
+- ci: remove GitHub action Tailscale version input ([#387](https://github.com/TibiaData/tibiadata-api-go/pull/387) by [tobiasehlert](https://github.com/tobiasehlert))
+- chore: decrease Dockerfile layers ([#380](https://github.com/TibiaData/tibiadata-api-go/pull/380) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [4.2.2] - 2024-07-24
 
 ### Fixed
 
-- boosted creature parsing on overview page ([#374](https://github.com/TibiaData/tibiadata-api-go/pull/374) by [tobiasehlert](https://github.com/tobiasehlert))
+- Boosted creature parsing on overview page ([#374](https://github.com/TibiaData/tibiadata-api-go/pull/374) by [tobiasehlert](https://github.com/tobiasehlert))
 
 ## [4.2.1] - 2024-07-22
 
 ### Fixed
 
-- boosted creature parsing on overview page ([#372](https://github.com/TibiaData/tibiadata-api-go/pull/372) by [tobiasehlert](https://github.com/tobiasehlert))
+- Boosted creature parsing on overview page ([#372](https://github.com/TibiaData/tibiadata-api-go/pull/372) by [tobiasehlert](https://github.com/tobiasehlert))
 
 ## [4.2.0] - 2024-07-11
 
 ### Added
 
-- add restriction mode ([#370](https://github.com/TibiaData/tibiadata-api-go/pull/370) by [tobiasehlert](https://github.com/tobiasehlert))
+- Add restriction mode ([#370](https://github.com/TibiaData/tibiadata-api-go/pull/370) by [tobiasehlert](https://github.com/tobiasehlert))
 
 ### Changed
 
@@ -33,8 +45,8 @@
 
 ### Fixed
 
-- align world endpoint transfer_type to regular by default ([#348](https://github.com/TibiaData/tibiadata-api-go/pull/348) by [tobiasehlert](https://github.com/tobiasehlert))
-- new world record_date field omit if empty ([#350](https://github.com/TibiaData/tibiadata-api-go/pull/350) by [tobiasehlert](https://github.com/tobiasehlert))
+- Align world endpoint transfer_type to regular by default ([#348](https://github.com/TibiaData/tibiadata-api-go/pull/348) by [tobiasehlert](https://github.com/tobiasehlert))
+- New world record_date field omit if empty ([#350](https://github.com/TibiaData/tibiadata-api-go/pull/350) by [tobiasehlert](https://github.com/tobiasehlert))
 
 ## [4.1.2] - 2024-04-02
 
@@ -46,7 +58,7 @@
 
 ### Fixed
 
-- character killer parser by rewrite of death parsing logic ([#338](https://github.com/TibiaData/tibiadata-api-go/pull/338) by [phenpessoa](https://github.com/phenpessoa))
+- Character killer parser by rewrite of death parsing logic ([#338](https://github.com/TibiaData/tibiadata-api-go/pull/338) by [phenpessoa](https://github.com/phenpessoa))
 
 ## [4.1.1] - 2024-03-15
 
@@ -502,6 +514,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.2.3]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.2...v4.2.3
 [4.2.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.1...v4.2.2
 [4.2.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.0...v4.2.1
 [4.2.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.1.2...v4.2.0

@@ -47,6 +47,7 @@ type OutInformation struct {
 type Information struct {
 	APIDetails APIDetails `json:"api"`       // The API details.
 	Timestamp  string     `json:"timestamp"` // The timestamp from when the data was processed.
+	Link       string     `json:"link"`      // The link to the source of the data.
 	Status     Status     `json:"status"`    // The response status information.
 }
 

@@ -725,6 +725,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			Link:       "https://www.tibia.com/community/?subtopic=characters&name=" + TibiaDataQueryEscapeString(CharacterInfoData.Name),
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

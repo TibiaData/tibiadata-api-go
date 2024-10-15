@@ -33,6 +33,7 @@ func TestNumber1(t *testing.T) {
 
 	assert := assert.New(t)
 	character := characterJson.Character.CharacterInfo
+	information := characterJson.Information
 
 	assert.Equal("Darkside Rafa", character.Name)
 	assert.Nil(character.FormerNames)
@@ -54,6 +55,8 @@ func TestNumber1(t *testing.T) {
 	assert.Equal("2022-01-05T21:23:32Z", character.LastLogin)
 	assert.Equal("Premium Account", character.AccountStatus)
 	assert.Empty(character.Comment)
+
+	assert.Equal("https://www.tibia.com/community/?subtopic=characters&name=Darkside+Rafa", information.Link)
 }
 
 func TestNumber2(t *testing.T) {

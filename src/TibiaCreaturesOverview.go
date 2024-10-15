@@ -125,7 +125,7 @@ func TibiaCreaturesOverviewImpl(BoxContentHTML string) (CreaturesOverviewRespons
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			Link:       "https://www.tibia.com/library/?subtopic=creatures&race=" + TibiaDataSanitizeEscapedString(BoostedCreatureName),
+			Link:       "https://www.tibia.com/library/?subtopic=creatures",
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

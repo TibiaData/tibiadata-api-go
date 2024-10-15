@@ -122,6 +122,7 @@ func runWebServer() {
 		data := Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			Link:       "-",
 			Status: Status{
 				HTTPCode: http.StatusOK,
 				Message:  "pong",
@@ -1090,6 +1091,7 @@ func TibiaDataErrorHandler(c *gin.Context, err error, httpCode int) {
 	info := Information{
 		APIDetails: TibiaDataAPIDetails,
 		Timestamp:  TibiaDataDatetime(""),
+		Link:       "-",
 		Status: Status{
 			HTTPCode: httpCode,
 		},

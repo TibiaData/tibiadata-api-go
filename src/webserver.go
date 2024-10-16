@@ -275,7 +275,7 @@ func tibiaBoostableBosses(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaBoostableBossesOverviewImpl(BoxContentHTML)
+			return TibiaBoostableBossesOverviewImpl(BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaBoostableBosses")
 }

@@ -28,7 +28,7 @@ func TestOverview(t *testing.T) {
 	assert := assert.New(t)
 	information := creaturesJson.Information
 
-	assert.Equal("https://www.tibia.com/library/?subtopic=creatures", information.TibiaURL)
+	assert.Equal("https://www.tibia.com/library/?subtopic=creatures", information.TibiaURL[0])
 	assert.Equal("Minotaur Amazon", creaturesJson.Creatures.Boosted.Name)
 	assert.Equal("minotauramazon", creaturesJson.Creatures.Boosted.Race)
 	assert.Equal("https://static.tibia.com/images/global/header/monsters/minotauramazon.gif", creaturesJson.Creatures.Boosted.ImageURL)

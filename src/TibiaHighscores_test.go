@@ -29,7 +29,7 @@ func TestHighscoresAll(t *testing.T) {
 	assert := assert.New(t)
 	information := highscoresJson.Information
 
-	assert.Equal("https://www.tibia.com/community/?subtopic=highscores&world=&category=experience&profession=all&currentpage=1", information.TibiaURL)
+	assert.Equal("https://www.tibia.com/community/?subtopic=highscores&world=&category=experience&profession=all&currentpage=1", information.TibiaURL[0])
 
 	assert.Empty(highscoresJson.Highscores.World)
 

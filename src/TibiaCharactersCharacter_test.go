@@ -56,7 +56,7 @@ func TestNumber1(t *testing.T) {
 	assert.Equal("Premium Account", character.AccountStatus)
 	assert.Empty(character.Comment)
 
-	assert.Equal("https://www.tibia.com/community/?subtopic=characters&name=Darkside+Rafa", information.TibiaURL)
+	assert.Equal("https://www.tibia.com/community/?subtopic=characters&name=Darkside+Rafa", information.TibiaURL[0])
 }
 
 func TestNumber2(t *testing.T) {

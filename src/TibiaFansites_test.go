@@ -88,5 +88,5 @@ func TestFansites(t *testing.T) {
 	assert.Equal("https://static.tibia.com/images/community/fansiteitems/TibiaGallery.com.gif", tibiaGalleryFansite.FansiteItemURL)
 
 	information := fansitesJson.Information
-	assert.Equal("https://www.tibia.com/community/?subtopic=fansites", information.TibiaURL)
+	assert.Equal("https://www.tibia.com/community/?subtopic=fansites", information.TibiaURL[0])
 }

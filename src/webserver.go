@@ -643,7 +643,7 @@ func tibiaHousesHouse(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaHousesHouseImpl(houseid, BoxContentHTML)
+			return TibiaHousesHouseImpl(houseid, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaHousesHouse")
 }

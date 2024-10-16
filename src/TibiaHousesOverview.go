@@ -50,16 +50,16 @@ var (
 
 // TibiaHousesOverview func
 func TibiaHousesOverviewImpl(c *gin.Context, world string, town string, htmlDataCollector func(TibiaDataRequestStruct) (string, error)) (HousesOverviewResponse, error) {
-
 	// Creating empty vars
 	var HouseData, GuildhallData []HousesHouse
+	var TibiaHouseURLs []string
 
 	// list of different fansite types
 	HouseTypes := []string{"houses", "guildhalls"}
 
 	// running over the FansiteTypes array
 	for _, HouseType := range HouseTypes {
-		houses, err := makeHouseRequest(HouseType, world, town, htmlDataCollector)
+		houses, houseUrl, err := makeHouseRequest(HouseType, world, town, htmlDataCollector)
 		if err != nil {
 			return HousesOverviewResponse{}, fmt.Errorf("[error] TibiaHousesOverviewImpl failed at makeHouseRequest, type: %s, err: %s", HouseType, err)
 		}
@@ -70,6 +70,8 @@ func TibiaHousesOverviewImpl(c *gin.Context, world string, town string, htmlData
 		case "guildhalls":
 			GuildhallData = houses
 		}
+
+		TibiaHouseURLs = append(TibiaHouseURLs, houseUrl)
 	}
 
 	// Build the data-blob
@@ -83,7 +85,7 @@ func TibiaHousesOverviewImpl(c *gin.Context, world string, town string, htmlData
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:       "https://www.tibia.com/community/?subtopic=houses&world=" + TibiaDataQueryEscapeString(world) + "&town=" + TibiaDataQueryEscapeString(town),
+			TibiaURL:   TibiaHouseURLs,
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},
@@ -91,7 +93,7 @@ func TibiaHousesOverviewImpl(c *gin.Context, world string, town string, htmlData
 	}, nil
 }
 
-func makeHouseRequest(HouseType, world, town string, htmlDataCollector func(TibiaDataRequestStruct) (string, error)) ([]HousesHouse, error) {
+func makeHouseRequest(HouseType, world, town string, htmlDataCollector func(TibiaDataRequestStruct) (string, error)) ([]HousesHouse, string, error) {
 	// Creating an empty var
 	var output []HousesHouse
 
@@ -103,13 +105,13 @@ func makeHouseRequest(HouseType, world, town string, htmlDataCollector func(Tibi
 	BoxContentHTML, err := htmlDataCollector(tibiadataRequest)
 	// return error (e.g. for maintenance mode)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	var insideError error
@@ -161,5 +163,5 @@ func makeHouseRequest(HouseType, world, town string, htmlDataCollector func(Tibi
 		return true
 	})
 
-	return output, insideError
+	return output, tibiadataRequest.URL, insideError
 }

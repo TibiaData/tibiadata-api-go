@@ -35,7 +35,7 @@ var (
 	CreatureInformationRegex        = regexp.MustCompile(`.*race=(.*)"><img src="(.*)" border.*div>(.*)<\/div>`)
 )
 
-func TibiaCreaturesOverviewImpl(BoxContentHTML string) (CreaturesOverviewResponse, error) {
+func TibiaCreaturesOverviewImpl(BoxContentHTML string, url string) (CreaturesOverviewResponse, error) {
 	var BoostedCreatureName, BoostedCreatureRace, BoostedCreatureImage string
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
@@ -125,7 +125,7 @@ func TibiaCreaturesOverviewImpl(BoxContentHTML string) (CreaturesOverviewRespons
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:       "https://www.tibia.com/library/?subtopic=creatures",
+			TibiaURL:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

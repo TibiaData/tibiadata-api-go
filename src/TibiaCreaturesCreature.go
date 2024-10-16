@@ -52,7 +52,7 @@ var (
 	CreatureLootRegex         = regexp.MustCompile(`.*yield (.*) experience.*carry (.*)with them.`)
 )
 
-func TibiaCreaturesCreatureImpl(race string, BoxContentHTML string) (CreatureResponse, error) {
+func TibiaCreaturesCreatureImpl(race string, BoxContentHTML string, url string) (CreatureResponse, error) {
 	// local strings used in this function
 	localDamageString := " damage"
 
@@ -192,7 +192,7 @@ func TibiaCreaturesCreatureImpl(race string, BoxContentHTML string) (CreatureRes
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:       "https://www.tibia.com/library/?subtopic=creatures&race=" + race,
+			TibiaURL:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

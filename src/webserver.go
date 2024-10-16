@@ -340,7 +340,7 @@ func tibiaCreaturesOverview(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaCreaturesOverviewImpl(BoxContentHTML)
+			return TibiaCreaturesOverviewImpl(BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaCreaturesOverview")
 }
@@ -377,7 +377,7 @@ func tibiaCreaturesCreature(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaCreaturesCreatureImpl(endpoint, BoxContentHTML)
+			return TibiaCreaturesCreatureImpl(endpoint, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaCreaturesCreature")
 }

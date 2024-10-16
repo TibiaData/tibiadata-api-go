@@ -20,7 +20,7 @@ func TestOverview(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	creaturesJson, err := TibiaCreaturesOverviewImpl(string(data))
+	creaturesJson, err := TibiaCreaturesOverviewImpl(string(data), "https://www.tibia.com/library/?subtopic=creatures")
 	if err != nil {
 		t.Fatal(err)
 	}

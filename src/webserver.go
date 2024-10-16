@@ -485,7 +485,7 @@ func tibiaGuildsOverview(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaGuildsOverviewImpl(world, BoxContentHTML)
+			return TibiaGuildsOverviewImpl(world, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaGuildsOverview")
 }
@@ -578,7 +578,7 @@ func tibiaHighscores(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaHighscoresImpl(world, highscoreCategory, vocationName, TibiaDataStringToInteger(page), BoxContentHTML)
+			return TibiaHighscoresImpl(world, highscoreCategory, vocationName, TibiaDataStringToInteger(page), BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaHighscores")
 }

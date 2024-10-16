@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -54,7 +53,7 @@ var (
 	SixColumnRegex      = regexp.MustCompile(`<td>(.*)<\/td><td.*">(.*)<\/a><\/td><td.*">(.*)<\/td><td>(.*)<\/td><td.*>(.*)<\/td><td.*>(.*)<\/td>`)
 )
 
-func TibiaHighscoresImpl(world string, category validation.HighscoreCategory, vocationName string, currentPage int, BoxContentHTML string) (HighscoresResponse, error) {
+func TibiaHighscoresImpl(world string, category validation.HighscoreCategory, vocationName string, currentPage int, BoxContentHTML string, url string) (HighscoresResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -178,7 +177,7 @@ func TibiaHighscoresImpl(world string, category validation.HighscoreCategory, vo
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:       "https://www.tibia.com/community/?subtopic=highscores&world=" + cases.Title(language.English).String(world) + "&category=" + categoryString + "&profession=" + TibiaDataQueryEscapeString(vocationName) + "&currentpage=" + strconv.Itoa(currentPage),
+			TibiaURL:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

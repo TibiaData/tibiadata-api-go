@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -73,7 +72,7 @@ var (
 )
 
 // TibiaHousesHouse func
-func TibiaHousesHouseImpl(houseid int, BoxContentHTML string) (HouseResponse, error) {
+func TibiaHousesHouseImpl(houseid int, BoxContentHTML string, url string) (HouseResponse, error) {
 	// Creating empty vars
 	var HouseData House
 
@@ -171,7 +170,7 @@ func TibiaHousesHouseImpl(houseid int, BoxContentHTML string) (HouseResponse, er
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:       "https://www.tibia.com/community/?subtopic=houses&page=view&world=" + HouseData.World + "&houseid=" + strconv.Itoa(HouseData.Houseid),
+			TibiaURL:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

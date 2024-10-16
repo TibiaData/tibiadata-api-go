@@ -21,7 +21,7 @@ func TestHighscoresAll(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	highscoresJson, err := TibiaHighscoresImpl("", validation.HighScoreExperience, "all", 1, string(data))
+	highscoresJson, err := TibiaHighscoresImpl("", validation.HighScoreExperience, "all", 1, string(data), "https://www.tibia.com/community/?subtopic=highscores&world=&category=experience&profession=all&currentpage=1")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -74,7 +74,7 @@ func TestHighscoresLoyalty(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	highscoresJson, err := TibiaHighscoresImpl("Vunira", validation.HighScoreLoyaltypoints, "druids", 4, string(data))
+	highscoresJson, err := TibiaHighscoresImpl("Vunira", validation.HighScoreLoyaltypoints, "druids", 4, string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}

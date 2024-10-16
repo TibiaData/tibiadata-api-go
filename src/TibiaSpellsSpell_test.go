@@ -20,7 +20,7 @@ func TestFindPerson(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	findPersonJson, err := TibiaSpellsSpellImpl("Find Person", string(data))
+	findPersonJson, err := TibiaSpellsSpellImpl("Find Person", string(data), "https://www.tibia.com/library/?subtopic=spells&spell=findperson")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -71,7 +71,7 @@ func TestHeavyMagicMissileRune(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	hmmJson, err := TibiaSpellsSpellImpl("Heavy Magic Missile Rune", string(data))
+	hmmJson, err := TibiaSpellsSpellImpl("Heavy Magic Missile Rune", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -130,7 +130,7 @@ func TestAnnihilation(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	annihilationJson, err := TibiaSpellsSpellImpl("Annihilation", string(data))
+	annihilationJson, err := TibiaSpellsSpellImpl("Annihilation", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -173,7 +173,7 @@ func TestBruiseBane(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	bruisebaneJson, err := TibiaSpellsSpellImpl("Bruise Bane", string(data))
+	bruisebaneJson, err := TibiaSpellsSpellImpl("Bruise Bane", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -216,7 +216,7 @@ func TestCurePoisonRune(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	curepoisonruneJson, err := TibiaSpellsSpellImpl("Cure Poison Rune", string(data))
+	curepoisonruneJson, err := TibiaSpellsSpellImpl("Cure Poison Rune", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -255,7 +255,7 @@ func TestConvinceCreatureRune(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	convincecreatureruneJson, err := TibiaSpellsSpellImpl("Convince Creature Rune", string(data))
+	convincecreatureruneJson, err := TibiaSpellsSpellImpl("Convince Creature Rune", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}

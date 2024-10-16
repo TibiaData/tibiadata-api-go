@@ -37,7 +37,7 @@ type SpellsOverviewResponse struct {
 }
 
 // TibiaSpellsOverview func
-func TibiaSpellsOverviewImpl(vocationName string, BoxContentHTML string) (SpellsOverviewResponse, error) {
+func TibiaSpellsOverviewImpl(vocationName string, BoxContentHTML string, url string) (SpellsOverviewResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -122,7 +122,7 @@ func TibiaSpellsOverviewImpl(vocationName string, BoxContentHTML string) (Spells
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:       "https://www.tibia.com/library/?subtopic=spells",
+			TibiaURL:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

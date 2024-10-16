@@ -971,7 +971,7 @@ func tibiaSpellsOverview(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaSpellsOverviewImpl(vocationName, BoxContentHTML)
+			return TibiaSpellsOverviewImpl(vocationName, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaSpellsOverview")
 }
@@ -1007,7 +1007,7 @@ func tibiaSpellsSpell(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaSpellsSpellImpl(spell, BoxContentHTML)
+			return TibiaSpellsSpellImpl(spell, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaSpellsSpell")
 }

@@ -20,7 +20,7 @@ func TestFansites(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	fansitesJson, err := TibiaFansitesImpl(string(data))
+	fansitesJson, err := TibiaFansitesImpl(string(data), "https://www.tibia.com/community/?subtopic=fansites")
 	if err != nil {
 		t.Fatal(err)
 	}

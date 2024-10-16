@@ -403,7 +403,7 @@ func tibiaFansites(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaFansitesImpl(BoxContentHTML)
+			return TibiaFansitesImpl(BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaFansites")
 }

@@ -20,7 +20,7 @@ func TestPremia(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	premiaGuildsJson, err := TibiaGuildsOverviewImpl("Premia", string(data))
+	premiaGuildsJson, err := TibiaGuildsOverviewImpl("Premia", string(data), "https://www.tibia.com/community/?subtopic=guilds&world=Premia")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -20,7 +20,7 @@ func TestOrderofGlory(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	orderOfGloryJson, err := TibiaGuildsGuildImpl("Order of Glory", string(data))
+	orderOfGloryJson, err := TibiaGuildsGuildImpl("Order of Glory", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -70,7 +70,7 @@ func TestElysium(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	elysiumJson, err := TibiaGuildsGuildImpl("Elysium", string(data))
+	elysiumJson, err := TibiaGuildsGuildImpl("Elysium", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -126,7 +126,7 @@ func TestMercenarys(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	mercenarysJson, err := TibiaGuildsGuildImpl("Mercenarys", string(data))
+	mercenarysJson, err := TibiaGuildsGuildImpl("Mercenarys", string(data), "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=Mercenarys")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -165,7 +165,7 @@ func TestKotkiAntica(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	kotkianticaJson, err := TibiaGuildsGuildImpl("Kotki Antica", string(data))
+	kotkianticaJson, err := TibiaGuildsGuildImpl("Kotki Antica", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -193,7 +193,7 @@ func TestNightsWatch(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	nightswatchJson, err := TibiaGuildsGuildImpl("Nights Watch", string(data))
+	nightswatchJson, err := TibiaGuildsGuildImpl("Nights Watch", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}

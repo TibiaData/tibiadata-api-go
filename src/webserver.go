@@ -440,7 +440,7 @@ func tibiaGuildsGuild(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaGuildsGuildImpl(guild, BoxContentHTML)
+			return TibiaGuildsGuildImpl(guild, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaGuildsGuild")
 }

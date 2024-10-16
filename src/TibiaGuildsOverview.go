@@ -28,7 +28,7 @@ type GuildsOverviewResponse struct {
 	Information Information    `json:"information"`
 }
 
-func TibiaGuildsOverviewImpl(world string, BoxContentHTML string) (GuildsOverviewResponse, error) {
+func TibiaGuildsOverviewImpl(world string, BoxContentHTML string, url string) (GuildsOverviewResponse, error) {
 	// Creating empty vars
 	var (
 		ActiveGuilds, FormationGuilds []OverviewGuild
@@ -95,7 +95,7 @@ func TibiaGuildsOverviewImpl(world string, BoxContentHTML string) (GuildsOvervie
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:       "https://www.tibia.com/community/?subtopic=guilds&world=" + world,
+			TibiaURL:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

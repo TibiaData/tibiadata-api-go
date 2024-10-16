@@ -38,7 +38,7 @@ type KillStatisticsResponse struct {
 	Information    Information    `json:"information"`
 }
 
-func TibiaKillstatisticsImpl(world string, BoxContentHTML string) (KillStatisticsResponse, error) {
+func TibiaKillstatisticsImpl(world string, BoxContentHTML string, url string) (KillStatisticsResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -90,7 +90,7 @@ func TibiaKillstatisticsImpl(world string, BoxContentHTML string) (KillStatistic
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:       "https://www.tibia.com/community/?subtopic=killstatistics&world=" + TibiaDataQueryEscapeString(world),
+			TibiaURL:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

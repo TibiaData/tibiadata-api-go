@@ -20,7 +20,7 @@ func TestAntica(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	anticaJson, err := TibiaKillstatisticsImpl("Antica", string(data))
+	anticaJson, err := TibiaKillstatisticsImpl("Antica", string(data), "https://www.tibia.com/community/?subtopic=killstatistics&world=Antica")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -28,7 +28,7 @@ func TestAntica(t *testing.T) {
 	assert := assert.New(t)
 	information := anticaJson.Information
 
-	assert.Equal("https://www.tibia.com/community/?subtopic=killstatistics&world=Antica", information.TibiaURL)
+	assert.Equal("https://www.tibia.com/community/?subtopic=killstatistics&world=Antica", information.TibiaURL[0])
 
 	assert.Equal("Antica", anticaJson.KillStatistics.World)
 	assert.Equal(1159, len(anticaJson.KillStatistics.Entries))
@@ -65,7 +65,7 @@ func BenchmarkAntica(b *testing.B) {
 	assert := assert.New(b)
 
 	for i := 0; i < b.N; i++ {
-		anticaJson, err := TibiaKillstatisticsImpl("Antica", string(data))
+		anticaJson, err := TibiaKillstatisticsImpl("Antica", string(data), "")
 		if err != nil {
 			b.Fatal(err)
 		}

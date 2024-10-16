@@ -751,7 +751,7 @@ func tibiaKillstatistics(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaKillstatisticsImpl(world, BoxContentHTML)
+			return TibiaKillstatisticsImpl(world, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaKillstatistics")
 }

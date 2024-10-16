@@ -1033,7 +1033,7 @@ func tibiaWorldsOverview(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaWorldsOverviewImpl(BoxContentHTML)
+			return TibiaWorldsOverviewImpl(BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaWorldsOverview")
 }
@@ -1078,7 +1078,7 @@ func tibiaWorldsWorld(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaWorldsWorldImpl(world, BoxContentHTML)
+			return TibiaWorldsWorldImpl(world, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaWorldsWorld")
 }

@@ -20,7 +20,7 @@ func TestWorlds(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	worldsJson, err := TibiaWorldsOverviewImpl(string(data))
+	worldsJson, err := TibiaWorldsOverviewImpl(string(data), "https://www.tibia.com/community/?subtopic=worlds")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -28,7 +28,7 @@ func TestWorlds(t *testing.T) {
 	assert := assert.New(t)
 	information := worldsJson.Information
 
-	assert.Equal("https://www.tibia.com/community/?subtopic=worlds", information.TibiaURL)
+	assert.Equal("https://www.tibia.com/community/?subtopic=worlds", information.TibiaURL[0])
 
 	assert.Equal(8720, worldsJson.Worlds.PlayersOnline)
 	assert.Equal(64028, worldsJson.Worlds.RecordPlayers)

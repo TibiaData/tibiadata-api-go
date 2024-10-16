@@ -151,7 +151,7 @@ func TibiaBoostableBossesOverviewImpl(BoxContentHTML string) (BoostableBossesOve
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			Link:       "https://www.tibia.com/library/?subtopic=boostablebosses",
+			TibiaURL:   "https://www.tibia.com/library/?subtopic=boostablebosses",
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

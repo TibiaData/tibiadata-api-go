@@ -171,7 +171,7 @@ func TibiaHousesHouseImpl(houseid int, BoxContentHTML string) (HouseResponse, er
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			Link:       "https://www.tibia.com/community/?subtopic=houses&page=view&world=" + HouseData.World + "&houseid=" + strconv.Itoa(HouseData.Houseid),
+			TibiaURL:       "https://www.tibia.com/community/?subtopic=houses&page=view&world=" + HouseData.World + "&houseid=" + strconv.Itoa(HouseData.Houseid),
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

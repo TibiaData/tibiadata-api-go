@@ -178,7 +178,7 @@ func TibiaHighscoresImpl(world string, category validation.HighscoreCategory, vo
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			Link:       "https://www.tibia.com/community/?subtopic=highscores&world=" + cases.Title(language.English).String(world) + "&category=" + categoryString + "&profession=" + TibiaDataQueryEscapeString(vocationName) + "&currentpage=" + strconv.Itoa(currentPage),
+			TibiaURL:       "https://www.tibia.com/community/?subtopic=highscores&world=" + cases.Title(language.English).String(world) + "&category=" + categoryString + "&profession=" + TibiaDataQueryEscapeString(vocationName) + "&currentpage=" + strconv.Itoa(currentPage),
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

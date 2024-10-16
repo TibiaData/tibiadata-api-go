@@ -313,7 +313,7 @@ func TibiaSpellsSpellImpl(spell string, BoxContentHTML string) (SpellInformation
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			Link:       "https://www.tibia.com/library/?subtopic=spells&spell=" + SpellID,
+			TibiaURL:       "https://www.tibia.com/library/?subtopic=spells&spell=" + SpellID,
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

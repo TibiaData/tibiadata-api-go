@@ -192,7 +192,7 @@ func TibiaCreaturesCreatureImpl(race string, BoxContentHTML string) (CreatureRes
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			Link:       "https://www.tibia.com/library/?subtopic=creatures&race=" + race,
+			TibiaURL:       "https://www.tibia.com/library/?subtopic=creatures&race=" + race,
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

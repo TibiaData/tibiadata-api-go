@@ -282,7 +282,7 @@ func TibiaGuildsGuildImpl(guild string, BoxContentHTML string) (GuildResponse, e
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			Link:       "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiaDataQueryEscapeString(guildName),
+			TibiaURL:       "https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=" + TibiaDataQueryEscapeString(guildName),
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

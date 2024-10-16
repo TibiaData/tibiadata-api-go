@@ -86,7 +86,7 @@ func TibiaNewslistImpl(days int, BoxContentHTML string) (NewsListResponse, error
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			Link:       "https://www.tibia.com/news/?subtopic=newsarchive",
+			TibiaURL:       "https://www.tibia.com/news/?subtopic=newsarchive",
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

@@ -28,7 +28,7 @@ func TestCormaya10(t *testing.T) {
 	assert := assert.New(t)
 	information := houseJson.Information
 
-	assert.Equal("https://www.tibia.com/community/?subtopic=houses&page=view&world=Premia&houseid=54025", information.Link)
+	assert.Equal("https://www.tibia.com/community/?subtopic=houses&page=view&world=Premia&houseid=54025", information.TibiaURL)
 
 	assert.Equal(54025, houseJson.House.Houseid)
 	assert.Equal("Premia", houseJson.House.World)

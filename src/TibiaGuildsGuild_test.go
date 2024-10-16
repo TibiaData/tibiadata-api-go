@@ -150,7 +150,7 @@ func TestMercenarys(t *testing.T) {
 	assert.Equal("if there are still less than four vice leaders or an insufficient amount of premium accounts in the leading ranks by then", guild.DisbandedCondition)
 
 	information := mercenarysJson.Information
-	assert.Equal("https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=Mercenarys", information.Link)
+	assert.Equal("https://www.tibia.com/community/?subtopic=guilds&page=view&GuildName=Mercenarys", information.TibiaURL)
 }
 
 func TestKotkiAntica(t *testing.T) {

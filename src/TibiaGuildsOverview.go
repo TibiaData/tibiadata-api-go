@@ -95,7 +95,7 @@ func TibiaGuildsOverviewImpl(world string, BoxContentHTML string) (GuildsOvervie
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			Link:       "https://www.tibia.com/community/?subtopic=guilds&world=" + world,
+			TibiaURL:       "https://www.tibia.com/community/?subtopic=guilds&world=" + world,
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

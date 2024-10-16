@@ -122,7 +122,7 @@ func TibiaSpellsOverviewImpl(vocationName string, BoxContentHTML string) (Spells
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			Link:       "https://www.tibia.com/library/?subtopic=spells",
+			TibiaURL:       "https://www.tibia.com/library/?subtopic=spells",
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

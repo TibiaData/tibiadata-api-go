@@ -28,7 +28,7 @@ func TestWorlds(t *testing.T) {
 	assert := assert.New(t)
 	information := worldsJson.Information
 
-	assert.Equal("https://www.tibia.com/community/?subtopic=worlds", information.Link)
+	assert.Equal("https://www.tibia.com/community/?subtopic=worlds", information.TibiaURL)
 
 	assert.Equal(8720, worldsJson.Worlds.PlayersOnline)
 	assert.Equal(64028, worldsJson.Worlds.RecordPlayers)

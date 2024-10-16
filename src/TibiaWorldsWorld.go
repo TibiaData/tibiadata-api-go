@@ -230,7 +230,7 @@ func TibiaWorldsWorldImpl(world string, BoxContentHTML string) (WorldResponse, e
 		Information: Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			Link:       "https://www.tibia.com/community/?subtopic=worlds&world=" + world,
+			TibiaURL:       "https://www.tibia.com/community/?subtopic=worlds&world=" + world,
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

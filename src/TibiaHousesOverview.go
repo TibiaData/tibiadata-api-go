@@ -83,7 +83,7 @@ func TibiaHousesOverviewImpl(c *gin.Context, world string, town string, htmlData
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			Link:       "https://www.tibia.com/community/?subtopic=houses&world=" + TibiaDataQueryEscapeString(world) + "&town=" + TibiaDataQueryEscapeString(town),
+			TibiaURL:       "https://www.tibia.com/community/?subtopic=houses&world=" + TibiaDataQueryEscapeString(world) + "&town=" + TibiaDataQueryEscapeString(town),
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

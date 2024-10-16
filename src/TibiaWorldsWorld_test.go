@@ -29,7 +29,7 @@ func TestWorldEndebra(t *testing.T) {
 	world := worldJson.World
 	information := worldJson.Information
 
-	assert.Equal("https://www.tibia.com/community/?subtopic=worlds&world=Endebra", information.Link)
+	assert.Equal("https://www.tibia.com/community/?subtopic=worlds&world=Endebra", information.TibiaURL)
 
 	assert.Equal("Endebra", world.Name)
 	assert.Equal("online", world.Status)

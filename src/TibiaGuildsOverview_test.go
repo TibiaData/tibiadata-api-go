@@ -43,5 +43,5 @@ func TestPremia(t *testing.T) {
 	assert.Equal("https://static.tibia.com/images/community/default_logo.gif", secondGuildInFormation.LogoURL)
 	assert.Empty(secondGuildInFormation.Description)
 
-	assert.Equal("https://www.tibia.com/community/?subtopic=guilds&world=Premia", information.Link)
+	assert.Equal("https://www.tibia.com/community/?subtopic=guilds&world=Premia", information.TibiaURL)
 }

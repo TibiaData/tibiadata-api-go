@@ -26,7 +26,7 @@ func TestBoostableBossesOverview(t *testing.T) {
 	bosses := boostableBossesJson.BoostableBosses.BoostableBosses
 	information := boostableBossesJson.Information
 
-	assert.Equal("https://www.tibia.com/library/?subtopic=boostablebosses", information.Link)
+	assert.Equal("https://www.tibia.com/library/?subtopic=boostablebosses", information.TibiaURL)
 	assert.Equal(95, len(bosses))
 	assert.Equal("Ragiaz", boosted.Name)
 	assert.Equal(

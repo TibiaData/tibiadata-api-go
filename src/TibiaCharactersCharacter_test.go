@@ -26,7 +26,7 @@ func TestNumber1(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "https://www.tibia.com/community/?subtopic=characters&name=Darkside+Rafa")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -71,7 +71,7 @@ func TestNumber2(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -137,7 +137,7 @@ func TestNumber3(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -172,7 +172,7 @@ func TestNumber4(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2787,7 +2787,7 @@ func TestNumber5(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2841,7 +2841,7 @@ func TestNumber6(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2891,7 +2891,7 @@ func TestNumber7(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2916,7 +2916,7 @@ func TestNumber8(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3076,7 +3076,7 @@ func TestNumber9(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3178,7 +3178,7 @@ func TestNumber10(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3207,7 +3207,7 @@ func TestNumber11(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3288,7 +3288,7 @@ func TestNumber12(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3313,7 +3313,7 @@ func TestNumber13(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	characterJson, err := TibiaCharactersCharacterImpl(string(data))
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3404,7 +3404,7 @@ func BenchmarkNumber1(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		characterJson, _ := TibiaCharactersCharacterImpl(string(data))
+		characterJson, _ := TibiaCharactersCharacterImpl(string(data), "")
 
 		assert.Equal(b, "Darkside Rafa", characterJson.Character.CharacterInfo.Name)
 	}
@@ -3425,7 +3425,7 @@ func BenchmarkNumber2(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		characterJson, _ := TibiaCharactersCharacterImpl(string(data))
+		characterJson, _ := TibiaCharactersCharacterImpl(string(data), "")
 
 		assert.Equal(b, "Riley No Hands", characterJson.Character.CharacterInfo.Name)
 	}

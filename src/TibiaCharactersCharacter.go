@@ -124,7 +124,7 @@ type CharacterResponse struct {
 const Br = 0x202
 
 // TibiaCharactersCharacter func
-func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, error) {
+func TibiaCharactersCharacterImpl(BoxContentHTML string, url string) (CharacterResponse, error) {
 	var (
 		// local strings used in this function
 		localDivQueryString = ".TableContentContainer tr"
@@ -725,7 +725,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string) (CharacterResponse, err
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:       "https://www.tibia.com/community/?subtopic=characters&name=" + TibiaDataQueryEscapeString(CharacterInfoData.Name),
+			TibiaURL:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

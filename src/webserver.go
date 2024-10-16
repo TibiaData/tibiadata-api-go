@@ -314,7 +314,7 @@ func tibiaCharactersCharacter(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaCharactersCharacterImpl(BoxContentHTML)
+			return TibiaCharactersCharacterImpl(BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaCharactersCharacter")
 }

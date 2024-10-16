@@ -26,7 +26,7 @@ type NewsListResponse struct {
 	Information Information `json:"information"`
 }
 
-func TibiaNewslistImpl(days int, BoxContentHTML string) (NewsListResponse, error) {
+func TibiaNewslistImpl(days int, BoxContentHTML string, handlerURL string) (NewsListResponse, error) {
 	// Declaring vars for later use..
 	var NewsListData []NewsItem
 
@@ -86,7 +86,7 @@ func TibiaNewslistImpl(days int, BoxContentHTML string) (NewsListResponse, error
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:       "https://www.tibia.com/news/?subtopic=newsarchive",
+			TibiaURL:   []string{handlerURL},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

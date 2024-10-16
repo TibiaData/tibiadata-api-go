@@ -879,7 +879,7 @@ func tibiaNewslist(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaNewslistImpl(days, BoxContentHTML)
+			return TibiaNewslistImpl(days, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaNewslist")
 }

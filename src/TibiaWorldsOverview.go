@@ -206,7 +206,7 @@ func TibiaWorldsOverviewImpl(BoxContentHTML string, url string) (WorldsOverviewR
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:   []string{url},
+			TibiaURLs:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

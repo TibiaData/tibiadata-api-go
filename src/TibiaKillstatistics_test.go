@@ -28,7 +28,7 @@ func TestAntica(t *testing.T) {
 	assert := assert.New(t)
 	information := anticaJson.Information
 
-	assert.Equal("https://www.tibia.com/community/?subtopic=killstatistics&world=Antica", information.TibiaURL[0])
+	assert.Equal("https://www.tibia.com/community/?subtopic=killstatistics&world=Antica", information.TibiaURLs[0])
 
 	assert.Equal("Antica", anticaJson.KillStatistics.World)
 	assert.Equal(1159, len(anticaJson.KillStatistics.Entries))

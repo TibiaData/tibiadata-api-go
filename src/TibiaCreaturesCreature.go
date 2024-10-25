@@ -192,7 +192,7 @@ func TibiaCreaturesCreatureImpl(race string, BoxContentHTML string, url string) 
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:   []string{url},
+			TibiaURLs:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

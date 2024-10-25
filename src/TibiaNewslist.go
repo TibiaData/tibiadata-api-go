@@ -16,7 +16,7 @@ type NewsItem struct {
 	News     string `json:"news"`              // The news in plain text.
 	Category string `json:"category"`          // The category of the news.
 	Type     string `json:"type"`              // The type of news.
-	TibiaURL string `json:"url"`               // The URL for the news with id.
+	TibiaURLs string `json:"url"`               // The URL for the news with id.
 	ApiURL   string `json:"url_api,omitempty"` // The URL for the news in this API.
 }
 
@@ -63,7 +63,7 @@ func TibiaNewslistImpl(days int, BoxContentHTML string, handlerURL string) (News
 		NewsID := p.Query().Get("id")
 		NewsSplit := strings.Split(NewsURL, NewsID)
 		OneNews.ID = TibiaDataStringToInteger(NewsID)
-		OneNews.TibiaURL = NewsSplit[0] + NewsID
+		OneNews.TibiaURLs = NewsSplit[0] + NewsID
 
 		if TibiaDataHost != "" {
 			OneNews.ApiURL = "https://" + TibiaDataHost + "/v4/news/id/" + NewsID
@@ -86,7 +86,7 @@ func TibiaNewslistImpl(days int, BoxContentHTML string, handlerURL string) (News
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:   []string{handlerURL},
+			TibiaURLs:   []string{handlerURL},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

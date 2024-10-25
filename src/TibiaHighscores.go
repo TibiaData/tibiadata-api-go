@@ -177,7 +177,7 @@ func TibiaHighscoresImpl(world string, category validation.HighscoreCategory, vo
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:   []string{url},
+			TibiaURLs:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

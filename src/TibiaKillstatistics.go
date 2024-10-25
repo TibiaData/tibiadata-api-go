@@ -90,7 +90,7 @@ func TibiaKillstatisticsImpl(world string, BoxContentHTML string, url string) (K
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:   []string{url},
+			TibiaURLs:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

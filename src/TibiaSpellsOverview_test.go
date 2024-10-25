@@ -28,7 +28,7 @@ func TestOverviewAll(t *testing.T) {
 	assert := assert.New(t)
 	information := spellsOverviewJson.Information
 
-	assert.Equal("https://www.tibia.com/library/?subtopic=spells", information.TibiaURL[0])
+	assert.Equal("https://www.tibia.com/library/?subtopic=spells", information.TibiaURLs[0])
 
 	assert.Equal(152, len(spellsOverviewJson.Spells.Spells))
 

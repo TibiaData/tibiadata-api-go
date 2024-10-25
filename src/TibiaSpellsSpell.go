@@ -313,7 +313,7 @@ func TibiaSpellsSpellImpl(spell string, BoxContentHTML string, url string) (Spel
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:   []string{url},
+			TibiaURLs:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

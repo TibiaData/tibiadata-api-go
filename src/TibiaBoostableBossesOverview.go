@@ -151,7 +151,7 @@ func TibiaBoostableBossesOverviewImpl(BoxContentHTML string, url string) (Boosta
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURL:   []string{url},
+			TibiaURLs:   []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

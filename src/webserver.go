@@ -45,10 +45,10 @@ type OutInformation struct {
 
 // Information stores some API related data
 type Information struct {
-	APIDetails APIDetails `json:"api"`       // The API details.
-	Timestamp  string     `json:"timestamp"` // The timestamp from when the data was processed.
-	TibiaURLs   []string   `json:"tibia_url"` // The links to the sources of the data on tibia.com.
-	Status     Status     `json:"status"`    // The response status information.
+	APIDetails APIDetails `json:"api"`        // The API details.
+	Timestamp  string     `json:"timestamp"`  // The timestamp from when the data was processed.
+	TibiaURLs  []string   `json:"tibia_urls"` // The links to the sources of the data on tibia.com
+	Status     Status     `json:"status"`     // The response status information.
 }
 
 // API details store information about this API
@@ -122,7 +122,7 @@ func runWebServer() {
 		data := Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURLs:   []string{},
+			TibiaURLs:  []string{},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 				Message:  "pong",
@@ -1091,7 +1091,7 @@ func TibiaDataErrorHandler(c *gin.Context, err error, httpCode int) {
 	info := Information{
 		APIDetails: TibiaDataAPIDetails,
 		Timestamp:  TibiaDataDatetime(""),
-		TibiaURLs:   []string{},
+		TibiaURLs:  []string{},
 		Status: Status{
 			HTTPCode: httpCode,
 		},

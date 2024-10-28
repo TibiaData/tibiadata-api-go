@@ -40,6 +40,6 @@ func TestNewsList(t *testing.T) {
 	assert.Equal("A number of issues related to the 25 years activities have been fixed,...", firstArticle.News)
 	assert.Equal("development", firstArticle.Category)
 	assert.Equal("ticker", firstArticle.Type)
-	assert.Equal("https://www.tibia.com/news/?subtopic=newsarchive&id=6529", firstArticle.TibiaURLs)
+	assert.Equal("https://www.tibia.com/news/?subtopic=newsarchive&id=6529", firstArticle.TibiaURL)
 	assert.Equal("https://unittest.example.com/v4/news/id/6529", firstArticle.ApiURL)
 }

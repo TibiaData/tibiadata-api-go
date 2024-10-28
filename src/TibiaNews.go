@@ -16,7 +16,7 @@ type News struct {
 	Title       string `json:"title,omitempty"` // The title of the news.
 	Category    string `json:"category"`        // The category of the news.
 	Type        string `json:"type,omitempty"`  // The type of news.
-	TibiaURLs    string `json:"url"`             // The URL for the news with id.
+	TibiaURL    string `json:"url"`             // The URL for the news with id.
 	Content     string `json:"content"`         // The news in plain text.
 	ContentHTML string `json:"content_html"`    // The news in HTML format.
 }
@@ -45,7 +45,7 @@ func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (NewsRespon
 	}
 
 	NewsData.ID = NewsID
-	NewsData.TibiaURLs = rawUrl
+	NewsData.TibiaURL = rawUrl
 
 	ReaderHTML.Find(".NewsHeadline").EachWithBreak(func(index int, s *goquery.Selection) bool {
 		// getting category by image src
@@ -141,7 +141,7 @@ func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (NewsRespon
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURLs:   []string{rawUrl},
+			TibiaURLs:  []string{rawUrl},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

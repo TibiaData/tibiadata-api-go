@@ -33,6 +33,6 @@ jobs:
           go test -race -coverprofile=coverage.out -covermode=atomic `go list ./... | grep -v vendor/` -v
 
       - name: Uploading coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

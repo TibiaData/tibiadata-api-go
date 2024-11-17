@@ -17,7 +17,7 @@ require (
 	github.com/go-resty/resty/v2 v2.16.0
 	github.com/mantyr/go-charset v0.0.0-20160510214718-44d054d82c4a
 	github.com/stretchr/testify v1.9.0
-	golang.org/x/text v0.19.0
+	golang.org/x/text v0.20.0
 )
 
 require (

@@ -66,7 +66,7 @@ func TestDemon(t *testing.T) {
 	assert.False(demonJson.Creature.Featured)
 }
 
-func TestQuaraPredatorFeatured(t *testing.T) {
+func TestQuaraPredator(t *testing.T) {
 	file, err := static.TestFiles.Open("testdata/creatures/creature/quara predator.html")
 	if err != nil {
 		t.Fatalf("file opening error: %s", err)
@@ -108,14 +108,14 @@ func TestQuaraPredatorFeatured(t *testing.T) {
 	assert.False(quaraPredatorJson.Creature.BeConvinced)
 	assert.Equal(0, quaraPredatorJson.Creature.ConvincedMana)
 	assert.True(quaraPredatorJson.Creature.SeeInvisible)
-	assert.Equal(1600, quaraPredatorJson.Creature.ExperiencePoints)
+	assert.Equal(1850, quaraPredatorJson.Creature.ExperiencePoints)
 	assert.True(quaraPredatorJson.Creature.IsLootable)
 
 	assert.Equal(2, len(quaraPredatorJson.Creature.LootList))
 	assert.Equal("gold coins", quaraPredatorJson.Creature.LootList[0])
 	assert.Equal("quara bones", quaraPredatorJson.Creature.LootList[1])
 
-	assert.True(quaraPredatorJson.Creature.Featured)
+	assert.False(quaraPredatorJson.Creature.Featured)
 }
 
 func TestCentipede(t *testing.T) {
@@ -210,4 +210,25 @@ func TestLavaLurkers(t *testing.T) {
 
 	assert.Equal(1, len(lavalurkersJson.Creature.HealedBy))
 	assert.Equal("fire", lavalurkersJson.Creature.HealedBy[0])
+}
+
+func TestFeralWerecrocodilesFeatured(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/creatures/creature/feral werecrocodile.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	feralwerecrocodileJson, _ := TibiaCreaturesCreatureImpl("Feral Werecrocodiles", string(data), "")
+	assert := assert.New(t)
+
+	assert.Equal("Feral Werecrocodiles", feralwerecrocodileJson.Creature.Name)
+	assert.Equal("Feral Werecrocodiles", feralwerecrocodileJson.Creature.Race)
+
+	assert.False(feralwerecrocodileJson.Creature.Featured)
 }

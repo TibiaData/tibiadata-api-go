@@ -42,7 +42,7 @@ type CreatureResponse struct {
 }
 
 var (
-	CreatureDataRegex         = regexp.MustCompile(`.*;">(.*)<\/h2> <img src="(.*)"\/>.*<p>(.*)<\/p> <p>(.*)<\/p> <p>(.*)<\/p>.*`)
+	CreatureDataRegex         = regexp.MustCompile(`.*;">(.*)<\/h2>  <img src="(.*)"\/>.*<p>(.*)<\/p>  <p>(.*)<\/p>  <p>(.*)<\/p>.*`)
 	CreatureHitpointsRegex    = regexp.MustCompile(`.*have (.*) hitpoints. (.*)`)
 	CreatureImmuneRegex       = regexp.MustCompile(`.*are immune to (.*)`)
 	CreatureStrongRegex       = regexp.MustCompile(`.*are strong against (.*)`)

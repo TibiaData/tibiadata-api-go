@@ -27,7 +27,7 @@ func TestBoostableBossesOverview(t *testing.T) {
 	information := boostableBossesJson.Information
 
 	assert.Equal("https://www.tibia.com/library/?subtopic=boostablebosses", information.TibiaURLs[0])
-	assert.Equal(95, len(bosses))
+	assert.Equal(98, len(bosses))
 	assert.Equal("Ragiaz", boosted.Name)
 	assert.Equal(
 		"https://static.tibia.com/images/global/header/monsters/ragiaz.gif",
@@ -41,31 +41,31 @@ func TestBoostableBossesOverview(t *testing.T) {
 		imageURL string
 	}{
 		{
-			idx:      20,
+			idx:      21,
 			name:     "Gnomevil",
 			featured: false,
 			imageURL: "https://static.tibia.com/images/library/gnomehorticulist.gif",
 		},
 		{
-			idx:      25,
+			idx:      26,
 			name:     "Goshnar's Malice",
 			featured: false,
 			imageURL: "https://static.tibia.com/images/library/goshnarsmalice.gif",
 		},
 		{
-			idx:      47,
+			idx:      49,
 			name:     "Ragiaz",
 			featured: true,
 			imageURL: "https://static.tibia.com/images/library/ragiaz.gif",
 		},
 		{
-			idx:      55,
+			idx:      57,
 			name:     "Sharpclaw",
 			featured: false,
 			imageURL: "https://static.tibia.com/images/library/sharpclaw.gif",
 		},
 		{
-			idx:      78,
+			idx:      80,
 			name:     "The Pale Worm",
 			featured: false,
 			imageURL: "https://static.tibia.com/images/library/paleworm.gif",

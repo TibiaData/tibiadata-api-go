@@ -85,7 +85,7 @@ func TibiaHousesOverviewImpl(c *gin.Context, world string, town string, htmlData
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURLs:   TibiaHouseURLs,
+			TibiaURLs:  TibiaHouseURLs,
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

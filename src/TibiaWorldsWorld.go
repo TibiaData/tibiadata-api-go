@@ -230,7 +230,7 @@ func TibiaWorldsWorldImpl(world string, BoxContentHTML string, url string) (Worl
 		Information: Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
-			TibiaURLs:   []string{url},
+			TibiaURLs:  []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

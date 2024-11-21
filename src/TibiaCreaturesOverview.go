@@ -76,7 +76,7 @@ func TibiaCreaturesOverviewImpl(BoxContentHTML string, url string) (CreaturesOve
 	)
 
 	// Running query over each div
-	ReaderHTML.Find(".BoxContent div div").EachWithBreak(func(index int, s *goquery.Selection) bool {
+	ReaderHTML.Find(".Creatures div").EachWithBreak(func(index int, s *goquery.Selection) bool {
 		// Storing HTML into CreatureDivHTML
 		CreatureDivHTML, err := s.Html()
 		if err != nil {

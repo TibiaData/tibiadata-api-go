@@ -29,9 +29,9 @@ func TestOverview(t *testing.T) {
 	information := creaturesJson.Information
 
 	assert.Equal("https://www.tibia.com/library/?subtopic=creatures", information.TibiaURLs[0])
-	assert.Equal("Minotaur Amazon", creaturesJson.Creatures.Boosted.Name)
-	assert.Equal("minotauramazon", creaturesJson.Creatures.Boosted.Race)
-	assert.Equal("https://static.tibia.com/images/global/header/monsters/minotauramazon.gif", creaturesJson.Creatures.Boosted.ImageURL)
+	assert.Equal("Feral Werecrocodile", creaturesJson.Creatures.Boosted.Name)
+	assert.Equal("feralwerecrocodile", creaturesJson.Creatures.Boosted.Race)
+	assert.Equal("https://static.tibia.com/images/global/header/monsters/feralwerecrocodile.gif", creaturesJson.Creatures.Boosted.ImageURL)
 
 	assert.Equal(638, len(creaturesJson.Creatures.Creatures))
 
@@ -41,11 +41,17 @@ func TestOverview(t *testing.T) {
 	assert.Equal("https://static.tibia.com/images/library/acidblob.gif", acidblob.ImageURL)
 	assert.False(acidblob.Featured)
 
+	feralwerecrocodile := creaturesJson.Creatures.Creatures[204]
+	assert.Equal("Feral Werecrocodiles", feralwerecrocodile.Name)
+	assert.Equal("feralwerecrocodile", feralwerecrocodile.Race)
+	assert.Equal("https://static.tibia.com/images/library/feralwerecrocodile.gif", feralwerecrocodile.ImageURL)
+	assert.True(feralwerecrocodile.Featured)
+
 	minotauramazon := creaturesJson.Creatures.Creatures[360]
 	assert.Equal("Minotaur Amazons", minotauramazon.Name)
 	assert.Equal("minotauramazon", minotauramazon.Race)
 	assert.Equal("https://static.tibia.com/images/library/minotauramazon.gif", minotauramazon.ImageURL)
-	assert.True(minotauramazon.Featured)
+	assert.False(minotauramazon.Featured)
 
 	quarapredator := creaturesJson.Creatures.Creatures[465]
 	assert.Equal("Quara Predators", quarapredator.Name)

@@ -33,7 +33,7 @@ func TibiaBoostableBossesOverviewImpl(BoxContentHTML string, url string) (Boosta
 		endBodyIndexer = `</body>`
 
 		todayChecker  = `Today's boosted boss: `
-		bossesChecker = `<div class="CaptionContainer">`
+		bossesChecker = `<div class="CaptionContainer" >`
 
 		todayBossIndexer    = `title="` + todayChecker
 		endTodayBossIndexer = `" src="`
@@ -44,7 +44,7 @@ func TibiaBoostableBossesOverviewImpl(BoxContentHTML string, url string) (Boosta
 		bossesImgIndexer    = `https://static.tibia.com/images/library/`
 		endBossesImgIndexer = `"`
 
-		bossesNameIndexer    = `border="0" /> <div>`
+		bossesNameIndexer    = `border=0 />      <div>`
 		endBossesNameIndexer = `</div>`
 	)
 

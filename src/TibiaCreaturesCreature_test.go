@@ -20,13 +20,15 @@ func TestDemon(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	demonJson, err := TibiaCreaturesCreatureImpl("Demon", string(data))
+	demonJson, err := TibiaCreaturesCreatureImpl("Demon", string(data), "https://www.tibia.com/library/?subtopic=creatures&race=demon")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	assert := assert.New(t)
+	information := demonJson.Information
 
+	assert.Equal("https://www.tibia.com/library/?subtopic=creatures&race=demon", information.TibiaURLs[0])
 	assert.Equal("Demons", demonJson.Creature.Name)
 	assert.Equal("Demon", demonJson.Creature.Race)
 	assert.Equal("https://static.tibia.com/images/library/demon.gif", demonJson.Creature.ImageURL)
@@ -76,7 +78,7 @@ func TestQuaraPredatorFeatured(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	quaraPredatorJson, err := TibiaCreaturesCreatureImpl("Quara Predator", string(data))
+	quaraPredatorJson, err := TibiaCreaturesCreatureImpl("Quara Predator", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -128,7 +130,7 @@ func TestCentipede(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	centipedeJson, _ := TibiaCreaturesCreatureImpl("Centipede", string(data))
+	centipedeJson, _ := TibiaCreaturesCreatureImpl("Centipede", string(data), "")
 	assert := assert.New(t)
 
 	assert.Equal("Centipedes", centipedeJson.Creature.Name)
@@ -152,7 +154,7 @@ func TestHunter(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	hunterJson, _ := TibiaCreaturesCreatureImpl("Hunter", string(data))
+	hunterJson, _ := TibiaCreaturesCreatureImpl("Hunter", string(data), "")
 	assert := assert.New(t)
 
 	assert.Equal("Hunters", hunterJson.Creature.Name)
@@ -176,7 +178,7 @@ func TestSkunk(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	skunkJson, _ := TibiaCreaturesCreatureImpl("Skunk", string(data))
+	skunkJson, _ := TibiaCreaturesCreatureImpl("Skunk", string(data), "")
 	assert := assert.New(t)
 
 	assert.Equal("Skunks", skunkJson.Creature.Name)
@@ -200,7 +202,7 @@ func TestLavaLurkers(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	lavalurkersJson, _ := TibiaCreaturesCreatureImpl("Lava Lurkers", string(data))
+	lavalurkersJson, _ := TibiaCreaturesCreatureImpl("Lava Lurkers", string(data), "")
 	assert := assert.New(t)
 
 	assert.Equal("Lava Lurkers", lavalurkersJson.Creature.Name)

@@ -46,7 +46,7 @@ var (
 )
 
 // TibiaWorldsOverview func
-func TibiaWorldsOverviewImpl(BoxContentHTML string) (WorldsOverviewResponse, error) {
+func TibiaWorldsOverviewImpl(BoxContentHTML string, url string) (WorldsOverviewResponse, error) {
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
 	if err != nil {
@@ -206,6 +206,7 @@ func TibiaWorldsOverviewImpl(BoxContentHTML string) (WorldsOverviewResponse, err
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			TibiaURLs:  []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

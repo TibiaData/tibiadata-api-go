@@ -28,7 +28,7 @@ type GuildsOverviewResponse struct {
 	Information Information    `json:"information"`
 }
 
-func TibiaGuildsOverviewImpl(world string, BoxContentHTML string) (GuildsOverviewResponse, error) {
+func TibiaGuildsOverviewImpl(world string, BoxContentHTML string, url string) (GuildsOverviewResponse, error) {
 	// Creating empty vars
 	var (
 		ActiveGuilds, FormationGuilds []OverviewGuild
@@ -48,7 +48,6 @@ func TibiaGuildsOverviewImpl(world string, BoxContentHTML string) (GuildsOvervie
 			tableName := s.Nodes[0].FirstChild.Data
 			if strings.Contains(tableName, "Active Guilds") {
 				GuildCategory = "active"
-
 			} else if strings.Contains(tableName, "Guilds in Course of Formation") {
 				GuildCategory = "formation"
 			}
@@ -96,6 +95,7 @@ func TibiaGuildsOverviewImpl(world string, BoxContentHTML string) (GuildsOvervie
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			TibiaURLs:  []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

@@ -45,9 +45,10 @@ type OutInformation struct {
 
 // Information stores some API related data
 type Information struct {
-	APIDetails APIDetails `json:"api"`       // The API details.
-	Timestamp  string     `json:"timestamp"` // The timestamp from when the data was processed.
-	Status     Status     `json:"status"`    // The response status information.
+	APIDetails APIDetails `json:"api"`        // The API details.
+	Timestamp  string     `json:"timestamp"`  // The timestamp from when the data was processed.
+	TibiaURLs  []string   `json:"tibia_urls"` // The links to the sources of the data on tibia.com
+	Status     Status     `json:"status"`     // The response status information.
 }
 
 // API details store information about this API
@@ -121,6 +122,7 @@ func runWebServer() {
 		data := Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			TibiaURLs:  []string{},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 				Message:  "pong",
@@ -273,7 +275,7 @@ func tibiaBoostableBosses(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaBoostableBossesOverviewImpl(BoxContentHTML)
+			return TibiaBoostableBossesOverviewImpl(BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaBoostableBosses")
 }
@@ -312,7 +314,7 @@ func tibiaCharactersCharacter(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaCharactersCharacterImpl(BoxContentHTML)
+			return TibiaCharactersCharacterImpl(BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaCharactersCharacter")
 }
@@ -338,7 +340,7 @@ func tibiaCreaturesOverview(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaCreaturesOverviewImpl(BoxContentHTML)
+			return TibiaCreaturesOverviewImpl(BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaCreaturesOverview")
 }
@@ -375,7 +377,7 @@ func tibiaCreaturesCreature(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaCreaturesCreatureImpl(endpoint, BoxContentHTML)
+			return TibiaCreaturesCreatureImpl(endpoint, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaCreaturesCreature")
 }
@@ -401,7 +403,7 @@ func tibiaFansites(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaFansitesImpl(BoxContentHTML)
+			return TibiaFansitesImpl(BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaFansites")
 }
@@ -438,7 +440,7 @@ func tibiaGuildsGuild(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaGuildsGuildImpl(guild, BoxContentHTML)
+			return TibiaGuildsGuildImpl(guild, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaGuildsGuild")
 }
@@ -483,7 +485,7 @@ func tibiaGuildsOverview(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaGuildsOverviewImpl(world, BoxContentHTML)
+			return TibiaGuildsOverviewImpl(world, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaGuildsOverview")
 }
@@ -576,7 +578,7 @@ func tibiaHighscores(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaHighscoresImpl(world, highscoreCategory, vocationName, TibiaDataStringToInteger(page), BoxContentHTML)
+			return TibiaHighscoresImpl(world, highscoreCategory, vocationName, TibiaDataStringToInteger(page), BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaHighscores")
 }
@@ -641,7 +643,7 @@ func tibiaHousesHouse(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaHousesHouseImpl(houseid, BoxContentHTML)
+			return TibiaHousesHouseImpl(houseid, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaHousesHouse")
 }
@@ -749,7 +751,7 @@ func tibiaKillstatistics(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaKillstatisticsImpl(world, BoxContentHTML)
+			return TibiaKillstatisticsImpl(world, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaKillstatistics")
 }
@@ -877,7 +879,7 @@ func tibiaNewslist(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaNewslistImpl(days, BoxContentHTML)
+			return TibiaNewslistImpl(days, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaNewslist")
 }
@@ -969,7 +971,7 @@ func tibiaSpellsOverview(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaSpellsOverviewImpl(vocationName, BoxContentHTML)
+			return TibiaSpellsOverviewImpl(vocationName, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaSpellsOverview")
 }
@@ -1005,7 +1007,7 @@ func tibiaSpellsSpell(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaSpellsSpellImpl(spell, BoxContentHTML)
+			return TibiaSpellsSpellImpl(spell, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaSpellsSpell")
 }
@@ -1031,7 +1033,7 @@ func tibiaWorldsOverview(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaWorldsOverviewImpl(BoxContentHTML)
+			return TibiaWorldsOverviewImpl(BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaWorldsOverview")
 }
@@ -1076,7 +1078,7 @@ func tibiaWorldsWorld(c *gin.Context) {
 		c,
 		tibiadataRequest,
 		func(BoxContentHTML string) (interface{}, error) {
-			return TibiaWorldsWorldImpl(world, BoxContentHTML)
+			return TibiaWorldsWorldImpl(world, BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaWorldsWorld")
 }
@@ -1089,6 +1091,7 @@ func TibiaDataErrorHandler(c *gin.Context, err error, httpCode int) {
 	info := Information{
 		APIDetails: TibiaDataAPIDetails,
 		Timestamp:  TibiaDataDatetime(""),
+		TibiaURLs:  []string{},
 		Status: Status{
 			HTTPCode: httpCode,
 		},

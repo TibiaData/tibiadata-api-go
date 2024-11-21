@@ -20,12 +20,15 @@ func TestCormaya10(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	houseJson, err := TibiaHousesHouseImpl(54025, string(data))
+	houseJson, err := TibiaHousesHouseImpl(54025, string(data), "https://www.tibia.com/community/?subtopic=houses&page=view&world=Premia&houseid=54025")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	assert := assert.New(t)
+	information := houseJson.Information
+
+	assert.Equal("https://www.tibia.com/community/?subtopic=houses&page=view&world=Premia&houseid=54025", information.TibiaURLs[0])
 
 	assert.Equal(54025, houseJson.House.Houseid)
 	assert.Equal("Premia", houseJson.House.World)
@@ -69,7 +72,7 @@ func TestCormaya11(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	houseJson, err := TibiaHousesHouseImpl(54026, string(data))
+	houseJson, err := TibiaHousesHouseImpl(54026, string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -115,7 +118,7 @@ func TestCormaya9c(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	houseJson, _ := TibiaHousesHouseImpl(54023, string(data))
+	houseJson, _ := TibiaHousesHouseImpl(54023, string(data), "")
 	assert := assert.New(t)
 
 	assert.Equal(54023, houseJson.House.Houseid)
@@ -157,7 +160,7 @@ func TestBeachHomeApartmentsFlat14(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	houseJson, err := TibiaHousesHouseImpl(10214, string(data))
+	houseJson, err := TibiaHousesHouseImpl(10214, string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -203,7 +206,7 @@ func TestBeachHomeApartmentsFlat15(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	houseJson, err := TibiaHousesHouseImpl(10215, string(data))
+	houseJson, err := TibiaHousesHouseImpl(10215, string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}

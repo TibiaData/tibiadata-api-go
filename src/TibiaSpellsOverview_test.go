@@ -20,12 +20,15 @@ func TestOverviewAll(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	spellsOverviewJson, err := TibiaSpellsOverviewImpl("", string(data))
+	spellsOverviewJson, err := TibiaSpellsOverviewImpl("", string(data), "https://www.tibia.com/library/?subtopic=spells")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	assert := assert.New(t)
+	information := spellsOverviewJson.Information
+
+	assert.Equal("https://www.tibia.com/library/?subtopic=spells", information.TibiaURLs[0])
 
 	assert.Equal(152, len(spellsOverviewJson.Spells.Spells))
 
@@ -75,7 +78,7 @@ func TestOverviewDruid(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	spellsOverviewJson, err := TibiaSpellsOverviewImpl("druid", string(data))
+	spellsOverviewJson, err := TibiaSpellsOverviewImpl("druid", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}

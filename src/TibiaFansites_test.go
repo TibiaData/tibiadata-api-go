@@ -20,7 +20,7 @@ func TestFansites(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	fansitesJson, err := TibiaFansitesImpl(string(data))
+	fansitesJson, err := TibiaFansitesImpl(string(data), "https://www.tibia.com/community/?subtopic=fansites")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -86,4 +86,7 @@ func TestFansites(t *testing.T) {
 	assert.Equal("Upload, browse, like and share pictures.", tibiaGalleryFansite.Specials[0])
 	assert.True(tibiaGalleryFansite.FansiteItem)
 	assert.Equal("https://static.tibia.com/images/community/fansiteitems/TibiaGallery.com.gif", tibiaGalleryFansite.FansiteItemURL)
+
+	information := fansitesJson.Information
+	assert.Equal("https://www.tibia.com/community/?subtopic=fansites", information.TibiaURLs[0])
 }

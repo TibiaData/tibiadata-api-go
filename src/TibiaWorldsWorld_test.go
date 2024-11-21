@@ -20,13 +20,16 @@ func TestWorldEndebra(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	worldJson, err := TibiaWorldsWorldImpl("Endebra", string(data))
+	worldJson, err := TibiaWorldsWorldImpl("Endebra", string(data), "https://www.tibia.com/community/?subtopic=worlds&world=Endebra")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	assert := assert.New(t)
 	world := worldJson.World
+	information := worldJson.Information
+
+	assert.Equal("https://www.tibia.com/community/?subtopic=worlds&world=Endebra", information.TibiaURLs[0])
 
 	assert.Equal("Endebra", world.Name)
 	assert.Equal("online", world.Status)
@@ -58,7 +61,7 @@ func TestWorldPremia(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	worldJson, err := TibiaWorldsWorldImpl("Premia", string(data))
+	worldJson, err := TibiaWorldsWorldImpl("Premia", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -87,6 +90,7 @@ func TestWorldPremia(t *testing.T) {
 	assert.Empty(world.TournamentWorldType)
 	assert.Equal(0, len(world.OnlinePlayers))
 }
+
 func TestWorldWintera(t *testing.T) {
 	file, err := static.TestFiles.Open("testdata/worlds/world/Wintera.html")
 	if err != nil {
@@ -99,7 +103,7 @@ func TestWorldWintera(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	worldJson, err := TibiaWorldsWorldImpl("Wintera", string(data))
+	worldJson, err := TibiaWorldsWorldImpl("Wintera", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -146,7 +150,7 @@ func TestWorldZuna(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	worldJson, err := TibiaWorldsWorldImpl("Zuna", string(data))
+	worldJson, err := TibiaWorldsWorldImpl("Zuna", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -191,7 +195,7 @@ func TestWorldOceanis(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	worldJson, err := TibiaWorldsWorldImpl("Oceanis", string(data))
+	worldJson, err := TibiaWorldsWorldImpl("Oceanis", string(data), "")
 	if err != nil {
 		t.Fatal(err)
 	}

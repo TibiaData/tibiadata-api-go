@@ -51,7 +51,6 @@ func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (NewsRespon
 		// getting category by image src
 		CategoryImg, _ := s.Find("img").Attr("src")
 		NewsData.Category = TibiaDataGetNewsCategory(CategoryImg)
-
 		// getting date from headline
 		tmp1 = s.Find(".NewsHeadlineDate")
 		tmp2, err = tmp1.Html()
@@ -142,6 +141,7 @@ func TibiaNewsImpl(NewsID int, rawUrl string, BoxContentHTML string) (NewsRespon
 		Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			TibiaURLs:  []string{rawUrl},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

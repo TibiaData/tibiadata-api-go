@@ -20,11 +20,13 @@ func TestBoostableBossesOverview(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	boostableBossesJson, _ := TibiaBoostableBossesOverviewImpl(string(data))
+	boostableBossesJson, _ := TibiaBoostableBossesOverviewImpl(string(data), "https://www.tibia.com/library/?subtopic=boostablebosses")
 	assert := assert.New(t)
 	boosted := boostableBossesJson.BoostableBosses.Boosted
 	bosses := boostableBossesJson.BoostableBosses.BoostableBosses
+	information := boostableBossesJson.Information
 
+	assert.Equal("https://www.tibia.com/library/?subtopic=boostablebosses", information.TibiaURLs[0])
 	assert.Equal(95, len(bosses))
 	assert.Equal("Ragiaz", boosted.Name)
 	assert.Equal(
@@ -107,6 +109,6 @@ func BenchmarkTibiaBoostableBossesOverviewImpl(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		bossSink, _ = TibiaBoostableBossesOverviewImpl(data)
+		bossSink, _ = TibiaBoostableBossesOverviewImpl(data, "https://www.tibia.com/library/?subtopic=boostablebosses")
 	}
 }

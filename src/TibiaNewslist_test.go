@@ -22,12 +22,15 @@ func TestNewsList(t *testing.T) {
 
 	TibiaDataHost = "unittest.example.com"
 
-	newsListJson, err := TibiaNewslistImpl(90, string(data))
+	newsListJson, err := TibiaNewslistImpl(90, string(data), "https://www.tibia.com/news/?subtopic=newsarchive")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	assert := assert.New(t)
+	information := newsListJson.Information
+
+	assert.Equal("https://www.tibia.com/news/?subtopic=newsarchive", information.TibiaURLs[0])
 
 	assert.Equal(50, len(newsListJson.News))
 

@@ -50,8 +50,8 @@ var (
 )
 
 // TibiaWorldsWorld func
-func TibiaWorldsWorldImpl(world string, BoxContentHTML string) (WorldResponse, error) {
-	//TODO: We need to read the world name from the response rather than pass it into this func
+func TibiaWorldsWorldImpl(world string, BoxContentHTML string, url string) (WorldResponse, error) {
+	// TODO: We need to read the world name from the response rather than pass it into this func
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -230,6 +230,7 @@ func TibiaWorldsWorldImpl(world string, BoxContentHTML string) (WorldResponse, e
 		Information: Information{
 			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			TibiaURLs:  []string{url},
 			Status: Status{
 				HTTPCode: http.StatusOK,
 			},

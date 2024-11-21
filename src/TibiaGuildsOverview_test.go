@@ -20,12 +20,14 @@ func TestPremia(t *testing.T) {
 		t.Fatalf("File reading error: %s", err)
 	}
 
-	premiaGuildsJson, err := TibiaGuildsOverviewImpl("Premia", string(data))
+	premiaGuildsJson, err := TibiaGuildsOverviewImpl("Premia", string(data), "https://www.tibia.com/community/?subtopic=guilds&world=Premia")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	assert := assert.New(t)
+
+	information := premiaGuildsJson.Information
 
 	assert.Equal("Premia", premiaGuildsJson.Guilds.World)
 	assert.Equal(38, len(premiaGuildsJson.Guilds.Active))
@@ -40,4 +42,6 @@ func TestPremia(t *testing.T) {
 	assert.Equal("Konungen", secondGuildInFormation.Name)
 	assert.Equal("https://static.tibia.com/images/community/default_logo.gif", secondGuildInFormation.LogoURL)
 	assert.Empty(secondGuildInFormation.Description)
+
+	assert.Equal("https://www.tibia.com/community/?subtopic=guilds&world=Premia", information.TibiaURLs[0])
 }

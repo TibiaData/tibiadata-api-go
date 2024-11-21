@@ -1,5 +1,24 @@
 # Changelog
 
+## [4.3.0] - 2023-11-22
+
+### Added
+
+- add tibia_urls field into information-section ([#398](https://github.com/TibiaData/tibiadata-api-go/pull/398) by [Kai-Animator](https://github.com/Kai-Animator))
+
+### Changed
+
+- bump codecov/codecov-action from 4 to 5 ([#406](https://github.com/TibiaData/tibiadata-api-go/pull/406) by [dependabot](https://github.com/dependabot))
+- bump github.com/go-resty/resty/v2 from 2.15.3 to 2.16.1 ([#404](https://github.com/TibiaData/tibiadata-api-go/pull/404), [#405](https://github.com/TibiaData/tibiadata-api-go/pull/405), [#407](https://github.com/TibiaData/tibiadata-api-go/pull/407), [#408](https://github.com/TibiaData/tibiadata-api-go/pull/408) by [dependabot](https://github.com/dependabot))
+- bump golang from 1.23.2 to 1.23.3 ([#403](https://github.com/TibiaData/tibiadata-api-go/pull/403) by [dependabot](https://github.com/dependabot))
+- bump golang.org/x/text from 0.19.0 to 0.20.0 ([#401](https://github.com/TibiaData/tibiadata-api-go/pull/401) by [dependabot](https://github.com/dependabot))
+- update dependabot configuration ([#399](https://github.com/TibiaData/tibiadata-api-go/pull/399) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Fixed
+
+- empty boostablebosses list ([#411](https://github.com/TibiaData/tibiadata-api-go/pull/411) by [tobiasehlert](https://github.com/tobiasehlert))
+- failing creature endpoints ([#412](https://github.com/TibiaData/tibiadata-api-go/pull/412) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [4.2.3] - 2024-10-15
 
 ### Changed
@@ -514,6 +533,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.3.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.3...v4.3.0
 [4.2.3]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.2...v4.2.3
 [4.2.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.1...v4.2.2
 [4.2.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.0...v4.2.1

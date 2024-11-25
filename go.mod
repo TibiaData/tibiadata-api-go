@@ -14,7 +14,7 @@ require (
 	github.com/TibiaData/tibiadata-api-go/src/validation v0.0.0-20240821085055-c65129c5697a
 	github.com/gin-contrib/gzip v1.0.1
 	github.com/gin-gonic/gin v1.10.0
-	github.com/go-resty/resty/v2 v2.16.1
+	github.com/go-resty/resty/v2 v2.16.2
 	github.com/mantyr/go-charset v0.0.0-20160510214718-44d054d82c4a
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/text v0.20.0

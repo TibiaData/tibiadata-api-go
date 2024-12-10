@@ -133,19 +133,3 @@ jobs:
           repository: TibiaData/tibiadata-helm-charts
           event-type: bump-helm-chart-release
           client-payload: '{"chart_name": "${{ github.event.repository.name }}", "release_version": "${{ needs.build.outputs.docker_meta_version }}"}'
-
-  dockerhub:
-    if: github.event_name == 'release'
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Docker Hub Description
-        uses: peter-evans/dockerhub-description@v4
-        if: github.event_name == 'release'
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          short-description: ${{ github.event.repository.description }}

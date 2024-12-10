@@ -45,5 +45,5 @@ jobs:
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           repository: TibiaData/tibiadata-api-docs
-          event-type: tibiadata-api-go-release
+          event-type: tibiadata-api-docs-release-update
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "tag_name": "${{ github.event.release.tag_name }}"}'

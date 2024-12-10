@@ -100,8 +100,6 @@ jobs:
 
   argocd:
     if: github.event_name == 'release' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -117,6 +115,7 @@ jobs:
       - name: Trigger workflow in tibiadata-argocd-app-of-apps repo
         uses: peter-evans/repository-dispatch@v3
         with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
           repository: TibiaData/tibiadata-argocd-app-of-apps
           event-type: bump-tibiadata-api-go-image-sha
           client-payload: '{"docker_digest": "${{ needs.build.outputs.docker_build_digest }}", "subdomain": "${{ steps.determine_deployment.outputs.subdomain }}"}'

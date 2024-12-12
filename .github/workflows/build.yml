@@ -130,6 +130,7 @@ jobs:
       - name: Trigger workflow in tibiadata-helm-charts repo
         uses: peter-evans/repository-dispatch@v3
         with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
           repository: TibiaData/tibiadata-helm-charts
           event-type: bump-helm-chart-release
           client-payload: '{"chart_name": "${{ github.event.repository.name }}", "release_version": "${{ needs.build.outputs.docker_meta_version }}"}'

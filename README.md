@@ -130,6 +130,7 @@ There is a swagger-generated documentation available for download on the [GitHub
 
 Those are the current existing endpoints.
 
+- GET `/`
 - GET `/ping`
 - GET `/healthz`
 - GET `/readyz`

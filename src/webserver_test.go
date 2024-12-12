@@ -244,6 +244,9 @@ func TestFakeToUpCodeCoverage(t *testing.T) {
 	tibiaWorldsWorld(c)
 	assert.Equal(http.StatusOK, w.Code)
 
+	rootz(c)
+	assert.Equal(http.StatusOK, w.Code)
+
 	healthz(c)
 	assert.Equal(http.StatusOK, w.Code)
 

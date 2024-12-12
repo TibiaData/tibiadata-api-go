@@ -130,6 +130,7 @@ There is a swagger-generated documentation available for download on the [GitHub
 
 Those are the current existing endpoints.
 
+- GET `/`
 - GET `/ping`
 - GET `/healthz`
 - GET `/readyz`
@@ -159,7 +160,7 @@ Those are the current existing endpoints.
 
 In addition to the deprecated API versions like v1, v2 and v3, there are also some endpoints that are deprecated. As of now, those are:
 
-- GET `/healthz`
+- GET `/health`
 
 ### Restricted endpoints
 

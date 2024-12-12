@@ -136,6 +136,7 @@ func runWebServer() {
 	})
 
 	// health endpoints for kubernetes
+	router.GET("/", rootz)
 	router.GET("/health", healthz)
 	router.GET("/healthz", healthz)
 	router.GET("/readyz", readyz)
@@ -1303,6 +1304,15 @@ func TibiaDataHTMLDataCollector(TibiaDataRequest TibiaDataRequestStruct) (string
 
 	// Return of extracted html to functions..
 	return data, nil
+}
+
+// rootz is a root path (for helm-testing)
+func rootz(c *gin.Context) {
+	if !isReady.Load() {
+		c.JSON(http.StatusServiceUnavailable, gin.H{"error": http.StatusText(http.StatusServiceUnavailable)})
+		return
+	}
+	TibiaDataAPIHandleResponse(c, "rootz", gin.H{"message": "TibiaData API up and running."})
 }
 
 // healthz is a k8s liveness probe

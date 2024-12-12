@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.3.1] - 2024-12-12
+
+### Added
+
+- Add root-endpoint to container ([#420](https://github.com/TibiaData/tibiadata-api-go/pull/420) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Changed
+
+- Bump github.com/stretchr/testify from 1.9.0 to 1.10.0 ([#415](https://github.com/TibiaData/tibiadata-api-go/pull/415), [#416](https://github.com/TibiaData/tibiadata-api-go/pull/416) by [dependabot](https://github.com/dependabot))
+- Bump github.com/go-resty/resty/v2 from 2.16.1 to 2.16.2 ([#413](https://github.com/TibiaData/tibiadata-api-go/pull/413), [#414](https://github.com/TibiaData/tibiadata-api-go/pull/414) by [dependabot](https://github.com/dependabot))
+- Bump golang.org/x/text from 0.20.0 to 0.21.0 ([#417](https://github.com/TibiaData/tibiadata-api-go/pull/417) by [dependabot](https://github.com/dependabot))
+- Bump alpine from 3.20.3 to 3.21.0 ([#419](https://github.com/TibiaData/tibiadata-api-go/pull/419) by [dependabot](https://github.com/dependabot))
+- Bump golang from 1.23.3 to 1.23.4 ([#418](https://github.com/TibiaData/tibiadata-api-go/pull/418) by [dependabot](https://github.com/dependabot))
+- Bump golang.org/x/crypto from 0.27.0 to 0.31.0 ([#421](https://github.com/TibiaData/tibiadata-api-go/pull/421) by [dependabot](https://github.com/dependabot))
+
 ## [4.3.0] - 2024-11-22
 
 ### Added
@@ -533,6 +548,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.3.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.0...v4.3.1
 [4.3.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.3...v4.3.0
 [4.2.3]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.2...v4.2.3
 [4.2.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.1...v4.2.2

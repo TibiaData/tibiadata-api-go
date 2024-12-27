@@ -9,7 +9,7 @@ replace github.com/TibiaData/tibiadata-api-go/src/static => ./src/static
 replace github.com/TibiaData/tibiadata-api-go/src/validation => ./src/validation
 
 require (
-	github.com/PuerkitoBio/goquery v1.10.0
+	github.com/PuerkitoBio/goquery v1.10.1
 	github.com/TibiaData/tibiadata-api-go/src/static v0.0.0-20240821085055-c65129c5697a
 	github.com/TibiaData/tibiadata-api-go/src/validation v0.0.0-20240821085055-c65129c5697a
 	github.com/gin-contrib/gzip v1.1.0
@@ -22,7 +22,7 @@ require (
 
 require (
 	github.com/TibiaData/tibiadata-api-go/src/tibiamapping v0.0.0-20240821085055-c65129c5697a // indirect
-	github.com/andybalholm/cascadia v1.3.2 // indirect
+	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/bytedance/sonic v1.12.6 // indirect
 	github.com/bytedance/sonic/loader v0.2.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect

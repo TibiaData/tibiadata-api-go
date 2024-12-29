@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.3.2] - 2024-12-29
+
+### Changed
+
+- Bump tailscale/github-action from 2 to 3 ([#422](https://github.com/TibiaData/tibiadata-api-go/pull/422) by [dependabot](https://github.com/dependabot))
+- Bump github.com/gin-contrib/gzip from 1.0.1 to 1.1.0 ([#423](https://github.com/TibiaData/tibiadata-api-go/pull/423) by [dependabot](https://github.com/dependabot))
+- Bump github.com/PuerkitoBio/goquery from 1.10.0 to 1.10.1 ([#425](https://github.com/TibiaData/tibiadata-api-go/pull/425) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+
+- Change guild rank length check ([#426](https://github.com/TibiaData/tibiadata-api-go/pull/426) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [4.3.1] - 2024-12-12
 
 ### Added
@@ -548,6 +560,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.3.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.1...v4.3.2
 [4.3.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.0...v4.3.1
 [4.3.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.3...v4.3.0
 [4.2.3]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.2...v4.2.3

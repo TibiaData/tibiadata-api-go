@@ -211,7 +211,7 @@ func TibiaGuildsGuildImpl(guild string, BoxContentHTML string, url string) (Guil
 
 		if len(subma1) > 0 {
 			// Rank name
-			if len(subma1[0][1]) > 2 {
+			if TibiaDataSanitizeStrings(subma1[0][1]) != " " {
 				MembersRank = subma1[0][1]
 			}
 

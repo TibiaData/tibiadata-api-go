@@ -209,3 +209,43 @@ func TestNightsWatch(t *testing.T) {
 	assert.Equal("2022-09-25", guild.Founded)
 	assert.False(guild.Applications)
 }
+
+func TestTruePlayers(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/guilds/guild/True Players.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	trueplayersJson, err := TibiaGuildsGuildImpl("True Players", string(data), "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	guild := trueplayersJson.Guild
+
+	assert.Equal("True Players", guild.Name)
+	assert.Equal("Karmeya", guild.World)
+	assert.Empty(guild.Description)
+	assert.True(guild.Active)
+	assert.Equal("2024-11-24", guild.Founded)
+	assert.True(guild.Applications)
+
+	guildLeader := guild.Members[0]
+	assert.Equal("Loo Mind Picture", guildLeader.Name)
+	assert.Equal("We", guildLeader.Rank)
+	assert.Equal("Master Sorcerer", guildLeader.Vocation)
+	assert.Equal(606, guildLeader.Level)
+
+	guildViceleader := guild.Members[1]
+	assert.Equal("Emres", guildViceleader.Name)
+	assert.Equal("Shine", guildViceleader.Rank)
+	assert.Equal("Elder Druid", guildViceleader.Vocation)
+	assert.Equal(81, guildViceleader.Level)
+}

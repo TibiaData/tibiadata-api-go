@@ -1,6 +1,6 @@
 module github.com/TibiaData/tibiadata-api-go
 
-go 1.23
+go 1.23.5
 
 replace github.com/TibiaData/tibiadata-api-go/src/tibiamapping => ./src/tibiamapping
 
@@ -10,8 +10,8 @@ replace github.com/TibiaData/tibiadata-api-go/src/validation => ./src/validation
 
 require (
 	github.com/PuerkitoBio/goquery v1.10.1
-	github.com/TibiaData/tibiadata-api-go/src/static v0.0.0-20241229115813-fecb04300adf
-	github.com/TibiaData/tibiadata-api-go/src/validation v0.0.0-20241229115813-fecb04300adf
+	github.com/TibiaData/tibiadata-api-go/src/static v0.0.0-20250121083616-f3d6d188fdf7
+	github.com/TibiaData/tibiadata-api-go/src/validation v0.0.0-20250121083616-f3d6d188fdf7
 	github.com/gin-contrib/gzip v1.2.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-resty/resty/v2 v2.16.4
@@ -21,11 +21,11 @@ require (
 )
 
 require (
-	github.com/TibiaData/tibiadata-api-go/src/tibiamapping v0.0.0-20241229115813-fecb04300adf // indirect
+	github.com/TibiaData/tibiadata-api-go/src/tibiamapping v0.0.0-20250121083616-f3d6d188fdf7 // indirect
 	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/bytedance/sonic v1.12.7 // indirect
-	github.com/bytedance/sonic/loader v0.2.2 // indirect
-	github.com/cloudwego/base64x v0.1.4 // indirect
+	github.com/bytedance/sonic/loader v0.2.3 // indirect
+	github.com/cloudwego/base64x v0.1.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/gin-contrib/sse v1.0.0 // indirect
@@ -47,6 +47,6 @@ require (
 	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
-	google.golang.org/protobuf v1.36.2 // indirect
+	google.golang.org/protobuf v1.36.3 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

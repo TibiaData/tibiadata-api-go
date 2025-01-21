@@ -61,52 +61,80 @@ func TestHighscoreCategoryInvalidValueString(t *testing.T) {
 func TestHighscoreCategoryFromString(t *testing.T) {
 	assert := assert.New(t)
 
-	assert.Equal(HighScoreExperience, HighscoreCategoryFromString("experience"))
-	assert.Equal(HighScoreExperience, HighscoreCategoryFromString(""))
+	categoryTests := map[string]struct {
+		inputs   []string
+		expected HighscoreCategory
+	}{
+		"Experience": {
+			inputs:   []string{"experience", ""},
+			expected: HighScoreExperience,
+		},
+		"Achievements": {
+			inputs:   []string{"achievements", "achievement"},
+			expected: HighScoreAchievements,
+		},
+		"Axefighting": {
+			inputs:   []string{"axe", "axefighting"},
+			expected: HighScoreAxefighting,
+		},
+		"Charmpoints": {
+			inputs:   []string{"charm", "charms", "charmpoints", "charmspoints"},
+			expected: HighScoreCharmpoints,
+		},
+		"Clubfighting": {
+			inputs:   []string{"club", "clubfighting"},
+			expected: HighScoreClubfighting,
+		},
+		"Distancefighting": {
+			inputs:   []string{"distance", "distancefighting"},
+			expected: HighScoreDistancefighting,
+		},
+		"Fishing": {
+			inputs:   []string{"fishing"},
+			expected: HighScoreFishing,
+		},
+		"Fistfighting": {
+			inputs:   []string{"fist", "fistfighting"},
+			expected: HighScoreFistfighting,
+		},
+		"Goshnarstaint": {
+			inputs:   []string{"goshnar", "goshnars", "goshnarstaint"},
+			expected: HighScoreGoshnarstaint,
+		},
+		"Loyaltypoints": {
+			inputs:   []string{"loyalty", "loyaltypoints"},
+			expected: HighScoreLoyaltypoints,
+		},
+		"Magiclevel": {
+			inputs:   []string{"magic", "mlvl", "magiclevel"},
+			expected: HighScoreMagiclevel,
+		},
+		"Shielding": {
+			inputs:   []string{"shielding", "shield"},
+			expected: HighScoreShielding,
+		},
+		"Swordfighting": {
+			inputs:   []string{"sword", "swordfighting"},
+			expected: HighScoreSwordfighting,
+		},
+		"Dromescore": {
+			inputs:   []string{"drome", "dromescore"},
+			expected: HighScoreDromescore,
+		},
+		"Bosspoints": {
+			inputs:   []string{"boss", "bosses", "bosspoints"},
+			expected: HighScoreBosspoints,
+		},
+	}
 
-	assert.Equal(HighScoreAchievements, HighscoreCategoryFromString("achievements"))
-	assert.Equal(HighScoreAchievements, HighscoreCategoryFromString("achievement"))
-
-	assert.Equal(HighScoreAxefighting, HighscoreCategoryFromString("axe"))
-	assert.Equal(HighScoreAxefighting, HighscoreCategoryFromString("axefighting"))
-
-	assert.Equal(HighScoreCharmpoints, HighscoreCategoryFromString("charm"))
-	assert.Equal(HighScoreCharmpoints, HighscoreCategoryFromString("charms"))
-	assert.Equal(HighScoreCharmpoints, HighscoreCategoryFromString("charmpoints"))
-	assert.Equal(HighScoreCharmpoints, HighscoreCategoryFromString("charmspoints"))
-
-	assert.Equal(HighScoreClubfighting, HighscoreCategoryFromString("club"))
-	assert.Equal(HighScoreClubfighting, HighscoreCategoryFromString("clubfighting"))
-
-	assert.Equal(HighScoreDistancefighting, HighscoreCategoryFromString("distance"))
-	assert.Equal(HighScoreDistancefighting, HighscoreCategoryFromString("distancefighting"))
-
-	assert.Equal(HighScoreFishing, HighscoreCategoryFromString("fishing"))
-
-	assert.Equal(HighScoreFistfighting, HighscoreCategoryFromString("fist"))
-	assert.Equal(HighScoreFistfighting, HighscoreCategoryFromString("fistfighting"))
-
-	assert.Equal(HighScoreGoshnarstaint, HighscoreCategoryFromString("goshnar"))
-	assert.Equal(HighScoreGoshnarstaint, HighscoreCategoryFromString("goshnars"))
-	assert.Equal(HighScoreGoshnarstaint, HighscoreCategoryFromString("goshnarstaint"))
-
-	assert.Equal(HighScoreLoyaltypoints, HighscoreCategoryFromString("loyalty"))
-	assert.Equal(HighScoreLoyaltypoints, HighscoreCategoryFromString("loyaltypoints"))
-
-	assert.Equal(HighScoreMagiclevel, HighscoreCategoryFromString("magic"))
-	assert.Equal(HighScoreMagiclevel, HighscoreCategoryFromString("mlvl"))
-	assert.Equal(HighScoreMagiclevel, HighscoreCategoryFromString("magiclevel"))
-
-	assert.Equal(HighScoreShielding, HighscoreCategoryFromString("shielding"))
-	assert.Equal(HighScoreShielding, HighscoreCategoryFromString("shield"))
-
-	assert.Equal(HighScoreSwordfighting, HighscoreCategoryFromString("sword"))
-	assert.Equal(HighScoreSwordfighting, HighscoreCategoryFromString("swordfighting"))
-
-	assert.Equal(HighScoreDromescore, HighscoreCategoryFromString("drome"))
-	assert.Equal(HighScoreDromescore, HighscoreCategoryFromString("dromescore"))
-
-	assert.Equal(HighScoreBosspoints, HighscoreCategoryFromString("boss"))
-	assert.Equal(HighScoreBosspoints, HighscoreCategoryFromString("bosses"))
-	assert.Equal(HighScoreBosspoints, HighscoreCategoryFromString("bosspoints"))
+	for category, data := range categoryTests {
+		t.Run(category, func(t *testing.T) {
+			for _, input := range data.inputs {
+				t.Run(input, func(t *testing.T) {
+					result := HighscoreCategoryFromString(input)
+					assert.Equal(data.expected, result, "unexpected result for input: %s", input)
+				})
+			}
+		})
+	}
 }

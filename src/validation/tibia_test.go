@@ -1,6 +1,9 @@
 package validation
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestTownExists(t *testing.T) {
 	if !initiated {
@@ -10,94 +13,57 @@ func TestTownExists(t *testing.T) {
 		}
 	}
 
-	tests := []struct {
-		name    string
-		town    string
+	// Define test data with expected results
+	testData := map[string]struct {
+		towns   []string
 		want    bool
 		wantErr bool
 	}{
-		{
-			name:    "empty",
-			town:    "",
+		"empty": {
+			towns:   []string{""},
 			want:    false,
 			wantErr: false,
-		}, {
-			name:    "unknown",
-			town:    "anything",
+		},
+		"unknown": {
+			towns:   []string{"anything"},
 			want:    false,
 			wantErr: false,
-		}, {
-			name:    "carlin lower case",
-			town:    "carlin",
+		},
+		"carlin": {
+			towns:   []string{"carlin", "CARLIN", "CaRlIn"},
 			want:    true,
 			wantErr: false,
-		}, {
-			name:    "carlin upper case",
-			town:    "CARLIN",
+		},
+		"ab'dendriel": {
+			towns:   []string{"ab'dendriel", "AB'DENDRIEL", "Ab'DeNdRiEl"},
 			want:    true,
 			wantErr: false,
-		}, {
-			name:    "carlin mixed case",
-			town:    "CaRlIn",
+		},
+		"port hope": {
+			towns:   []string{"port hope", "PORT HOPE", "PoRt HoPe"},
 			want:    true,
 			wantErr: false,
-		}, {
-			name:    "ab'dendriel lower case",
-			town:    "ab'dendriel",
-			want:    true,
-			wantErr: false,
-		}, {
-			name:    "ab'dendriel upper case",
-			town:    "AB'DENDRIEL",
-			want:    true,
-			wantErr: false,
-		}, {
-			name:    "ab'dendriel mixed case",
-			town:    "Ab'DeNdRiEl",
-			want:    true,
-			wantErr: false,
-		}, {
-			name:    "port hope lower case",
-			town:    "port hope",
-			want:    true,
-			wantErr: false,
-		}, {
-			name:    "port hope upper case",
-			town:    "PORT HOPE",
-			want:    true,
-			wantErr: false,
-		}, {
-			name:    "port hope mixed case",
-			town:    "PoRt HoPe",
-			want:    true,
-			wantErr: false,
-		}, {
-			name:    "port hope lower case with '+'",
-			town:    "port+hope",
-			want:    true,
-			wantErr: false,
-		}, {
-			name:    "port hope upper case with '+'",
-			town:    "PORT+HOPE",
-			want:    true,
-			wantErr: false,
-		}, {
-			name:    "port hope mixed case with '+'",
-			town:    "PoRt+HoPe",
+		},
+		"port hope with +": {
+			towns:   []string{"port+hope", "PORT+HOPE", "PoRt+HoPe"},
 			want:    true,
 			wantErr: false,
 		},
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := TownExists(tt.town)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("TownExists() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("TownExists() = %v, want %v", got, tt.want)
-			}
-		})
+
+	// Iterate over test data and run subtests
+	for name, data := range testData {
+		for _, town := range data.towns {
+			t.Run(fmt.Sprintf("%s (%s)", name, town), func(t *testing.T) {
+				got, err := TownExists(town)
+				if (err != nil) != data.wantErr {
+					t.Errorf("TownExists() error = %v, wantErr %v", err, data.wantErr)
+					return
+				}
+				if got != data.want {
+					t.Errorf("TownExists() = %v, want %v", got, data.want)
+				}
+			})
+		}
 	}
 }

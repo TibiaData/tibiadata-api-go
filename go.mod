@@ -12,7 +12,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.10.1
 	github.com/TibiaData/tibiadata-api-go/src/static v0.0.0-20250121083616-f3d6d188fdf7
 	github.com/TibiaData/tibiadata-api-go/src/validation v0.0.0-20250121083616-f3d6d188fdf7
-	github.com/gin-contrib/gzip v1.2.0
+	github.com/gin-contrib/gzip v1.2.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/mantyr/go-charset v0.0.0-20160510214718-44d054d82c4a

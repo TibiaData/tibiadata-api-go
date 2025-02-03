@@ -32,7 +32,7 @@ type CreaturesOverviewResponse struct {
 var (
 	BoostedCreatureNameAndRaceRegex = regexp.MustCompile(`<a.*race=(.*)".*?>(.*)</a>`)
 	BoostedCreatureImageRegex       = regexp.MustCompile(`<img[^>]+\bsrc=["']([^"']+)["']`)
-	BoostedCreatureRaceRegex        = regexp.MustCompile(`monsters\/(.*).gif`)
+	BoostedCreatureRaceRegex        = regexp.MustCompile(`.*monsters\/(.*).gif.*`)
 	CreatureInformationRegex        = regexp.MustCompile(`.*race=(.*)"><img src="(.*)" border.*div>(.*)<\/div>`)
 )
 
@@ -58,6 +58,13 @@ func TibiaCreaturesOverviewImpl(BoxContentHTML string, url string) (CreaturesOve
 		// Settings vars for usage in JSONData
 		BoostedCreatureName = subma1b[0][2]
 		BoostedCreatureRace = subma1b[0][1]
+	} else {
+		// Fallback if boosted creature is not in creature list
+		BoostedCreatureName = InnerTableContainerTMPB[strings.Index(InnerTableContainerTMPB, ": ")+2:]
+		subma3b := BoostedCreatureRaceRegex.FindStringSubmatch(InnerTableContainerTMPB)
+		if len(subma3b) > 0 {
+			BoostedCreatureRace = subma3b[1]
+		}
 	}
 
 	// Regex to get image of boosted creature
@@ -66,23 +73,6 @@ func TibiaCreaturesOverviewImpl(BoxContentHTML string, url string) (CreaturesOve
 	if len(subma2b) > 0 {
 		// Settings vars for usage in JSONData
 		BoostedCreatureImage = subma2b[0][1]
-	}
-
-	// Fallback if boosted creature is not in creature list
-	if len(BoostedCreatureName) == 0 {
-
-		// Find boosted creature
-		boostedMonsterTitle, boostedCreatureFound := ReaderHTML.Find("#Monster").First().Attr("title")
-
-		if boostedCreatureFound {
-			boostedCreatureRace := boostedMonsterTitle[strings.Index(boostedMonsterTitle, ": ")+2:]
-
-			subma3b := BoostedCreatureRaceRegex.FindStringSubmatch(BoostedCreatureImage)
-			if len(subma3b) > 0 {
-				BoostedCreatureName = boostedCreatureRace
-				BoostedCreatureRace = subma3b[1]
-			}
-		}
 	}
 
 	var (

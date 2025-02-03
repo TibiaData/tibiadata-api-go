@@ -65,3 +65,29 @@ func TestOverview(t *testing.T) {
 	assert.Equal("https://static.tibia.com/images/library/slime.gif", slimes.ImageURL)
 	assert.False(slimes.Featured)
 }
+
+func TestOverviewBoostedFictitious(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/creatures/creatures_fictitious.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	creaturesJson, err := TibiaCreaturesOverviewImpl(string(data), "https://www.tibia.com/library/?subtopic=creatures")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	information := creaturesJson.Information
+
+	assert.Equal("https://www.tibia.com/library/?subtopic=creatures", information.TibiaURLs[0])
+	assert.Equal("Ragged Rabid Wolf", creaturesJson.Creatures.Boosted.Name)
+	assert.Equal("raggedrabidwolf", creaturesJson.Creatures.Boosted.Race)
+	assert.Equal("https://static.tibia.com/images/global/header/monsters/raggedrabidwolf.gif", creaturesJson.Creatures.Boosted.ImageURL)
+}

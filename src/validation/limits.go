@@ -12,6 +12,6 @@ const (
 	MinRunesAllowedInAGuildNameWord = 2  // Smallest character name word length possible
 
 	// AmountOfBoostableBosses is the amount of boostable bosses.
-	// Last updated: Oct 08 2023
-	AmountOfBoostableBosses = 95
+	// Last updated: Feb 03 2025
+	AmountOfBoostableBosses = 99
 )

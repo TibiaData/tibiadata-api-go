@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.3.3] - 2025-02-04
+
+### Changed
+
+- Improving validation-tests ([#434](https://github.com/TibiaData/tibiadata-api-go/pull/434) by [tobiasehlert](https://github.com/tobiasehlert))
+- Bump alpine from 3.21.0 to 3.21.2 ([#429](https://github.com/TibiaData/tibiadata-api-go/pull/429) by [dependabot](https://github.com/dependabot))
+- Bump github.com/gin-contrib/gzip from 1.1.0 to 1.2.2 ([#430](https://github.com/TibiaData/tibiadata-api-go/pull/430), [#437](https://github.com/TibiaData/tibiadata-api-go/pull/437) by [dependabot](https://github.com/dependabot))
+- Bump github.com/go-resty/resty/v2 from 2.16.2 to 2.16.5 ([#427](https://github.com/TibiaData/tibiadata-api-go/pull/427), [#428](https://github.com/TibiaData/tibiadata-api-go/pull/428), [#432](https://github.com/TibiaData/tibiadata-api-go/pull/432), [#433](https://github.com/TibiaData/tibiadata-api-go/pull/433), [#435](https://github.com/TibiaData/tibiadata-api-go/pull/435), [#436](https://github.com/TibiaData/tibiadata-api-go/pull/436) by [dependabot](https://github.com/dependabot))
+- Bump golang from 1.23.4 to 1.23.5 ([#431](https://github.com/TibiaData/tibiadata-api-go/pull/431) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+
+- Parsing of boosted creature that is fictitious ([#440](https://github.com/TibiaData/tibiadata-api-go/pull/440) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [4.3.2] - 2024-12-29
 
 ### Changed
@@ -560,6 +574,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.3.3]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.2...v4.3.3
 [4.3.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.1...v4.3.2
 [4.3.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.0...v4.3.1
 [4.3.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.2.3...v4.3.0

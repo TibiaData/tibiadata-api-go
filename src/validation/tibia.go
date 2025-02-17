@@ -15,7 +15,7 @@ const (
 var (
 	// characterNameRegex is used to check if the character name provided is valid
 	// nowadays Tibia only accepts a-zA-Z, but we have to consider old names
-	characterNameRegex = regexp.MustCompile(`[^\s'\p{L}\-\.\+]`)
+	characterNameRegex = regexp.MustCompile(`[^\s'\p{L}\-\.\,\+]`)
 
 	// creatureAndSpellNameRegex is used to check if the creature or spell name provided is valid
 	creatureAndSpellNameRegex = regexp.MustCompile(`[^\s'a-zA-Z]`)

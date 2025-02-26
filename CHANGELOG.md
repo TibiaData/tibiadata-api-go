@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.3.4] - 2025-02-26
+
+### Changed
+
+- Bump golang.org/x/text from 0.21.0 to 0.22.0 ([#441](https://github.com/TibiaData/tibiadata-api-go/pull/441) by [dependabot](https://github.com/dependabot))
+- Bump github.com/PuerkitoBio/goquery from 1.10.1 to 1.10.2 ([#443](https://github.com/TibiaData/tibiadata-api-go/pull/443) by [dependabot](https://github.com/dependabot))
+- Bump golang from 1.23.5 to 1.24.0 ([#444](https://github.com/TibiaData/tibiadata-api-go/pull/444) by [dependabot](https://github.com/dependabot))
+- Bump alpine from 3.21.2 to 3.21.3 ([#445](https://github.com/TibiaData/tibiadata-api-go/pull/445) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+
+- Character name can contain comma ([#447](https://github.com/TibiaData/tibiadata-api-go/pull/447) by [tobiasehlert](https://github.com/tobiasehlert))
+- url_api field format on news endpoints ([#452](https://github.com/TibiaData/tibiadata-api-go/pull/452) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [4.3.3] - 2025-02-04
 
 ### Changed
@@ -574,6 +588,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.3.4]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.3...v4.3.4
 [4.3.3]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.2...v4.3.3
 [4.3.2]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.1...v4.3.2
 [4.3.1]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.0...v4.3.1

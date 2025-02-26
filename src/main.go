@@ -20,8 +20,9 @@ var (
 	TibiaDataRestrictionMode bool
 
 	// TibiaData app settings
-	TibiaDataHost       string     // set through env TIBIADATA_HOST
 	TibiaDataAPIDetails APIDetails // containing information from build
+	TibiaDataHost       string     // set through env TIBIADATA_HOST
+	TibiaDataProtocol   = "https"  // can be overridden by env TIBIADATA_PROTOCOL
 
 	// TibiaData app details set to release/build on GitHub
 	TibiaDataBuildRelease = "unknown"     // will be set by GitHub Actions (to release number)
@@ -48,22 +49,8 @@ var (
 // @BasePath  /
 
 func init() {
-	// Generating TibiaDataUserAgent with TibiaDataUserAgentGenerator function
-	TibiaDataUserAgent = TibiaDataUserAgentGenerator(TibiaDataAPIversion)
-
-	// Initiate the validator
-	err := validation.Initiate(TibiaDataUserAgent)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func main() {
-	// logging start of TibiaData
-	log.Printf("[info] TibiaData API starting..")
-
-	// Running the TibiaDataInitializer function
-	TibiaDataInitializer()
+	// logging init of TibiaData
+	log.Printf("[info] TibiaData API initializing..")
 
 	// Logging build information
 	log.Printf("[info] TibiaData API release: %s", TibiaDataBuildRelease)
@@ -81,11 +68,31 @@ func main() {
 	if getEnvAsBool("DEBUG_MODE", false) {
 		// Setting debug to true for more logging
 		TibiaDataDebug = true
+	}
+	log.Printf("[info] TibiaData API debug-mode: %t", TibiaDataDebug)
 
+	// Running the TibiaDataInitializer function
+	TibiaDataInitializer()
+
+	// Generating TibiaDataUserAgent with TibiaDataUserAgentGenerator function
+	TibiaDataUserAgent = TibiaDataUserAgentGenerator(TibiaDataAPIversion)
+
+	if TibiaDataDebug {
 		// Logging user-agent string
 		log.Printf("[debug] TibiaData API User-Agent: %s", TibiaDataUserAgent)
 	}
-	log.Printf("[info] TibiaData API debug-mode: %t", TibiaDataDebug)
+
+	// Initiate the validator
+	err := validation.Initiate(TibiaDataUserAgent)
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func main() {
+	// logging start of TibiaData
+	log.Printf("[info] TibiaData API starting..")
 
 	// Starting the webserver
 	runWebServer()
@@ -100,7 +107,12 @@ func TibiaDataInitializer() {
 
 	// Adding information of host
 	if isEnvExist("TIBIADATA_HOST") {
-		TibiaDataHost = "+https://" + getEnv("TIBIADATA_HOST", "")
+		TibiaDataHost = getEnv("TIBIADATA_HOST", "")
+		log.Println("[info] TibiaData API hostname: " + TibiaDataHost)
+	}
+	if isEnvExist("TIBIADATA_PROTOCOL") {
+		TibiaDataProtocol = getEnv("TIBIADATA_PROTOCOL", "https")
+		log.Println("[info] TibiaData API protocol: " + TibiaDataProtocol)
 	}
 
 	// Setting TibiaDataProxyDomain

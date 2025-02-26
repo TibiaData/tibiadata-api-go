@@ -1183,8 +1183,13 @@ func TibiaDataUserAgentGenerator(version int) string {
 		"build/" + TibiaDataBuildBuilder,
 		"commit/" + TibiaDataBuildCommit,
 		"edition/" + TibiaDataBuildEdition,
-		TibiaDataHost,
 	}
+
+	// adding TibiaDataHost if set
+	if TibiaDataHost != "" {
+		useragentDetails = append(useragentDetails, "+"+TibiaDataProtocol+"://"+TibiaDataHost)
+	}
+
 	useragent += " (" + strings.Join(useragentDetails, "; ") + ")"
 
 	return useragent

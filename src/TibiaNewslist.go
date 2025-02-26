@@ -66,7 +66,7 @@ func TibiaNewslistImpl(days int, BoxContentHTML string, handlerURL string) (News
 		OneNews.TibiaURL = NewsSplit[0] + NewsID
 
 		if TibiaDataHost != "" {
-			OneNews.ApiURL = "https://" + TibiaDataHost + "/v4/news/id/" + NewsID
+			OneNews.ApiURL = TibiaDataProtocol + "://" + TibiaDataHost + "/v4/news/id/" + NewsID
 		}
 
 		// add to NewsListData for response

@@ -220,3 +220,51 @@ func TestWorldOceanis(t *testing.T) {
 	assert.Empty(world.TournamentWorldType)
 	assert.Equal(0, len(world.OnlinePlayers))
 }
+
+func TestWorldTesta(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/worlds/world/Testa.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	worldJson, err := TibiaWorldsWorldImpl("Testa", string(data), "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	world := worldJson.World
+
+	assert.Equal("Testa", world.Name)
+	assert.Equal("online", world.Status)
+	assert.Equal(87, world.PlayersOnline)
+	assert.Equal(781, world.RecordPlayers)
+	assert.Equal("2012-12-04T15:42:47Z", world.RecordDate)
+	assert.Equal("2013-01", world.CreationDate)
+	assert.Equal("Europe", world.Location)
+	assert.Equal("Optional PvP", world.PvpType)
+	assert.False(world.PremiumOnly)
+	assert.Equal("regular", world.TransferType)
+	assert.Equal(0, len(world.WorldsQuestTitles))
+	assert.True(world.BattleyeProtected)
+	assert.Equal("release", world.BattleyeDate)
+	assert.Equal("regular", world.GameWorldType)
+	assert.Empty(world.TournamentWorldType)
+	assert.Equal(87, len(world.OnlinePlayers))
+
+	firstPlayer := world.OnlinePlayers[0]
+	assert.Equal("Alius Harg E1", firstPlayer.Name)
+	assert.Equal(8, firstPlayer.Level)
+	assert.Equal("Monk", firstPlayer.Vocation)
+
+	thirdPlayer := world.OnlinePlayers[2]
+	assert.Equal("Andris Hun paladin E1", thirdPlayer.Name)
+	assert.Equal(23, thirdPlayer.Level)
+	assert.Equal("Exalted Monk", thirdPlayer.Vocation)
+}

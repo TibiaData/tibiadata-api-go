@@ -275,6 +275,9 @@ func TibiaDataVocationValidator(vocation string) (string, string) {
 	case "druid", "druids":
 		vocationid = "5"
 		vocation = "druids"
+	case "monk", "monks":
+		vocationid = "6"
+		vocation = "monks"
 	default:
 		vocationid = "0"
 		vocation = "all"

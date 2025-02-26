@@ -24,7 +24,7 @@ var (
 	guildNameRegex = regexp.MustCompile(`[^\sa-zA-Z]`)
 
 	// validVocations stores all valid tibia vocations
-	validVocations = []string{"none", "knight", "knights", "paladin", "paladins", "sorcerer", "sorcerers", "druid", "druids", "all"}
+	validVocations = []string{"none", "knight", "knights", "paladin", "paladins", "sorcerer", "sorcerers", "druid", "druids", "monk", "monks", "all"}
 )
 
 // IsRestrictionMode reports whether the restriction mode is enabled

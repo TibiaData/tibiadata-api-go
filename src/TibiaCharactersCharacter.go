@@ -385,7 +385,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string, url string) (CharacterR
 
 				// Removing line breaks
 				CharacterListHTML = TibiaDataHTMLRemoveLinebreaks(CharacterListHTML)
-				CharacterListHTML = strings.ReplaceAll(CharacterListHTML, ".<br/>Assisted by", ". Assisted by")
+				CharacterListHTML = strings.ReplaceAll(strings.ReplaceAll(CharacterListHTML, "<br/>", " "), "  ", " ")
 				CharacterListHTML = TibiaDataSanitizeStrings(CharacterListHTML)
 
 				dataNoTags := RemoveHtmlTag(CharacterListHTML)

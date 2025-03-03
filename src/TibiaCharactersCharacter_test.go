@@ -198,11 +198,11 @@ func TestNumber4(t *testing.T) {
 	creatureWithOfDeath := characterJson.Character.Deaths[16]
 	assert.Equal(2, len(creatureWithOfDeath.Killers))
 	assert.Equal(260, creatureWithOfDeath.Level)
-	assert.Equal("an undead elite gladiator", creatureWithOfDeath.Killers[0].Name)
+	assert.Equal("undead elite gladiator", creatureWithOfDeath.Killers[0].Name)
 	assert.False(creatureWithOfDeath.Killers[0].Player)
 	assert.False(creatureWithOfDeath.Killers[0].Traded)
 	assert.Empty(creatureWithOfDeath.Killers[0].Summon)
-	assert.Equal("a priestess of the wild sun", creatureWithOfDeath.Killers[1].Name)
+	assert.Equal("priestess of the wild sun", creatureWithOfDeath.Killers[1].Name)
 
 	tradedInDeath := characterJson.Character.Deaths[18]
 	assert.Equal(3, len(tradedInDeath.Assists))
@@ -216,7 +216,7 @@ func TestNumber4(t *testing.T) {
 	assert.Equal(5, len(longDeath.Assists))
 	assert.Equal(231, longDeath.Level)
 	assert.Equal("Adam No Hands", longDeath.Assists[4].Name)
-	assert.Equal("a paladin familiar", longDeath.Assists[4].Summon)
+	assert.Equal("paladin familiar", longDeath.Assists[4].Summon)
 	assert.True(longDeath.Assists[4].Traded)
 
 	deaths := characterJson.Character.Deaths
@@ -319,7 +319,7 @@ func TestNumber4(t *testing.T) {
 		{
 			Assists: []Killers{},
 			Killers: []Killers{
-				{Name: "an ice golem", Player: false, Traded: false, Summon: ""},
+				{Name: "ice golem", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  266,
 			Reason: "Died at Level 266 by an ice golem.",
@@ -402,7 +402,7 @@ func TestNumber4(t *testing.T) {
 		{
 			Assists: []Killers{},
 			Killers: []Killers{
-				{Name: "a gazer spectre", Player: false, Traded: false, Summon: ""},
+				{Name: "gazer spectre", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  264,
 			Reason: "Died at Level 264 by a gazer spectre.",
@@ -557,7 +557,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Kanj iro", Player: true, Traded: false, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "an unstable spark", Player: false, Traded: false, Summon: ""},
+				{Name: "unstable spark", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  267,
 			Reason: "Died at Level 267 by an unstable spark. Assisted by Jack Kevorkian, Mapius Akuno and Kanj iro.",
@@ -569,7 +569,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Niki Salamanca", Player: true, Traded: false, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "a dawnfire asura", Player: false, Traded: false, Summon: ""},
+				{Name: "dawnfire asura", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  261,
 			Reason: "Died at Level 261 by a dawnfire asura. Assisted by Samorbum and Niki Salamanca.",
@@ -643,8 +643,8 @@ func TestNumber4(t *testing.T) {
 		{
 			Assists: []Killers{},
 			Killers: []Killers{
-				{Name: "an undead elite gladiator", Player: false, Traded: false, Summon: ""},
-				{Name: "a priestess of the wild sun", Player: false, Traded: false, Summon: ""},
+				{Name: "undead elite gladiator", Player: false, Traded: false, Summon: ""},
+				{Name: "priestess of the wild sun", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  260,
 			Reason: "Died at Level 260 by an undead elite gladiator and a priestess of the wild sun.",
@@ -686,7 +686,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Adam No Hands", Player: true, Traded: true, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "a midnight asura", Player: false, Traded: false, Summon: ""},
+				{Name: "midnight asura", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  261,
 			Reason: "Died at Level 261 by a midnight asura. Assisted by Peninsula Boi, Vithrann and Adam No Hands (traded).",
@@ -698,7 +698,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Adam No Hands", Player: true, Traded: true, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "a midnight asura", Player: false, Traded: false, Summon: ""},
+				{Name: "midnight asura", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  262,
 			Reason: "Died at Level 262 by a midnight asura. Assisted by Peninsula Boi and Adam No Hands (traded).",
@@ -820,7 +820,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Utanii Herh", Player: true, Traded: false, Summon: ""},
 				{Name: "King Peruvian", Player: true, Traded: false, Summon: ""},
 				{Name: "Raven Kyle", Player: true, Traded: false, Summon: ""},
-				{Name: "a true dawnfire asura", Player: false, Traded: false, Summon: ""},
+				{Name: "true dawnfire asura", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  262,
 			Reason: "Killed at Level 262 by Utanii Herh, King Peruvian, Raven Kyle and a true dawnfire asura.",
@@ -1815,7 +1815,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Psycovzky", Player: true, Traded: false, Summon: ""},
 				{Name: "Tacos Ardera", Player: true, Traded: false, Summon: ""},
 				{Name: "Street Runner", Player: true, Traded: false, Summon: ""},
-				{Name: "Slobansky", Player: true, Traded: false, Summon: "a sorcerer familiar"},
+				{Name: "Slobansky", Player: true, Traded: false, Summon: "sorcerer familiar"},
 			},
 			Level:  237,
 			Reason: "Slain at Level 237 by Nevin kyle, Dont Kill Marta, Rein is Here, Arthur Heartless, Psycovzky, Tacos Ardera, Street Runner and a sorcerer familiar of Slobansky.",
@@ -2270,7 +2270,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Spyt Ponzi", Player: true, Traded: false, Summon: ""},
 				{Name: "Contatinho Ekbomba", Player: true, Traded: false, Summon: ""},
 				{Name: "Rondero Miguel", Player: true, Traded: false, Summon: ""},
-				{Name: "an adult goanna", Player: false, Traded: false, Summon: ""},
+				{Name: "adult goanna", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  225,
 			Reason: "Slain at Level 225 by Nevin kyle, Jungle Rubi Dominante, Negaum ardera defender, Chapo Kyle, Rondero Zaka (traded), Spyt Ponzi, Contatinho Ekbomba, Rondero Miguel and an adult goanna. Assisted by Schalama Rei Delas, Samorbum and Ell Rugalzawer.",
@@ -2339,7 +2339,7 @@ func TestNumber4(t *testing.T) {
 			Assists: []Killers{},
 			Killers: []Killers{
 				{Name: "Kaelsia Menardord", Player: true, Traded: false, Summon: ""},
-				{Name: "a skeleton elite warrior", Player: false, Traded: false, Summon: ""},
+				{Name: "skeleton elite warrior", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  228,
 			Reason: "Killed at Level 228 by Kaelsia Menardord and a skeleton elite warrior.",
@@ -2352,7 +2352,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Netozawer", Player: true, Traded: false, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "a priestess of the wild sun", Player: false, Traded: false, Summon: ""},
+				{Name: "priestess of the wild sun", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  229,
 			Reason: "Died at Level 229 by a priestess of the wild sun. Assisted by Mma Axel Mendoza, Caladan Bane and Netozawer.",
@@ -2712,7 +2712,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Mapius Akuno", Player: true, Traded: false, Summon: ""},
 				{Name: "Don Ballusse", Player: true, Traded: false, Summon: ""},
 				{Name: "Netozawer", Player: true, Traded: false, Summon: ""},
-				{Name: "Adam No Hands", Player: true, Traded: true, Summon: "a paladin familiar"},
+				{Name: "Adam No Hands", Player: true, Traded: true, Summon: "paladin familiar"},
 			},
 			Killers: []Killers{
 				{Name: "Nevin kyle", Player: true, Traded: false, Summon: ""},

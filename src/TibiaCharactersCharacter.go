@@ -75,11 +75,11 @@ type Killers struct {
 
 // Child of Character
 type Deaths struct {
-	Time    string    `json:"time"`    // The timestamp when the death occurred.
-	Level   int       `json:"level"`   // The level when the death occurred.
-	Killers []Killers `json:"killers"` // List of killers involved.
-	Assists []Killers `json:"assists"` // List of assists involved.
-	Reason  string    `json:"reason"`  // The plain text reason of death.
+	Time    string    `json:"time"`            // The timestamp when the death occurred.
+	Level   int       `json:"level,omitempty"` // The level when the death occurred.
+	Killers []Killers `json:"killers"`         // List of killers involved.
+	Assists []Killers `json:"assists"`         // List of assists involved.
+	Reason  string    `json:"reason"`          // The plain text reason of death.
 }
 
 // Child of Character
@@ -383,9 +383,9 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string, url string) (CharacterR
 					return false
 				}
 
-				// Removing line breaks
+				// Removing line breaks and sanitizing string
 				CharacterListHTML = TibiaDataHTMLRemoveLinebreaks(CharacterListHTML)
-				CharacterListHTML = strings.ReplaceAll(CharacterListHTML, ".<br/>Assisted by", ". Assisted by")
+				CharacterListHTML = strings.ReplaceAll(strings.ReplaceAll(CharacterListHTML, "<br/>", " "), "  ", " ")
 				CharacterListHTML = TibiaDataSanitizeStrings(CharacterListHTML)
 
 				dataNoTags := RemoveHtmlTag(CharacterListHTML)
@@ -404,6 +404,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string, url string) (CharacterR
 					initCestIndexer = `CEST`
 					levelIndexer    = `at Level `
 					killersIndexer  = `by `
+					assistedIndexer = `Assisted by `
 				)
 
 				var initIndexer string
@@ -444,6 +445,11 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string, url string) (CharacterR
 
 				level := TibiaDataStringToInteger(dataNoTags[levelIdx:endLevelIdx])
 
+				// if kill is with assist only (and level is set to 25), then we reset level
+				if reasonStart == assistedIndexer && level == 25 {
+					level = 0
+				}
+
 				killersIdx := strings.Index(
 					CharacterListHTML, killersIndexer,
 				) + len(killersIndexer)
@@ -453,10 +459,17 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string, url string) (CharacterR
 
 				rawListofKillers := CharacterListHTML[killersIdx:endKillersIdx]
 
-				// if kill is with assist..
-				if strings.Contains(dataNoTags, ". Assisted by ") {
-					TmpListOfDeath := strings.Split(CharacterListHTML, ". Assisted by ")
-					rawListofKillers = TmpListOfDeath[0][killersIdx:]
+				// A death with assist (or with assist only)
+				if strings.Contains(dataNoTags, assistedIndexer) {
+					TmpListOfDeath := strings.Split(CharacterListHTML, assistedIndexer)
+
+					// get a list of killers
+					if reasonStart != assistedIndexer {
+						rawListofKillers = TmpListOfDeath[0][killersIdx:]
+						rawListofKillers = strings.TrimSpace(strings.TrimSuffix(rawListofKillers, "."))
+					} else {
+						rawListofKillers = ""
+					}
 					TmpAssist := TmpListOfDeath[1]
 
 					// get a list of killers
@@ -473,118 +486,126 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string, url string) (CharacterR
 
 					for i := range ListOfAssists {
 						name, isPlayer, isTraded, theSummon := TibiaDataParseKiller(ListOfAssists[i])
-						DeathAssists = append(DeathAssists, Killers{
-							Name:   strings.TrimSuffix(strings.TrimSuffix(name, ".</td>"), "."),
-							Player: isPlayer,
-							Traded: isTraded,
-							Summon: theSummon,
-						})
+						if name != "" { // Ensure we don't append empty names
+							DeathAssists = append(DeathAssists, Killers{
+								Name:   name,
+								Player: isPlayer,
+								Traded: isTraded,
+								Summon: theSummon,
+							})
+						}
 					}
 				}
 
-				// get a list of killers
-				ListOfKillers := strings.Split(rawListofKillers, ", ")
+				// A death with killers
+				if rawListofKillers != "" {
 
-				const andStr = " and "
-				lastItem := ListOfKillers[len(ListOfKillers)-1]
-				lastAndIdx := strings.LastIndex(lastItem, andStr)
+					// get a list of killers
+					ListOfKillers := strings.Split(rawListofKillers, ", ")
 
-				if lastAndIdx > -1 {
-					if !strings.Contains(lastItem, "<a href=") {
-						ListOfKillers[len(ListOfKillers)-1] = lastItem[:lastAndIdx]
-						ListOfKillers = append(ListOfKillers, lastItem[lastAndIdx+len(andStr):])
-					} else {
-						ListOfKillers = ListOfKillers[:len(ListOfKillers)-1]
+					const andStr = " and "
+					lastItem := ListOfKillers[len(ListOfKillers)-1]
+					lastAndIdx := strings.LastIndex(lastItem, andStr)
 
-						const (
-							nonTag        = iota // outside of a tag
-							openAnchorTag        // inside a <a>
-							closeAchorTag        // inside a </a>
-						)
+					if lastAndIdx > -1 {
+						if !strings.Contains(lastItem, "<a href=") {
+							ListOfKillers[len(ListOfKillers)-1] = lastItem[:lastAndIdx]
+							ListOfKillers = append(ListOfKillers, lastItem[lastAndIdx+len(andStr):])
+						} else {
+							ListOfKillers = ListOfKillers[:len(ListOfKillers)-1]
 
-						var (
-							buffer bytes.Buffer
-							state  = nonTag
-						)
-						buffer.Grow(200) // arbitrary number to avoid allocations
+							const (
+								nonTag        = iota // outside of a tag
+								openAnchorTag        // inside a <a>
+								closeAchorTag        // inside a </a>
+							)
 
-						for i := range lastItem {
-							cur := lastItem[i]
-							switch state {
-							case nonTag:
-								if cur == '<' {
-									switch lastItem[i+1] {
-									case '/':
-										state = closeAchorTag
-									default:
-										state = openAnchorTag
-										if buffer.Len() > 0 {
-											str := buffer.String()
+							var (
+								buffer bytes.Buffer
+								state  = nonTag
+							)
+							buffer.Grow(200) // arbitrary number to avoid allocations
 
-											str = strings.TrimPrefix(str, " and ")
-											str = strings.TrimSuffix(str, " and ")
+							for i := range lastItem {
+								cur := lastItem[i]
+								switch state {
+								case nonTag:
+									if cur == '<' {
+										switch lastItem[i+1] {
+										case '/':
+											state = closeAchorTag
+										default:
+											state = openAnchorTag
+											if buffer.Len() > 0 {
+												str := buffer.String()
 
-											if str == "" {
+												str = strings.TrimPrefix(str, " and ")
+												str = strings.TrimSuffix(str, " and ")
+
+												if str == "" {
+													buffer.Reset()
+													buffer.WriteByte(cur)
+													continue
+												}
+
+												if strings.Contains(str, "of") && !containsCreaturesWithOf(str) {
+													// this is a summon
+													buffer.WriteByte(cur)
+													continue
+												}
+
 												buffer.Reset()
-												buffer.WriteByte(cur)
-												continue
+												ListOfKillers = append(ListOfKillers, str)
 											}
-
-											if strings.Contains(str, "of") && !containsCreaturesWithOf(str) {
-												// this is a summon
-												buffer.WriteByte(cur)
-												continue
-											}
-
-											buffer.Reset()
-											ListOfKillers = append(ListOfKillers, str)
 										}
 									}
-								}
-								buffer.WriteByte(cur)
-							case openAnchorTag:
-								if cur == '>' {
-									state = nonTag
-								}
-								buffer.WriteByte(cur)
-							case closeAchorTag:
-								buffer.WriteByte(cur)
-								if cur == '>' {
-									str := buffer.String()
+									buffer.WriteByte(cur)
+								case openAnchorTag:
+									if cur == '>' {
+										state = nonTag
+									}
+									buffer.WriteByte(cur)
+								case closeAchorTag:
+									buffer.WriteByte(cur)
+									if cur == '>' {
+										str := buffer.String()
 
-									str = strings.TrimPrefix(str, " and ")
-									str = strings.TrimSuffix(str, " and ")
+										str = strings.TrimPrefix(str, " and ")
+										str = strings.TrimSuffix(str, " and ")
 
-									ListOfKillers = append(ListOfKillers, str)
-									buffer.Reset()
-									state = nonTag
+										ListOfKillers = append(ListOfKillers, str)
+										buffer.Reset()
+										state = nonTag
+									}
 								}
 							}
-						}
 
-						if buffer.Len() > 0 {
-							str := buffer.String()
-							buffer.Reset()
+							if buffer.Len() > 0 {
+								str := buffer.String()
+								buffer.Reset()
 
-							str = strings.TrimPrefix(str, " and ")
-							str = strings.TrimSuffix(str, " and ")
+								str = strings.TrimPrefix(str, " and ")
+								str = strings.TrimSuffix(str, " and ")
 
-							if str != "" {
-								ListOfKillers = append(ListOfKillers, str)
+								if str != "" {
+									ListOfKillers = append(ListOfKillers, str)
+								}
 							}
 						}
 					}
-				}
 
-				// loop through all killers and append to result
-				for i := range ListOfKillers {
-					name, isPlayer, isTraded, theSummon := TibiaDataParseKiller(ListOfKillers[i])
-					DeathKillers = append(DeathKillers, Killers{
-						Name:   strings.TrimSuffix(strings.TrimSuffix(name, ".</td>"), "."),
-						Player: isPlayer,
-						Traded: isTraded,
-						Summon: theSummon,
-					})
+					// loop through all killers and append to result
+					for i := range ListOfKillers {
+						name, isPlayer, isTraded, theSummon := TibiaDataParseKiller(ListOfKillers[i])
+						if name != "" { // Ensure we don't append empty names
+							DeathKillers = append(DeathKillers, Killers{
+								Name:   name,
+								Player: isPlayer,
+								Traded: isTraded,
+								Summon: theSummon,
+							})
+						}
+					}
 				}
 
 				// append deadentry to death list
@@ -755,6 +776,9 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 		isPlayer = true
 		data = RemoveHtmlTag(data)
 	}
+
+	// remove htlm, spaces and dots from data-string
+	data = strings.TrimSpace(strings.TrimSuffix(strings.TrimSuffix(data, "</td>"), "."))
 
 	// get summon information
 	if strings.HasPrefix(data, "a ") || strings.HasPrefix(data, "an ") {

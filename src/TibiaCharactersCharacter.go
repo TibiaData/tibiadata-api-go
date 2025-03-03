@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"reflect"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/TibiaData/tibiadata-api-go/src/validation"
@@ -777,19 +779,19 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 		data = RemoveHtmlTag(data)
 	}
 
-	// remove htlm, spaces and dots from data-string
+	// remove htlm, spaces, dots and prefixes from data-string
 	data = strings.TrimSpace(strings.TrimSuffix(strings.TrimSuffix(data, "</td>"), "."))
+	data = strings.TrimPrefix(strings.TrimPrefix(data, "a "), "an ")
 
+	firstRune, _ := utf8.DecodeRuneInString(data)
 	// get summon information
-	if strings.HasPrefix(data, "a ") || strings.HasPrefix(data, "an ") {
-		if containsCreaturesWithOf(data) {
-			// this is not a summon, since it is a creature with a of in the middle
-		} else {
-			ofIdx := strings.Index(data, "of")
-			if ofIdx != -1 {
-				theSummon = data[:ofIdx-1]
-				data = data[ofIdx+3:]
-			}
+	if containsCreaturesWithOf(data) {
+		// this is not a summon, since it is a creature with a of in the middle
+	} else if unicode.IsLower(firstRune) {
+		ofIdx := strings.Index(data, "of")
+		if ofIdx != -1 {
+			theSummon = data[:ofIdx-1]
+			data = data[ofIdx+3:]
 		}
 	}
 

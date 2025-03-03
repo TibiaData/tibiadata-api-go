@@ -75,11 +75,11 @@ type Killers struct {
 
 // Child of Character
 type Deaths struct {
-	Time    string    `json:"time"`    // The timestamp when the death occurred.
-	Level   int       `json:"level"`   // The level when the death occurred.
-	Killers []Killers `json:"killers"` // List of killers involved.
-	Assists []Killers `json:"assists"` // List of assists involved.
-	Reason  string    `json:"reason"`  // The plain text reason of death.
+	Time    string    `json:"time"`            // The timestamp when the death occurred.
+	Level   int       `json:"level,omitempty"` // The level when the death occurred.
+	Killers []Killers `json:"killers"`         // List of killers involved.
+	Assists []Killers `json:"assists"`         // List of assists involved.
+	Reason  string    `json:"reason"`          // The plain text reason of death.
 }
 
 // Child of Character
@@ -443,6 +443,11 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string, url string) (CharacterR
 				) + levelIdx
 
 				level := TibiaDataStringToInteger(dataNoTags[levelIdx:endLevelIdx])
+
+				// if kill is with assist only (and level is set to 25), then we reset level
+				if reasonStart == "Assisted by " && level == 25 {
+					level = 0
+				}
 
 				killersIdx := strings.Index(
 					CharacterListHTML, killersIndexer,

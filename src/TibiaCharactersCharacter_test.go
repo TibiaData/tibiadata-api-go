@@ -3389,6 +3389,353 @@ func TestNumber13(t *testing.T) {
 	}
 }
 
+func TestNumber14(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/characters/Nannorka.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Nannorka", character.Name)
+	assert.False(characterJson.Character.DeathsTruncated)
+
+	// validate death data
+	assert.Equal(35, len(characterJson.Character.Deaths))
+	deaths := characterJson.Character.Deaths
+
+	for idx, tc := range []struct {
+		Assists []Killers
+		Killers []Killers
+		Level   int
+		Reason  string
+		Time    string
+	}{
+		{
+			Assists: []Killers{
+				{Name: "Miquudalajarab", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Miquudalajarab.",
+			Time:    "2025-02-27T16:20:06Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Satashi Xuuu", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  791,
+			Reason: "Killed at Level 791 by Satashi Xuuu.",
+			Time:   "2025-02-27T03:46:47Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Basilicata", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Basilicata.",
+			Time:    "2025-02-25T14:11:42Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Tainerd Ruero", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Tainerd Ruero.",
+			Time:    "2025-02-15T10:35:03Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Miquudalajarab", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Miquudalajarab.",
+			Time:    "2025-02-15T09:45:37Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Basilicata", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Basilicata.",
+			Time:    "2025-02-14T16:56:53Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Satashi Xuuu", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  826,
+			Reason: "Killed at Level 826 by Satashi Xuuu.",
+			Time:   "2025-02-14T14:56:33Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Miquudalajarab", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Miquudalajarab.",
+			Time:    "2025-02-14T13:24:43Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Miquudalajarab", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Miquudalajarab.",
+			Time:    "2025-02-14T08:19:51Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Miquudalajarab", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Miquudalajarab.",
+			Time:    "2025-02-12T19:38:28Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Tikozera To Calmo", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Tikozera To Calmo.",
+			Time:    "2025-02-12T17:37:04Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Basilicata", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Basilicata.",
+			Time:    "2025-02-12T17:02:27Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Du nken", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Du nken.",
+			Time:    "2025-02-12T16:56:42Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{},
+			Level:   878,
+			Reason:  "Killed at Level 878 by Satashi Xuuu.",
+			Time:    "2025-02-11T20:00:44Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Basilicata", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Basilicata.",
+			Time:    "2025-02-11T16:21:46Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Whiskin", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Whiskin.",
+			Time:    "2025-02-11T16:18:28Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Fjunkes", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Fjunkes.",
+			Time:    "2025-02-11T16:16:29Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Fjunkes", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Fjunkes.",
+			Time:    "2025-02-10T14:57:44Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Whiskin", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Whiskin.",
+			Time:    "2025-02-10T14:55:03Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Kaos Mest", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Kaos Mest.",
+			Time:    "2025-02-09T12:13:57Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Whiskin", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Whiskin.",
+			Time:    "2025-02-09T10:26:48Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Miquudalajarab", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Miquudalajarab.",
+			Time:    "2025-02-09T10:09:39Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Guzik Szef", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Guzik Szef.",
+			Time:    "2025-02-09T10:06:43Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Whiskin", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Whiskin.",
+			Time:    "2025-02-08T18:06:49Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Shensz Khalifa", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Shensz Khalifa.",
+			Time:    "2025-02-08T09:19:19Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Taiimo", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Taiimo.",
+			Time:    "2025-02-07T17:13:05Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Shensz Khalifa", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Shensz Khalifa.",
+			Time:    "2025-02-06T17:51:50Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Miquudalajarab", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Miquudalajarab.",
+			Time:    "2025-02-06T17:50:03Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Taiimo", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Taiimo.",
+			Time:    "2025-02-06T17:15:54Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Sephea", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  1007,
+			Reason: "Killed at Level 1007 by Sephea.",
+			Time:   "2025-02-05T17:03:08Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Satashi Xuuu", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  1016,
+			Reason: "Killed at Level 1016 by Satashi Xuuu.",
+			Time:   "2025-02-04T03:42:41Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Rodmago Aesir", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Rodmago Aesir.",
+			Time:    "2025-02-03T16:14:53Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Zain Malek", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Zain Malek.",
+			Time:    "2025-02-02T10:19:05Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Itzz Xed", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  1042,
+			Reason: "Killed at Level 1042 by Itzz Xed.",
+			Time:   "2025-02-02T10:17:25Z",
+		},
+		{
+			Assists: []Killers{
+				{Name: "Rauxzin", Player: true, Traded: false, Summon: ""},
+			},
+			Killers: []Killers{},
+			Reason:  "Assisted by Rauxzin.",
+			Time:    "2025-02-02T10:11:07Z",
+		},
+	} {
+		assert.True(
+			reflect.DeepEqual(deaths[idx].Assists, tc.Assists),
+			"Wrong assists\nidx: %d\nwant: %#v\n\ngot: %#v",
+			idx, tc.Assists, deaths[idx].Assists,
+		)
+		assert.True(
+			reflect.DeepEqual(deaths[idx].Killers, tc.Killers),
+			"Wrong killers\nidx: %d\nwant: %#v\n\ngot: %#v",
+			idx, tc.Killers, deaths[idx].Killers,
+		)
+		assert.Equal(
+			deaths[idx].Level, tc.Level,
+			"Wrong Level\nidx: %d\nwant: %d\n\ngot: %d",
+			idx, tc.Level, deaths[idx].Level,
+		)
+		assert.Equal(
+			deaths[idx].Reason, tc.Reason,
+			"Wrong Reason\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Reason, deaths[idx].Reason,
+		)
+		assert.Equal(
+			tc.Time, deaths[idx].Time,
+			"Wrong Time\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Time, deaths[idx].Time,
+		)
+	}
+}
+
 func BenchmarkNumber1(b *testing.B) {
 	file, err := static.TestFiles.Open("testdata/characters/Darkside Rafa.html")
 	if err != nil {

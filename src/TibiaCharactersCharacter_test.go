@@ -3531,10 +3531,12 @@ func TestNumber14(t *testing.T) {
 		},
 		{
 			Assists: []Killers{},
-			Killers: []Killers{},
-			Level:   878,
-			Reason:  "Killed at Level 878 by Satashi Xuuu.",
-			Time:    "2025-02-11T20:00:44Z",
+			Killers: []Killers{
+				{Name: "Satashi Xuuu", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  878,
+			Reason: "Killed at Level 878 by Satashi Xuuu.",
+			Time:   "2025-02-11T20:00:44Z",
 		},
 		{
 			Assists: []Killers{

@@ -198,11 +198,11 @@ func TestNumber4(t *testing.T) {
 	creatureWithOfDeath := characterJson.Character.Deaths[16]
 	assert.Equal(2, len(creatureWithOfDeath.Killers))
 	assert.Equal(260, creatureWithOfDeath.Level)
-	assert.Equal("an undead elite gladiator", creatureWithOfDeath.Killers[0].Name)
+	assert.Equal("undead elite gladiator", creatureWithOfDeath.Killers[0].Name)
 	assert.False(creatureWithOfDeath.Killers[0].Player)
 	assert.False(creatureWithOfDeath.Killers[0].Traded)
 	assert.Empty(creatureWithOfDeath.Killers[0].Summon)
-	assert.Equal("a priestess of the wild sun", creatureWithOfDeath.Killers[1].Name)
+	assert.Equal("priestess of the wild sun", creatureWithOfDeath.Killers[1].Name)
 
 	tradedInDeath := characterJson.Character.Deaths[18]
 	assert.Equal(3, len(tradedInDeath.Assists))
@@ -216,7 +216,7 @@ func TestNumber4(t *testing.T) {
 	assert.Equal(5, len(longDeath.Assists))
 	assert.Equal(231, longDeath.Level)
 	assert.Equal("Adam No Hands", longDeath.Assists[4].Name)
-	assert.Equal("a paladin familiar", longDeath.Assists[4].Summon)
+	assert.Equal("paladin familiar", longDeath.Assists[4].Summon)
 	assert.True(longDeath.Assists[4].Traded)
 
 	deaths := characterJson.Character.Deaths
@@ -319,7 +319,7 @@ func TestNumber4(t *testing.T) {
 		{
 			Assists: []Killers{},
 			Killers: []Killers{
-				{Name: "an ice golem", Player: false, Traded: false, Summon: ""},
+				{Name: "ice golem", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  266,
 			Reason: "Died at Level 266 by an ice golem.",
@@ -402,7 +402,7 @@ func TestNumber4(t *testing.T) {
 		{
 			Assists: []Killers{},
 			Killers: []Killers{
-				{Name: "a gazer spectre", Player: false, Traded: false, Summon: ""},
+				{Name: "gazer spectre", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  264,
 			Reason: "Died at Level 264 by a gazer spectre.",
@@ -557,7 +557,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Kanj iro", Player: true, Traded: false, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "an unstable spark", Player: false, Traded: false, Summon: ""},
+				{Name: "unstable spark", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  267,
 			Reason: "Died at Level 267 by an unstable spark. Assisted by Jack Kevorkian, Mapius Akuno and Kanj iro.",
@@ -569,7 +569,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Niki Salamanca", Player: true, Traded: false, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "a dawnfire asura", Player: false, Traded: false, Summon: ""},
+				{Name: "dawnfire asura", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  261,
 			Reason: "Died at Level 261 by a dawnfire asura. Assisted by Samorbum and Niki Salamanca.",
@@ -643,8 +643,8 @@ func TestNumber4(t *testing.T) {
 		{
 			Assists: []Killers{},
 			Killers: []Killers{
-				{Name: "an undead elite gladiator", Player: false, Traded: false, Summon: ""},
-				{Name: "a priestess of the wild sun", Player: false, Traded: false, Summon: ""},
+				{Name: "undead elite gladiator", Player: false, Traded: false, Summon: ""},
+				{Name: "priestess of the wild sun", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  260,
 			Reason: "Died at Level 260 by an undead elite gladiator and a priestess of the wild sun.",
@@ -686,7 +686,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Adam No Hands", Player: true, Traded: true, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "a midnight asura", Player: false, Traded: false, Summon: ""},
+				{Name: "midnight asura", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  261,
 			Reason: "Died at Level 261 by a midnight asura. Assisted by Peninsula Boi, Vithrann and Adam No Hands (traded).",
@@ -698,7 +698,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Adam No Hands", Player: true, Traded: true, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "a midnight asura", Player: false, Traded: false, Summon: ""},
+				{Name: "midnight asura", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  262,
 			Reason: "Died at Level 262 by a midnight asura. Assisted by Peninsula Boi and Adam No Hands (traded).",
@@ -820,7 +820,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Utanii Herh", Player: true, Traded: false, Summon: ""},
 				{Name: "King Peruvian", Player: true, Traded: false, Summon: ""},
 				{Name: "Raven Kyle", Player: true, Traded: false, Summon: ""},
-				{Name: "a true dawnfire asura", Player: false, Traded: false, Summon: ""},
+				{Name: "true dawnfire asura", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  262,
 			Reason: "Killed at Level 262 by Utanii Herh, King Peruvian, Raven Kyle and a true dawnfire asura.",
@@ -1815,7 +1815,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Psycovzky", Player: true, Traded: false, Summon: ""},
 				{Name: "Tacos Ardera", Player: true, Traded: false, Summon: ""},
 				{Name: "Street Runner", Player: true, Traded: false, Summon: ""},
-				{Name: "Slobansky", Player: true, Traded: false, Summon: "a sorcerer familiar"},
+				{Name: "Slobansky", Player: true, Traded: false, Summon: "sorcerer familiar"},
 			},
 			Level:  237,
 			Reason: "Slain at Level 237 by Nevin kyle, Dont Kill Marta, Rein is Here, Arthur Heartless, Psycovzky, Tacos Ardera, Street Runner and a sorcerer familiar of Slobansky.",
@@ -2270,7 +2270,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Spyt Ponzi", Player: true, Traded: false, Summon: ""},
 				{Name: "Contatinho Ekbomba", Player: true, Traded: false, Summon: ""},
 				{Name: "Rondero Miguel", Player: true, Traded: false, Summon: ""},
-				{Name: "an adult goanna", Player: false, Traded: false, Summon: ""},
+				{Name: "adult goanna", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  225,
 			Reason: "Slain at Level 225 by Nevin kyle, Jungle Rubi Dominante, Negaum ardera defender, Chapo Kyle, Rondero Zaka (traded), Spyt Ponzi, Contatinho Ekbomba, Rondero Miguel and an adult goanna. Assisted by Schalama Rei Delas, Samorbum and Ell Rugalzawer.",
@@ -2339,7 +2339,7 @@ func TestNumber4(t *testing.T) {
 			Assists: []Killers{},
 			Killers: []Killers{
 				{Name: "Kaelsia Menardord", Player: true, Traded: false, Summon: ""},
-				{Name: "a skeleton elite warrior", Player: false, Traded: false, Summon: ""},
+				{Name: "skeleton elite warrior", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  228,
 			Reason: "Killed at Level 228 by Kaelsia Menardord and a skeleton elite warrior.",
@@ -2352,7 +2352,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Netozawer", Player: true, Traded: false, Summon: ""},
 			},
 			Killers: []Killers{
-				{Name: "a priestess of the wild sun", Player: false, Traded: false, Summon: ""},
+				{Name: "priestess of the wild sun", Player: false, Traded: false, Summon: ""},
 			},
 			Level:  229,
 			Reason: "Died at Level 229 by a priestess of the wild sun. Assisted by Mma Axel Mendoza, Caladan Bane and Netozawer.",
@@ -2712,7 +2712,7 @@ func TestNumber4(t *testing.T) {
 				{Name: "Mapius Akuno", Player: true, Traded: false, Summon: ""},
 				{Name: "Don Ballusse", Player: true, Traded: false, Summon: ""},
 				{Name: "Netozawer", Player: true, Traded: false, Summon: ""},
-				{Name: "Adam No Hands", Player: true, Traded: true, Summon: "a paladin familiar"},
+				{Name: "Adam No Hands", Player: true, Traded: true, Summon: "paladin familiar"},
 			},
 			Killers: []Killers{
 				{Name: "Nevin kyle", Player: true, Traded: false, Summon: ""},
@@ -3708,6 +3708,265 @@ func TestNumber14(t *testing.T) {
 			Killers: []Killers{},
 			Reason:  "Assisted by Rauxzin.",
 			Time:    "2025-02-02T10:11:07Z",
+		},
+	} {
+		assert.True(
+			reflect.DeepEqual(deaths[idx].Assists, tc.Assists),
+			"Wrong assists\nidx: %d\nwant: %#v\n\ngot: %#v",
+			idx, tc.Assists, deaths[idx].Assists,
+		)
+		assert.True(
+			reflect.DeepEqual(deaths[idx].Killers, tc.Killers),
+			"Wrong killers\nidx: %d\nwant: %#v\n\ngot: %#v",
+			idx, tc.Killers, deaths[idx].Killers,
+		)
+		assert.Equal(
+			deaths[idx].Level, tc.Level,
+			"Wrong Level\nidx: %d\nwant: %d\n\ngot: %d",
+			idx, tc.Level, deaths[idx].Level,
+		)
+		assert.Equal(
+			deaths[idx].Reason, tc.Reason,
+			"Wrong Reason\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Reason, deaths[idx].Reason,
+		)
+		assert.Equal(
+			tc.Time, deaths[idx].Time,
+			"Wrong Time\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Time, deaths[idx].Time,
+		)
+	}
+}
+
+func TestNumber15(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/characters/Sir Dumbas.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Sir Dumbas", character.Name)
+	assert.False(characterJson.Character.DeathsTruncated)
+
+	// validate death data
+	assert.Equal(3, len(characterJson.Character.Deaths))
+	deaths := characterJson.Character.Deaths
+
+	for idx, tc := range []struct {
+		Assists []Killers
+		Killers []Killers
+		Level   int
+		Reason  string
+		Time    string
+	}{
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Corruption Toxic", Player: true, Traded: false, Summon: "fire elemental"},
+			},
+			Level:  43,
+			Reason: "Killed at Level 43 by fire elemental of Corruption Toxic.",
+			Time:   "2025-02-02T23:08:13Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "cave rat", Player: false, Traded: false, Summon: ""},
+			},
+			Level:  44,
+			Reason: "Died at Level 44 by cave rat.",
+			Time:   "2025-02-02T22:47:32Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "cave rat", Player: false, Traded: false, Summon: ""},
+			},
+			Level:  45,
+			Reason: "Died at Level 45 by cave rat.",
+			Time:   "2025-02-02T22:46:11Z",
+		},
+	} {
+		assert.True(
+			reflect.DeepEqual(deaths[idx].Assists, tc.Assists),
+			"Wrong assists\nidx: %d\nwant: %#v\n\ngot: %#v",
+			idx, tc.Assists, deaths[idx].Assists,
+		)
+		assert.True(
+			reflect.DeepEqual(deaths[idx].Killers, tc.Killers),
+			"Wrong killers\nidx: %d\nwant: %#v\n\ngot: %#v",
+			idx, tc.Killers, deaths[idx].Killers,
+		)
+		assert.Equal(
+			deaths[idx].Level, tc.Level,
+			"Wrong Level\nidx: %d\nwant: %d\n\ngot: %d",
+			idx, tc.Level, deaths[idx].Level,
+		)
+		assert.Equal(
+			deaths[idx].Reason, tc.Reason,
+			"Wrong Reason\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Reason, deaths[idx].Reason,
+		)
+		assert.Equal(
+			tc.Time, deaths[idx].Time,
+			"Wrong Time\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Time, deaths[idx].Time,
+		)
+	}
+}
+
+func TestNumber16(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/characters/Sergiozk.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Sergiozk", character.Name)
+	assert.False(characterJson.Character.DeathsTruncated)
+
+	// validate death data
+	assert.Equal(6, len(characterJson.Character.Deaths))
+	deaths := characterJson.Character.Deaths
+
+	for idx, tc := range []struct {
+		Assists []Killers
+		Killers []Killers
+		Level   int
+		Reason  string
+		Time    string
+	}{
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Phelip On Danera", Player: true, Traded: false, Summon: ""},
+				{Name: "fire elemental", Player: false, Traded: false, Summon: ""},
+			},
+			Level:  597,
+			Reason: "Killed at Level 597 by Phelip On Danera and fire elemental.",
+			Time:   "2024-03-17T04:47:32Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Phelip On Danera", Player: true, Traded: false, Summon: ""},
+				{Name: "Indio Pedibrek", Player: true, Traded: false, Summon: ""},
+				{Name: "Guillera", Player: true, Traded: false, Summon: ""},
+				{Name: "Sago Dashzik", Player: true, Traded: false, Summon: ""},
+				{Name: "Spectrum on Ferobra", Player: true, Traded: false, Summon: ""},
+				{Name: "Hawker Destroyer", Player: true, Traded: false, Summon: ""},
+				{Name: "Lenuzera Dushow", Player: true, Traded: false, Summon: ""},
+				{Name: "Migurina", Player: true, Traded: false, Summon: ""},
+				{Name: "Zofia Bosak", Player: true, Traded: false, Summon: ""},
+				{Name: "Lekinho Destroyer", Player: true, Traded: false, Summon: ""},
+				{Name: "Sergiozk", Player: true, Traded: false, Summon: ""},
+				{Name: "Zeqs", Player: true, Traded: false, Summon: ""},
+				{Name: "Durantezika", Player: true, Traded: false, Summon: ""},
+				{Name: "Maxionz", Player: true, Traded: true, Summon: ""},
+				{Name: "Axmc", Player: true, Traded: false, Summon: ""},
+				{Name: "Luan Chriistiian", Player: true, Traded: true, Summon: ""},
+				{Name: "Utv", Player: true, Traded: false, Summon: ""},
+				{Name: "Duzym", Player: true, Traded: false, Summon: ""},
+				{Name: "Wizz Gigi", Player: true, Traded: false, Summon: ""},
+				{Name: "Kan Zinho", Player: true, Traded: false, Summon: ""},
+				{Name: "Yuyo", Player: true, Traded: false, Summon: ""},
+				{Name: "skeleton elite warrior", Player: false, Traded: false, Summon: ""},
+			},
+			Level:  597,
+			Reason: "Annihilated at Level 597 by Phelip On Danera, Indio Pedibrek, Guillera, Sago Dashzik, Spectrum on Ferobra, Hawker Destroyer, Lenuzera Dushow, Migurina, Zofia Bosak, Lekinho Destroyer, Sergiozk, Zeqs, Durantezika, Maxionz (traded), Axmc, Luan Chriistiian (traded), Utv, Duzym, Wizz Gigi, Kan Zinho, Yuyo and skeleton elite warrior.",
+			Time:   "2024-03-17T04:32:23Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Phelip On Danera", Player: true, Traded: false, Summon: ""},
+				{Name: "Indio Pedibrek", Player: true, Traded: false, Summon: ""},
+				{Name: "Guillera", Player: true, Traded: false, Summon: ""},
+				{Name: "Sago Dashzik", Player: true, Traded: false, Summon: ""},
+				{Name: "Hawker Destroyer", Player: true, Traded: false, Summon: ""},
+				{Name: "Lenuzera Dushow", Player: true, Traded: false, Summon: ""},
+				{Name: "Zofia Bosak", Player: true, Traded: false, Summon: ""},
+				{Name: "Zeh da Mannga", Player: true, Traded: false, Summon: ""},
+				{Name: "Maxionz", Player: true, Traded: true, Summon: ""},
+				{Name: "Luan Chriistiian", Player: true, Traded: true, Summon: ""},
+				{Name: "Utv", Player: true, Traded: false, Summon: ""},
+				{Name: "Wizz Gigi", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  597,
+			Reason: "Crushed at Level 597 by Phelip On Danera, Indio Pedibrek, Guillera, Sago Dashzik, Hawker Destroyer, Lenuzera Dushow, Zofia Bosak, Zeh da Mannga, Maxionz (traded), Luan Chriistiian (traded), Utv and Wizz Gigi.",
+			Time:   "2024-03-17T04:26:44Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Moon Warlock", Player: true, Traded: false, Summon: ""},
+				{Name: "Manglu", Player: true, Traded: false, Summon: ""},
+				{Name: "Dudodix", Player: true, Traded: false, Summon: ""},
+				{Name: "Luchador", Player: true, Traded: false, Summon: ""},
+				{Name: "King Madara", Player: true, Traded: false, Summon: ""},
+				{Name: "Masstterpali", Player: true, Traded: false, Summon: ""},
+				{Name: "Gilbas Concursado", Player: true, Traded: false, Summon: ""},
+				{Name: "Cafezinhum", Player: true, Traded: false, Summon: ""},
+				{Name: "Antipuush", Player: true, Traded: false, Summon: ""},
+			},
+			Level:  597,
+			Reason: "Slain at Level 597 by Moon Warlock, Manglu, Dudodix, Luchador, King Madara, Masstterpali, Gilbas Concursado, Cafezinhum and Antipuush.",
+			Time:   "2024-03-15T13:02:38Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "crazed summer rearguard", Player: false, Traded: false, Summon: ""},
+			},
+			Level:  598,
+			Reason: "Died at Level 598 by crazed summer rearguard.",
+			Time:   "2024-03-11T06:21:25Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Irynn", Player: true, Traded: false, Summon: ""},
+				{Name: "Indio Pedibrek", Player: true, Traded: false, Summon: ""},
+				{Name: "Tenoriio Rex", Player: true, Traded: false, Summon: ""},
+				{Name: "Pitucola", Player: true, Traded: false, Summon: ""},
+				{Name: "Lekinho Destroyer", Player: true, Traded: false, Summon: ""},
+				{Name: "Sergiozk", Player: true, Traded: false, Summon: ""},
+				{Name: "Aperninha de grilo", Player: true, Traded: false, Summon: ""},
+				{Name: "Bino Pally Rox", Player: true, Traded: false, Summon: ""},
+				{Name: "Experience Hunter", Player: true, Traded: false, Summon: ""},
+				{Name: "Lohana Darkside", Player: true, Traded: false, Summon: ""},
+				{Name: "Flavzk", Player: true, Traded: true, Summon: ""},
+				{Name: "Fllockyy", Player: true, Traded: false, Summon: "paladin familiar"},
+			},
+			Level:  597,
+			Reason: "Crushed at Level 597 by Irynn, Indio Pedibrek, Tenoriio Rex, Pitucola, Lekinho Destroyer, Sergiozk, Aperninha de grilo, Bino Pally Rox, Experience Hunter, Lohana Darkside, Flavzk (traded) and paladin familiar of Fllockyy.",
+			Time:   "2024-03-10T14:49:27Z",
 		},
 	} {
 		assert.True(

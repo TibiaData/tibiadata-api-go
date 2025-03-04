@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"reflect"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/TibiaData/tibiadata-api-go/src/validation"
@@ -560,6 +562,13 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string, url string) (CharacterR
 										}
 									}
 									buffer.WriteByte(cur)
+
+									if cur == ')' {
+										str := buffer.String()
+
+										buffer.Reset()
+										ListOfKillers = append(ListOfKillers, str)
+									}
 								case openAnchorTag:
 									if cur == '>' {
 										state = nonTag
@@ -777,19 +786,19 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 		data = RemoveHtmlTag(data)
 	}
 
-	// remove htlm, spaces and dots from data-string
+	// remove htlm, spaces, dots and prefixes from data-string
 	data = strings.TrimSpace(strings.TrimSuffix(strings.TrimSuffix(data, "</td>"), "."))
+	data = strings.TrimPrefix(strings.TrimPrefix(strings.TrimPrefix(data, "and "), "a "), "an ")
 
+	firstRune, _ := utf8.DecodeRuneInString(data)
 	// get summon information
-	if strings.HasPrefix(data, "a ") || strings.HasPrefix(data, "an ") {
-		if containsCreaturesWithOf(data) {
-			// this is not a summon, since it is a creature with a of in the middle
-		} else {
-			ofIdx := strings.Index(data, "of")
-			if ofIdx != -1 {
-				theSummon = data[:ofIdx-1]
-				data = data[ofIdx+3:]
-			}
+	if containsCreaturesWithOf(data) {
+		// this is not a summon, since it is a creature with a of in the middle
+	} else if unicode.IsLower(firstRune) {
+		ofIdx := strings.Index(data, "of")
+		if ofIdx != -1 {
+			theSummon = data[:ofIdx-1]
+			data = data[ofIdx+3:]
 		}
 	}
 
@@ -876,9 +885,9 @@ func containsCreaturesWithOf(str string) bool {
 		"pillar of summoning",
 		"priestess of the wild sun",
 		"rage of mazoran",
+		"reflection of a mage",
 		"reflection of mawhawk",
 		"reflection of obujos",
-		"reflection of a mage",
 		"retainer of baeloc",
 		"scorn of the emperor",
 		"servant of tentugly",

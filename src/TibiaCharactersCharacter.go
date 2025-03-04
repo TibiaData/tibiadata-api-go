@@ -562,6 +562,13 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string, url string) (CharacterR
 										}
 									}
 									buffer.WriteByte(cur)
+
+									if cur == ')' {
+										str := buffer.String()
+
+										buffer.Reset()
+										ListOfKillers = append(ListOfKillers, str)
+									}
 								case openAnchorTag:
 									if cur == '>' {
 										state = nonTag
@@ -781,7 +788,7 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 
 	// remove htlm, spaces, dots and prefixes from data-string
 	data = strings.TrimSpace(strings.TrimSuffix(strings.TrimSuffix(data, "</td>"), "."))
-	data = strings.TrimPrefix(strings.TrimPrefix(data, "a "), "an ")
+	data = strings.TrimPrefix(strings.TrimPrefix(strings.TrimPrefix(data, "and "), "a "), "an ")
 
 	firstRune, _ := utf8.DecodeRuneInString(data)
 	// get summon information
@@ -878,9 +885,9 @@ func containsCreaturesWithOf(str string) bool {
 		"pillar of summoning",
 		"priestess of the wild sun",
 		"rage of mazoran",
+		"reflection of a mage",
 		"reflection of mawhawk",
 		"reflection of obujos",
-		"reflection of a mage",
 		"retainer of baeloc",
 		"scorn of the emperor",
 		"servant of tentugly",

@@ -3738,6 +3738,96 @@ func TestNumber14(t *testing.T) {
 	}
 }
 
+func TestNumber15(t *testing.T) {
+	file, err := static.TestFiles.Open("testdata/characters/Sir Dumbas.html")
+	if err != nil {
+		t.Fatalf("file opening error: %s", err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		t.Fatalf("File reading error: %s", err)
+	}
+
+	characterJson, err := TibiaCharactersCharacterImpl(string(data), "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assert := assert.New(t)
+	character := characterJson.Character.CharacterInfo
+
+	assert.Equal("Sir Dumbas", character.Name)
+	assert.False(characterJson.Character.DeathsTruncated)
+
+	// validate death data
+	assert.Equal(3, len(characterJson.Character.Deaths))
+	deaths := characterJson.Character.Deaths
+
+	for idx, tc := range []struct {
+		Assists []Killers
+		Killers []Killers
+		Level   int
+		Reason  string
+		Time    string
+	}{
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "Corruption Toxic", Player: true, Traded: false, Summon: "fire elemental"},
+			},
+			Level:  43,
+			Reason: "Killed at Level 43 by fire elemental of Corruption Toxic.",
+			Time:   "2025-02-02T23:08:13Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "cave rat", Player: false, Traded: false, Summon: ""},
+			},
+			Level:  44,
+			Reason: "Died at Level 44 by cave rat.",
+			Time:   "2025-02-02T22:47:32Z",
+		},
+		{
+			Assists: []Killers{},
+			Killers: []Killers{
+				{Name: "cave rat", Player: false, Traded: false, Summon: ""},
+			},
+			Level:  45,
+			Reason: "Died at Level 45 by cave rat.",
+			Time:   "2025-02-02T22:46:11Z",
+		},
+	} {
+		assert.True(
+			reflect.DeepEqual(deaths[idx].Assists, tc.Assists),
+			"Wrong assists\nidx: %d\nwant: %#v\n\ngot: %#v",
+			idx, tc.Assists, deaths[idx].Assists,
+		)
+		assert.True(
+			reflect.DeepEqual(deaths[idx].Killers, tc.Killers),
+			"Wrong killers\nidx: %d\nwant: %#v\n\ngot: %#v",
+			idx, tc.Killers, deaths[idx].Killers,
+		)
+		assert.Equal(
+			deaths[idx].Level, tc.Level,
+			"Wrong Level\nidx: %d\nwant: %d\n\ngot: %d",
+			idx, tc.Level, deaths[idx].Level,
+		)
+		assert.Equal(
+			deaths[idx].Reason, tc.Reason,
+			"Wrong Reason\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Reason, deaths[idx].Reason,
+		)
+		assert.Equal(
+			tc.Time, deaths[idx].Time,
+			"Wrong Time\nidx: %d\nwant: %s\n\ngot: %s",
+			idx, tc.Time, deaths[idx].Time,
+		)
+	}
+}
+
 func BenchmarkNumber1(b *testing.B) {
 	file, err := static.TestFiles.Open("testdata/characters/Darkside Rafa.html")
 	if err != nil {

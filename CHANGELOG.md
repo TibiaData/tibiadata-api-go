@@ -1,12 +1,23 @@
 # Changelog
 
+## [4.3.6] - 2025-04-01
+
+### Changed
+
+- bump golang from 1.24.0 to 1.24.1 ([#459](https://github.com/TibiaData/tibiadata-api-go/pull/459) by [dependabot](https://github.com/dependabot))
+- bump golang.org/x/net from 0.35.0 to 0.36.0 ([#460](https://github.com/TibiaData/tibiadata-api-go/pull/460), [#461](https://github.com/TibiaData/tibiadata-api-go/pull/461) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+
+- character death html header change ([#463](https://github.com/TibiaData/tibiadata-api-go/pull/463) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [4.3.5] - 2025-03-09
 
-## Changed
+### Changed
 
 - bump golang.org/x/text from 0.22.0 to 0.23.0 ([#457](https://github.com/TibiaData/tibiadata-api-go/pull/457) by [dependabot](https://github.com/dependabot))
 
-## Fixed
+### Fixed
 
 - character-death parsing when only being assisted ([#454](https://github.com/TibiaData/tibiadata-api-go/pull/454) by [tobiasehlert](https://github.com/tobiasehlert))
 - improve character death parsing and removing creature prefix ([#456](https://github.com/TibiaData/tibiadata-api-go/pull/456) by [tobiasehlert](https://github.com/tobiasehlert))
@@ -599,6 +610,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.3.6]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.5...v4.3.6
 [4.3.5]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.4...v4.3.5
 [4.3.4]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.3...v4.3.4
 [4.3.3]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.2...v4.3.3

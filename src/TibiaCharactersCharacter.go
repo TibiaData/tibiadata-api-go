@@ -375,7 +375,7 @@ func TibiaCharactersCharacterImpl(BoxContentHTML string, url string) (CharacterR
 
 				return true
 			})
-		case "Character Deaths":
+		case "Character Deaths", "Character Deaths (Last 30 Days)":
 			// Running query over each tr in list
 			CharacterDivQuery.Find(localDivQueryString).EachWithBreak(func(index int, s *goquery.Selection) bool {
 				// Storing HTML into CharacterListHTML

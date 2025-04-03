@@ -108,7 +108,7 @@ type Character struct {
 	AccountBadges      []AccountBadges    `json:"account_badges,omitempty"`      // The account's badges.
 	Achievements       []Achievements     `json:"achievements,omitempty"`        // The character's achievements.
 	Deaths             []Deaths           `json:"deaths,omitempty"`              // The character's deaths.
-	DeathsTruncated    bool               `json:"deaths_truncated"`              // Whether the character's deaths were truncated or not.
+	DeathsTruncated    bool               `json:"deaths_truncated,omitempty"`    // Whether the character's deaths were truncated or not.
 	AccountInformation AccountInformation `json:"account_information,omitempty"` // The account information.
 	OtherCharacters    []OtherCharacters  `json:"other_characters,omitempty"`    // The account's other characters.
 }

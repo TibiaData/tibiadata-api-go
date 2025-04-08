@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.4.0] - 2025-04-08
+
+### Added
+
+- support new vocation monk ([#451](https://github.com/TibiaData/tibiadata-api-go/pull/451) by [tobiasehlert](https://github.com/tobiasehlert))
+
+### Changed
+
+- bump github.com/gin-contrib/gzip from 1.2.2 to 1.2.3 ([#466](https://github.com/TibiaData/tibiadata-api-go/pull/466) by [dependabot](https://github.com/dependabot))
+- bump golang from 1.24.1 to 1.24.2 ([#465](https://github.com/TibiaData/tibiadata-api-go/pull/465) by [dependabot](https://github.com/dependabot))
+- bump golang.org/x/text from 0.23.0 to 0.24.0 ([#467](https://github.com/TibiaData/tibiadata-api-go/pull/467) by [dependabot](https://github.com/dependabot))
+
+### Fixed
+
+- omit character deaths_truncated if false ([#464](https://github.com/TibiaData/tibiadata-api-go/pull/464) by [tobiasehlert](https://github.com/tobiasehlert))
+
 ## [4.3.6] - 2025-04-01
 
 ### Changed
@@ -610,6 +626,7 @@ Head over to [tibiadata.com](https://tibiadata.com/2022/03/tibiadata-api-v3-rele
 
 Initial commit
 
+[4.4.0]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.6...v4.4.0
 [4.3.6]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.5...v4.3.6
 [4.3.5]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.4...v4.3.5
 [4.3.4]: https://github.com/tibiadata/tibiadata-api-go/compare/v4.3.3...v4.3.4

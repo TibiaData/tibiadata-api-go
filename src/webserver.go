@@ -304,8 +304,7 @@ func tibiaCharactersCharacter(c *gin.Context) {
 		TibiaDataErrorHandler(c, err, http.StatusBadRequest)
 		return
 	}
-	fmt.Println(name)
-	fmt.Println(TibiaDataQueryEscapeString(name))
+
 	// Build the request structure
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,

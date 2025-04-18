@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"golang.org/x/net/html/charset"
 	"net/http"
 	"regexp"
 	"strings"
@@ -53,8 +54,12 @@ var (
 func TibiaWorldsWorldImpl(world string, BoxContentHTML string, url string) (WorldResponse, error) {
 	// TODO: We need to read the world name from the response rather than pass it into this func
 
+	utf8Reader, err := charset.NewReader(strings.NewReader(BoxContentHTML), "")
+	if err != nil {
+		return WorldResponse{}, fmt.Errorf("[error] TibiaWorldsWorldImpl failed at charset.NewReader, err: %s", err)
+	}
 	// Loading HTML data into ReaderHTML for goquery with NewReader
-	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
+	ReaderHTML, err := goquery.NewDocumentFromReader(utf8Reader)
 	if err != nil {
 		return WorldResponse{}, fmt.Errorf("[error] TibiaWorldsWorldImpl failed at goquery.NewDocumentFromReader, err: %s", err)
 	}

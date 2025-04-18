@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"golang.org/x/net/html/charset"
 	"log"
 	"net/http"
 	"os"
@@ -303,7 +304,8 @@ func tibiaCharactersCharacter(c *gin.Context) {
 		TibiaDataErrorHandler(c, err, http.StatusBadRequest)
 		return
 	}
-
+	fmt.Println(name)
+	fmt.Println(TibiaDataQueryEscapeString(name))
 	// Build the request structure
 	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
@@ -1289,14 +1291,16 @@ func TibiaDataHTMLDataCollector(TibiaDataRequest TibiaDataRequestStruct) (string
 		return string(res.Body()), nil
 	}
 
-	// Convert body to io.Reader
-	resIo := bytes.NewReader(res.Body())
-
-	// wrap reader in a converting reader from ISO 8859-1 to UTF-8
-	resIo2 := TibiaDataConvertEncodingtoUTF8(resIo)
-
-	// Load the HTML document
-	doc, err := goquery.NewDocumentFromReader(resIo2)
+	// Decode the raw response into real UTF-8 using the Content‑Type header
+	utf8Reader, err := charset.NewReader(
+		bytes.NewReader(res.Body()),
+		res.Header().Get("Content-Type"),
+	)
+	if err != nil {
+		log.Printf("[error] TibiaDataHTMLDataCollector charset.NewReader failed: %s", err)
+		return "", err
+	}
+	doc, err := goquery.NewDocumentFromReader(utf8Reader)
 	if err != nil {
 		log.Printf("[error] TibiaDataHTMLDataCollector (URL: %s) error: %s", res.Request.URL, err)
 		return "", err

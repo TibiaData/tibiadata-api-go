@@ -87,9 +87,6 @@ func TibiaDataQueryEscapeString(data string) string {
 	// switching "+" to " "
 	data = strings.ReplaceAll(data, "+", " ")
 
-	// encoding string to latin-1
-	data, _ = TibiaDataConvertEncodingtoISO88591(data)
-
 	// returning with QueryEscape function
 	return url.QueryEscape(data)
 }

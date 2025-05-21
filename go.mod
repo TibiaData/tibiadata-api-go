@@ -13,7 +13,7 @@ require (
 	github.com/TibiaData/tibiadata-api-go/src/static v0.0.0-20250214153538-6bdfa7545f05
 	github.com/TibiaData/tibiadata-api-go/src/validation v0.0.0-20250214153538-6bdfa7545f05
 	github.com/gin-contrib/gzip v1.2.3
-	github.com/gin-gonic/gin v1.10.0
+	github.com/gin-gonic/gin v1.10.1
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/mantyr/go-charset v0.0.0-20160510214718-44d054d82c4a
 	github.com/stretchr/testify v1.10.0

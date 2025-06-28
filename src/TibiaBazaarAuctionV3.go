@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"net/http"
 
 	"github.com/go-resty/resty/v2"
 
@@ -147,7 +148,7 @@ const (
 )
 
 // TibiaBazaarAuctionV3Impl func
-func TibiaBazaarAuctionV3Impl(BoxContentHTML string) BazaarAuctionResponse {
+func TibiaBazaarAuctionV3Impl(BoxContentHTML string, url string) (BazaarAuctionResponse, error) {
 
 	// Loading HTML data into ReaderHTML for goquery with NewReader
 	ReaderHTML, err := goquery.NewDocumentFromReader(strings.NewReader(BoxContentHTML))
@@ -564,10 +565,14 @@ func TibiaBazaarAuctionV3Impl(BoxContentHTML string) BazaarAuctionResponse {
 			BestiaryProgress:            bestiaryProgress,
 		},
 		Information{
-			APIVersion: TibiaDataAPIversion,
+			APIDetails: TibiaDataAPIDetails,
 			Timestamp:  TibiaDataDatetime(""),
+			TibiaURLs:  []string{url},
+			Status: Status{
+				HTTPCode: http.StatusOK,
+			},
 		},
-	}
+	}, nil
 }
 
 func ParseItems(s *goquery.Selection) map[string]int {

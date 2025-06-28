@@ -305,8 +305,8 @@ func tibiaBazaarAuctionV3(c *gin.Context) {
 	tibiaDataRequestHandler(
 		c,
 		tibiadataRequest,
-		func(BoxContentHTML string) (interface{}, int) {
-			return TibiaBazaarAuctionV3Impl(BoxContentHTML), http.StatusOK
+		func(BoxContentHTML string) (interface{}, error) {
+			return TibiaBazaarAuctionV3Impl(BoxContentHTML, tibiadataRequest.URL)
 		},
 		"TibiaBazaarAuctionV3")
 }

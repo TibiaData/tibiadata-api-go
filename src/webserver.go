@@ -297,7 +297,7 @@ func tibiaBazaarAuctionV3(c *gin.Context) {
 	// getting params from URL
 	id := c.Param("id")
 
-	tibiadataRequest := TibiadataRequestStruct{
+	tibiadataRequest := TibiaDataRequestStruct{
 		Method: resty.MethodGet,
 		URL:    "https://www.tibia.com/charactertrade/?page=details&auctionid=" + id,
 	}
@@ -1202,7 +1202,7 @@ func TibiaDataAPIHandleResponse(c *gin.Context, s string, j interface{}) {
 	c.JSON(http.StatusOK, j)
 }
 
-// TibiadataUserAgentGenerator func - creates User-Agent for requests
+// TibiaDataUserAgentGenerator func - creates User-Agent for requests
 func TibiaDataUserAgentGenerator(version int) string {
 	// setting product name
 	useragent := "TibiaData-API/v" + strconv.Itoa(version)

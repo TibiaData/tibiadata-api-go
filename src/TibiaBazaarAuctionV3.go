@@ -158,7 +158,7 @@ func TibiaBazaarAuctionV3Impl(BoxContentHTML string) BazaarAuctionResponse {
 	var id int
 	ReaderHTML.Find("input[name=auctionid]").Each(func(i int, selection *goquery.Selection) {
 		// collect the auction ID
-		id = TibiadataStringToIntegerV3(selection.AttrOr("value", ""))
+		id = TibiaDataStringToInteger(selection.AttrOr("value", ""))
 	})
 
 	// Extract details section
@@ -169,7 +169,7 @@ func TibiaBazaarAuctionV3Impl(BoxContentHTML string) BazaarAuctionResponse {
 
 		detailsHeader = strings.Split(detailsHeader[1], "|")
 
-		level := TibiadataStringToIntegerV3(strings.TrimSpace(detailsHeader[0]))
+		level := TibiaDataStringToInteger(strings.TrimSpace(detailsHeader[0]))
 
 		details.Level = level
 		details.Vocation = strings.TrimSpace(strings.Split(detailsHeader[1], "Vocation: ")[1])
@@ -187,19 +187,19 @@ func TibiaBazaarAuctionV3Impl(BoxContentHTML string) BazaarAuctionResponse {
 				lookupIndex = 1
 			}
 
-			auctionStartDate := TibiaDataSanitizeNbspSpaceString(nodes[1+lookupIndex].FirstChild.Data)
+			auctionStartDate := TibiaDataSanitizeStrings(nodes[1+lookupIndex].FirstChild.Data)
 			auctionStartDate = strings.Split(auctionStartDate, " CET")[0] + ":00 CET"
 			auctionStartDate = strings.Split(auctionStartDate, " CEST")[0] + ":00 CEST"
 
-			auctionEndDate := TibiaDataSanitizeNbspSpaceString(nodes[3+lookupIndex].FirstChild.Data)
+			auctionEndDate := TibiaDataSanitizeStrings(nodes[3+lookupIndex].FirstChild.Data)
 			auctionEndDate = strings.Split(auctionEndDate, " CET")[0] + ":00 CET"
 			auctionEndDate = strings.Split(auctionEndDate, " CEST")[0] + ":00 CEST"
 
-			details.AuctionStart = TibiadataDatetimeV3(auctionStartDate)
-			details.AuctionEnd = TibiadataDatetimeV3(auctionEndDate)
+			details.AuctionStart = TibiaDataDatetime(auctionStartDate)
+			details.AuctionEnd = TibiaDataDatetime(auctionEndDate)
 
 			bidType := strings.Split(nodes[4+lookupIndex].FirstChild.FirstChild.Data, " Bid:")[0]
-			bidAmount := TibiadataStringToIntegerV3(nodes[4+lookupIndex].LastChild.FirstChild.FirstChild.Data)
+			bidAmount := TibiaDataStringToInteger(nodes[4+lookupIndex].LastChild.FirstChild.FirstChild.Data)
 
 			details.Bid = BazaarAuctionBid{
 				Type:   bidType,
@@ -222,17 +222,17 @@ func TibiaBazaarAuctionV3Impl(BoxContentHTML string) BazaarAuctionResponse {
 		skillsMap := make(map[string]int)
 		s.Find(".LabelColumn").Each(func(index int, s *goquery.Selection) {
 			skillsMap[strings.Split(s.Nodes[0].FirstChild.FirstChild.Data, ":")[0]] =
-				TibiadataStringToIntegerV3(s.Nodes[0].NextSibling.FirstChild.Data)
+				TibiaDataStringToInteger(s.Nodes[0].NextSibling.FirstChild.Data)
 		})
 
-		general.HitPoints = TibiadataStringToIntegerV3(generalMap["Hit Points"])
-		general.Mana = TibiadataStringToIntegerV3(generalMap["Mana"])
-		general.Capacity = TibiadataStringToIntegerV3(generalMap["Capacity"])
-		general.Speed = TibiadataStringToIntegerV3(generalMap["Speed"])
-		general.Blessings = TibiadataStringToIntegerV3(strings.Split(generalMap["Blessings"], "/")[0])
-		general.Mounts = TibiadataStringToIntegerV3(generalMap["Mounts"])
-		general.Outfits = TibiadataStringToIntegerV3(generalMap["Outfits"])
-		general.Titles = TibiadataStringToIntegerV3(generalMap["Titles"])
+		general.HitPoints = TibiaDataStringToInteger(generalMap["Hit Points"])
+		general.Mana = TibiaDataStringToInteger(generalMap["Mana"])
+		general.Capacity = TibiaDataStringToInteger(generalMap["Capacity"])
+		general.Speed = TibiaDataStringToInteger(generalMap["Speed"])
+		general.Blessings = TibiaDataStringToInteger(strings.Split(generalMap["Blessings"], "/")[0])
+		general.Mounts = TibiaDataStringToInteger(generalMap["Mounts"])
+		general.Outfits = TibiaDataStringToInteger(generalMap["Outfits"])
+		general.Titles = TibiaDataStringToInteger(generalMap["Titles"])
 		general.AxeFighting = skillsMap["Axe Fighting"]
 		general.ClubFighting = skillsMap["Club Fighting"]
 		general.DistanceFighting = skillsMap["Distance Fighting"]
@@ -241,23 +241,23 @@ func TibiaBazaarAuctionV3Impl(BoxContentHTML string) BazaarAuctionResponse {
 		general.MagicLevel = skillsMap["Magic Level"]
 		general.Shielding = skillsMap["Shielding"]
 		general.SwordFighting = skillsMap["Sword Fighting"]
-		general.CreationDate = TibiadataDatetimeV3(generalMap["Creation Date"])
-		general.Experience = TibiadataStringToIntegerV3(generalMap["Experience"])
-		general.Gold = TibiadataStringToIntegerV3(generalMap["Gold"])
-		general.AchievementPoints = TibiadataStringToIntegerV3(generalMap["Achievement Points"])
+		general.CreationDate = TibiaDataDatetime(generalMap["Creation Date"])
+		general.Experience = TibiaDataStringToInteger(generalMap["Experience"])
+		general.Gold = TibiaDataStringToInteger(generalMap["Gold"])
+		general.AchievementPoints = TibiaDataStringToInteger(generalMap["Achievement Points"])
 		general.RegularWorldTransfer = generalMap["Regular World Transfer"]
 		general.CharmExpansion = strings.EqualFold(generalMap["Charm Expansion"], "yes")
-		general.AvailableCharmPoints = TibiadataStringToIntegerV3(generalMap["Available Charm Points"])
-		general.SpentCharmPoints = TibiadataStringToIntegerV3(generalMap["Spent Charm Points"])
-		general.DailyRewardStreak = TibiadataStringToIntegerV3(generalMap["Daily Reward Streak"])
-		general.HuntingTaskPoints = TibiadataStringToIntegerV3(generalMap["Hunting Task Points"])
-		general.PermanentHuntingTaskSlots = TibiadataStringToIntegerV3(generalMap["Permanent Hunting Task Slots"])
-		general.PermanentPreySlots = TibiadataStringToIntegerV3(generalMap["Permanent Prey Slots"])
-		general.PreyWildCards = TibiadataStringToIntegerV3(generalMap["Prey Wildcards"])
-		general.Hirelings = TibiadataStringToIntegerV3(generalMap["Hirelings"])
-		general.HirelingJobs = TibiadataStringToIntegerV3(generalMap["Hireling Jobs"])
-		general.HirelingOutfits = TibiadataStringToIntegerV3(generalMap["Hireling Outfits"])
-		general.ExaltedDust = TibiadataStringToIntegerV3(strings.Split(generalMap["Exalted Dust"], "/")[0])
+		general.AvailableCharmPoints = TibiaDataStringToInteger(generalMap["Available Charm Points"])
+		general.SpentCharmPoints = TibiaDataStringToInteger(generalMap["Spent Charm Points"])
+		general.DailyRewardStreak = TibiaDataStringToInteger(generalMap["Daily Reward Streak"])
+		general.HuntingTaskPoints = TibiaDataStringToInteger(generalMap["Hunting Task Points"])
+		general.PermanentHuntingTaskSlots = TibiaDataStringToInteger(generalMap["Permanent Hunting Task Slots"])
+		general.PermanentPreySlots = TibiaDataStringToInteger(generalMap["Permanent Prey Slots"])
+		general.PreyWildCards = TibiaDataStringToInteger(generalMap["Prey Wildcards"])
+		general.Hirelings = TibiaDataStringToInteger(generalMap["Hirelings"])
+		general.HirelingJobs = TibiaDataStringToInteger(generalMap["Hireling Jobs"])
+		general.HirelingOutfits = TibiaDataStringToInteger(generalMap["Hireling Outfits"])
+		general.ExaltedDust = TibiaDataStringToInteger(strings.Split(generalMap["Exalted Dust"], "/")[0])
 	})
 
 	// Extract items summary
@@ -424,7 +424,7 @@ func TibiaBazaarAuctionV3Impl(BoxContentHTML string) BazaarAuctionResponse {
 	ReaderHTML.Find("#Blessings").Each(func(index int, s *goquery.Selection) {
 		s.Find(OddEvenSelector).Each(func(index int, s *goquery.Selection) {
 			node := s.Nodes[0].FirstChild
-			blessingsAmount := TibiadataStringToIntegerV3(strings.Split(node.FirstChild.Data, " x")[0])
+			blessingsAmount := TibiaDataStringToInteger(strings.Split(node.FirstChild.Data, " x")[0])
 			switch blessingName := node.NextSibling.FirstChild.Data; blessingName {
 			case "Adventurer's Blessing":
 				blessings.AdventurersBlessing = blessingsAmount
@@ -472,7 +472,7 @@ func TibiaBazaarAuctionV3Impl(BoxContentHTML string) BazaarAuctionResponse {
 			}
 			if !strings.Contains(node.Parent.Attr[0].Val, "IndicateMoreEntries") {
 				charms = append(charms, BazaarAuctionCharm{
-					Cost: TibiadataStringToIntegerV3(node.FirstChild.Data),
+					Cost: TibiaDataStringToInteger(node.FirstChild.Data),
 					Name: node.NextSibling.FirstChild.Data,
 				})
 			}
@@ -533,8 +533,8 @@ func TibiaBazaarAuctionV3Impl(BoxContentHTML string) BazaarAuctionResponse {
 			node := s.Nodes[0].FirstChild
 			if !strings.Contains(node.Parent.Attr[0].Val, "IndicateMoreEntries") {
 				bestiaryProgress = append(bestiaryProgress, BazaarAuctionBestiaryEntry{
-					Step:  TibiadataStringToIntegerV3(node.FirstChild.Data),
-					Kills: TibiadataStringToIntegerV3(strings.Split(node.NextSibling.FirstChild.Data, " x")[0]),
+					Step:  TibiaDataStringToInteger(node.FirstChild.Data),
+					Kills: TibiaDataStringToInteger(strings.Split(node.NextSibling.FirstChild.Data, " x")[0]),
 					Name:  node.NextSibling.NextSibling.FirstChild.Data,
 				})
 			}
@@ -564,8 +564,8 @@ func TibiaBazaarAuctionV3Impl(BoxContentHTML string) BazaarAuctionResponse {
 			BestiaryProgress:            bestiaryProgress,
 		},
 		Information{
-			APIVersion: TibiadataAPIversion,
-			Timestamp:  TibiadataDatetimeV3(""),
+			APIVersion: TibiaDataAPIversion,
+			Timestamp:  TibiaDataDatetime(""),
 		},
 	}
 }
@@ -589,7 +589,7 @@ func ParseItems(s *goquery.Selection) map[string]int {
 			} else {
 				temp := strings.SplitN(itemTitle, "x ", 2)
 				itemName = strings.Split(temp[1], "\n")[0]
-				itemAmount = TibiadataStringToIntegerV3(temp[0])
+				itemAmount = TibiaDataStringToInteger(temp[0])
 			}
 			m[itemName] = itemAmount
 		}
@@ -631,8 +631,8 @@ func AjaxJSONDataCollectorV3(AuctionId int, SectionType int, PageIndex int) stri
 	// Setting up resty client
 	client := resty.New()
 
-	// Set Debug if enabled by TibiadataDebug var
-	if TibiadataDebug {
+	// Set Debug if enabled by TibiaDataDebug var
+	if TibiaDataDebug {
 		client.SetDebug(true)
 	}
 
@@ -644,7 +644,7 @@ func AjaxJSONDataCollectorV3(AuctionId int, SectionType int, PageIndex int) stri
 	client.SetHeaders(map[string]string{
 		"X-Requested-With": "XMLHttpRequest",
 		"Content-Type":     "application/json",
-		"User-Agent":       TibiadataUserAgent,
+		"User-Agent":       TibiaDataUserAgent,
 	})
 
 	// Enabling Content length value for all request

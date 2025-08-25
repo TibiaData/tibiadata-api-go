@@ -16,7 +16,7 @@ require (
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/mantyr/go-charset v0.0.0-20160510214718-44d054d82c4a
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.0
 	golang.org/x/text v0.28.0
 )
 

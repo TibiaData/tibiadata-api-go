@@ -1,12 +1,46 @@
 package main
 
 import (
+	"golang.org/x/text/encoding/charmap"
 	"io"
 	"testing"
 
 	"github.com/TibiaData/tibiadata-api-go/src/static"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestWorldAntica_UmlautRecovery(t *testing.T) {
+	// Load the UTF‑8 HTML fixture
+	f, err := static.TestFiles.Open("testdata/worlds/world/Antica.html")
+	if err != nil {
+		t.Fatalf("opening test file: %v", err)
+	}
+	defer f.Close()
+
+	utf8Data, err := io.ReadAll(f)
+	if err != nil {
+		t.Fatalf("reading test file: %v", err)
+	}
+
+	// Re‑encode to ISO‑8859‑1 to simulate the real‑world mis‑encoding - this is what we receive from as encoding
+	isoBytes, err := charmap.ISO8859_1.NewEncoder().Bytes(utf8Data)
+	if err != nil {
+		t.Fatalf("re‑encoding to ISO‑8859‑1 failed: %v", err)
+	}
+
+	// check function TibiaWorldsWorldImpl
+	resp, err := TibiaWorldsWorldImpl("Antica", string(isoBytes), "")
+	if err != nil {
+		t.Fatalf("parser error: %v", err)
+	}
+	got := resp.World.OnlinePlayers[0].Name
+
+	// It must *not* be the mojibake sequence
+	assert.NotEqual(t, "NÃ¤urin", got, "should not return mojibake")
+
+	// It must be the correct Umlaut
+	assert.Equal(t, "Näurin", got, "should correctly decode Umlaut from input")
+}
 
 func TestWorldEndebra(t *testing.T) {
 	file, err := static.TestFiles.Open("testdata/worlds/world/Endebra.html")

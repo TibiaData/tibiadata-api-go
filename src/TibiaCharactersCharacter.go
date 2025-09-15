@@ -811,7 +811,7 @@ func TibiaDataParseKiller(data string) (string, bool, bool, string) {
 // containsCreaturesWithOf checks if creature is present in special creatures list
 func containsCreaturesWithOf(str string) bool {
 	// trim away "an " and "a "
-	str = strings.TrimPrefix(strings.TrimPrefix(str, "an "), "a ")
+	str = strings.ToLower(strings.TrimPrefix(strings.TrimPrefix(str, "an "), "a "))
 
 	switch str {
 	case "acolyte of darkness",

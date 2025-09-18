@@ -8,10 +8,10 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/TibiaData/tibiadata-api-go/src/static"
-	"github.com/TibiaData/tibiadata-api-go/src/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	"github.com/tibiadata/tibiadata-api-go/src/static"
+	"github.com/tibiadata/tibiadata-api-go/src/validation"
 )
 
 func TestNumber1(t *testing.T) {

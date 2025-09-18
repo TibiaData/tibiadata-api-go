@@ -62,13 +62,13 @@ Search for the chart
 helm repo search tibiadata
 ```
 
-The charts-repository is located in [tibiadata-helm-charts](https://github.com/TibiaData/tibiadata-helm-charts).
+The charts-repository is located in [tibiadata-helm-charts](https://github.com/tibiadata/tibiadata-helm-charts).
 
 ### Docker
 
-Our images are available on both [GitHub Container Registry](https://github.com/TibiaData/tibiadata-api-go/pkgs/container/tibiadata-api-go) and [Docker Hub](https://hub.docker.com/r/tibiadata/tibiadata-api-go).
+Our images are available on both [GitHub Container Registry](https://github.com/tibiadata/tibiadata-api-go/pkgs/container/tibiadata-api-go) and [Docker Hub](https://hub.docker.com/r/tibiadata/tibiadata-api-go).
 
-This is how to pull and run the _latest_ release of TibiaData from [GHCR](https://github.com/TibiaData/tibiadata-api-go/pkgs/container/tibiadata-api-go):
+This is how to pull and run the _latest_ release of TibiaData from [GHCR](https://github.com/tibiadata/tibiadata-api-go/pkgs/container/tibiadata-api-go):
 
 ```console
 docker pull ghcr.io/tibiadata/tibiadata-api-go:latest
@@ -124,7 +124,7 @@ We do so at least by using [Kong](https://github.com/Kong/kong) API Gateway, whi
 
 The hosted API documentation for our [api.tibiadata.com](https://api.tibiadata.com) service can be viewd at [docs.tibiadata.com](https://docs.tibiadata.com).
 
-There is a swagger-generated documentation available for download on the [GitHub Release](https://github.com/TibiaData/tibiadata-api-go/releases) of the version you are looking for.
+There is a swagger-generated documentation available for download on the [GitHub Release](https://github.com/tibiadata/tibiadata-api-go/releases) of the version you are looking for.
 
 ### Available endpoints
 
@@ -174,5 +174,5 @@ Tibia is a registered trademark of [CipSoft GmbH](https://www.cipsoft.com/en/). 
 
 ## Credits
 
-- Authors: [Tobias Lindberg](https://github.com/tobiasehlert) – [List of contributors](https://github.com/TibiaData/tibiadata-api-go/graphs/contributors)
+- Authors: [Tobias Lindberg](https://github.com/tobiasehlert) – [List of contributors](https://github.com/tibiadata/tibiadata-api-go/graphs/contributors)
 - Distributed under [MIT License](LICENSE)

@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/TibiaData/tibiadata-api-go/src/validation"
+	"github.com/tibiadata/tibiadata-api-go/src/validation"
 )
 
 // Child of JSONData

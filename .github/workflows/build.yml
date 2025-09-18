@@ -194,7 +194,7 @@ jobs:
             $(printf 'ghcr.io/${{ github.repository }}@sha256:%s ' *)
 
           # Get the digest of the created manifest list
-          DIGEST=$(docker buildx imagetools inspect ghcr.io/${{ github.repository }}:${{ steps.docker_meta.outputs.version }} --format '{{json .Manifest.Digest}}' | jq -r .)
+          DIGEST=$(docker buildx imagetools inspect ghcr.io/${{ github.repository }}:${{ steps.docker_meta.outputs.version }} --format '{{ json .Manifest.Digest }}' | jq -r .)
           echo "digest=$DIGEST" >> $GITHUB_OUTPUT
 
       - name: Attest docker build (DockerHub)

@@ -23,6 +23,7 @@ jobs:
   build:
     name: build (${{ matrix.platform }})
     runs-on: ${{ matrix.runner }}
+    if: github.event_name != 'pull_request'
 
     strategy:
       fail-fast: false

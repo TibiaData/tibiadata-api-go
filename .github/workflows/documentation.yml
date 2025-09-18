@@ -44,6 +44,6 @@ jobs:
         uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 #v3.0.0
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: TibiaData/tibiadata-api-docs
+          repository: tibiadata/tibiadata-api-docs
           event-type: tibiadata-api-docs-release-update
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "tag_name": "${{ github.event.release.tag_name }}"}'

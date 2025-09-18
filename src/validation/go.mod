@@ -1,11 +1,11 @@
-module github.com/TibiaData/tibiadata-api-go/src/validation
+module github.com/tibiadata/tibiadata-api-go/src/validation
 
 go 1.25.0
 
-replace github.com/TibiaData/tibiadata-api-go/src/tibiamapping => ../tibiamapping
+replace github.com/tibiadata/tibiadata-api-go/src/tibiamapping => ../tibiamapping
 
 require (
-	github.com/TibiaData/tibiadata-api-go/src/tibiamapping v0.0.0-20250818132205-2b0f4da1df36
+	github.com/tibiadata/tibiadata-api-go/src/tibiamapping v0.0.0-20250818132205-2b0f4da1df36
 	github.com/stretchr/testify v1.11.1
 )
 

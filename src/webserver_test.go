@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/TibiaData/tibiadata-api-go/src/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	"github.com/tibiadata/tibiadata-api-go/src/validation"
 )
 
 var _ = func() bool {

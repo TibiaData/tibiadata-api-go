@@ -1,4 +1,4 @@
-module github.com/TibiaData/tibiadata-api-go/src/tibiamapping
+module github.com/tibiadata/tibiadata-api-go/src/tibiamapping
 
 go 1.25.0
 

@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TibiaData/tibiadata-api-go/src/validation"
 	_ "github.com/mantyr/go-charset/data"
+	"github.com/tibiadata/tibiadata-api-go/src/validation"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 

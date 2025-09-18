@@ -11,7 +11,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/TibiaData/tibiadata-api-go/src/validation"
+	"github.com/tibiadata/tibiadata-api-go/src/validation"
 	//"time"
 )
 
